@@ -84,9 +84,10 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 
 
 ## 其它  
-GitHub: [https://github.com/nICEnnnnnnnLee/BilibiliDown](https://github.com/nICEnnnnnnnLee/BilibiliDown)  
-Gitee码云: [https://gitee.com/NiceLeee/BilibiliDown](https://gitee.com/NiceLeee/BilibiliDown)  
-LICENSE: [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
+* **下载地址**: [https://github.com/nICEnnnnnnnLee/BilibiliDown/releases](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)
+* **GitHub**: [https://github.com/nICEnnnnnnnLee/BilibiliDown](https://github.com/nICEnnnnnnnLee/BilibiliDown)  
+* **Gitee码云**: [https://gitee.com/NiceLeee/BilibiliDown](https://gitee.com/NiceLeee/BilibiliDown)  
+* **LICENSE**: [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 

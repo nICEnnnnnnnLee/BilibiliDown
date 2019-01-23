@@ -1,0 +1,9 @@
+/.project
+/.settings
+/.classpath
+*/download
+*.zip
+*.log
+*.config
+/bin
+/target

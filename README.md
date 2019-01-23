@@ -1,6 +1,8 @@
-# INeedBiliAV - 
+# INeedBiliAV - BilibiliDown
 **INeedBiliAV** 为Bilibili 视频下载器，用于下载B站视频。  
 **INeedBiliAV**支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。
+
+[TOC]
 
 ## 简介
 ### 使用语言及外部库
@@ -22,6 +24,7 @@
 
 ### 工具类封装
 工具放在为**nicelee.util**包下：
+
 | Module            |  Description |
 | ----------------- | ----------- |
 | HttpCookies       |  提供String与HttpCookieList的转换，保存有一个静态的全局Cookies，用于全局的Cookie存取（非线程安全，请注意） |
@@ -54,10 +57,17 @@ java -cp INeedBiliAV.jar nicelee.bilibili.INeedAV "av40877923"
 ``` dos
 javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar
 ```
-PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8，而该JVM设置在启动前已经读取，代码里面再修改无效。  
+PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8。  
+该JVM设置在启动前已经读取，代码里面再修改无效。  
 一个解决办法是修改注册表：   
-“HKEY_CLASSES_ROOT\Applications\javaw.exe\shell\open\command”  
-"...\bin\javaw.exe" -jar "%1"  ===> "...\bin\javaw.exe" -Dfile.encoding=utf-8 -jar "%1"  
+
+
+| 属性  | 值 |
+| ------------- | ------------- |
+| 位置  | HKEY_CLASSES_ROOT\Applications\javaw.exe\shell\open\command  |
+| 原始值  |"...\bin\javaw.exe" -jar "%1"  |
+| 现有值  | "...\bin\javaw.exe" -Dfile.encoding=utf-8 -jar "%1"  |
+   
 
 * 扫码登录(可选)   
 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  

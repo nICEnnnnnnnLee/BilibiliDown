@@ -11,20 +11,23 @@
 
 ### 核心功能实现
 主要为**nicelee.bilibili**包下的三个类：  
-| Module        | Description |
-| ------------- | ----------- |
-| INeedAV       | 实现了根据av号获取（所有）视频信息、下载视频等功能。（下载格式为flv，支持各种清晰度，支持Cookies） |
-| INeedAVbPhone | 实现了根据av号获取（第一个）视频信息、下载视频等功能。（下载格式为mp4，清晰度无法保证） |
-| INeedLogin    | 实现了测试用户有效性、获取用户信息、扫码登录等功能，登录成功后保存至同级目录下的cookies.config中 |
+
+| Module  | Description |
+| ------------- | ------------- |
+| INeedAV  | 实现了根据av号获取（所有）视频信息、下载视频等功能。（下载格式为flv，支持各种清晰度，支持Cookies）  |
+| INeedAVbPhone  | 实现了根据av号获取（第一个）视频信息、下载视频等功能。（下载格式为mp4，清晰度无法保证）  |
+| INeedLogin  | 实现了测试用户有效性、获取用户信息、扫码登录等功能，登录成功后保存至同级目录下的cookies.config中  |
+
+
 
 ### 工具类封装
 工具放在为**nicelee.util**包下：
-| Module            | Description |
+| Module            |  Description |
 | ----------------- | ----------- |
-| HttpCookies       | 提供String与HttpCookieList的转换，保存有一个静态的全局Cookies，用于全局的Cookie存取（非线程安全，请注意） |
-| HttpHeaders       | 用于各类Http请求的头部生成 |
-| HttpRequestUtil   | 用于实现各种Get/Post类型的Http请求，并对下载功能做了封装 |
-| QrCodeUtil        | 用于二维码图片的生成 |
+| HttpCookies       |  提供String与HttpCookieList的转换，保存有一个静态的全局Cookies，用于全局的Cookie存取（非线程安全，请注意） |
+| HttpHeaders       |  用于各类Http请求的头部生成 |
+| HttpRequestUtil   |  用于实现各种Get/Post类型的Http请求，并对下载功能做了封装 |
+| QrCodeUtil        |  用于二维码图片的生成 |
 
 
 ## 使用方法：
@@ -76,8 +79,5 @@ Gitee码云: [https://gitee.com/NiceLeee/BilibiliDown](https://gitee.com/NiceLeee/
 LICENSE: [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+
 

@@ -31,8 +31,6 @@ public class INeedLogin {
 	public UserInfo user;
 
 	public static void main(String[] args) throws Exception {
-		String[]  test = {"0"}; 
-		args = test;
 		System.out.println("-------------------------------");
 		System.out.println("测试cookie:");
 		System.out.println("输入参数 0");

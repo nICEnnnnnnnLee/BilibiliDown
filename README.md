@@ -56,20 +56,28 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 “HKEY_CLASSES_ROOT\Applications\javaw.exe\shell\open\command”  
 "...\bin\javaw.exe" -jar "%1"  ===> "...\bin\javaw.exe" -Dfile.encoding=utf-8 -jar "%1"  
 
-* 扫码登录(可选)
-点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码
+* 扫码登录(可选)   
+点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/qrcode-login.png)
-* 获取作品信息
+* 获取作品信息  
 在主界面搜索框输入av号或者av播放链接，点击右方按钮查找  
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/index.png)
-* 下载
-在作品信息界面点击想要的视频清晰度进行下载
+* 下载  
+在作品信息界面点击想要的视频清晰度进行下载  
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/avDetails.png)  
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.png)
-* 其它
-关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/avDetails.png)
-## 其它
+* 其它  
+关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
+
+
+## 其它  
 GitHub: [https://github.com/nICEnnnnnnnLee/BilibiliDown](https://github.com/nICEnnnnnnnLee/BilibiliDown)  
 Gitee码云: [https://gitee.com/NiceLeee/BilibiliDown](https://gitee.com/NiceLeee/BilibiliDown)  
 LICENSE: [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
+
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 

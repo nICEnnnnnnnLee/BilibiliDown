@@ -167,9 +167,6 @@ public class INeedAV {
 	 * @param cid  av下面可能不只有一个视频, avId + cid才能确定一个真正的视频
 	 * @param qn   112: hdflv2;80: flv; 64: flv720; 32: flv480; 16: flv360
 	 * @return
-	 * @throws IOException 
-	 * @throws MalformedURLException 
-	 * @throws FailingHttpStatusCodeException 
 	 */
 	public String getVideoFLVLink(String avId, String cid, int qn) {
 		String avIdNum = avId.replace("av", "");

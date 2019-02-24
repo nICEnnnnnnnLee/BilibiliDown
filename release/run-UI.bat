@@ -1,1 +1,1 @@
-javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar
+start javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar

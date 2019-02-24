@@ -124,5 +124,35 @@ public class HttpHeaders {
 		}
 		return mobileHeaderMap;
 	}
+	/**
+	 * 该Header配置用于nvshens.com图片下载
+	 */
+	public HashMap<String, String> getNvshensDownloadHeaders() {
+		headerMap = new HashMap<String, String>();
+		headerMap.put("Accept", "image/webp,*/*");
+		headerMap.put("Accept-Encoding", "gzip, deflate, br");
+		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
+		headerMap.put("Cache-Control", "max-age=0");
+		headerMap.put("Connection", "keep-alive");
+		headerMap.put("Host", "t1.onvshen.com:85");
+		headerMap.put("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0");
+		return headerMap;
+	}
+	/**
+	 * 该Header配置用于nvshens.com访问
+	 */
+	public HashMap<String, String> getNvshensHeaders() {
+		headerMap = new HashMap<String, String>();
+		headerMap.put("Accept", "text/html,application/xhtml+xm…ml;q=0.9,image/webp,*/*;q=0.8");
+		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
+		headerMap.put("Cache-Control", "max-age=0");
+		headerMap.put("Connection", "keep-alive");
+		headerMap.put("Host", "www.nvshens.com");
+		headerMap.put("User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0");
+		return headerMap;
+	}
 
 }

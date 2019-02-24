@@ -2,11 +2,9 @@ package nicelee.test.junit;
 
 import static org.junit.Assert.*;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import nicelee.bilibili.INeedAV;
 import nicelee.model.ClipInfo;
@@ -39,13 +37,13 @@ public class INeedAVTest {
 			fail("VideoPreview Link Not Expected");
 		}
 		ClipInfo clip = video.getClips().get(1);
-		if(clip == null) {
+		if (clip == null) {
 			fail("clip is null");
 		}
-		if(clip.getcId() != 61860101) {
+		if (clip.getcId() != 61860101) {
 			fail("Clip cId Not Expected");
 		}
-		if(!clip.getLinks().get(32).contains("/61860101/61860101-1-32.flv")) {
+		if (!clip.getLinks().get(32).contains("/61860101/61860101-1-32.flv")) {
 			fail("Video Link Not Expected");
 		}
 	}

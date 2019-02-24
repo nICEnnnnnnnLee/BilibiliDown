@@ -82,7 +82,14 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 * 其它  
 关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
 
-
+## UPDATE  
+* v2.0 
+    * 修复一个bug,该bug导致部分无效cookies验证抛出异常,而不是返回false;
+    * (UI)修复一个bug,该bug使得扫码登录后未能及时更新用户头像等信息;
+    * (UI)增加二维码扫码时限性,一分钟后自动销毁;
+    * (UI)增加登录框点击动态效果,让人明白你点了它;
+    * 下载flv名称由 ```avId-p.flv``` 改为```avId-qn-p.flv```,增加清晰度标识
+    * (UI)优化了.bat脚本,```run-UI.bat```运行后命令窗口退出,```run-UI-debug.bat```运行后命令窗口留存,并且可查看输出信息
 ## 其它  
 * **下载地址**: [https://github.com/nICEnnnnnnnLee/BilibiliDown/releases](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)
 * **GitHub**: [https://github.com/nICEnnnnnnnLee/BilibiliDown](https://github.com/nICEnnnnnnnLee/BilibiliDown)  

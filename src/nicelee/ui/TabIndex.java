@@ -1,5 +1,6 @@
 package nicelee.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -139,10 +141,12 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		Global.index.jlHeader.setBorder(BorderFactory.createLineBorder(Color.red));
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		Global.index.jlHeader.setBorder(null);
 	}
 
 	@Override

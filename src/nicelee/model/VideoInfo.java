@@ -9,12 +9,13 @@ public class VideoInfo {
 	String authorId;
 	String videoPreview;
 	String brief;
-	HashMap<Integer, ClipInfo> clips;//未使用 Integer 为 Page
+	HashMap<Integer, ClipInfo> clips;// 未使用 Integer 为 Page
 	String videoLink;
-	
+
 	public void print() {
 		System.out.print(toString());
 	}
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("------------------------------\r\n");
@@ -25,63 +26,78 @@ public class VideoInfo {
 		sb.append("作者的话为 :").append(brief).append(" \r\n");
 		sb.append("预览图路径为 :").append(videoPreview).append(" \r\n");
 		sb.append("视频下载链接为 :").append(videoLink).append(" \r\n");
-		if(clips!= null) {
+		if (clips != null) {
 			sb.append("当前有小视频个数 :").append(clips.size()).append(" \r\n");
-			for(ClipInfo clip :clips.values()) {
+			for (ClipInfo clip : clips.values()) {
 				sb.append(clip.toString());
 			}
 		}
 		sb.append("------------------------------\r\n");
 		return sb.toString();
 	}
+
 	public String getAuthor() {
 		return author;
 	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
 	public String getAuthorId() {
 		return authorId;
 	}
+
 	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
+
 	public String getVideoId() {
 		return videoId;
 	}
+
 	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
+
 	public String getVideoName() {
 		return videoName;
 	}
+
 	public void setVideoName(String videoName) {
 		this.videoName = videoName;
 	}
+
 	public String getBrief() {
 		return brief;
 	}
+
 	public void setBrief(String brief) {
 		this.brief = brief;
 	}
+
 	public String getVideoPreview() {
 		return videoPreview;
 	}
+
 	public void setVideoPreview(String videoPreview) {
 		this.videoPreview = videoPreview;
 	}
+
 	public String getVideoLink() {
 		return videoLink;
 	}
+
 	public void setVideoLink(String videoLink) {
 		this.videoLink = videoLink;
 	}
+
 	public HashMap<Integer, ClipInfo> getClips() {
 		return clips;
 	}
+
 	public void setClips(HashMap<Integer, ClipInfo> clips) {
 		this.clips = clips;
 	}
-	
 
 }

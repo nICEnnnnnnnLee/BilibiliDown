@@ -1,8 +1,6 @@
 package nicelee.bilibili;
 
-import java.io.IOException;
 import java.net.HttpCookie;
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -26,6 +26,7 @@ public class FrameQRCode extends JFrame{
 	}
 	
 	public void initUI() {
+		System.out.println("正在生成二维码图片Frame");
 		this.setUndecorated(true);
 		this.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
 		this.setTitle("请扫描二维码...");
@@ -42,7 +43,8 @@ public class FrameQRCode extends JFrame{
 			JLabel jLabel = new JLabel(imgIcon);
 			this.add(jLabel);
 			this.setVisible(true);
-		} catch (WriterException e) {
+			System.out.println("二维码图片已生成");
+		} catch (Exception e) {
 			e.printStackTrace();
 			this.dispose();
 		}

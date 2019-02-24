@@ -10,8 +10,7 @@ import nicelee.bilibili.INeedLogin;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
 
-
-public class FrameMain extends JFrame{
+public class FrameMain extends JFrame {
 
 	/**
 	 * 
@@ -20,21 +19,22 @@ public class FrameMain extends JFrame{
 	JTabbedPane jTabbedpane = new JTabbedPane();// 存放选项卡的组件
 
 	public static void main(String[] args) {
-		System.getProperties().setProperty("file.encoding","utf-8");
-		
+		System.getProperties().setProperty("file.encoding", "utf-8");
+
 		FrameMain main = new FrameMain();
 		main.InitUI();
 		MonitoringThread th = new MonitoringThread();
 		th.start();
-		
+
 		INeedLogin inl = new INeedLogin();
-		if(inl.readCookies() != null) {
+		if (inl.readCookies() != null) {
 			Global.needToLogin = true;
-		};
-		
+		}
+		;
+
 		LoginThread loginTh = new LoginThread();
 		loginTh.start();
-		
+
 //		FrameQRCode qr = new FrameQRCode("https://www.bilibili.com/");
 //		qr.initUI();
 //		qr.dispose();
@@ -53,11 +53,11 @@ public class FrameMain extends JFrame{
 		URL iconURL = this.getClass().getResource("/resources/favicon.png");
 		ImageIcon icon = new ImageIcon(iconURL);
 		this.setIconImage(icon.getImage());
-		
+
 		// Index Tab
 		Global.index = new TabIndex(jTabbedpane);
 		jTabbedpane.addTab("主页", Global.index);
-		//下载页
+		// 下载页
 		Global.downloadTab = new TabDownload();
 		jTabbedpane.addTab("下载页", Global.downloadTab);
 		// 作品页
@@ -65,7 +65,7 @@ public class FrameMain extends JFrame{
 //		TabVideo tab = new TabVideo(label);
 //		jTabbedpane.addTab("作品页", tab);
 //		jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
-		
+
 		this.setContentPane(jTabbedpane);
 		//
 		this.setVisible(true);

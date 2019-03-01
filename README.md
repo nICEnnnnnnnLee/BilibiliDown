@@ -1,8 +1,8 @@
 # INeedBiliAV - BilibiliDown
 **INeedBiliAV** 为Bilibili 视频下载器，用于下载B站视频。  
-**INeedBiliAV**支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。   
-**INeedBiliAV**提供UI操作界面，在安装了JDK环境下，只需双击运行程序即可。   
-**INeedBiliAV**封装了一些用于登录/下载的API，没有第三方库，可直接拿去使用。   
+**INeedBiliAV** 支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。   
+**INeedBiliAV** 提供UI操作界面，在安装了JDK环境下，只需双击运行程序即可。   
+**INeedBiliAV** 封装了一些用于登录/下载的API，无需导入第三方依赖(org.json以```.java```形式存在)，API可直接拿去使用。   
 
 [TOC]
 
@@ -54,14 +54,14 @@ java -cp INeedBiliAV.jar nicelee.bilibili.INeedAV "av40877923"
 ```
 
 ### UI模式
-该模式下偶尔会报http socket connect/read timeout异常，目前尚未处理，解决方案是再次进行尝试。
-* 运行程序（java/javaw 均可）
+* 直接双击```run-UI.bat``` 或```run-UI-debug.bat```  
+* 脚本原理（java/javaw 均可）
 ``` dos
 javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar
 ```
 PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8。  
 该JVM设置在启动前已经读取，代码里面再修改无效。  
-一个解决办法是修改注册表：   
+* 如果想直接双击jar运行，一个解决办法是修改注册表：   
 
 
 | 属性  | 值 |

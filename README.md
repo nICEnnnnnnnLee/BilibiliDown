@@ -1,8 +1,8 @@
 # INeedBiliAV - BilibiliDown
 **INeedBiliAV** 为Bilibili 视频下载器，用于下载B站视频。  
-**INeedBiliAV**支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。
-**INeedBiliAV**提供UI操作界面，在安装了JDK环境下，只需双击运行程序即可。
-**INeedBiliAV**封装了一些用于登录/下载的API，没有第三方库，可直接拿去使用。
+**INeedBiliAV**支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。   
+**INeedBiliAV**提供UI操作界面，在安装了JDK环境下，只需双击运行程序即可。   
+**INeedBiliAV**封装了一些用于登录/下载的API，没有第三方库，可直接拿去使用。   
 
 [TOC]
 

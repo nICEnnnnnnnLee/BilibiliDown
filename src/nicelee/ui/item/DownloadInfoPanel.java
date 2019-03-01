@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import nicelee.ui.Global;
+import nicelee.util.HttpRequestUtil;
 
 public class DownloadInfoPanel extends JPanel implements ActionListener {
 
@@ -25,10 +26,12 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	String fileName;
 	long totalSize;
 	long currentDown;
+	boolean isdownloading = true;
 
 	JButton btnRemove;
 	JButton btnOpen;
 	JButton btnOpenFolder;
+	JButton btnControl;
 	JLabel lbCurrentStatus;
 	JLabel lbDownFile;
 	JLabel lbFileName;
@@ -75,6 +78,11 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		lbDownFile.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbDownFile);
 		this.setBackground(new Color(204, 255, 255));
+		
+		btnControl = new JButton("暂停");
+		btnControl.setPreferredSize(new Dimension(100, 45));
+		btnControl.addActionListener(this);
+		this.add(btnControl);
 	}
 
 	@Override
@@ -114,6 +122,24 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 			if( file.exists()) {
 				file.delete();
 			}
+		}else if (e.getSource() == btnControl) {
+			HttpRequestUtil util = Global.downloadTaskList.get(this);
+			// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止
+			if(util.getStatus() == 0) {
+				//停止下载
+				util.stopDownload();
+				btnControl.setText("继续下载");
+			}else if(util.getStatus() == 1) {
+				JOptionPane.showMessageDialog(this.getParent(), "文件已下载完成", "提示", JOptionPane.INFORMATION_MESSAGE);
+			}else {
+				Global.downLoadThreadPool.execute(new Runnable() {
+					@Override
+					public void run() {
+						util.redownload();
+					}
+				});
+				
+			}
 		}
 	}
 
@@ -139,6 +165,14 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 
 	public void setLbFileName(JLabel lbFileName) {
 		this.lbFileName = lbFileName;
+	}
+
+	public JButton getBtnControl() {
+		return btnControl;
+	}
+
+	public void setBtnControl(JButton btnControl) {
+		this.btnControl = btnControl;
 	}
 
 }

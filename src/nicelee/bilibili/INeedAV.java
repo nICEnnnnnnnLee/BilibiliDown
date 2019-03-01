@@ -116,7 +116,7 @@ public class INeedAV {
 		HttpHeaders headers = new HttpHeaders();
 		String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId),
 				HttpCookies.getGlobalCookies());
-
+		System.out.println(json);
 		JSONObject jObj = new JSONObject(json).getJSONObject("data");
 		String videoName = jObj.getString("title");
 		String brief = jObj.getString("desc");

@@ -29,6 +29,8 @@ public class HttpRequestUtil {
 	long total;
 	// 下载文件
 	File fileDownload;
+	HashMap<String, String> headersDownload;
+	String urlDownload;
 	// 下载状态
 	int status; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止
 	// 下载标志,置False可以停止下载
@@ -57,7 +59,15 @@ public class HttpRequestUtil {
 	public void stopDownload() {
 		bDown = false;
 	}
-
+	
+	/**
+	 * 根据状态重新下载
+	 */
+	public boolean redownload() {
+		status = 0;
+		bDown = true;
+		return download(urlDownload, fileDownload.getName(), headersDownload);
+	}
 	/**
 	 * 下载文件
 	 * @param url	文件url
@@ -66,11 +76,28 @@ public class HttpRequestUtil {
 	 * @return
 	 */
 	public boolean download(String url, String fileName, HashMap<String, String> headers) {
+		urlDownload = url;
+		headersDownload = headers;
 		status = 0;
 		System.out.println(url);
 		InputStream inn = null;
 		RandomAccessFile raf = null;
 		try {
+			//System.out.println(optionsContent(url, headers, null));
+			// 确保没有重复文件
+			fileDownload = getFileEnsureNoExists(fileName);
+			// 文件下载中先添加.part后缀
+			File fileDownloadPart = new File(fileDownload.getParent(), fileDownload.getName() + ".part");
+			raf = new RandomAccessFile(fileDownloadPart, "rw");
+			// 获取下载进度
+			long offset = 0;
+			if(fileDownloadPart.exists()) {
+				offset = fileDownloadPart.length();
+				headers.put("range", "bytes="+ offset +"-");
+				System.out.println("当前已下载: ["+ offset + "]字节");
+				raf.seek(offset);
+			}
+			//开始下载
 			String urlNameString = url;
 			URL realUrl = new URL(urlNameString);
 			HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
@@ -88,18 +115,11 @@ public class HttpRequestUtil {
 //			}
 			System.out.printf("文件大小: %s 字节.\r\n", map.get("Content-Length"));
 
-			total = Long.parseUnsignedLong(map.get("Content-Length").get(0));
+			total = offset + Long.parseUnsignedLong(map.get("Content-Length").get(0));
 			inn = conn.getInputStream();
-			// 确保没有重复文件
-			fileDownload = getFileEnsureNoExists(fileName);
-			// 文件下载中先添加.part后缀
-			File fileDownloadPart = new File(fileDownload.getParent(), fileDownload.getName() + ".part");
-			// 删除前面未下载完成的文件
-//			if(fileDownloadPart.exists())
-//				fileDownloadPart.delete();
-			raf = new RandomAccessFile(fileDownloadPart, "rw");
+			
 			int lenRead = inn.read(buffer);
-			cnt = lenRead;
+			cnt = offset + lenRead;
 			while (lenRead > -1) {
 				if (!bDown) {
 					status = -2;
@@ -142,6 +162,70 @@ public class HttpRequestUtil {
 	
 	public String getContent(String url, HashMap<String, String> headers) {
 		return getContent(url, headers, null);
+	}
+	
+	/**
+	 * do a Http OPTIONS
+	 * Not Worked with http stream with Chunked
+	 * 
+	 * @param url
+	 * @param headers
+	 * @return content, mostly a html page
+	 * @throws IOException
+	 */
+	public String optionsContent(String url, HashMap<String, String> headers, List<HttpCookie> listCookie) {
+		StringBuffer result = new StringBuffer();
+		BufferedReader in = null;
+		try {
+			String urlNameString = url;
+			URL realUrl = new URL(urlNameString);
+			HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+			conn.setConnectTimeout(2000);
+			conn.setReadTimeout(2000);
+			conn.setRequestMethod("OPTIONS");
+			for (Map.Entry<String, String> entry : headers.entrySet()) {
+				conn.setRequestProperty(entry.getKey(), entry.getValue());
+			}
+			// 设置Cookie
+			if (listCookie != null) {
+				StringBuilder sb = new StringBuilder();
+				for (HttpCookie cookie : listCookie) {
+					sb.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
+				}
+				String cookie = sb.toString();
+				if (cookie.endsWith("; ")) {
+					cookie = cookie.substring(0, cookie.length() - 2);
+				}
+				conn.setRequestProperty("Cookie", cookie);
+			}
+			conn.connect();
+			
+			String encoding = conn.getContentEncoding();
+			InputStream ism = conn.getInputStream();
+			if (encoding != null && encoding.contains("gzip")) {// 首先判断服务器返回的数据是否支持gzip压缩，
+				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
+				ism = new GZIPInputStream(conn.getInputStream());
+			}
+			in = new BufferedReader(new InputStreamReader(ism));
+			String line;
+			while ((line = in.readLine()) != null) {
+				line = new String(line.getBytes(), "UTF-8");
+				result.append(line);
+			}
+		} catch (Exception e) {
+			System.out.println("发送GET请求出现异常！" + e);
+			e.printStackTrace();
+		} finally {
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		//printCookie(manager.getCookieStore());
+		return result.toString();
 	}
 	
 	/**
@@ -312,7 +396,7 @@ public class HttpRequestUtil {
 			for (int i = 1; i < 1000; i++) {
 				file = new File(folder, name + "-" + i + suffix);
 				System.out.println("目标文件已存在,尝试新建文件: " + name + "-" + i + suffix);
-				if (!file.exists() && !new File(file.getParent(), file.getName() + ".part").exists())
+				if (!file.exists())
 					return file;
 			}
 		}

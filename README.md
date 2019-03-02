@@ -34,7 +34,9 @@
 | HttpHeaders       |  用于各类Http请求的头部生成 |
 | HttpRequestUtil   |  用于实现各种Get/Post类型的Http请求，并对下载功能做了封装 |
 | QrCodeUtil        |  用于二维码图片的生成 |
-
+| ConfigUtil        |  用于从```app.config```读取配置 |
+| CmdUtil        |  调用```ffmpeg.exe```将下载的音视频```.m4s```文件合并转成MP4(若配置为FLV，则未使用该工具，平台通用性更好) |
+注： 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序
 
 ## 使用方法：
 ### 命令行模式
@@ -103,7 +105,7 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 * v2.2 
     * 增加了HTML5播放源的下载方式,支持FLV/MP4两种格式 
     * (UI)下载面板优化为不允许存在相同的视频下载任务(不分辨清晰度)
-    * (UI)在下载目录下增加了重命名```rename.bat```，默认格式为```avId-qn-p.(flv|mp4)```，可以使用该批处理批量改标题为```视频标题-qn-p.(flv|mp4)```
+    * (UI)在下载目录下增加了重命名```rename.bat```，默认格式为```avId-qn-p.(flv|mp4)```，可以使用该批处理批量改标题为```视频标题-qn-p.(flv|mp4)```(重命名功能暂只支持Windows)
     * (UI)增加了下载格式配置(flv 取Flash播放源, mp4 取HTML5播放源)
     * (UI)增加了下载路径配置
 * v2.1 

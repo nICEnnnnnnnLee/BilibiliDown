@@ -17,7 +17,11 @@ import nicelee.ui.Global;
 import nicelee.util.HttpRequestUtil;
 
 public class DownloadInfoPanel extends JPanel implements ActionListener {
-
+	
+	String avid;
+	String cid;
+	String page;
+	int qn;
 	/**
 	 * 
 	 */
@@ -36,7 +40,11 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	JLabel lbDownFile;
 	JLabel lbFileName;
 
-	public DownloadInfoPanel() {
+	public DownloadInfoPanel(String avid, String cid, String page, int qn) {
+		this.avid = avid;
+		this.cid = cid;
+		this.page = page;
+		this.qn = qn;
 		path = "C:\\搜狗高速下载\\";
 		fileName = "timg.gif";
 		totalSize = 0L;
@@ -173,6 +181,22 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 
 	public void setBtnControl(JButton btnControl) {
 		this.btnControl = btnControl;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (avid + page).hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		//System.out.println("DownloadInfoPanel - equals:");
+		if(obj instanceof DownloadInfoPanel) {
+			DownloadInfoPanel down = (DownloadInfoPanel)obj;
+			return (avid.equals(down.avid) 
+					&& page.equals(down.page));
+		}
+		return false;
 	}
 
 }

@@ -21,24 +21,52 @@ public class MonitoringThread extends Thread {
 				DownloadInfoPanel dp = entry.getKey();
 				HttpRequestUtil httpUtil = entry.getValue();
 				try {
-					dp.getLbFileName().setText(httpUtil.getFileDownload().getAbsolutePath());
+					dp.getLbFileName().setText(httpUtil.getFileDownload().getAbsolutePath().replaceFirst("_(video|audio)\\.m4s$", ".mp4"));
 					if (httpUtil.getStatus() == 1) {
-						dp.getLbCurrentStatus().setText("下载完成. ");
+						if(httpUtil.getTotalTask() == 1) {
+							dp.getLbCurrentStatus().setText("下载完成. ");
+						}else {
+							String txt = String.format("%d/%d 下载完成.",
+									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getTotalTask());
+							dp.getLbCurrentStatus().setText(txt);
+						}
 						dp.getLbDownFile().setText("文件大小: "  + httpUtil.getTotal()/1024/1024 + " MB");
 						dp.getBtnControl().setEnabled(false);
 					} else if (httpUtil.getStatus() == 0) {
-						dp.getLbCurrentStatus().setText("正在下载中...");
+						if(httpUtil.getTotalTask() == 1) {
+							dp.getLbCurrentStatus().setText("正在下载中...");
+						}else {
+							String txt = String.format("%d/%d 正在下载中...",
+									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getTotalTask());
+							dp.getLbCurrentStatus().setText(txt);
+						}
 						dp.getLbDownFile().setText("当前已下载  "+ httpUtil.getCnt()*100/httpUtil.getTotal() + " % :" + httpUtil.getCnt() + "/" + httpUtil.getTotal());
 						dp.getBtnControl().setText("暂停");
 					} else if (httpUtil.getStatus() == -1) {
-						dp.getLbCurrentStatus().setText("下载异常");
+						if(httpUtil.getTotalTask() == 1) {
+							dp.getLbCurrentStatus().setText("下载异常");
+						}else {
+							String txt = String.format("%d/%d 下载异常",
+									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getTotalTask());
+							dp.getLbCurrentStatus().setText(txt);
+						}
 						dp.getBtnControl().setText("继续下载");
 					}else if (httpUtil.getStatus() == -2) {
-						dp.getLbCurrentStatus().setText("人工停止");
+						if(httpUtil.getTotalTask() == 1) {
+							dp.getLbCurrentStatus().setText("人工停止");
+						}else {
+							String txt = String.format("%d/%d 人工停止",
+									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getTotalTask());
+							dp.getLbCurrentStatus().setText(txt);
+						}
 						dp.getBtnControl().setText("继续下载");
 					}
 				}catch(Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 			}

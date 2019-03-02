@@ -81,10 +81,21 @@ public class HttpHeaders {
 	}
 
 	/**
-	 * 该Header配置用于视频下载
+	 * 该Header配置用于FLV视频下载
 	 */
-	public HashMap<String, String> getBiliWwwHeaders(String avId) {
+	public HashMap<String, String> getBiliWwwFLVHeaders(String avId) {
 		headerMap.put("X-Requested-With", "ShockwaveFlash/28.0.0.137");
+		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);// need addavId
+		headerMap.put("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");
+		return headerMap;
+	}
+	
+	/**
+	 * 该Header配置用于M4s视频下载
+	 */
+	public HashMap<String, String> getBiliWwwM4sHeaders(String avId) {
+		headerMap.remove("X-Requested-With");
 		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);// need addavId
 		headerMap.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import nicelee.bilibili.INeedAV;
 import nicelee.model.ClipInfo;
 import nicelee.model.VideoInfo;
+import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
 import nicelee.ui.item.ClipInfoPanel;
 
@@ -26,7 +27,7 @@ public class GetVideoDetailThread extends Thread{
 		try {
 			//获取当前av详细信息
 			INeedAV avs = new INeedAV();
-			
+			avs.setDownFormat(Global.downloadFormat);
 			//更新当前Tab页面
 			VideoInfo avInfo =avs.getVideoDetail(avId, false);
 			video.getLbAvID().setText(avInfo.getVideoId());
@@ -41,7 +42,7 @@ public class GetVideoDetailThread extends Thread{
 			JPanel jpContent = video.getJpContent();
 			jpContent.setPreferredSize(new Dimension(340, 110 * avInfo.getClips().size()));
 			for(ClipInfo cInfo:  avInfo.getClips().values()) {
-				ClipInfoPanel cp = new ClipInfoPanel(cInfo);
+				ClipInfoPanel cp = new ClipInfoPanel(cInfo, avInfo.getVideoName());
 				jpContent.add(cp);
 			}
 			jpContent.updateUI();

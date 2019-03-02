@@ -88,6 +88,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		if (e.getSource() == btnSearch) {
 			String avId = txtSearch.getText();
 			INeedAV iNeedAV = new INeedAV();
+			iNeedAV.setDownFormat(Global.downloadFormat);
 			avId = iNeedAV.getAvID(avId);
 			if("".equals(avId)) {
 				JOptionPane.showMessageDialog(this, "解析链接失败!", "失败", JOptionPane.WARNING_MESSAGE);

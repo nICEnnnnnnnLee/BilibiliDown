@@ -10,8 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRootPane;
 
-import com.google.zxing.WriterException;
-
 import nicelee.util.QrCodeUtil;
 
 public class FrameQRCode extends JFrame{

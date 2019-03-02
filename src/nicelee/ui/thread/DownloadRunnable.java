@@ -75,12 +75,12 @@ public class DownloadRunnable implements Runnable {
 			if(Global.downloadFormat == 0) {
 				String cmd = String.format("rename \"%s.mp4\" \"%s.mp4\"\r\n",
 						avid_qn + "-p"+ page,
-						title_qn + "-p"+ page).replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·");
+						title_qn.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·") + "-p"+ page);
 				fw.write(cmd);
 			}else {
 				String cmd = String.format("rename \"%s.flv\" \"%s.flv\"\r\n",
 						avid_qn + "-p"+ page,
-						title_qn + "-p"+ page).replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·");
+						title_qn.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·") + "-p"+ page);
 				fw.write(cmd);
 			}
 			fw.close();

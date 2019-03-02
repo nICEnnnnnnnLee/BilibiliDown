@@ -9,6 +9,7 @@ import javax.swing.JTabbedPane;
 import nicelee.bilibili.INeedLogin;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
+import nicelee.util.ConfigUtil;
 
 public class FrameMain extends JFrame {
 
@@ -19,8 +20,9 @@ public class FrameMain extends JFrame {
 	JTabbedPane jTabbedpane = new JTabbedPane();// 存放选项卡的组件
 
 	public static void main(String[] args) {
-		System.getProperties().setProperty("file.encoding", "utf-8");
-
+		//System.getProperties().setProperty("file.encoding", "utf-8");
+		ConfigUtil.initConfigs();
+		
 		FrameMain main = new FrameMain();
 		main.InitUI();
 		MonitoringThread th = new MonitoringThread();

@@ -41,10 +41,12 @@ public class M4sTest {
 		System.out.println(new File("download/seg-1.flv").length());
 		HttpRequestUtil util = new HttpRequestUtil();
 		HttpHeaders headers = new HttpHeaders();
-		HashMap<String, String> header = headers.getBiliWwwHeaders("av44883097");
+		HashMap<String, String> header = headers.getBiliWwwFLVHeaders("av44883097");
 		//header.put("range", "bytes=949828-2296536");
-//		util.download("https://cn-jszj-dx-v-09.acgvideo.com/upgcxcode/42/19/78601942/78601942-1-80.flv?expires=1551418800&platform=pc&ssig=mp6LJJhWQ7Wbg7w8oBk4KQ&oi=3728813686&trid=58b985e70747459a83ff439dfab3bb53&nfb=maPYqpoel5MI3qOUX6YpRA==&nfc=1"
-//				, "seg.flv", header);
+//		util.download("https://upos-hz-mirrorkodou.acgvideo.com/upgcxcode/42/19/78601942/78601942-1-30080.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_YN0MvXg8gNEVEuxTEto8i8o859r1qXg8xNEVE5XREto8GuFGv2U7SuxI72X6fTr859r1qXg8gNEVE5XREto8z5JZC2X2gkX5L5F1eTX1jkXlsTXHeux_f2o859IB_&deadline=1551500670&gen=playurl&nbs=1&oi=3728813686&os=kodou&platform=pc&trid=4c9dcc087d7941c98b7daddcd70fe09f&uipk=5&upsig=47e79da13fdde0c8e79ce1075a266385"
+//				, "78601942-1-30080.m4s", header);
+		util.download("https://upos-hz-mirrorks3u.acgvideo.com/upgcxcode/42/19/78601942/78601942-1-30216.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_YN0MvXg8gNEVEuxTEto8i8o859r1qXg8xNEVE5XREto8GuFGv2U7SuxI72X6fTr859r1qXg8gNEVE5XREto8z5JZC2X2gkX5L5F1eTX1jkXlsTXHeux_f2o859IB_&deadline=1551500670&gen=playurl&nbs=1&oi=3728813686&os=ks3u&platform=pc&trid=4c9dcc087d7941c98b7daddcd70fe09f&uipk=5&upsig=756b7f1e6d2e84068ff20daf0998d34f"
+				, "78601942-1-30216.m4s", header);
 				
 	}
 	
@@ -56,8 +58,8 @@ public class M4sTest {
 		String init = "download/init.m4s";
 		String range = "download/range.m4s";
 		String file = "download/file.m4s";
-		long off = 0;
-		long end = 0;
+		//long off = 0;
+		//long end = 0;
 		// 0 ~ 975, 976-1211 , 1212 ~
 		copyFile(source, init, 0, 975);
 		copyFile(source, range, 976, 1211);

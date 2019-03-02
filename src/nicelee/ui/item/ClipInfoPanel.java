@@ -20,9 +20,11 @@ public class ClipInfoPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -752743062676819403L;
+	String avTitle;
 	ClipInfo clip;
-	public ClipInfoPanel(ClipInfo clip) {
+	public ClipInfoPanel(ClipInfo clip, String avTitle) {
 		this.clip = clip;
+		this.avTitle = avTitle;
 		initUI();
 	}
 	
@@ -39,7 +41,8 @@ public class ClipInfoPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DownloadRunnable downThread = new DownloadRunnable(clip.getAvId(),
+					DownloadRunnable downThread = new DownloadRunnable(avTitle+ " - " +clip.getTitle(),
+							clip.getAvId(),
 							String.valueOf(clip.getcId()),
 							String.valueOf(clip.getPage()), qn);
 					Global.downLoadThreadPool.execute(downThread);

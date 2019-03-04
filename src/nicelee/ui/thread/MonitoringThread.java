@@ -25,21 +25,32 @@ public class MonitoringThread extends Thread {
 					if (httpUtil.getStatus() == 1) {
 						if(httpUtil.getTotalTask() == 1) {
 							dp.getLbCurrentStatus().setText("下载完成. ");
+							dp.getLbDownFile().setText("文件大小: "  + httpUtil.getTotal()/1024/1024 + " MB");
 						}else {
 							String txt = String.format("%d/%d 下载完成.",
 									httpUtil.getNextTask() != null ? 1 : 2,
 									httpUtil.getTotalTask());
 							dp.getLbCurrentStatus().setText(txt);
+							dp.getLbDownFile().setText(String.format("文件%d大小: %d MB",
+									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getTotalTask()));
 						}
-						dp.getLbDownFile().setText("文件大小: "  + httpUtil.getTotal()/1024/1024 + " MB");
 						dp.getBtnControl().setEnabled(false);
 					} else if (httpUtil.getStatus() == 0) {
+						//计算下载速度
+						long currrentTime = System.currentTimeMillis();
+						int period = (int) (currrentTime - dp.getLastCntTime()) ; //ms
+						int downSize = (int) (httpUtil.getCnt() - dp.getLastCnt());//byte
+						int speedKBPerSec = downSize / period;
+						dp.setLastCnt(httpUtil.getCnt());
+						dp.setLastCntTime(currrentTime);
 						if(httpUtil.getTotalTask() == 1) {
-							dp.getLbCurrentStatus().setText("正在下载中...");
+							dp.getLbCurrentStatus().setText("正在下载中... " + speedKBPerSec + " kB/s");//k=1000,K=1024
 						}else {
-							String txt = String.format("%d/%d 正在下载中...",
+							String txt = String.format("%d/%d 正在下载中... %d kB/s",
 									httpUtil.getNextTask() != null ? 1 : 2,
-									httpUtil.getTotalTask());
+									httpUtil.getTotalTask(),
+									speedKBPerSec);
 							dp.getLbCurrentStatus().setText(txt);
 						}
 						dp.getLbDownFile().setText("当前已下载  "+ httpUtil.getCnt()*100/httpUtil.getTotal() + " % :" + httpUtil.getCnt() + "/" + httpUtil.getTotal());

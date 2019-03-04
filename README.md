@@ -19,8 +19,8 @@
 
 | Module  | Description |
 | ------------- | ------------- |
-| INeedAV  | 实现了根据av号获取（所有）视频信息、下载视频等功能。（下载格式为flv，支持各种清晰度，支持Cookies）  |
-| INeedAVbPhone  | 实现了根据av号获取（第一个）视频信息、下载视频等功能。（下载格式为mp4，清晰度无法保证）  |
+| INeedAV  | 实现了根据av号获取（所有）视频信息、下载视频等功能。（下载格式为flv/mp4，支持各种清晰度，支持Cookies）  |
+| INeedAVbPhone  | 实现了根据av号获取（第一个）视频信息、下载视频等功能。（下载格式为mp4，清晰度无法保证，弃用）  |
 | INeedLogin  | 实现了测试用户有效性、获取用户信息、扫码登录等功能，登录成功后保存至同级目录下的cookies.config中  |
 
 
@@ -36,6 +36,7 @@
 | QrCodeUtil        |  用于二维码图片的生成 |
 | ConfigUtil        |  用于从```app.config```读取配置 |
 | CmdUtil        |  调用```ffmpeg.exe```将下载的音视频```.m4s```文件合并转成MP4(若配置为FLV，则未使用该工具，平台通用性更好) |
+
 注： 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序
 
 ## 使用方法：
@@ -102,6 +103,8 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
 
 ## UPDATE  
+* v2.2.2(master) 
+    * (UI)增加下载速度显示   
 * v2.2 
     * 增加了HTML5播放源的下载方式,支持FLV/MP4两种格式 
     * (UI)下载面板优化为不允许存在相同的视频下载任务(不分辨清晰度)

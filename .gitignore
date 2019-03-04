@@ -6,5 +6,7 @@
 *.log
 *.config
 *.flv
+*.mp4
+*.bat
 /bin
 /target

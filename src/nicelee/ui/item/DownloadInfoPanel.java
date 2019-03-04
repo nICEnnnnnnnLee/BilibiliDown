@@ -22,6 +22,9 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	String cid;
 	String page;
 	int qn;
+	
+	long lastCntTime = 0L;
+	long lastCnt = 0L;
 	/**
 	 * 
 	 */
@@ -197,6 +200,22 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 					&& page.equals(down.page));
 		}
 		return false;
+	}
+
+	public long getLastCntTime() {
+		return lastCntTime;
+	}
+
+	public void setLastCntTime(long lastCntTime) {
+		this.lastCntTime = lastCntTime;
+	}
+
+	public long getLastCnt() {
+		return lastCnt;
+	}
+
+	public void setLastCnt(long lastCnt) {
+		this.lastCnt = lastCnt;
 	}
 
 }

@@ -103,11 +103,6 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
 
 ## UPDATE  
-闲话： 。  
-例如：    
-对应av：<https://www.bilibili.com/video/av33695610>  
-即使打开对应的av页面也会重定向到这里。
-
 * v2.2.2(master) 
     * (UI)增加下载速度显示   
     * 增加官方番剧URL的链接解析，例如<https://www.bilibili.com/bangumi/play/ep250435>  

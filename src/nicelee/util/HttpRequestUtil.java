@@ -35,6 +35,7 @@ public class HttpRequestUtil {
 	int totalTask = 1;
 	String nextTask;// name##url
 	String cmd[];// 执行完任务后的命令
+	boolean isConverting; //是否正在转码
 	// 下载文件
 	String savePath = "./download/";
 	File fileDownload;
@@ -611,6 +612,14 @@ public class HttpRequestUtil {
 
 	public void setTotalTask(int totalTask) {
 		this.totalTask = totalTask;
+	}
+
+	public boolean isConverting() {
+		return isConverting;
+	}
+
+	public void setConverting(boolean isConverting) {
+		this.isConverting = isConverting;
 	}
 
 }

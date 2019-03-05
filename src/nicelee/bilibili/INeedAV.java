@@ -72,23 +72,22 @@ public class INeedAV {
 		if (avMatcher.find()) {
 			// 如果能提取出avID, 直接返回
 			return avMatcher.group();
-		} else if(epMatcher.find()){
+		} else if (epMatcher.find()) {
 			// 如果不能提取, 例如番剧 :https://www.bilibili.com/bangumi/play/ep250435/
 			String avID = EpIdToAvId(epMatcher.group());
 			return avID;
 		}
 		return "";
 	}
+
 	/**
-	 * 已知epId, 求avId
-	 * 目前没有抓到api哦... 暂时从网页里面爬
+	 * 已知epId, 求avId 目前没有抓到api哦... 暂时从网页里面爬
 	 */
 	public String EpIdToAvId(String epId) {
-		HttpRequestUtil util = new HttpRequestUtil();
 		HttpHeaders headers = new HttpHeaders();
 		String url = "https://www.bilibili.com/bangumi/play/" + epId;
 		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
-		
+
 		int begin = html.indexOf("window.__INITIAL_STATE__=");
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);
@@ -96,6 +95,7 @@ public class INeedAV {
 		String avId = "av" + jObj.getJSONObject("epInfo").getInt("aid");
 		return avId;
 	}
+
 	/**
 	 * 下载视频
 	 * 
@@ -117,7 +117,7 @@ public class INeedAV {
 	 * @return
 	 */
 	public boolean downloadClip(String url, String avId, String page) {
-		if (downFormat == 0) {
+		if (downFormat == 0 && url.contains(".m4s?")) {
 			return downloadM4sClip(url, avId, page);
 		} else {
 			return downloadFLVClip(url, avId, page);
@@ -160,7 +160,9 @@ public class INeedAV {
 			util.setNextTask(null);
 			util.setTotal(0);
 			if (util.download(links[1], audioName, new HttpHeaders().getBiliWwwM4sHeaders(avId))) {
+				util.setConverting(true);
 				CmdUtil.convert(videoName, audioName, dstName);
+				util.setConverting(false);
 				return true;
 			}
 			return false;
@@ -225,9 +227,7 @@ public class INeedAV {
 			HashMap<Integer, String> links = new HashMap<Integer, String>();
 			for (int qn : qnList) {
 				if (isGetLink) {
-					// 如需获取HTML5 源, 请使用getVideoM4sLink(String, String, int)
-					// 上面方法会返回视频链接#音频链接
-					String link = getVideoFLVLink(avId, String.valueOf(clip.getcId()), qn);
+					String link = getVideoLink(avId, String.valueOf(clip.getcId()), qn);
 					links.put(qn, link);
 				} else {
 					links.put(qn, "");
@@ -275,19 +275,18 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/x/player/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			// System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.out.println("地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			// System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
-		
-		
+
 		int linkQN = jObj.getInt("quality");
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		return jObj.getJSONArray("durl").getJSONObject(0).getString("url");
@@ -304,47 +303,51 @@ public class INeedAV {
 	String getVideoM4sLink(String avId, String cid, int qn) {
 		System.out.println("正在查询MP4链接...");
 		String avIdNum = avId.replace("av", "");
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		JSONObject jObj = null;
 		try {
 			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&type=&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			// System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.out.println("地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			// System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 		int linkQN = jObj.getInt("quality");
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
-
-		StringBuilder link = new StringBuilder();
-		// 获取视频链接
-		JSONArray videos = jObj.getJSONObject("dash").getJSONArray("video");
-		for (int i = 0; i < videos.length(); i++) {
-			JSONObject video = videos.getJSONObject(i);
-			if (video.getInt("id") == linkQN) {
-				link.append(video.getString("baseUrl")).append("#");
-				break;
+		try {
+			StringBuilder link = new StringBuilder();
+			// 获取视频链接
+			JSONArray videos = jObj.getJSONObject("dash").getJSONArray("video");
+			for (int i = 0; i < videos.length(); i++) {
+				JSONObject video = videos.getJSONObject(i);
+				if (video.getInt("id") == linkQN) {
+					link.append(video.getString("baseUrl")).append("#");
+					break;
+				}
 			}
-		}
-		// 获取音频链接(默认第一个)
-		JSONArray audios = jObj.getJSONObject("dash").getJSONArray("audio");
-		link.append(audios.getJSONObject(0).getString("baseUrl"));
+			// 获取音频链接(默认第一个)
+			JSONArray audios = jObj.getJSONObject("dash").getJSONArray("audio");
+			link.append(audios.getJSONObject(0).getString("baseUrl"));
 
-		return link.toString();
+			return link.toString();
+		} catch (Exception e) {
+			//鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
+			return jObj.getJSONArray("durl").getJSONObject(0).getString("url");
+		}
+
 	}
 
 	/**
-	 * 查询视频可提供的质量 
-	 * 原https://api.bilibili.com/x/player/playurl接口逐渐在被弃用?
+	 * 查询视频可提供的质量 原https://api.bilibili.com/x/player/playurl接口逐渐在被弃用?
 	 * 使用https://api.bilibili.com/pgc/player/web/playurl
 	 * 
 	 * @param avId
@@ -360,15 +363,15 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, 32);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			// System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.out.println("地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, 32);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			// System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
 		}
 		int qnList[] = new int[jArr.length()];

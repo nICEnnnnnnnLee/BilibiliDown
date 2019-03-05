@@ -41,7 +41,7 @@ public class ClipInfoPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DownloadRunnable downThread = new DownloadRunnable(avTitle+ " - " +clip.getTitle(),
+					DownloadRunnable downThread = new DownloadRunnable(avTitle+ "-" +clip.getTitle(),
 							clip.getAvId(),
 							String.valueOf(clip.getcId()),
 							String.valueOf(clip.getPage()), qn);

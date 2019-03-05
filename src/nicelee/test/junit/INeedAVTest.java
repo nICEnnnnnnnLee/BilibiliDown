@@ -47,5 +47,11 @@ public class INeedAVTest {
 			fail("Video Link Not Expected");
 		}
 	}
+	
+	@Test
+	public void testEpIdToAvId() {
+		INeedAV avs = new INeedAV();
+		assertEquals(avs.EpIdToAvId("ep250435"), "av33695610");
+	}
 
 }

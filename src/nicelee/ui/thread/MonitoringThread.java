@@ -23,11 +23,12 @@ public class MonitoringThread extends Thread {
 				try {
 					dp.getLbFileName().setText(httpUtil.getFileDownload().getAbsolutePath().replaceFirst("_(video|audio)\\.m4s$", ".mp4"));
 					if (httpUtil.getStatus() == 1) {
+						String tip = httpUtil.isConverting()? "正在转码中...":"转码已完成";
 						if(httpUtil.getTotalTask() == 1) {
-							dp.getLbCurrentStatus().setText("下载完成. ");
+							dp.getLbCurrentStatus().setText("下载完成. " + tip);
 							dp.getLbDownFile().setText("文件大小: "  + httpUtil.getTotal()/1024/1024 + " MB");
 						}else {
-							String txt = String.format("%d/%d 下载完成.",
+							String txt = String.format("%d/%d 下载完成. " + tip,
 									httpUtil.getNextTask() != null ? 1 : 2,
 									httpUtil.getTotalTask());
 							dp.getLbCurrentStatus().setText(txt);

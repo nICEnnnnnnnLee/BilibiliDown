@@ -72,13 +72,13 @@ public class DownloadRunnable implements Runnable {
 				//.bat切为UTF-8编码, 防止中文乱码
 				fw.write("@echo off\r\nchcp 65001\r\n");
 			}
-			if(Global.downloadFormat == 0) {
+			if(Global.downloadFormat >= 0) {
 				String cmd = String.format("rename \"%s.mp4\" \"%s.mp4\"\r\n",
 						avid_qn + "-p"+ page,
 						title_qn.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·") + "-p"+ page);
 				fw.write(cmd);
-			}else {
-				String cmd = String.format("rename \"%s.flv\" \"%s.flv\"\r\n",
+			//}else {
+				cmd = String.format("rename \"%s.flv\" \"%s.flv\"\r\n",
 						avid_qn + "-p"+ page,
 						title_qn.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·") + "-p"+ page);
 				fw.write(cmd);

@@ -103,13 +103,15 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
 
 ## UPDATE  
+* now 
+    * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/play/ss25739>     
 * v2.3 
     * (UI)增加下载速度显示   
     * (UI)新增vbs脚本，可以创建桌面快捷方式  
     * (UI)配置文件统一移入config文件夹中
     * 当选择为MP4而目标源仅存在FLV时，优化为自动切换FLV  
     * 修复一个bug，该bug使得在调用ffmpeg转码时，有概率会失败卡住  
-    * 增加官方番剧URL的链接解析，例如<https://www.bilibili.com/bangumi/play/ep250435>  
+    * 增加官方番剧URL(单集)的链接解析，例如<https://www.bilibili.com/bangumi/play/ep250435>  
     * 增加下载番剧的功能(以前一直测试的UP主上传的视频，突然发现追番的话似乎有点不同，于是增加了这个功能)       
     * PS： ep号转av号是直接从HTML里面爬出来的，不够优雅，暂时还没提取出提供api接口...
 * v2.2 

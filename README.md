@@ -67,6 +67,9 @@ bilibili.format = 0
 #下载文件保存路径， 可以是相对路径，也可以是绝对路径
 bilibili.savePath = download/
 #bilibili.savePath = D:\Workspace\bilibili\
+
+#最大的同时下载任务数
+bilibili.download.poolSize = 3
 ```
 
 * 直接双击```run-UI.bat``` 或```run-UI-debug.bat```  
@@ -104,7 +107,9 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 
 ## UPDATE  
 * now 
-    * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/play/ss25739>     
+    * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/play/ss25739> 
+    * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/media/md134912>     
+    * (UI)优化最大同时下载数的显示
 * v2.3 
     * (UI)增加下载速度显示   
     * (UI)新增vbs脚本，可以创建桌面快捷方式  

@@ -45,7 +45,8 @@ public class ClipInfoPanel extends JPanel {
 							clip.getAvId(),
 							String.valueOf(clip.getcId()),
 							String.valueOf(clip.getPage()), qn);
-					Global.downLoadThreadPool.execute(downThread);
+					new Thread(downThread).start();
+					//Global.downLoadThreadPool.execute(downThread);
 				}
 			});
 			this.add(btn);

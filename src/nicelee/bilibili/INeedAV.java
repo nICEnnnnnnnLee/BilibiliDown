@@ -61,7 +61,8 @@ public class INeedAV {
 	 */
 	Pattern avPattern = Pattern.compile("av[0-9]+");//普通视频
 	Pattern epPattern = Pattern.compile("ep[0-9]+");//番剧单集
-	Pattern ssPattern = Pattern.compile("ss[0-9]+");//番剧合集
+	Pattern ssPattern = Pattern.compile("ss[0-9]+");//season合集
+	Pattern mdPattern = Pattern.compile("md[0-9]+");//番剧合集
 	
 	Pattern auPattern = Pattern.compile("au[0-9]+");//音频
 
@@ -74,6 +75,7 @@ public class INeedAV {
 		Matcher avMatcher = avPattern.matcher(origin);
 		Matcher epMatcher = epPattern.matcher(origin);
 		Matcher ssMatcher = ssPattern.matcher(origin);
+		Matcher mdMatcher = mdPattern.matcher(origin);
 		if (avMatcher.find()) {
 			System.out.println("匹配av号");
 			// 如果能提取出avID, 直接返回
@@ -88,12 +90,17 @@ public class INeedAV {
 			System.out.println("匹配ss号");
 			//String avID = EpIdToAvId(ssMatcher.group());
 			return ssMatcher.group();
+		}else if (mdMatcher.find()) {
+			// 如果不能提取, 例如番剧 :https://www.bilibili.com/bangumi/media/md134912/
+			System.out.println("匹配md号");
+			//String avID = EpIdToAvId(ssMatcher.group());
+			return mdMatcher.group();
 		}
 		return "";
 	}
 
 	/**
-	 * 已知epId/ssId, 求avId 目前没有抓到api哦... 暂时从网页里面爬
+	 * 已知epId, 求avId 目前没有抓到api哦... 暂时从网页里面爬
 	 */
 	public String EpIdToAvId(String epId) {
 		HttpHeaders headers = new HttpHeaders();
@@ -106,11 +113,25 @@ public class INeedAV {
 		System.out.println(json);
 		JSONObject jObj = new JSONObject(json);
 		int avId = jObj.getJSONObject("epInfo").getInt("aid");
-		if(avId < 0) {
-			avId = jObj.getJSONArray("epList").getJSONObject(0).getInt("aid");
-		}
 		System.out.println("avId为: " + avId);
 		return "av" + avId;
+	}
+	/**
+	 * 已知MdId, 求SsId 目前没有抓到api哦... 暂时从网页里面爬
+	 */
+	public String MdIdToSsId(String mdId) {
+		HttpHeaders headers = new HttpHeaders();
+		String url = "https://www.bilibili.com/bangumi/media/" + mdId;
+		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
+		
+		int begin = html.indexOf("window.__INITIAL_STATE__=");
+		int end = html.indexOf(";(function()", begin);
+		String json = html.substring(begin + 25, end);
+		System.out.println(json);
+		JSONObject jObj = new JSONObject(json);
+		int ssId = jObj.getJSONObject("mediaInfo").getJSONObject("param").getInt("season_id");
+		System.out.println("avId为: " + ssId);
+		return "ss" + ssId;
 	}
 
 	/**
@@ -215,6 +236,8 @@ public class INeedAV {
 			return getAVDetail(EpIdToAvId(avId), isGetLink);
 		}else if(avId.startsWith("ss")){
 			return getSSDetail(avId, isGetLink);
+		}else if(avId.startsWith("md")){
+			return getSSDetail(MdIdToSsId(avId), isGetLink);
 		}
 		return getAVDetail(avId, isGetLink);
 	}

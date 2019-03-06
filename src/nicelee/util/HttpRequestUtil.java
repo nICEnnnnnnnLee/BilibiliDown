@@ -622,4 +622,8 @@ public class HttpRequestUtil {
 		this.isConverting = isConverting;
 	}
 
+	public void setFileDownload(File fileDownload) {
+		this.fileDownload = fileDownload;
+	}
+
 }

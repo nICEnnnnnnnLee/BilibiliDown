@@ -218,4 +218,20 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.lastCnt = lastCnt;
 	}
 
+	public String getAvid() {
+		return avid;
+	}
+
+	public void setAvid(String avid) {
+		this.avid = avid;
+	}
+
+	public int getQn() {
+		return qn;
+	}
+
+	public void setQn(int qn) {
+		this.qn = qn;
+	}
+
 }

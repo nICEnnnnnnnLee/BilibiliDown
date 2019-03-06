@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.Executors;
 //import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +26,7 @@ public class ConfigUtil {
 				Matcher matcher = patternConfig.matcher(config);
 				if (matcher.find()) {
 					System.setProperty(matcher.group(1), matcher.group(2).trim());
+					//System.out.printf("  key-->value:  %s --> %s\r\n", matcher.group(1), matcher.group(2));
 				}
 			}
 			buReader.close();
@@ -54,6 +56,8 @@ public class ConfigUtil {
 			}
 		}
 		System.out.println("----Config ini end...----");
+		int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
+		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool); 
 		Global.downloadFormat = Integer.parseInt(System.getProperty("bilibili.format"));
 		Global.savePath = System.getProperty("bilibili.savePath");
 	}

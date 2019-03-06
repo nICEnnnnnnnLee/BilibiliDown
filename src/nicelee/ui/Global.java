@@ -14,10 +14,10 @@ public class Global {
 	
 	public static int downloadFormat = MP4;
 	public static String savePath = "./download/";
-	public static ExecutorService downLoadThreadPool = Executors.newFixedThreadPool(3);  //下载线程池
+	public static ExecutorService downLoadThreadPool;//下载线程池
 	public static TabDownload downloadTab; //下载显示界面
 	public static ConcurrentHashMap<DownloadInfoPanel, HttpRequestUtil>  downloadTaskList = new ConcurrentHashMap<DownloadInfoPanel, HttpRequestUtil>();
-	
+	public static int activeTask = 0;
 	//登录相关
 	public static boolean needToLogin = false;
 	public static boolean isLogin = false;

@@ -10,13 +10,13 @@ import nicelee.util.HttpRequestUtil;
 public class MonitoringThread extends Thread {
 	
 	public MonitoringThread() {
-		this.setName("Threa - Monitoring Download");
+		this.setName("Thread - Monitoring Download");
 	}
 	public void run() {
 		ConcurrentHashMap<DownloadInfoPanel, HttpRequestUtil> map = Global.downloadTaskList;
-
+		int activeTask;
 		while (true) {
-			
+			activeTask = 0;
 			for (Entry<DownloadInfoPanel, HttpRequestUtil> entry : map.entrySet()) {
 				DownloadInfoPanel dp = entry.getKey();
 				HttpRequestUtil httpUtil = entry.getValue();
@@ -37,7 +37,9 @@ public class MonitoringThread extends Thread {
 									httpUtil.getTotalTask()));
 						}
 						dp.getBtnControl().setEnabled(false);
+						//map.remove(dp);
 					} else if (httpUtil.getStatus() == 0) {
+						activeTask++;
 						//计算下载速度
 						long currrentTime = System.currentTimeMillis();
 						int period = (int) (currrentTime - dp.getLastCntTime()) ; //ms
@@ -78,16 +80,18 @@ public class MonitoringThread extends Thread {
 						dp.getBtnControl().setText("继续下载");
 					}
 				}catch(Exception e) {
-					//e.printStackTrace();
+					dp.getLbFileName().setText(dp.getAvid() + "-" + dp.getQn());
+					dp.getBtnControl().setText("等待下载中..");
 				}
 				
 			}
+			
+			Global.activeTask = activeTask;
 			try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 }

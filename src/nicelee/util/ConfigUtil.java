@@ -36,7 +36,7 @@ public class ConfigUtil {
 		buReader = null;
 		System.out.println("----Config init begin...----");
 		try {
-			buReader = new BufferedReader(new FileReader("app.config"));
+			buReader = new BufferedReader(new FileReader("./config/app.config"));
 			String config;
 			while ((config = buReader.readLine()) != null) {
 				Matcher matcher = patternConfig.matcher(config);

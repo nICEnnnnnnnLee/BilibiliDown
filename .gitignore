@@ -8,5 +8,6 @@
 *.flv
 *.mp4
 *.bat
+*.exe
 /bin
 /target

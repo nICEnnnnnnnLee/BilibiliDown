@@ -170,7 +170,7 @@ public class INeedLogin {
 	 * @param iCookies
 	 */
 	public void saveCookies(String iCookies) {
-		File file = new File("cookies.config");
+		File file = new File("./config/cookies.config");
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 			BufferedWriter oos = new BufferedWriter(fileWriter);
@@ -189,7 +189,7 @@ public class INeedLogin {
 	 * @return
 	 */
 	public String readCookies() {
-		File file = new File("cookies.config");
+		File file = new File("./config/cookies.config");
 		String iCookie = null;
 		try {
 			FileReader fileReader = new FileReader(file);

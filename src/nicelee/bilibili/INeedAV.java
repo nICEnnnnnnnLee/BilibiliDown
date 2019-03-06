@@ -59,29 +59,41 @@ public class INeedAV {
 	 * @param origin
 	 * @return
 	 */
-	Pattern avPattern = Pattern.compile("av[0-9]+");
-	Pattern epPattern = Pattern.compile("ep[0-9]+");
+	Pattern avPattern = Pattern.compile("av[0-9]+");//普通视频
+	Pattern epPattern = Pattern.compile("ep[0-9]+");//番剧单集
+	Pattern ssPattern = Pattern.compile("ss[0-9]+");//番剧合集
+	
+	Pattern auPattern = Pattern.compile("au[0-9]+");//音频
 
 	public String getAvID(String origin) {
 		int end = origin.indexOf("?");
 		if (end > -1) {
-			origin = origin.substring(0, end - 1).toLowerCase();
+			origin = origin.substring(0, end - 1);
 		}
+		origin = origin.toLowerCase();
 		Matcher avMatcher = avPattern.matcher(origin);
 		Matcher epMatcher = epPattern.matcher(origin);
+		Matcher ssMatcher = ssPattern.matcher(origin);
 		if (avMatcher.find()) {
+			System.out.println("匹配av号");
 			// 如果能提取出avID, 直接返回
 			return avMatcher.group();
 		} else if (epMatcher.find()) {
 			// 如果不能提取, 例如番剧 :https://www.bilibili.com/bangumi/play/ep250435/
-			String avID = EpIdToAvId(epMatcher.group());
-			return avID;
+			System.out.println("匹配ep号");
+			//String avID = EpIdToAvId(epMatcher.group());
+			return epMatcher.group();
+		}else if (ssMatcher.find()) {
+			// 如果不能提取, 例如番剧 :https://www.bilibili.com/bangumi/play/ss26295/
+			System.out.println("匹配ss号");
+			//String avID = EpIdToAvId(ssMatcher.group());
+			return ssMatcher.group();
 		}
 		return "";
 	}
 
 	/**
-	 * 已知epId, 求avId 目前没有抓到api哦... 暂时从网页里面爬
+	 * 已知epId/ssId, 求avId 目前没有抓到api哦... 暂时从网页里面爬
 	 */
 	public String EpIdToAvId(String epId) {
 		HttpHeaders headers = new HttpHeaders();
@@ -91,9 +103,14 @@ public class INeedAV {
 		int begin = html.indexOf("window.__INITIAL_STATE__=");
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);
+		System.out.println(json);
 		JSONObject jObj = new JSONObject(json);
-		String avId = "av" + jObj.getJSONObject("epInfo").getInt("aid");
-		return avId;
+		int avId = jObj.getJSONObject("epInfo").getInt("aid");
+		if(avId < 0) {
+			avId = jObj.getJSONArray("epList").getJSONObject(0).getInt("aid");
+		}
+		System.out.println("avId为: " + avId);
+		return "av" + avId;
 	}
 
 	/**
@@ -192,6 +209,81 @@ public class INeedAV {
 	 * @return
 	 */
 	public VideoInfo getVideoDetail(String avId, boolean isGetLink) {
+		if(avId.startsWith("av")) {
+			return getAVDetail(avId, isGetLink);
+		}else if(avId.startsWith("ep")){
+			return getAVDetail(EpIdToAvId(avId), isGetLink);
+		}else if(avId.startsWith("ss")){
+			return getSSDetail(avId, isGetLink);
+		}
+		return getAVDetail(avId, isGetLink);
+	}
+
+	/**
+	 * @param ssId
+	 * @param isGetLink
+	 * @return
+	 */
+	private VideoInfo getSSDetail(String ssId, boolean isGetLink) {
+		VideoInfo viInfo = new VideoInfo();
+		viInfo.setVideoId(ssId);
+		
+		HttpHeaders headers = new HttpHeaders();
+		String url = "https://www.bilibili.com/bangumi/play/" + ssId;
+		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
+
+		int begin = html.indexOf("window.__INITIAL_STATE__=");
+		int end = html.indexOf(";(function()", begin);
+		String json = html.substring(begin + 25, end);
+		System.out.println(json);
+		JSONObject jObj = new JSONObject(json);
+		viInfo.setVideoName(jObj.getJSONObject("mediaInfo").getString("title"));
+		viInfo.setBrief(jObj.getJSONObject("mediaInfo").getString("evaluate"));
+		viInfo.setAuthor("番剧");
+		viInfo.setAuthorId("番剧");
+		viInfo.setVideoPreview("https:" + jObj.getJSONObject("mediaInfo").getString("cover"));
+		
+		JSONArray array = jObj.getJSONArray("epList");
+		HashMap<Integer, ClipInfo> clipMap = new HashMap<Integer, ClipInfo>();
+		for (int i = 0; i < array.length(); i++) {
+			JSONObject clipObj = array.getJSONObject(i);
+			ClipInfo clip = new ClipInfo();
+			clip.setAvId("av" + clipObj.getInt("aid"));
+			clip.setcId(clipObj.getLong("cid"));
+			//clip.setPage(Integer.parseInt(clipObj.getString("index")));
+			clip.setPage(clipObj.getInt("i") + 1);
+			//clip.setTitle(clipObj.getString("index_title"));
+			clip.setTitle(clipObj.getString("longTitle"));
+			
+			HashMap<Integer, String> links = new HashMap<Integer, String>();
+			try {
+				int qnList[] = getVideoQNList(clip.getAvId(), String.valueOf(clip.getcId()));
+				for (int qn : qnList) {
+					if (isGetLink) {
+						String link = getVideoLink(clip.getAvId(), String.valueOf(clip.getcId()), qn);
+						links.put(qn, link);
+					} else {
+						links.put(qn, "");
+					}
+				}
+				clip.setLinks(links);
+			}catch (Exception e) {
+				clip.setLinks(links);
+			}
+			
+			clipMap.put(clip.getPage(), clip);
+		}
+		viInfo.setClips(clipMap);
+		viInfo.print();
+		return viInfo;
+	}
+
+	/**
+	 * @param avId
+	 * @param isGetLink
+	 * @return
+	 */
+	private VideoInfo getAVDetail(String avId, boolean isGetLink) {
 		VideoInfo viInfo = new VideoInfo();
 		viInfo.setVideoId(avId);
 
@@ -222,18 +314,23 @@ public class INeedAV {
 			clip.setcId(clipObj.getLong("cid"));
 			clip.setPage(clipObj.getInt("page"));
 			clip.setTitle(clipObj.getString("part"));
-
-			int qnList[] = getVideoQNList(avId, String.valueOf(clip.getcId()));
+			
 			HashMap<Integer, String> links = new HashMap<Integer, String>();
-			for (int qn : qnList) {
-				if (isGetLink) {
-					String link = getVideoLink(avId, String.valueOf(clip.getcId()), qn);
-					links.put(qn, link);
-				} else {
-					links.put(qn, "");
+			try {
+				int qnList[] = getVideoQNList(avId, String.valueOf(clip.getcId()));
+				for (int qn : qnList) {
+					if (isGetLink) {
+						String link = getVideoLink(avId, String.valueOf(clip.getcId()), qn);
+						links.put(qn, link);
+					} else {
+						links.put(qn, "");
+					}
 				}
+				clip.setLinks(links);
+			}catch (Exception e) {
+				clip.setLinks(links);
 			}
-			clip.setLinks(links);
+			
 			clipMap.put(clip.getPage(), clip);
 		}
 		viInfo.setClips(clipMap);
@@ -363,7 +460,7 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, 32);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
+			//System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -371,7 +468,7 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, 32);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
+			//System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
 		}
 		int qnList[] = new int[jArr.length()];

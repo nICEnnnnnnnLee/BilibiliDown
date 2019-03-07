@@ -1,14 +1,14 @@
 # INeedBiliAV - BilibiliDown
 **INeedBiliAV** 为Bilibili 视频下载器，用于下载B站视频。  
 **INeedBiliAV** 支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。   
-**INeedBiliAV** 提供UI操作界面，在安装了JDK环境下，只需双击运行程序即可。   
+**INeedBiliAV** 提供UI操作界面，在安装了JRE(java version "1.8.0_101")环境下，只需双击运行程序即可。   
 **INeedBiliAV** 封装了一些用于登录/下载的API，无需导入第三方依赖(org.json以```.java```形式存在)，API可直接拿去使用。   
 
 [TOC]
 
 ## 简介
 ### 使用语言及外部库
-* 该工程为纯Java编写；
+* 该工程为纯Java(java version "1.8.0_101")编写；
 * 使用自带的HttpUrlConnection做为网络连接，未用到Okhttp/HttpClient/HtmlUnit/Jsoup等外部库；
 * 使用org.json库做简单的Json解析；
 * 使用zxing库生成链接二维码图片；
@@ -106,10 +106,11 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
 
 ## UPDATE  
-* now 
+* v2.4  
     * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/play/ss25739> 
     * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/media/md134912>     
     * (UI)优化最大同时下载数的显示
+    * (UI)修复并优化部分UI显示
 * v2.3 
     * (UI)增加下载速度显示   
     * (UI)新增vbs脚本，可以创建桌面快捷方式  

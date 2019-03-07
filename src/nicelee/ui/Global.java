@@ -2,7 +2,6 @@ package nicelee.ui;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import nicelee.ui.item.DownloadInfoPanel;
 import nicelee.util.HttpRequestUtil;

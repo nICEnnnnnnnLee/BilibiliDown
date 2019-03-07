@@ -86,6 +86,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.add(lbCurrentStatus);
 
 		lbDownFile = new JLabel(currentDown + "/" + totalSize);
+		lbCurrentStatus.setPreferredSize(new Dimension(250, 45));
 		lbDownFile.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbDownFile);
 		this.setBackground(new Color(204, 255, 255));

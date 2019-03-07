@@ -23,19 +23,20 @@ public class MonitoringThread extends Thread {
 				try {
 					dp.getBtnControl().setVisible(true);
 					dp.getLbFileName().setText(httpUtil.getFileDownload().getAbsolutePath().replaceFirst("_(video|audio)\\.m4s$", ".mp4"));
+					String fileSize = getFileSize(httpUtil.getTotal());
 					if (httpUtil.getStatus() == 1) {
 						String tip = httpUtil.isConverting()? "正在转码中...":"转码已完成";
 						if(httpUtil.getTotalTask() == 1) {
 							dp.getLbCurrentStatus().setText("下载完成. " + tip);
-							dp.getLbDownFile().setText("文件大小: "  + httpUtil.getTotal()/1024/1024 + " MB");
+							dp.getLbDownFile().setText("文件大小: "  + fileSize);
 						}else {
 							String txt = String.format("%d/%d 下载完成. " + tip,
 									httpUtil.getNextTask() != null ? 1 : 2,
 									httpUtil.getTotalTask());
 							dp.getLbCurrentStatus().setText(txt);
-							dp.getLbDownFile().setText(String.format("文件%d大小: %d MB",
+							dp.getLbDownFile().setText(String.format("文件%d大小: %s",
 									httpUtil.getNextTask() != null ? 1 : 2,
-									httpUtil.getTotal()/1024/1024));
+									fileSize));
 						}
 						dp.getBtnControl().setEnabled(false);
 						//map.remove(dp);
@@ -57,7 +58,11 @@ public class MonitoringThread extends Thread {
 									speedKBPerSec);
 							dp.getLbCurrentStatus().setText(txt);
 						}
-						dp.getLbDownFile().setText("当前已下载  "+ httpUtil.getCnt()*100/httpUtil.getTotal() + " % :" + httpUtil.getCnt() + "/" + httpUtil.getTotal());
+						dp.getLbDownFile().setText(
+								String.format("当前已下载 %d %%: %s/%s", 
+										 httpUtil.getCnt()*100/httpUtil.getTotal(),
+										 getFileSize(httpUtil.getCnt()).replaceAll("[^0-9\\.]", ""),
+										 fileSize));
 						dp.getBtnControl().setText("暂停");
 					} else if (httpUtil.getStatus() == -1) {
 						if(httpUtil.getTotalTask() == 1) {
@@ -81,6 +86,7 @@ public class MonitoringThread extends Thread {
 						dp.getBtnControl().setText("继续下载");
 					}
 				}catch(Exception e) {
+					//e.printStackTrace();
 					dp.getLbFileName().setText(dp.getAvid() + "-" + dp.getQn());
 					dp.getLbDownFile().setText("等待下载中..");
 					dp.getBtnControl().setVisible(false);
@@ -95,5 +101,23 @@ public class MonitoringThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	final long KB = 1024L;
+	final long MB = KB * 1024L;
+	final long GB = MB * 1024L;
+	String getFileSize(long size) {
+		double dSize;
+		if(size >= GB) {
+			dSize = size * 1.0 / GB;
+			return String.format("%.2f GB", dSize);
+		}else if(size >= MB) {
+			dSize = size * 1.0 / MB;
+			return String.format("%.2f MB", dSize);
+		}else if(size >= KB) {
+			dSize = size * 1.0 / KB;
+			return String.format("%.2f KB", dSize);
+		}
+		return size + " Byte";
 	}
 }

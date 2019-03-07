@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nicelee.model.ClipInfo;
-import nicelee.ui.Global;
 import nicelee.ui.thread.DownloadRunnable;
 
 public class ClipInfoPanel extends JPanel {

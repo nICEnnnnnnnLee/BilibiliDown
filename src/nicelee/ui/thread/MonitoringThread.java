@@ -21,6 +21,7 @@ public class MonitoringThread extends Thread {
 				DownloadInfoPanel dp = entry.getKey();
 				HttpRequestUtil httpUtil = entry.getValue();
 				try {
+					dp.getBtnControl().setVisible(true);
 					dp.getLbFileName().setText(httpUtil.getFileDownload().getAbsolutePath().replaceFirst("_(video|audio)\\.m4s$", ".mp4"));
 					if (httpUtil.getStatus() == 1) {
 						String tip = httpUtil.isConverting()? "正在转码中...":"转码已完成";
@@ -34,7 +35,7 @@ public class MonitoringThread extends Thread {
 							dp.getLbCurrentStatus().setText(txt);
 							dp.getLbDownFile().setText(String.format("文件%d大小: %d MB",
 									httpUtil.getNextTask() != null ? 1 : 2,
-									httpUtil.getTotalTask()));
+									httpUtil.getTotal()/1024/1024));
 						}
 						dp.getBtnControl().setEnabled(false);
 						//map.remove(dp);
@@ -81,7 +82,8 @@ public class MonitoringThread extends Thread {
 					}
 				}catch(Exception e) {
 					dp.getLbFileName().setText(dp.getAvid() + "-" + dp.getQn());
-					dp.getBtnControl().setText("等待下载中..");
+					dp.getLbDownFile().setText("等待下载中..");
+					dp.getBtnControl().setVisible(false);
 				}
 				
 			}

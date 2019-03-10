@@ -90,45 +90,55 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 			INeedAV iNeedAV = new INeedAV();
 			iNeedAV.setDownFormat(Global.downloadFormat);
 			avId = iNeedAV.getAvID(avId);
-			if("".equals(avId)) {
-				JOptionPane.showMessageDialog(this, "解析链接失败!", "失败", JOptionPane.WARNING_MESSAGE);
-				return;
+			
+			if(avId.contains(" ")) {
+				String avs[] = avId.trim().split(" ");
+				for(String av : avs) {
+					popVideoInfoTab(av);
+				}
+			}else {
+				popVideoInfoTab(avId);
 			}
-			// 作品页
-			JLabel label = new JLabel("正在加载中...");
-			final TabVideo tab = new TabVideo(label);
-			jTabbedpane.addTab("作品页", tab);
-			jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
-			GetVideoDetailThread th = new GetVideoDetailThread(tab, avId);
-			label.addMouseListener(new MouseListener() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() >= 2) {
-						jTabbedpane.remove(tab);
-					} else {
-						jTabbedpane.setSelectedComponent(tab);
-					}
-				}
-
-				@Override
-				public void mousePressed(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-				}
-			});
-
-			th.start();
 		}
+	}
+
+	/**
+	 * @param avId
+	 */
+	private void popVideoInfoTab(String avId) {
+		if("".equals(avId)) {
+			JOptionPane.showMessageDialog(this, "解析链接失败!", "失败", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		// 作品页
+		JLabel label = new JLabel("正在加载中...");
+		final TabVideo tab = new TabVideo(label);
+		jTabbedpane.addTab("作品页", tab);
+		jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
+		GetVideoDetailThread th = new GetVideoDetailThread(tab, avId);
+		label.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() >= 2) {
+					jTabbedpane.remove(tab);
+				} else {
+					jTabbedpane.setSelectedComponent(tab);
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
+		th.start();
 	}
 
 	@Override

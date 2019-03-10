@@ -64,18 +64,23 @@ public class INeedAV {
 	Pattern ssPattern = Pattern.compile("ss[0-9]+");//season合集
 	Pattern mdPattern = Pattern.compile("md[0-9]+");//番剧合集
 	
+	Pattern spacePattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/video");//个人主页 - 全部视频
+	Pattern sChannelPattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/channel/detail\\?cid=([0-9]+)");//个人主页 - 频道
+	Pattern favPattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=([0-9]+)");//个人收藏夹
+	
+	Pattern paramPattern = Pattern.compile("p=([0-9]+)$");//自定义参数, 目前只匹配个人主页视频的页码
+	
 	Pattern auPattern = Pattern.compile("au[0-9]+");//音频
 
 	public String getAvID(String origin) {
-		int end = origin.indexOf("?");
-		if (end > -1) {
-			origin = origin.substring(0, end - 1);
-		}
 		origin = origin.toLowerCase();
 		Matcher avMatcher = avPattern.matcher(origin);
 		Matcher epMatcher = epPattern.matcher(origin);
 		Matcher ssMatcher = ssPattern.matcher(origin);
 		Matcher mdMatcher = mdPattern.matcher(origin);
+		Matcher spaceMatcher = spacePattern.matcher(origin);
+		Matcher sChannelMatcher = sChannelPattern.matcher(origin);
+		Matcher favMatcher = favPattern.matcher(origin);
 		if (avMatcher.find()) {
 			System.out.println("匹配av号");
 			// 如果能提取出avID, 直接返回
@@ -95,6 +100,30 @@ public class INeedAV {
 			System.out.println("匹配md号");
 			//String avID = EpIdToAvId(ssMatcher.group());
 			return mdMatcher.group();
+		}else if(spaceMatcher.find()) {
+			//e.g. https://space.bilibili.com/5276/video
+			System.out.println("匹配UP主主页,返回 av1 av2 av3 ...");
+			Matcher matcher = paramPattern.matcher(origin);
+			if(matcher.find()) {
+				return getAVList4Space(spaceMatcher.group(1), Integer.parseInt(matcher.group(1)));
+			}
+			return getAVList4Space(spaceMatcher.group(1), 1);
+		}else if(sChannelMatcher.find()) {
+			//e.g. https://space.bilibili.com/378034/channel/detail?cid=188
+			System.out.println("匹配UP主主页特定频道,返回 av1 av2 av3 ...");
+			Matcher matcher = paramPattern.matcher(origin);
+			if(matcher.find()) {
+				return getAVList4Space(sChannelMatcher.group(1), Integer.parseInt(matcher.group(1)));
+			}
+			return getAVList4Channel(sChannelMatcher.group(1), sChannelMatcher.group(2), 1);
+		}else if(favMatcher.find()) {
+			//e.g. https://space.bilibili.com/xxx/favlist?fid=xxx&ftype=create
+			System.out.println("匹配收藏夹,返回 av1 av2 av3 ...");
+			Matcher matcher = paramPattern.matcher(origin);
+			if(matcher.find()) {
+				return getAVList4FaviList(favMatcher.group(1), favMatcher.group(2), Integer.parseInt(matcher.group(1)));
+			}
+			return getAVList4FaviList(favMatcher.group(1), favMatcher.group(2), 1);
 		}
 		return "";
 	}
@@ -221,7 +250,72 @@ public class INeedAV {
 		Collections.sort(list);
 		return links.get(list.get(list.size() - 1));
 	}
-
+	
+	int pageSize = 5;
+	/**
+	 *  获取up主个人上传的视频列表, 默认每页5个
+	 * @param spaceID
+	 * @param page
+	 * @return
+	 */
+	String getAVList4Space(String spaceID, int page) {
+		String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
+		String url = String.format(urlFormat, spaceID, pageSize, page);
+		String json = util.getContent(url, new HttpHeaders().getCommonHeaders("space.bilibili.com"));
+		JSONObject jobj = new JSONObject(json);
+		JSONArray arr = jobj.getJSONObject("data").getJSONArray("vlist");
+		StringBuilder sb = new StringBuilder(); 
+		for(int i = 0; i < arr.length(); i++) {
+			sb.append(" av").append(arr.getJSONObject(i).getLong("aid"));
+		}
+		return sb.toString();
+	}
+	/**
+	 * 获取up主个人上传的特定频道的视频列表, 默认每页5个
+	 * @param spaceID
+	 * @param cid
+	 * @param page
+	 * @return
+	 */
+	String getAVList4Channel(String spaceID, String cid, int page) {
+		String urlFormat = "https://api.bilibili.com/x/space/channel/video?mid=%s&cid=%s&pn=%d&ps=%d&order=0";
+		String url = String.format(urlFormat, spaceID, cid, page, pageSize);
+		String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"));
+		JSONObject jobj = new JSONObject(json);
+		JSONArray arr = jobj.getJSONObject("data").getJSONObject("list").getJSONArray("archives");
+		StringBuilder sb = new StringBuilder(); 
+		for(int i = 0; i < arr.length(); i++) {
+			sb.append(" av").append(arr.getJSONObject(i).getLong("aid"));
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * 获取up主收藏夹的视频列表, 默认每页5个
+	 * @param personID
+	 * @param favID
+	 * @param page
+	 * @return
+	 */
+	String getAVList4FaviList(String personID, String favID, int page) {
+		try {
+			String urlFormat = "https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=%s&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp";
+			String url = String.format(urlFormat, favID, page, pageSize);
+			String json = util.getContent(url, new HttpHeaders().getFavListHeaders(personID, favID), HttpCookies.getGlobalCookies());
+			System.out.println(url);
+			System.out.println(json);
+			JSONObject jobj = new JSONObject(json);
+			JSONArray arr = jobj.getJSONObject("data").getJSONArray("medias");//.getJSONArray("archives");
+			StringBuilder sb = new StringBuilder(); 
+			for(int i = 0; i < arr.length(); i++) {
+				sb.append(" av").append(arr.getJSONObject(i).getLong("id"));
+			}
+			return sb.toString();
+		}catch (Exception e) {
+			return "";
+		}
+		
+	}
 	/**
 	 * 获取AVid 视频的所有信息(全部)
 	 * 

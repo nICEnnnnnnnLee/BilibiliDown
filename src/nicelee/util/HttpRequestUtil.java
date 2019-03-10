@@ -354,6 +354,7 @@ public class HttpRequestUtil {
 			conn.setReadTimeout(2000);
 			for (Map.Entry<String, String> entry : headers.entrySet()) {
 				conn.setRequestProperty(entry.getKey(), entry.getValue());
+				//System.out.println(entry.getKey()+ " : " +entry.getValue());
 			}
 			// 设置Cookie
 			if (listCookie != null) {
@@ -369,12 +370,12 @@ public class HttpRequestUtil {
 				conn.setRequestProperty("Cookie", cookie);
 			}
 			conn.connect();
-
 			String encoding = conn.getContentEncoding();
 			InputStream ism = conn.getInputStream();
 			if (encoding != null && encoding.contains("gzip")) {// 首先判断服务器返回的数据是否支持gzip压缩，
+				//System.out.println(encoding);
 				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
-				ism = new GZIPInputStream(conn.getInputStream());
+				ism = new GZIPInputStream(ism);
 			}
 			in = new BufferedReader(new InputStreamReader(ism));
 			String line;

@@ -104,8 +104,19 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 复制作品信息 - 在作品Tab页单击想要复制的目标文字   
 修改下载视频格式 - 在```app.config```中配置```bilibili.format```选项    
 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
+安装 - 找到下载目录中的```install.vbs```，双击它(仅仅只是创建了快捷方式)   
+卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
 
 ## UPDATE  
+* v2.5  
+    * 增加收藏夹的连接解析，例如<https://space.bilibili.com/3156365/favlist?fid=75463865>(url请务必包含fid参数)
+    * 增加UP主个人页面的链接解析，例如<https://space.bilibili.com/5276/video> 
+    * 增加UP主个人页面特定频道的链接解析，例如<https://space.bilibili.com/378034/channel/detail?cid=189>     
+    * 修复某些链接的异常解析，例如<https://www.bilibili.com/video/av41515020?from=search&seid=11021327663579949519>
+    * 增加卸载脚本```unistall.bat```(其实就是删除文件夹。。。)
+    * 当前个人页面获取信息顺序为最新发布，且固定为每页5个(官网每页30个)，以防止跳出的Tab页面过多。想要获取请在后面加上p=[pageNumber]。
+    e.g. 想要下载UP主```Hivane```最新发布的第31~35个视频(需确保后面没有空格)    
+    ```https://space.bilibili.com/17154307/video?tid=0&page=2&keyword=&order=pubdate p=7```
 * v2.4  
     * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/play/ss25739> 
     * 增加官方番剧URL集合的链接解析，例如<https://www.bilibili.com/bangumi/media/md134912>     

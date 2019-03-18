@@ -27,8 +27,8 @@ public class DownloadRunnable implements Runnable {
 		this.qn = qn;
 	}
 
-	final static Pattern urlFLVPattern = Pattern.compile("-([0-9]+)\\.flv\\?");
-	final static Pattern urlMP4Pattern = Pattern.compile("-300([0-9]+)\\.m4s\\?");
+	final static Pattern urlFLVPattern = Pattern.compile("-([0-9]+)\\.(flv|mp4)\\?");
+	final static Pattern urlM4SPattern = Pattern.compile("-300([0-9]+)\\.m4s\\?");
 
 	@Override
 	public void run() {
@@ -43,19 +43,24 @@ public class DownloadRunnable implements Runnable {
 		String url = iNeedAV.getVideoLink(avid, cid, qn);
 		String avid_qn = avid;
 		String title_qn = title;
-		Matcher ma = null;
-		if (Global.downloadFormat == Global.MP4) {
-			ma = urlMP4Pattern.matcher(url);
-		} else {
-			ma = urlFLVPattern.matcher(url);
-		}
+		Matcher ma = urlM4SPattern.matcher(url);
 		if (ma.find()) {
 			avid_qn += "-" + ma.group(1);
 			title_qn += "-" + ma.group(1);
+		}else {
+			ma = urlFLVPattern.matcher(url);
+			if (ma.find()) {
+				avid_qn += "-" + ma.group(1);
+				title_qn += "-" + ma.group(1);
+			}
 		}
+		
 		System.out.println(avid_qn);
 		final String avid_q = avid_qn;
 		final String title_q = title_qn;
+		downPanel.iNeedAV = iNeedAV;
+		downPanel.avid_qn = avid_qn;
+		downPanel.url = url;
 		// 将下载任务(HttpRequestUtil + DownloadInfoPanel)添加至全局列表, 让监控进程周期获取信息并刷新
 		Global.downloadTaskList.put(downPanel, iNeedAV.getUtil());
 		// 根据信息初始化绘制下载部件

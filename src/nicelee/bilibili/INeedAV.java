@@ -192,7 +192,7 @@ public class INeedAV {
 	}
 
 	/**
-	 * 下载FLV视频
+	 * 下载FLV/MP4视频(音视频一起)
 	 * 
 	 * @param url
 	 * @param avId
@@ -200,12 +200,36 @@ public class INeedAV {
 	 * @return
 	 */
 	boolean downloadFLVClip(String url, String avId, String page) {
-		String fileName = avId + "-p" + page + ".flv";
-		return util.download(url, fileName, new HttpHeaders().getBiliWwwFLVHeaders(avId));
+		String suffix = url.contains(".mp4")? ".mp4" : ".flv";
+		HttpHeaders header = new HttpHeaders();
+		if(url.contains("#")) {
+			String links[] = url.split("#");
+			util.setTotalTask(links.length);
+			Pattern numUrl = Pattern.compile("^([0-9]+)(http.*)$");
+			for(int i = 0; i < links.length; i++) {
+				util.setCurrentTask(i+1);
+				Matcher matcher = numUrl.matcher(links[i]);
+				matcher.find();
+				String order = matcher.group(1);
+				String tUrl = matcher.group(2);
+				String fileName = avId + "-p" + page + "-part" +order +suffix;
+				if(!util.download(tUrl, fileName, header.getBiliWwwFLVHeaders(avId))) {
+					return false;
+				}
+			}
+			//下载完毕后,进行合并
+			util.setConverting(true);
+			CmdUtil.convert(avId + "-p" + page +suffix, links.length);
+			util.setConverting(false);
+			return true;
+		}else {
+			String fileName = avId + "-p" + page + suffix;
+			return util.download(url, fileName, header.getBiliWwwFLVHeaders(avId));
+		}
 	}
 
 	/**
-	 * 下载MP4视频
+	 * 下载M4S视频(音视频分开隔离)
 	 * 
 	 * @param url
 	 * @param avId
@@ -220,11 +244,12 @@ public class INeedAV {
 		String dstName = avId + "-p" + page + ".mp4";
 
 		util.setTotalTask(2);
-		util.setNextTask(audioName + "##" + links[1]);
+		//util.setNextTask(audioName + "##" + links[1]);
+		util.setCurrentTask(1);
 		util.setCmd(CmdUtil.createConvertCmd(videoName, audioName, dstName));
 		if (util.download(links[0], videoName, new HttpHeaders().getBiliWwwM4sHeaders(avId))) {
-
-			util.setNextTask(null);
+			//util.setNextTask(null);
+			util.setCurrentTask(2);
 			util.setTotal(0);
 			if (util.download(links[1], audioName, new HttpHeaders().getBiliWwwM4sHeaders(avId))) {
 				util.setConverting(true);
@@ -477,7 +502,7 @@ public class INeedAV {
 	 * @param avId 视频的avid
 	 * @param cid  av下面可能不只有一个视频, avId + cid才能确定一个真正的视频
 	 * @param qn   112: hdflv2;80: flv; 64: flv720; 32: flv480; 16: flv360
-	 * @return
+	 * @return url or  1 url1#2 url2...
 	 */
 	String getVideoFLVLink(String avId, String cid, int qn) {
 		System.out.println("正在查询FLV链接...");
@@ -489,21 +514,43 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/x/player/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
+			//System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} catch (Exception e) {
 			// e.printStackTrace();
-			System.out.println("地址解析失败,使用另一种方式");
+			System.out.println("FLV链接地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
+			//System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 
 		int linkQN = jObj.getInt("quality");
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
-		return jObj.getJSONArray("durl").getJSONObject(0).getString("url");
+		JSONArray urlList = jObj.getJSONArray("durl");
+		return parseUrlJArray(urlList);
+	}
+
+	/**
+	 * @param urlList
+	 * @return
+	 */
+	private String parseUrlJArray(JSONArray urlList) {
+		if(urlList.length() == 1) {
+			return urlList.getJSONObject(0).getString("url");
+			
+		}else {
+			StringBuilder link = new StringBuilder();
+			for(int i = 0; i < urlList.length(); i++) {
+				JSONObject obj = urlList.getJSONObject(i);
+				link.append(obj.getInt("order"));
+				link.append(obj.getString("url"));
+				link.append("#");
+			}
+			System.out.println(link.substring(0, link.length() - 1));
+			return link.substring(0, link.length() - 1);
+		}
 	}
 
 	/**
@@ -524,15 +571,15 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&type=&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
+			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} catch (Exception e) {
 			// e.printStackTrace();
-			System.out.println("地址解析失败,使用另一种方式");
+			System.out.println("MP4链接地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
+			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 		int linkQN = jObj.getInt("quality");
@@ -555,7 +602,8 @@ public class INeedAV {
 			return link.toString();
 		} catch (Exception e) {
 			//鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
-			return jObj.getJSONArray("durl").getJSONObject(0).getString("url");
+			
+			return parseUrlJArray(jObj.getJSONArray("durl"));
 		}
 
 	}
@@ -585,7 +633,7 @@ public class INeedAV {
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, 32);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			//System.out.println(json);
+			System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
 		}
 		int qnList[] = new int[jArr.length()];

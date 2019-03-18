@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import nicelee.bilibili.INeedAV;
 import nicelee.ui.Global;
 import nicelee.util.HttpRequestUtil;
 
@@ -22,6 +23,12 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	String cid;
 	String page;
 	int qn;
+	
+	//下载相关
+	public INeedAV iNeedAV;
+	public String url;
+	public String avid_qn;
+	
 	
 	long lastCntTime = 0L;
 	long lastCnt = 0L;
@@ -135,7 +142,8 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 				file.delete();
 			}
 		}else if (e.getSource() == btnControl) {
-			HttpRequestUtil util = Global.downloadTaskList.get(this);
+			//HttpRequestUtil util = Global.downloadTaskList.get(this);
+			HttpRequestUtil util = iNeedAV.getUtil();
 			// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止
 			if(util.getStatus() == 0) {
 				//停止下载
@@ -147,7 +155,8 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 				Global.downLoadThreadPool.execute(new Runnable() {
 					@Override
 					public void run() {
-						util.redownload();
+						util.startDownload();
+						iNeedAV.downloadClip(url, avid_qn, page);
 					}
 				});
 				

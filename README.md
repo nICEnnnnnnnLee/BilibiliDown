@@ -13,6 +13,7 @@
 * 使用org.json库做简单的Json解析；
 * 使用zxing库生成链接二维码图片；
 * 使用ffmpeg进行转码(flv格式未使用ffmpeg，仅mp4格式需要用到，这两者清晰度是一致的)
+* 支持**收藏夹/UP主视频列表**解析
 
 ### 核心功能实现
 主要为**nicelee.bilibili**包下的三个类：  
@@ -35,7 +36,7 @@
 | HttpRequestUtil   |  用于实现各种Get/Post类型的Http请求，并对下载功能做了封装 |
 | QrCodeUtil        |  用于二维码图片的生成 |
 | ConfigUtil        |  用于从```app.config```读取配置 |
-| CmdUtil        |  调用```ffmpeg.exe```将下载的音视频```.m4s```文件合并转成MP4(若配置为FLV，则未使用该工具，平台通用性更好) |
+| CmdUtil        |  调用```ffmpeg.exe```将下载的音视频```.m4s```文件合并转成MP4(若配置为FLV且未分段，则未使用该工具，平台通用性更好) |
 
 注： 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序
 
@@ -108,6 +109,8 @@ PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8
 卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
 
 ## UPDATE  
+* master  
+    * 解决部分视频下载不完整问题 - 发现电影是分段播的，原来的方式只能下载大概前5~6分钟，例如<https://www.bilibili.com/bangumi/play/ss10007>
 * v2.5  
     * 增加收藏夹的连接解析，例如<https://space.bilibili.com/3156365/favlist?fid=75463865>(url请务必包含fid参数)
     * 增加UP主个人页面的链接解析，例如<https://space.bilibili.com/5276/video> 

@@ -31,11 +31,11 @@ public class MonitoringThread extends Thread {
 							dp.getLbDownFile().setText("文件大小: "  + fileSize);
 						}else {
 							String txt = String.format("%d/%d 下载完成. " + tip,
-									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getCurrentTask(),
 									httpUtil.getTotalTask());
 							dp.getLbCurrentStatus().setText(txt);
 							dp.getLbDownFile().setText(String.format("文件%d大小: %s",
-									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getCurrentTask(),
 									fileSize));
 						}
 						dp.getBtnControl().setEnabled(false);
@@ -53,7 +53,7 @@ public class MonitoringThread extends Thread {
 							dp.getLbCurrentStatus().setText("正在下载中... " + speedKBPerSec + " kB/s");//k=1000,K=1024
 						}else {
 							String txt = String.format("%d/%d 正在下载中... %d kB/s",
-									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getCurrentTask(),
 									httpUtil.getTotalTask(),
 									speedKBPerSec);
 							dp.getLbCurrentStatus().setText(txt);
@@ -69,7 +69,7 @@ public class MonitoringThread extends Thread {
 							dp.getLbCurrentStatus().setText("下载异常");
 						}else {
 							String txt = String.format("%d/%d 下载异常",
-									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getCurrentTask(),
 									httpUtil.getTotalTask());
 							dp.getLbCurrentStatus().setText(txt);
 						}
@@ -79,7 +79,7 @@ public class MonitoringThread extends Thread {
 							dp.getLbCurrentStatus().setText("人工停止");
 						}else {
 							String txt = String.format("%d/%d 人工停止",
-									httpUtil.getNextTask() != null ? 1 : 2,
+									httpUtil.getCurrentTask(),
 									httpUtil.getTotalTask());
 							dp.getLbCurrentStatus().setText(txt);
 						}

@@ -487,7 +487,7 @@ public class HttpRequestUtil {
 			// printCookie(manager.getCookieStore());
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} finally {
 			try {
 				if (in != null) {

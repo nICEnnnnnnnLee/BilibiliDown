@@ -77,7 +77,7 @@ public class LoginThread extends Thread {
 			try {
 				Global.isLogin = inl.getAuthStatus(authKey);
 				System.out.println("------------");
-				Thread.sleep(3000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {

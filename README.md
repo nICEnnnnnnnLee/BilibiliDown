@@ -1,66 +1,49 @@
 # INeedBiliAV - BilibiliDown
+![语言java](https://img.shields.io/badge/Require-java-green.svg)
+![测试版本64位Win10系统, jre 1.8.0_101](https://img.shields.io/badge/TestPass-Win10%20x64__java__1.8.0__101-green.svg)
+![支持系统 Win/Linux/Mac](https://img.shields.io/badge/Platform-%20win%20|%20linux%20|%20mac-lightgrey.svg)
+![开源协议Apache2.0](https://img.shields.io/badge/license-apache-2.0.svg)
+
 **INeedBiliAV** 为Bilibili 视频下载器，用于下载B站视频。  
-**INeedBiliAV** 支持各种清晰度下载，但部分高清格式可能需要用户登录的Cookies。   
-**INeedBiliAV** 提供UI操作界面，在安装了JRE(java version "1.8.0_101")环境下，只需双击运行程序即可。   
-**INeedBiliAV** 封装了一些用于登录/下载的API，无需导入第三方依赖(org.json以```.java```形式存在)，API可直接拿去使用。   
+**以下多图警告**
+===============================
+## 特性  
++ 支持UI界面(自认为是傻瓜式操作)  
++ 支持扫码登录(如果要下高清, 不必自己扣cookies)  
++ 支持各种链接解析(直接上avXXX/epXXX/ssXXX/epXXX，以及各种网页链接)
++ 支持多p下载!(看了看部分别人的作品, 听说有的只支持单p?)  
++ 支持收藏夹下载!!  
++ 支持UP主视频下载!!!  
++ 支持长视频(例如电影)下载!!!!  
++ 支持断点续传下载!!!!!(因异常原因退出后, 只要下载目录不变, 直接在上次基础上继续下载)
+   
+## 使用方法
+* 安装(可选)  
+其实这是一款绿色软件，安装只是创建了一个快捷方式。。。
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/install.gif)  
+* 扫码登录(可选)   
+点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/login.gif)
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/qrcode-login.png)
+* 获取作品信息  
+在主界面搜索框输入av号或者av播放链接，点击右方按钮查找  
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/index.png)
+* 下载  
+在作品信息界面点击想要的视频清晰度进行下载  
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/avDetails.png)  
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.png)
+预览
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.gif)
+* 其它  
+关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
+复制作品信息 - 在作品Tab页单击想要复制的目标文字   
+修改下载视频格式 - 在```app.config```中配置```bilibili.format```选项    
+批量重命名 - 找到下载目录中的```rename.bat```，双击它   
+卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
 
-[TOC]
 
-## 简介
-### 使用语言及外部库
-* 该工程为纯Java(java version "1.8.0_101")编写；
-* 使用自带的HttpUrlConnection做为网络连接，未用到Okhttp/HttpClient/HtmlUnit/Jsoup等外部库；
-* 使用org.json库做简单的Json解析；
-* 使用zxing库生成链接二维码图片；
-* 使用ffmpeg进行转码(flv格式未使用ffmpeg，仅mp4格式需要用到，这两者清晰度是一致的)
-* 支持**收藏夹/UP主视频列表**解析
-
-### 核心功能实现
-主要为**nicelee.bilibili**包下的三个类：  
-
-| Module  | Description |
-| ------------- | ------------- |
-| INeedAV  | 实现了根据av号获取（所有）视频信息、下载视频等功能。（下载格式为flv/mp4，支持各种清晰度，支持Cookies）  |
-| INeedAVbPhone  | 实现了根据av号获取（第一个）视频信息、下载视频等功能。（下载格式为mp4，清晰度无法保证，弃用）  |
-| INeedLogin  | 实现了测试用户有效性、获取用户信息、扫码登录等功能，登录成功后保存至同级目录下的cookies.config中  |
-
-
-
-### 工具类封装
-工具放在为**nicelee.util**包下：
-
-| Module            |  Description |
-| ----------------- | ----------- |
-| HttpCookies       |  提供String与HttpCookieList的转换，保存有一个静态的全局Cookies，用于全局的Cookie存取（非线程安全，请注意） |
-| HttpHeaders       |  用于各类Http请求的头部生成 |
-| HttpRequestUtil   |  用于实现各种Get/Post类型的Http请求，并对下载功能做了封装 |
-| QrCodeUtil        |  用于二维码图片的生成 |
-| ConfigUtil        |  用于从```app.config```读取配置 |
-| CmdUtil        |  调用```ffmpeg.exe```将下载的音视频```.m4s```文件合并转成MP4(若配置为FLV且未分段，则未使用该工具，平台通用性更好) |
-
-注： 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序
-
-## 使用方法：
-### 命令行模式
-该模式比较粗糙，将就着用o((>ω< ))o。。。
-* 利用二维码扫码登录获取cookies（生成了qrcode.jpg，登录后保存到cookies.config）
-``` dos
-java -cp INeedBiliAV.jar nicelee.bilibili.INeedLogin 1
-```
-
-* 测试cookies的有效性（读取cookies.config）
-``` dos
-java -cp INeedBiliAV.jar nicelee.bilibili.INeedLogin 0
-```
-
-* 下载当前cookie所能下载的最清晰链接
-``` dos
-java -cp INeedBiliAV.jar nicelee.bilibili.INeedAV "av40877923" 
-```
-
-### UI模式
-#### 配置
-可以不用管，使用默认配置即可 
+## 配置
+在```config/app.config```中，可以不用管，使用默认配置即可 
 ```
 # 0: MP4 1:FLV
 bilibili.format = 0
@@ -73,44 +56,20 @@ bilibili.savePath = download/
 bilibili.download.poolSize = 3
 ```
 
-* 直接双击```run-UI.bat``` 或```run-UI-debug.bat```  
-* 脚本原理（java/javaw 均可）
-``` dos
-javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar
-```
-PS：不能直接双击jar文件运行，因为可能存在中文乱码，必须要设置file.encoding=utf-8。  
-该JVM设置在启动前已经读取，代码里面再修改无效。  
-* 如果想直接双击jar运行，一个解决办法是修改注册表：   
+## 第三方库使用声明
+* 使用org.json库做简单的Json解析；
+* 使用zxing库生成链接二维码图片；
+* 使用ffmpeg进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)
 
-
-| 属性  | 值 |
-| ------------- | ------------- |
-| 位置  | HKEY_CLASSES_ROOT\Applications\javaw.exe\shell\open\command  |
-| 原始值  |"...\bin\javaw.exe" -jar "%1"  |
-| 现有值  | "...\bin\javaw.exe" -Dfile.encoding=utf-8 -jar "%1"  |
-   
-
-* 扫码登录(可选)   
-点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/qrcode-login.png)
-* 获取作品信息  
-在主界面搜索框输入av号或者av播放链接，点击右方按钮查找  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/index.png)
-* 下载  
-在作品信息界面点击想要的视频清晰度进行下载  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/avDetails.png)  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.png)
-* 其它  
-关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
-复制作品信息 - 在作品Tab页单击想要复制的目标文字   
-修改下载视频格式 - 在```app.config```中配置```bilibili.format```选项    
-批量重命名 - 找到下载目录中的```rename.bat```，双击它   
-安装 - 找到下载目录中的```install.vbs```，双击它(仅仅只是创建了快捷方式)   
-卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
+## Win32/Linux/Mac用户请看过来
++ 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
++ 对于非WIN用户，请直接使用命令行调用该程序  
+```javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
 
 ## UPDATE  
-* master  
+* v2.6  
     * 解决部分视频下载不完整问题 - 发现电影是分段播的，原来的方式只能下载大概前5~6分钟，例如<https://www.bilibili.com/bangumi/play/ss10007>
+    * 因为不怎么使用登录功能(一次登录cookies可以用很久)，以前未发现并处理因为网络原因造成的异常，现已解决
 * v2.5  
     * 增加收藏夹的连接解析，例如<https://space.bilibili.com/3156365/favlist?fid=75463865>(url请务必包含fid参数)
     * 增加UP主个人页面的链接解析，例如<https://space.bilibili.com/5276/video> 

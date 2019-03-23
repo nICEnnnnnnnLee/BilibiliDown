@@ -23,40 +23,21 @@ Bilibili 视频下载器，用于下载B站视频。
 * 安装(可选)  
 其实这是一款绿色软件，安装只是创建了一个快捷方式。。。
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/install.gif)  
+
 * 扫码登录(可选)   
 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/login.gif)
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/qrcode-login.png)
-* 获取作品信息  
-在主界面搜索框输入av号/ep号等等或者直接URL链接，点击右方按钮查找  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/index.png)
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/login.gif)  
+
 * 下载  
-在作品信息界面点击想要的视频清晰度进行下载  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/avDetails.png)  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.png)
-预览
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.gif)
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.gif)  
+
 * 其它  
 关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
 复制作品信息 - 在作品Tab页单击想要复制的目标文字   
 修改下载视频格式 - 在```app.config```中配置```bilibili.format```选项    
 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
 卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
-
-
-## :smile:配置
-在```config/app.config```中，可以不用管，使用默认配置即可 
-```
-# 0: MP4 1:FLV
-bilibili.format = 0
-
-#下载文件保存路径， 可以是相对路径，也可以是绝对路径
-bilibili.savePath = download/
-#bilibili.savePath = D:\Workspace\bilibili\
-
-#最大的同时下载任务数
-bilibili.download.poolSize = 3
-```
+修改配置 - 编辑```config/app.config```即可
 
 ## :smile:第三方库使用声明
 * 使用org.json库做简单的Json解析；

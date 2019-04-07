@@ -36,8 +36,12 @@ public class GetVideoDetailThread extends Thread{
 			imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_SMOOTH) );
 			video.getLbAvPrivew().setIcon(imag1);
 			video.getLbBreif().setText(avInfo.getBrief());
-			video.getLbTabTitle().setText(avInfo.getVideoName());
 			video.getLbVideoTitle().setText(avInfo.getVideoName());
+			String title = avInfo.getVideoName();
+			if(title.length() >= 12) {
+				title = title.substring(0, 9) + "...";
+			}
+			video.getLbTabTitle().setText(title);
 			
 			JPanel jpContent = video.getJpContent();
 			jpContent.setPreferredSize(new Dimension(340, 116 * avInfo.getClips().size()));

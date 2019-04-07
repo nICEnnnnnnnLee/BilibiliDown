@@ -5,6 +5,7 @@
 *.zip
 *.log
 *.config
+*.bat
 *.flv
 *.mp4
 *.exe

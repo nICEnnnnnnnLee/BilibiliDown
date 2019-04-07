@@ -32,12 +32,13 @@ Bilibili 视频下载器，用于下载B站视频。
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.gif)  
 
 * 其它  
-关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
-复制作品信息 - 在作品Tab页单击想要复制的目标文字   
-修改下载视频格式 - 在```app.config```中配置```bilibili.format```选项    
-批量重命名 - 找到下载目录中的```rename.bat```，双击它   
-卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
-修改配置 - 编辑```config/app.config```即可
+    * 关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
+    * 复制作品信息 - 在作品Tab页单击想要复制的目标文字   
+    * 修改下载视频格式 - 在```config/app.config```中配置```bilibili.format```选项    
+    * 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
+    * 卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
+    * 设置代理 - 在```config/app.config```中配置相应代理类型的地址和端口    
+    * 修改其它配置 - 编辑```config/app.config```即可，详见文件见备注
 
 ## :smile:第三方库使用声明
 * 使用org.json库做简单的Json解析；

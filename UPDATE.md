@@ -1,7 +1,8 @@
 ## UPDATE  
-* master
+* v2.7
     * Tab页标题过长时, 省略部分内容, 以...代替  
-    * 增加SOCKS/HTTP/HTTPS代理支持    
+    * 增加SOCKS/HTTP/HTTPS代理支持   
+    * release 压缩包去除好压    
 * v2.6  
     * 解决部分视频下载不完整问题 - 发现电影是分段播的，原来的方式只能下载大概前5~6分钟，例如<https://www.bilibili.com/bangumi/play/ss10007>
     * 因为不怎么使用登录功能(一次登录cookies可以用很久)，以前未发现并处理因为网络原因造成的异常，现已解决

@@ -28,6 +28,7 @@ public class GetVideoDetailThread extends Thread{
 			//获取当前av详细信息
 			INeedAV avs = new INeedAV();
 			avs.setDownFormat(Global.downloadFormat);
+			avs.setPageSize(Global.pageSize);
 			//更新当前Tab页面
 			VideoInfo avInfo =avs.getVideoDetail(avId, false);
 			video.getLbAvID().setText(avInfo.getVideoId());

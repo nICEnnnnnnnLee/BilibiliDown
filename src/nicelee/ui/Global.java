@@ -22,4 +22,7 @@ public class Global {
 	public static boolean isLogin = false;
 	public static FrameQRCode qr; //二维码图片显示界面
 	public static TabIndex index; //主页界面
+	
+	//信息查询相关
+	public static int pageSize = 5; // 当有分页时，每页显示个数
 }

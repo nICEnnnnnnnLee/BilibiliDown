@@ -1,4 +1,11 @@
 ## UPDATE  
+* v2.8
+    * 主页输入框添加右键菜单  
+    * 更换收藏夹信息获取api，并增加```mlXXX```形式的解析   
+    ```https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=XXX&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp```  
+    改为  
+    ```https://api.bilibili.com/medialist/gateway/base/detail?media_id=XXX&pn=%d&ps=%d```  
+    * 分页信息查询的最大个数可以在```app.config```中灵活设置
 * v2.7
     * Tab页标题过长时, 省略部分内容, 以...代替  
     * 增加SOCKS/HTTP/HTTPS代理支持   

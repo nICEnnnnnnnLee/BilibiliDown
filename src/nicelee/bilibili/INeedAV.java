@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import nicelee.model.ClipInfo;
 import nicelee.model.VideoInfo;
+import nicelee.ui.Global;
 import nicelee.util.CmdUtil;
 import nicelee.util.HttpCookies;
 import nicelee.util.HttpHeaders;
@@ -23,7 +24,9 @@ public class INeedAV {
 	// 0为MP4, 1 为FLV
 	int downFormat = 0;
 	HttpRequestUtil util = new HttpRequestUtil();
-
+	
+	public INeedAV() {
+	}
 	public static void main(String[] args) {
 		System.out.println("-------------------------------");
 		System.out.println("输入av号, 下载当前cookie所能下载的最清晰链接");
@@ -67,6 +70,7 @@ public class INeedAV {
 	Pattern spacePattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/video");//个人主页 - 全部视频
 	Pattern sChannelPattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/channel/detail\\?cid=([0-9]+)");//个人主页 - 频道
 	Pattern favPattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=([0-9]+)");//个人收藏夹
+	Pattern fav4mlPattern = Pattern.compile("ml([0-9]+)");//个人收藏夹
 	
 	Pattern paramPattern = Pattern.compile("p=([0-9]+)$");//自定义参数, 目前只匹配个人主页视频的页码
 	
@@ -81,6 +85,7 @@ public class INeedAV {
 		Matcher spaceMatcher = spacePattern.matcher(origin);
 		Matcher sChannelMatcher = sChannelPattern.matcher(origin);
 		Matcher favMatcher = favPattern.matcher(origin);
+		Matcher fav4mlMatcher = fav4mlPattern.matcher(origin);
 		if (avMatcher.find()) {
 			System.out.println("匹配av号");
 			// 如果能提取出avID, 直接返回
@@ -124,6 +129,15 @@ public class INeedAV {
 				return getAVList4FaviList(favMatcher.group(1), favMatcher.group(2), Integer.parseInt(matcher.group(1)));
 			}
 			return getAVList4FaviList(favMatcher.group(1), favMatcher.group(2), 1);
+		}else if(fav4mlMatcher.find()) {
+			//e.g. mlXXX
+			System.out.println("匹配收藏夹,返回 av1 av2 av3 ...");
+			Matcher matcher = paramPattern.matcher(origin);
+			if(matcher.find()) {
+				return getAVList4FaviList(fav4mlMatcher.group(1), Integer.parseInt(matcher.group(1)));
+			}
+			return getAVList4FaviList(fav4mlMatcher.group(1), 1);
+			
 		}
 		return "";
 	}
@@ -327,6 +341,34 @@ public class INeedAV {
 			String urlFormat = "https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=%s&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp";
 			String url = String.format(urlFormat, favID, page, pageSize);
 			String json = util.getContent(url, new HttpHeaders().getFavListHeaders(personID, favID), HttpCookies.getGlobalCookies());
+			System.out.println(url);
+			System.out.println(json);
+			JSONObject jobj = new JSONObject(json);
+			JSONArray arr = jobj.getJSONObject("data").getJSONArray("medias");//.getJSONArray("archives");
+			StringBuilder sb = new StringBuilder(); 
+			for(int i = 0; i < arr.length(); i++) {
+				sb.append(" av").append(arr.getJSONObject(i).getLong("id"));
+			}
+			return sb.toString();
+		}catch (Exception e) {
+			return "";
+		}
+		
+	}
+	
+	/**
+	 * 获取up主收藏夹的视频列表, 默认每页5个
+	 * @param favID
+	 * @param page
+	 * @return
+	 */
+	String getAVList4FaviList(String favID, int page) {
+		try {
+			//原api需要 personID + favID，弃用 (personID用于构造header，否则没权限)
+			//String urlFormat = "https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=%s&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp";
+			String urlFormat = "https://api.bilibili.com/medialist/gateway/base/detail?media_id=%s&pn=%d&ps=%d";
+			String url = String.format(urlFormat, favID, page, pageSize);
+			String json = util.getContent(url, new HttpHeaders().getFavListHeaders(favID), HttpCookies.getGlobalCookies());
 			System.out.println(url);
 			System.out.println(json);
 			JSONObject jobj = new JSONObject(json);
@@ -657,5 +699,11 @@ public class INeedAV {
 
 	public void setDownFormat(int downFormat) {
 		this.downFormat = downFormat;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 }

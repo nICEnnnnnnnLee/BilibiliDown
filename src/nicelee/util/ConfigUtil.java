@@ -79,5 +79,6 @@ public class ConfigUtil {
 		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool); 
 		Global.downloadFormat = Integer.parseInt(System.getProperty("bilibili.format"));
 		Global.savePath = System.getProperty("bilibili.savePath");
+		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));
 	}
 }

@@ -21,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import nicelee.bilibili.INeedAV;
+import nicelee.ui.item.MJTextField;
 import nicelee.ui.thread.GetVideoDetailThread;
 import nicelee.ui.thread.LoginThread;
 
@@ -33,7 +34,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	public ImageIcon imgIconHeaderDefault = new ImageIcon(this.getClass().getResource("/resources/header.png"));
 	public ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
 	public JLabel jlHeader;
-	JTextField txtSearch = new JTextField("https://www.bilibili.com/video/av35296336");
+	JTextField txtSearch = new MJTextField("https://www.bilibili.com/video/av35296336");
 	JButton btnSearch = new JButton("查找");
 	
 	
@@ -89,8 +90,10 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 			String avId = txtSearch.getText();
 			INeedAV iNeedAV = new INeedAV();
 			iNeedAV.setDownFormat(Global.downloadFormat);
+			iNeedAV.setPageSize(Global.pageSize);
 			avId = iNeedAV.getAvID(avId);
-			
+			System.out.println("当前解析的id为：");
+			System.out.println(avId);
 			if(avId.contains(" ")) {
 				String avs[] = avId.trim().split(" ");
 				for(String av : avs) {

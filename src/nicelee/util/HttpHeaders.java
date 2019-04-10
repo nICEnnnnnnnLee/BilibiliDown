@@ -157,6 +157,26 @@ public class HttpHeaders {
 		return headerMap;
 	}
 	/**
+	 * 该Header配置用于获取收藏夹信息
+	 */
+	public HashMap<String, String> getFavListHeaders(String favID) {
+		headerMap = new HashMap<String, String>();
+		headerMap.put("Accept", "application/json, text/plain, */*");
+		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
+		headerMap.put("Cache-Control", "no-cache");
+		headerMap.put("Pragma", "no-cache");
+		headerMap.put("Connection", "keep-alive");
+		headerMap.put("Host", "api.bilibili.com");
+		headerMap.put("Origin", "https://www.bilibili.com");
+		headerMap.put("Referer", 
+				String.format("https://www.bilibili.com/medialist/detail/ml%s?type=2", 
+						favID));
+		headerMap.put("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");
+		return headerMap;
+	}
+	/**
 	 * 该Header配置用于通用PC端页面访问
 	 */
 	public HashMap<String, String> getCommonHeaders(String host) {

@@ -1,6 +1,7 @@
 package nicelee.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -22,6 +23,7 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.INeedAV;
 import nicelee.ui.item.MJTextField;
+import nicelee.ui.item.OperationPanel;
 import nicelee.ui.thread.GetVideoDetailThread;
 import nicelee.ui.thread.LoginThread;
 
@@ -48,9 +50,12 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 
 	public void init() {
 		this.setPreferredSize(new Dimension(1150, 620));
+		OperationPanel operPanel = new OperationPanel();
+		this.add(operPanel);
+		
 		// 空白模块- 占位
 		JLabel jpBLANK = new JLabel();
-		jpBLANK.setPreferredSize(new Dimension(980, 80));
+		jpBLANK.setPreferredSize(new Dimension(700, 80));
 		this.add(jpBLANK);
 		
 		// 空白模块- 占位
@@ -76,14 +81,47 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		this.add(jpSearch);
 		this.setOpaque(false);
 	}
-
+	
+	/**
+	 * 关闭所有视频Tab
+	 */
+	public void closeAllVideoTabs() {
+		System.out.println("当前Tab数量： " + (jTabbedpane.getTabCount() - 2));
+		System.out.println("正在关闭Tab标签页");
+		for(int i = jTabbedpane.getTabCount() - 1; i >= 2 ; i--) {
+			jTabbedpane.removeTabAt(i);
+		}
+		System.out.println("当前Tab数量： " + (jTabbedpane.getTabCount() - 2));
+	}
+	
+	/**
+	 * 根据需要下载所有打开的Tab页视频
+	 * @param downAll
+	 * @param qn
+	 */
+	public void downVideoTabs(boolean downAll, int qn) {
+		for(int i = 0; i < jTabbedpane.getTabCount(); i++) {
+			//判断是否为Video标签页, 是就下载
+			System.out.printf("Tab 页共 %d 个，当前第 %d 个\r\n",
+					jTabbedpane.getTabCount(),
+					i);
+			Component comp = jTabbedpane.getComponentAt(i);
+			if(comp instanceof TabVideo ) {
+				TabVideo tabVideo = (TabVideo) comp;
+				tabVideo.download(downAll, qn);
+			}
+		}
+	}
 	@Override
 	public void paintComponent(Graphics g) {
 //		// super.paintComponent(g);
 		g.drawImage(backgroundIcon.getImage(), 0, 0, this.getSize().width, this.getSize().height, this.getParent());
 		this.setOpaque(false);
 	}
-
+	
+	/**
+	 * 对应 查找 按钮的点击事件
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSearch) {
@@ -106,6 +144,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	}
 
 	/**
+	 * 弹出avId对应的Video 标签页
 	 * @param avId
 	 */
 	private void popVideoInfoTab(String avId) {

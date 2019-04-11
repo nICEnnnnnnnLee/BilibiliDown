@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nicelee.model.ClipInfo;
+import nicelee.ui.Global;
 import nicelee.ui.thread.DownloadRunnable;
 
 public class ClipInfoPanel extends JPanel {
@@ -44,8 +45,8 @@ public class ClipInfoPanel extends JPanel {
 							clip.getAvId(),
 							String.valueOf(clip.getcId()),
 							String.valueOf(clip.getPage()), qn);
-					new Thread(downThread).start();
-					//Global.downLoadThreadPool.execute(downThread);
+					//new Thread(downThread).start();
+					Global.queryThreadPool.execute(downThread);
 				}
 			});
 			this.add(btn);

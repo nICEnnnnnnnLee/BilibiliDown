@@ -34,13 +34,14 @@ public class DownloadRunnable implements Runnable {
 	public void run() {
 		System.out.println("你点击了一次下载按钮...");
 		// 新建下载部件
-		DownloadInfoPanel downPanel = new DownloadInfoPanel(avid, cid, page, qn);
+		DownloadInfoPanel downPanel = new DownloadInfoPanel(title + "-p" + page, avid, cid, page, qn);
 		if (Global.downloadTaskList.get(downPanel) != null) {
+			System.out.println("已经存在相关下载");
 			return;
 		}
 		INeedAV iNeedAV = new INeedAV();
 		iNeedAV.setDownFormat(Global.downloadFormat);
-		String url = iNeedAV.getVideoLink(avid, cid, qn);
+		String url = iNeedAV.getVideoLink(avid, cid, qn); //该步含网络查询， 可能较为耗时
 		String avid_qn = avid;
 		String title_qn = title;
 		Matcher ma = urlM4SPattern.matcher(url);
@@ -61,6 +62,11 @@ public class DownloadRunnable implements Runnable {
 		downPanel.iNeedAV = iNeedAV;
 		downPanel.avid_qn = avid_qn;
 		downPanel.url = url;
+		// 再进行一次判断，看下载列表是否已经存在相应任务(防止并发误判)
+		if (Global.downloadTaskList.get(downPanel) != null) {
+			System.out.println("已经存在相关下载");
+			return;
+		}
 		// 将下载任务(HttpRequestUtil + DownloadInfoPanel)添加至全局列表, 让监控进程周期获取信息并刷新
 		Global.downloadTaskList.put(downPanel, iNeedAV.getUtil());
 		// 根据信息初始化绘制下载部件

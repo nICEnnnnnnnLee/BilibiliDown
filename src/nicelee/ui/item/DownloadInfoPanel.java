@@ -19,6 +19,7 @@ import nicelee.util.HttpRequestUtil;
 
 public class DownloadInfoPanel extends JPanel implements ActionListener {
 	
+	String avTitle;
 	String avid;
 	String cid;
 	String page;
@@ -50,7 +51,8 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	JLabel lbDownFile;
 	JLabel lbFileName;
 
-	public DownloadInfoPanel(String avid, String cid, String page, int qn) {
+	public DownloadInfoPanel(String avTitle, String avid, String cid, String page, int qn) {
+		this.avTitle = avTitle;
 		this.avid = avid;
 		this.cid = cid;
 		this.page = page;
@@ -87,6 +89,15 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		btnRemove.addActionListener(this);
 		this.add(btnRemove);
 
+		JLabel blank = new JLabel();
+		blank.setPreferredSize(new Dimension(100, 45));
+		this.add(blank);
+		
+		JLabel lbavName = new JLabel(avTitle);
+		lbavName.setPreferredSize(new Dimension(500, 45));
+		lbavName.setBorder(BorderFactory.createLineBorder(Color.red));
+		this.add(lbavName);
+		
 		lbCurrentStatus = new JLabel("正在下载...");
 		lbCurrentStatus.setPreferredSize(new Dimension(300, 45));
 		lbCurrentStatus.setBorder(BorderFactory.createLineBorder(Color.red));

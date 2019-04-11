@@ -31,6 +31,12 @@ Bilibili 视频下载器，用于下载B站视频。
 * 下载  
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.gif)  
 
+* 批量下载  
+    * 根据策略下载所有打开标签页的(全部/第一个)视频  
+    ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/downloadAllTab.png)  
+    * 根据策略批量下载多p视频  
+    ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/downloadSingleTab.png)  
+
 * 其它  
     * 关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
     * 复制作品信息 - 在作品Tab页单击想要复制的目标文字   

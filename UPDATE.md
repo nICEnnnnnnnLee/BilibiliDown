@@ -1,10 +1,15 @@
 ## UPDATE  
+* v2.9
+    * 新增功能 - 批量下载av的所有视频  
+    * 新增功能 - 批量下载所有打开的标签页的视频  
+    * 其它UI改动  
 * v2.8
     * 主页输入框添加右键菜单  
     * 更换收藏夹信息获取api，并增加```mlXXX```形式的解析   
     ```https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=XXX&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp```  
     改为  
     ```https://api.bilibili.com/medialist/gateway/base/detail?media_id=XXX&pn=%d&ps=%d```  
+    (前者需要personID参数构造header，否则没有权限)
     * 分页信息查询的最大个数可以在```app.config```中灵活设置
 * v2.7
     * Tab页标题过长时, 省略部分内容, 以...代替  

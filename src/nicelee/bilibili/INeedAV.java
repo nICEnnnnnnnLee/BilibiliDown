@@ -13,7 +13,6 @@ import org.json.JSONObject;
 
 import nicelee.model.ClipInfo;
 import nicelee.model.VideoInfo;
-import nicelee.ui.Global;
 import nicelee.util.CmdUtil;
 import nicelee.util.HttpCookies;
 import nicelee.util.HttpHeaders;

@@ -31,6 +31,7 @@ public class GetVideoDetailThread extends Thread{
 			avs.setPageSize(Global.pageSize);
 			//更新当前Tab页面
 			VideoInfo avInfo =avs.getVideoDetail(avId, false);
+			video.setAvInfo(avInfo);
 			video.getLbAvID().setText(avInfo.getVideoId());
 			URL fileURL = new URL(avInfo.getVideoPreview());
 			ImageIcon imag1 = new ImageIcon(fileURL);

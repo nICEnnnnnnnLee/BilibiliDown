@@ -72,11 +72,15 @@ public class DownloadRunnable implements Runnable {
 		// 根据信息初始化绘制下载部件
 		JPanel jpContent = Global.downloadTab.getJpContent();
 		jpContent.add(downPanel);
-		jpContent.setPreferredSize(new Dimension(1100, 120 * Global.downloadTaskList.size()));
+		jpContent.setPreferredSize(new Dimension(1100, 128 * Global.downloadTaskList.size()));
 		Global.downLoadThreadPool.execute(new Runnable() {
 			@Override
 			public void run() {
 				try {
+					if(iNeedAV.getUtil().getStatus() == -2) {
+						System.out.println("已经人工停止,无需再下载");
+						return;
+					}
 					// 开始下载
 					iNeedAV.downloadClip(url, avid_q, page);
 					// 追加重命名文件

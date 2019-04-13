@@ -36,7 +36,9 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	public ImageIcon imgIconHeaderDefault = new ImageIcon(this.getClass().getResource("/resources/header.png"));
 	public ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
 	public JLabel jlHeader;
-	JTextField txtSearch = new MJTextField("https://www.bilibili.com/video/av35296336");
+	String placeHolder = "请在此输入B站 av/ep/ss/md/ml号或地址";
+	JTextField txtSearch = new MJTextField(placeHolder);
+	//new MJTextField("https://www.bilibili.com/video/av35296336");
 	JButton btnSearch = new JButton("查找");
 	
 	
@@ -64,6 +66,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		jlHeader.addMouseListener(this);
 		this.add(jlHeader);
 		
+		//头像模块
 		URL fileURL = this.getClass().getResource("/resources/title.png");
 		ImageIcon imgIcon = new ImageIcon(fileURL);
 		//imgIcon = new ImageIcon(imgIcon.getImage().getScaledInstance(350, 350, Image.SCALE_SMOOTH));
@@ -125,7 +128,16 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSearch) {
-			String avId = txtSearch.getText();
+			search();
+		}
+	}
+
+	/**
+	 * 根据输入查找 av信息，并弹出av信息的Tab页
+	 */
+	public void search() {
+		String avId = txtSearch.getText();
+		if(!placeHolder.equals(avId)) {
 			INeedAV iNeedAV = new INeedAV();
 			iNeedAV.setDownFormat(Global.downloadFormat);
 			iNeedAV.setPageSize(Global.pageSize);
@@ -141,6 +153,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 				popVideoInfoTab(avId);
 			}
 		}
+		
 	}
 
 	/**

@@ -1,11 +1,16 @@
 package nicelee.ui.item;
 
+import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -14,8 +19,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-//实现JTextfield 的复制、剪切、粘贴功能。
-public class MJTextField extends JTextField implements MouseListener {
+import nicelee.ui.Global;
+
+//实现JTextfield 的全选、复制、剪切、粘贴功能。
+//实现Place Holder。
+public class MJTextField extends JTextField implements MouseListener, KeyListener, FocusListener {
 
     private static final long serialVersionUID = 10110L;
 
@@ -23,18 +31,24 @@ public class MJTextField extends JTextField implements MouseListener {
 
     private JMenuItem selectAll = null, copy = null, paste = null, cut = null; // 功能菜单
 
+    private String placeHolder;
     public MJTextField() {
         super();
+        placeHolder = "";
         init();
     }
     
-    public MJTextField(String title) {
-    	super(title);
+    public MJTextField(String placeHolder) {
+    	super(placeHolder);
+    	this.setForeground(Color.GRAY);
+    	this.placeHolder = placeHolder;
     	init();
     }
 
     private void init() {
         this.addMouseListener(this);
+        this.addKeyListener(this);
+        this.addFocusListener(this);
         pop = new JPopupMenu();
         pop.add(selectAll = new JMenuItem("全选"));
         pop.add(copy = new JMenuItem("复制"));
@@ -144,5 +158,39 @@ public class MJTextField extends JTextField implements MouseListener {
 
     public void mouseReleased(MouseEvent e) {
     }
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			System.out.println("输入了Enter键");
+			Global.index.search();
+		}
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		if (this.getText().equals(placeHolder)) {
+			this.setText("");
+			this.setForeground(Color.BLACK);
+        }
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		if (this.getText().isEmpty()) {
+			this.setForeground(Color.GRAY);
+			this.setText(placeHolder);
+        }
+		
+	}
 
 }

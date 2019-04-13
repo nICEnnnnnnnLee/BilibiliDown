@@ -20,22 +20,47 @@ Bilibili 视频下载器，用于下载B站视频。
 + 支持断点续传下载!!!!!(因异常原因退出后, 只要下载目录不变, 直接在上次基础上继续下载)
    
 ## :smile:使用方法
-* 安装(可选)  
+<details>
+<summary>安装(可选)</summary>
+
+
 其实这是一款绿色软件，安装只是创建了一个快捷方式。。。
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/install.gif)  
+</details>
 
-* 扫码登录(可选)   
+<details>
+<summary>扫码登录(可选)</summary>
+
+
 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/login.gif)  
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/login.gif) 
+</details>
 
-* 下载  
+<details>
+<summary>普通下载</summary>
+
+
+
 ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/download.gif)  
+</details>
 
-* 批量下载  
-    * 根据策略下载所有打开标签页的(全部/第一个)视频  
-    ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/downloadAllTab.png)  
-    * 根据策略批量下载多p视频  
-    ![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/downloadSingleTab.png)  
+<details>
+<summary>批量下载</summary>
+
+
+<details>
+<summary>根据策略下载所有打开标签页的(全部/第一个)视频</summary>
+
+
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/downloadAllTab.png) 
+</details>
+<details>
+<summary>根据策略批量下载多p视频</summary>
+
+
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/downloadSingleTab.png)  
+</details>
+</details>
 
 * 其它  
     * 关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
@@ -46,11 +71,47 @@ Bilibili 视频下载器，用于下载B站视频。
     * 设置代理 - 在```config/app.config```中配置相应代理类型的地址和端口    
     * 修改其它配置 - 编辑```config/app.config```即可，详见文件见备注
 
-## :smile:第三方库使用声明
-* 使用org.json库做简单的Json解析；
-* 使用zxing库生成链接二维码图片；
-* 使用ffmpeg进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)
+<details>
+<summary>清晰度说明</summary>
 
+当因权限不足，或视频不存在该清晰度时，将返回不大于该qn值的合法最大qn值对应的清晰度。
+  
+| 清晰度  | qn值 |
+| ------------- | ------------- |
+| 1080P60  | 116 |
+| 1080P+  | 112 |
+| 1080P  | 80 |
+| 720P60  | 74 |
+| 720P  | 64 |
+| 480P  | 32 |
+| 360P  | 16 |
+* 举例
+```
+https://www.bilibili.com/video/av39405510
+"accept_description": ["高清 1080P60", "高清 720P60", "高清 1080P", "高清 720P", "清晰 480P", "流畅 360P"],
+"accept_quality": [116, 74, 80, 64, 32, 16]
+
+https://www.bilibili.com/bangumi/play/ep116157/
+"accept_description": ["高清 1080P+", "高清 1080P", "高清 720P", "清晰 480P", "流畅 360P"],
+"accept_quality": [112, 80, 64, 32, 16]
+```
+* 举例，假设某av存在1080P+/1080P/720P/480P/360P，1080P+/1080P 需要大会员才能观看，720P需要登录才能观看。  
+    * 无cookie 发起 ```1080P+``` 请求 =====>  得到```480P```链接  
+    * 普通cookie 发起 ```1080P+``` 请求 =====>  得到```720P```链接  
+    * 大会员cookie 发起 ```1080P+``` 请求 =====>  得到```1080P+```链接  
+    * 大会员cookie 发起 ```720P60``` 请求 =====>  得到```720P```链接  
+</details>
+
+
+
+## :smile:第三方库使用声明  
+* 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
+* 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
+* 使用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-LGPL%20(%3E%3D%202.1)%2FGPL%20(%3E%3D%202)-green.svg)](http://www.ffmpeg.org/legal.html)  
+
+## :smile:媒体素材使用声明  
+* [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
+* [加载等待图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[数英 - Seven Dai](https://www.digitaling.com/articles/18383.html)  
 ## :smile:Win32/Linux/Mac用户请看过来
 + 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  

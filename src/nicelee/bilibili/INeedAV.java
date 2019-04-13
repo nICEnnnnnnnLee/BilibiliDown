@@ -3,6 +3,7 @@ package nicelee.bilibili;
 import java.net.HttpCookie;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -172,7 +173,7 @@ public class INeedAV {
 		System.out.println(json);
 		JSONObject jObj = new JSONObject(json);
 		int ssId = jObj.getJSONObject("mediaInfo").getJSONObject("param").getInt("season_id");
-		System.out.println("avId为: " + ssId);
+		System.out.println("ssId为: " + ssId);
 		return "ss" + ssId;
 	}
 
@@ -296,7 +297,7 @@ public class INeedAV {
 	 * @param page
 	 * @return
 	 */
-	String getAVList4Space(String spaceID, int page) {
+	public String getAVList4Space(String spaceID, int page) {
 		String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
 		String url = String.format(urlFormat, spaceID, pageSize, page);
 		String json = util.getContent(url, new HttpHeaders().getCommonHeaders("space.bilibili.com"));
@@ -315,7 +316,7 @@ public class INeedAV {
 	 * @param page
 	 * @return
 	 */
-	String getAVList4Channel(String spaceID, String cid, int page) {
+	public String getAVList4Channel(String spaceID, String cid, int page) {
 		String urlFormat = "https://api.bilibili.com/x/space/channel/video?mid=%s&cid=%s&pn=%d&ps=%d&order=0";
 		String url = String.format(urlFormat, spaceID, cid, page, pageSize);
 		String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"));
@@ -361,15 +362,15 @@ public class INeedAV {
 	 * @param page
 	 * @return
 	 */
-	String getAVList4FaviList(String favID, int page) {
+	public String getAVList4FaviList(String favID, int page) {
 		try {
 			//原api需要 personID + favID，弃用 (personID用于构造header，否则没权限)
 			//String urlFormat = "https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=%s&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp";
 			String urlFormat = "https://api.bilibili.com/medialist/gateway/base/detail?media_id=%s&pn=%d&ps=%d";
 			String url = String.format(urlFormat, favID, page, pageSize);
 			String json = util.getContent(url, new HttpHeaders().getFavListHeaders(favID), HttpCookies.getGlobalCookies());
-			System.out.println(url);
-			System.out.println(json);
+			//System.out.println(url);
+			//System.out.println(json);
 			JSONObject jobj = new JSONObject(json);
 			JSONArray arr = jobj.getJSONObject("data").getJSONArray("medias");//.getJSONArray("archives");
 			StringBuilder sb = new StringBuilder(); 
@@ -427,7 +428,7 @@ public class INeedAV {
 		viInfo.setVideoPreview("https:" + jObj.getJSONObject("mediaInfo").getString("cover"));
 		
 		JSONArray array = jObj.getJSONArray("epList");
-		HashMap<Integer, ClipInfo> clipMap = new HashMap<Integer, ClipInfo>();
+		LinkedHashMap<Integer, ClipInfo> clipMap = new LinkedHashMap<Integer, ClipInfo>();
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject clipObj = array.getJSONObject(i);
 			ClipInfo clip = new ClipInfo();
@@ -438,7 +439,7 @@ public class INeedAV {
 			//clip.setTitle(clipObj.getString("index_title"));
 			clip.setTitle(clipObj.getString("longTitle"));
 			
-			HashMap<Integer, String> links = new HashMap<Integer, String>();
+			LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 			try {
 				int qnList[] = getVideoQNList(clip.getAvId(), String.valueOf(clip.getcId()));
 				for (int qn : qnList) {
@@ -489,7 +490,7 @@ public class INeedAV {
 
 		//
 		JSONArray array = jObj.getJSONArray("pages");
-		HashMap<Integer, ClipInfo> clipMap = new HashMap<Integer, ClipInfo>();
+		LinkedHashMap<Integer, ClipInfo> clipMap = new LinkedHashMap<Integer, ClipInfo>();
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject clipObj = array.getJSONObject(i);
 			ClipInfo clip = new ClipInfo();
@@ -498,7 +499,7 @@ public class INeedAV {
 			clip.setPage(clipObj.getInt("page"));
 			clip.setTitle(clipObj.getString("part"));
 			
-			HashMap<Integer, String> links = new HashMap<Integer, String>();
+			LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 			try {
 				int qnList[] = getVideoQNList(avId, String.valueOf(clip.getcId()));
 				for (int qn : qnList) {

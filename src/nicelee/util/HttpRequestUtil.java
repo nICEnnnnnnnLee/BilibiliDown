@@ -43,7 +43,7 @@ public class HttpRequestUtil {
 	HashMap<String, String> headersDownload;
 	String urlDownload;
 	// 下载状态
-	int status; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止
+	int status; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3 队列中
 	// 下载标志,置False可以停止下载
 	boolean bDown = true;
 	// Cookie管理
@@ -77,7 +77,7 @@ public class HttpRequestUtil {
 	}
 
 	/**
-	 * 停止下载
+	 * 开始下载
 	 */
 	public void startDownload() {
 		status = 0;
@@ -168,7 +168,12 @@ public class HttpRequestUtil {
 	 * @param headers  http报文头部
 	 * @return
 	 */
+	static Pattern filePartPattern = Pattern.compile("^(.*)-part[0-9]+\\.(flv|mp4)$");
 	public boolean download(String url, String fileName, HashMap<String, String> headers) {
+		//如果已经人工停止，那么直接返回
+		if(status == -2) {
+			return false;
+		}
 		urlDownload = url;
 		headersDownload = headers;
 		status = 0;
@@ -181,6 +186,16 @@ public class HttpRequestUtil {
 			fileDownload = getFile(fileName);
 			File fileDst = new File(fileDownload.getParent(),
 					fileDownload.getName().replaceAll("_(video|audio)", "").replaceAll("\\.m4s$", ".mp4"));
+			System.out.println(fileDst.getName());
+			// 如果av1234-64-p4.flv已下完， 那么av1234-64-p4-part1.flv这种也不是必须的
+			Matcher ma = filePartPattern.matcher(fileDst.getName());
+			if(ma.find()) {
+				// 文件已存在,无需下载
+				if(new File(fileDst.getParent(), ma.group(1) + "." + ma.group(2)).exists()) {
+					status = 1;
+					return true;
+				}
+			}
 			if (fileDownload.exists() || fileDst.exists()) {
 				total = fileDownload.length();
 				cnt = fileDownload.length();
@@ -576,6 +591,9 @@ public class HttpRequestUtil {
 		return fileDownload;
 	}
 
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	public int getStatus() {
 		return status;
 	}

@@ -7,10 +7,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import nicelee.util.HttpHeaders;
-import nicelee.util.HttpRequestUtil;
+import nicelee.util.CmdUtil;
 
-public class DownloadName {
+public class UtilTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -28,12 +27,12 @@ public class DownloadName {
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * 测试 删除已经生效过的临时cmd 命令文件
+	 */
 	@Test
-	public void test() {
-		HttpRequestUtil util = new HttpRequestUtil();
-		HttpHeaders headers = new HttpHeaders();
-		String html = util.getContent("https://cidian.911cha.com/cixing_mingci.html", headers.getCommonHeaders("cidian.911cha.com"));
-		System.out.println(html);
+	public void testEpIdToAvId() {
+		CmdUtil.deleteAllInactiveCmdTemp();
 	}
-
+	
 }

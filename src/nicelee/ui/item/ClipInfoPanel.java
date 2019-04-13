@@ -36,7 +36,14 @@ public class ClipInfoPanel extends JPanel {
 		this.setOpaque(false);
 		this.add(label);
 		for(final int qn :clip.getLinks().keySet()) {
-			JButton btn = new JButton("清晰度: " + qn);
+			//JButton btn = new JButton("清晰度: " + qn);
+			String qnName = Global.qnNameMap.get(qn);
+			JButton btn = null;
+			if(qnName != null) {
+				btn = new JButton("清晰" + qnName);
+			}else {
+				btn = new JButton("清晰度: " + qn);
+			}
 			btn.addActionListener(new ActionListener() {
 				
 				@Override

@@ -3,6 +3,7 @@ package nicelee.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,10 +22,9 @@ public class CmdUtil {
 			StreamManager outputStream = new StreamManager(process, process.getInputStream());
 			errorStream.start();
 			outputStream.start();
-			while (process.isAlive()) {
-				System.out.println("此处堵塞, 直至process 执行完毕");
-				Thread.sleep(2000);
-			}
+			System.out.println("此处堵塞, 直至process 执行完毕");
+			process.waitFor();
+			System.out.println("process 执行完毕");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class CmdUtil {
 			System.out.println("下载完毕, 正在运行转码程序...");
 			run(cmd);
 			System.out.println("转码完毕");
-			//删除文件
+			// 删除文件
 			if (videoFile.exists()) {
 				Matcher matcher = filePattern.matcher(dstName);
 				matcher.find();
@@ -88,11 +88,12 @@ public class CmdUtil {
 				}
 				System.out.println("转码后文件大小: " + videoFile.length());
 				System.out.println("转码前文件大小和: " + fSize);
-				if(videoFile.length() >= fSize * 0.8) {
-					for(File f: fList) {
+				if (videoFile.length() >= fSize * 0.8) {
+					for (File f : fList) {
 						f.delete();
 					}
-					new File(Global.savePath + dstName + ".txt").delete();
+					// new File(Global.savePath + dstName + ".txt").delete();
+					deleteAllInactiveCmdTemp();
 				}
 			}
 		} else {
@@ -129,9 +130,74 @@ public class CmdUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String cmd[] = { "ffmpeg", "-f", "concat", "-safe", "0" , "-i", Global.savePath + dstName + ".txt", "-c", "copy",
+		String cmd[] = { "ffmpeg", "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c", "copy",
 				Global.savePath + dstName };
 		return cmd;
+	}
+
+	/**
+	 * 删除已经生效过的临时cmd 文件
+	 * 
+	 * 类似于
+	 * @ex1 av12345-64-p1.flv.txt
+	 * @ex2  av12345-64-p2-part1.flv
+	 * @ex3  av12345-64-p2-part1.flv.part
+	 * @ex4  av12345-64-p3.mp4.part
+	 * 
+	 * @return
+	 */
+	final static Pattern cmdTxtPattern = Pattern.compile("^(av[0-9]+-[0-9]+-p[0-9]+\\.(flv|mp4))\\.txt$");
+	final static Pattern cmdDonePartPattern = Pattern.compile("^av[0-9]+-[0-9]+-p[0-9]+-part[0-9]+\\.(flv|mp4)$");
+	final static Pattern cmdPartPattern = Pattern.compile("^(.*)\\.part$");
+	final static Pattern standardFileNamePattern = Pattern.compile("^av[0-9]+-[0-9]+-p[0-9]+\\.(flv|mp4)$");
+
+	public static void deleteAllInactiveCmdTemp() {
+		// 找到下载文件夹
+		File folderDown = new File(Global.savePath);
+		// 筛选下载文件夹
+		FilenameFilter filter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				// txt文件，如果已经存在转换完的对应视频，则可以删除
+				Matcher matcherTxt = cmdTxtPattern.matcher(name);
+				if (matcherTxt.find()) {
+					File file = new File(dir, matcherTxt.group(1));
+					if (file.exists()) {
+						return true;
+					}
+					return false;
+				}
+				if(Global.restrictTempMode) {
+					// .part文件，如果已经存在转换完的对应视频，则可以删除
+					Matcher matcherPart = cmdPartPattern.matcher(name);
+					if (matcherPart.find()) {
+						String fName = matcherPart.group(1).replaceFirst("-part[0-9]+", "");
+						if(standardFileNamePattern.matcher(fName).matches()) {
+							File file = new File(dir, fName);
+							if (file.exists()) {
+								return true;
+							}
+						}
+						return false;
+					}
+					// 部分完成了的flv|mp4文件，如果已经存在转换完的对应视频，则可以删除
+					Matcher matcherDonePart = cmdDonePartPattern.matcher(name);
+					if (matcherDonePart.find()) {
+						File file = new File(dir, matcherDonePart.group());
+						if (file.exists()) {
+							return true;
+						}
+						return false;
+					}
+				}
+				return false;
+			}
+		};
+		// 删除下载文件
+		for (File file : folderDown.listFiles(filter)) {
+			System.out.println("尝试删除" + file.getName());
+			file.delete();
+		}
 	}
 
 	/**

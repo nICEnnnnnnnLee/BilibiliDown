@@ -57,7 +57,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.cid = cid;
 		this.page = page;
 		this.qn = qn;
-		path = "C:\\搜狗高速下载\\";
+		path = "D:\\bilibiliDown\\";
 		fileName = "timg.gif";
 		totalSize = 0L;
 		currentDown = 0L;
@@ -84,7 +84,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		btnOpenFolder.addActionListener(this);
 		this.add(btnOpenFolder);
 
-		btnRemove = new JButton("删除");
+		btnRemove = new JButton("删除任务");
 		btnRemove.setPreferredSize(new Dimension(100, 45));
 		btnRemove.addActionListener(this);
 		this.add(btnRemove);
@@ -124,7 +124,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 				Runtime.getRuntime().exec(cmd);
 			} catch (Exception e1) {
 				//e1.printStackTrace();
-				JOptionPane.showMessageDialog(this.getParent(), "打开文件夹失败!", "失败", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "打开文件夹失败!", "失败", JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else if (e.getSource() == btnOpen) {
 			File file = new File(lbFileName.getText());
@@ -132,12 +132,71 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 				Desktop.getDesktop().open(file);
 			} catch (Exception e1) {
 				//e1.printStackTrace();
-				JOptionPane.showMessageDialog(this.getParent(), "打开文件失败!", "失败", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "打开文件失败!", "失败", JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else if (e.getSource() == btnRemove) {
 //			if(Global.downloadTaskList.get(this).getStatus() == 0) {
 //				JOptionPane.showMessageDialog(this, "当前正在文件下载中!", "警告", JOptionPane.WARNING_MESSAGE);
 //			}
+			removeTask(true);
+		}else if (e.getSource() == btnControl) {
+			//HttpRequestUtil util = Global.downloadTaskList.get(this);
+			HttpRequestUtil util = iNeedAV.getUtil();
+			// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3队列中
+			if(util.getStatus() == 0) {
+				stopTask();
+			}else if(util.getStatus() == 1) {
+				JOptionPane.showMessageDialog(null, "文件已下载完成", "提示", JOptionPane.INFORMATION_MESSAGE);
+			}else {
+				startTask();
+			}
+		}
+	}
+
+	/**
+	 * 停止任务(方法内包含状态判断)
+	 */
+	public void stopTask() {
+		HttpRequestUtil util = iNeedAV.getUtil();
+		//如果正在下载，或在队列， 则暂停
+		if(util.getStatus() == 0 ) {
+			util.stopDownload();
+			btnControl.setText("继续下载");
+		}else if(util.getStatus() == -3 ) {
+			util.setStatus(-2);
+			btnControl.setText("继续下载");
+		}
+	}
+
+	/**
+	 * 开始任务(方法内包含状态判断)
+	 */
+	public void startTask() {
+		HttpRequestUtil util = iNeedAV.getUtil();
+		//如果正在下载 或 下载完毕，则不需要下载
+		if(util.getStatus() != 1 && util.getStatus() != 0) {
+			util.setStatus(-3);
+			Global.downLoadThreadPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					if(util.getStatus() == -2) {
+						System.out.println("已经人工停止,无需再下载");
+						return;
+					}
+					util.startDownload();
+					iNeedAV.downloadClip(url, avid_qn, page);
+				}
+			});
+		}
+	}
+
+	/**
+	 * 删除任务
+	 */
+	public void removeTask(boolean deleteAll) {
+		HttpRequestUtil util = iNeedAV.getUtil();
+		//删除所有 或 删除已完成的任务
+		if(deleteAll || util.getStatus() == 1) {
 			//停止下载
 			Global.downloadTaskList.get(this).stopDownload();
 			//全局监控撤销
@@ -145,33 +204,14 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 			//当前页面控件删除
 			Global.downloadTab.getJpContent().remove(this);
 			//大小重新适配
-			Global.downloadTab.getJpContent().setPreferredSize(new Dimension(1100, 120 * Global.downloadTaskList.size()));
+			Global.downloadTab.getJpContent().setPreferredSize(new Dimension(1100, 128 * Global.downloadTaskList.size()));
 			Global.downloadTab.getJpContent().updateUI();
 			Global.downloadTab.getJpContent().repaint();
-			File file = new File(lbFileName.getText() + ".part");
-			if( file.exists()) {
-				file.delete();
-			}
-		}else if (e.getSource() == btnControl) {
-			//HttpRequestUtil util = Global.downloadTaskList.get(this);
-			HttpRequestUtil util = iNeedAV.getUtil();
-			// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止
-			if(util.getStatus() == 0) {
-				//停止下载
-				util.stopDownload();
-				btnControl.setText("继续下载");
-			}else if(util.getStatus() == 1) {
-				JOptionPane.showMessageDialog(this.getParent(), "文件已下载完成", "提示", JOptionPane.INFORMATION_MESSAGE);
-			}else {
-				Global.downLoadThreadPool.execute(new Runnable() {
-					@Override
-					public void run() {
-						util.startDownload();
-						iNeedAV.downloadClip(url, avid_qn, page);
-					}
-				});
-				
-			}
+//		删除未完成的下载文件
+//		File file = new File(lbFileName.getText() + ".part");
+//		if( file.exists()) {
+//			file.delete();
+//		}
 		}
 	}
 

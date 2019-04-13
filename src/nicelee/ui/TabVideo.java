@@ -3,6 +3,7 @@ package nicelee.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -19,7 +20,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 
 import nicelee.model.ClipInfo;
 import nicelee.model.VideoInfo;
@@ -30,25 +30,24 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	private static final long serialVersionUID = -5829023045158490350L;
 	// ImageIcon backgroundIcon = new
 	// ImageIcon(this.getClass().getResource("/resources/background.jpg"));
-
+	
 	VideoInfo avInfo;// 保存当前Tab 的视频信息
 
 	JLabel lbTabTitle;
 	JLabel lbVideoTitle = new JLabel("Av标题");
 	JLabel lbAvID = new JLabel("AvID");
 	JLabel lbBreif = new JLabel("Av简介");
-	JLabel lbAvPrivew = new JLabel(new ImageIcon(this.getClass().getResource("/resources/loading.gif")),
-			SwingConstants.CENTER);
+	JLabel lbAvPrivew;
 	JPanel jpContent;
 	JScrollPane jpScorll;
-	JComboBox<Integer> cbQn; // 清晰度
+	JComboBox<String> cbQn; // 清晰度
 	JButton btnDownAll; // 批量下载
 
 	public TabVideo(JLabel lbTabTitle) {
 		this.lbTabTitle = lbTabTitle;
 		init();
 	}
-
+	
 	public void init() {
 		this.setOpaque(false);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -84,24 +83,23 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 
 		JLabel label1 = new JLabel("优先清晰度");
 		this.add(label1);
-		cbQn = new JComboBox<Integer>();
-		cbQn.addItem(112);// 1080P+
-		cbQn.addItem(80);// 1080P
-		cbQn.addItem(64);// 720P
-		cbQn.addItem(32);// 480P
-		cbQn.addItem(16);// 320P
+		cbQn = new JComboBox<>();
+		for(String str: Global.nameQnMap.keySet()) {
+			cbQn.addItem(str);
+		}
+		cbQn.setSelectedIndex(2);
 		btnDownAll = new JButton("批量下载");
 		btnDownAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				download(true, (int) cbQn.getSelectedItem());
+				download(true, Global.nameQnMap.get(cbQn.getSelectedItem()));
 			}
 		});
 		this.add(cbQn);
 		this.add(btnDownAll);
 		// 空白模块- 占位
 		JLabel jlBLANK11 = new JLabel();
-		jlBLANK11.setPreferredSize(new Dimension(250, 30));
+		jlBLANK11.setPreferredSize(new Dimension(220, 30));
 		this.add(jlBLANK11);
 
 		// 空白模块- 占位
@@ -123,9 +121,11 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		jlBLANK4.setPreferredSize(new Dimension(100, 460));
 		this.add(jlBLANK4);
 
+		ImageIcon imag1 = new ImageIcon(this.getClass().getResource("/resources/loading.gif"));
+		imag1.setImage(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_DEFAULT));
+		lbAvPrivew = new JLabel(imag1 );
 		lbAvPrivew.setBorder(BorderFactory.createLineBorder(Color.red));
 		lbAvPrivew.setPreferredSize(new Dimension(700, 460));
-
 //		try {
 //			ImageIcon imgIcon = new ImageIcon(QrCodeUtil.createQrCode("你好吗?我好呀", 900));
 //			imgIcon = new ImageIcon(imgIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH));
@@ -178,12 +178,9 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	private void download(int i, int qn) {
 		try {
 			ClipInfo clip = (ClipInfo) avInfo.getClips().values().toArray()[i];
-			DownloadRunnable downThread = new DownloadRunnable(
-					avInfo.getVideoName() + "-" + clip.getTitle(),
-					clip.getAvId(), String.valueOf(clip.getcId()), 
-					String.valueOf(clip.getPage()), 
-					qn);
-			//new Thread(downThread).start();
+			DownloadRunnable downThread = new DownloadRunnable(avInfo.getVideoName() + "-" + clip.getTitle(),
+					clip.getAvId(), String.valueOf(clip.getcId()), String.valueOf(clip.getPage()), qn);
+			// new Thread(downThread).start();
 			Global.queryThreadPool.execute(downThread);
 		} catch (Exception e) {
 			e.printStackTrace();

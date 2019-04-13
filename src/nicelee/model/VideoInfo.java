@@ -1,6 +1,6 @@
 package nicelee.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class VideoInfo {
 	String videoName;
@@ -9,7 +9,7 @@ public class VideoInfo {
 	String authorId;
 	String videoPreview;
 	String brief;
-	HashMap<Integer, ClipInfo> clips;// 未使用 Integer 为 Page
+	LinkedHashMap<Integer, ClipInfo> clips;// 未使用 Integer 为 Page
 	String videoLink;
 
 	public void print() {
@@ -92,11 +92,11 @@ public class VideoInfo {
 		this.videoLink = videoLink;
 	}
 
-	public HashMap<Integer, ClipInfo> getClips() {
+	public LinkedHashMap<Integer, ClipInfo> getClips() {
 		return clips;
 	}
 
-	public void setClips(HashMap<Integer, ClipInfo> clips) {
+	public void setClips(LinkedHashMap<Integer, ClipInfo> clips) {
 		this.clips = clips;
 	}
 

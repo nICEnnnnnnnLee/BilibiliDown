@@ -10,7 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import nicelee.model.ClipInfo;
+import nicelee.bilibili.enums.VideoQualityEnum;
+import nicelee.bilibili.model.ClipInfo;
 import nicelee.ui.Global;
 import nicelee.ui.thread.DownloadRunnable;
 
@@ -22,25 +23,25 @@ public class ClipInfoPanel extends JPanel {
 	private static final long serialVersionUID = -752743062676819403L;
 	String avTitle;
 	ClipInfo clip;
-	public ClipInfoPanel(ClipInfo clip, String avTitle) {
+	public ClipInfoPanel(ClipInfo clip) {
 		this.clip = clip;
-		this.avTitle = avTitle;
+		this.avTitle = clip.getAvTitle();
 		initUI();
 	}
 	
 	void initUI() {
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.setPreferredSize(new Dimension(340, 110));
-		JLabel label = new JLabel(clip.getPage() + " - " + clip.getTitle(), JLabel.CENTER);
+		JLabel label = new JLabel(clip.getRemark() + " - " + clip.getTitle(), JLabel.CENTER);
 		label.setPreferredSize(new Dimension(300, 30));
 		this.setOpaque(false);
 		this.add(label);
 		for(final int qn :clip.getLinks().keySet()) {
 			//JButton btn = new JButton("清晰度: " + qn);
-			String qnName = Global.qnNameMap.get(qn);
+			String qnName = VideoQualityEnum.getQualityDescript(qn);
 			JButton btn = null;
 			if(qnName != null) {
-				btn = new JButton("清晰" + qnName);
+				btn = new JButton(qnName);
 			}else {
 				btn = new JButton("清晰度: " + qn);
 			}
@@ -48,10 +49,7 @@ public class ClipInfoPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DownloadRunnable downThread = new DownloadRunnable(avTitle+ "-" +clip.getTitle(),
-							clip.getAvId(),
-							String.valueOf(clip.getcId()),
-							String.valueOf(clip.getPage()), qn);
+					DownloadRunnable downThread = new DownloadRunnable(clip, qn);
 					//new Thread(downThread).start();
 					Global.queryThreadPool.execute(downThread);
 				}

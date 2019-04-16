@@ -14,21 +14,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import nicelee.bilibili.INeedAV;
+import nicelee.bilibili.downloaders.IDownloader;
+import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.util.CmdUtil;
+import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
-import nicelee.util.HttpRequestUtil;
 
 public class DownloadInfoPanel extends JPanel implements ActionListener {
 	
-	String avTitle;
+	String avTitle; //原始av标题
+	String clipTitle; //原始clip标题
 	String avid;
 	String cid;
-	String page;
+	int page;
+	int remark;
 	int qn;
 	
 	//下载相关
 	public INeedAV iNeedAV;
 	public String url;
 	public String avid_qn;
+	public String formattedTitle;
 	
 	
 	long lastCntTime = 0L;
@@ -50,13 +57,17 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	JLabel lbCurrentStatus;
 	JLabel lbDownFile;
 	JLabel lbFileName;
+	JLabel lbavName;
 
-	public DownloadInfoPanel(String avTitle, String avid, String cid, String page, int qn) {
-		this.avTitle = avTitle;
-		this.avid = avid;
-		this.cid = cid;
-		this.page = page;
+	public DownloadInfoPanel(ClipInfo clip, int qn) {
+		this.avTitle = clip.getAvTitle();
+		this.clipTitle = clip.getAvTitle();
+		this.avid = clip.getAvId();
+		this.cid = Long.toString(clip.getcId());
+		this.page = clip.getPage();
+		this.remark = clip.getRemark();
 		this.qn = qn;
+		
 		path = "D:\\bilibiliDown\\";
 		fileName = "timg.gif";
 		totalSize = 0L;
@@ -93,7 +104,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		blank.setPreferredSize(new Dimension(100, 45));
 		this.add(blank);
 		
-		JLabel lbavName = new JLabel(avTitle);
+		lbavName = new JLabel(avTitle);
 		lbavName.setPreferredSize(new Dimension(500, 45));
 		lbavName.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbavName);
@@ -141,50 +152,60 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 			removeTask(true);
 		}else if (e.getSource() == btnControl) {
 			//HttpRequestUtil util = Global.downloadTaskList.get(this);
-			HttpRequestUtil util = iNeedAV.getUtil();
 			// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3队列中
-			if(util.getStatus() == 0) {
+			StatusEnum status = iNeedAV.getDownloader().currentStatus();
+			if(status == StatusEnum.DOWNLOADING) {
 				stopTask();
-			}else if(util.getStatus() == 1) {
-				JOptionPane.showMessageDialog(null, "文件已下载完成", "提示", JOptionPane.INFORMATION_MESSAGE);
 			}else {
-				startTask();
+				continueTask();
 			}
 		}
 	}
 
+	
+	/**
+	 * 下载前的初始化工作
+	 */
+	public void initDownloadParams(INeedAV iNeedAV, String url, String avid_qn, String formattedTitle)  {
+		this.iNeedAV = iNeedAV;
+		this.avid_qn = avid_qn;
+		this.formattedTitle = formattedTitle;
+		this.url = url;
+		lbavName.setText(formattedTitle);
+	}
 	/**
 	 * 停止任务(方法内包含状态判断)
 	 */
 	public void stopTask() {
-		HttpRequestUtil util = iNeedAV.getUtil();
-		//如果正在下载，或在队列， 则暂停
-		if(util.getStatus() == 0 ) {
-			util.stopDownload();
-			btnControl.setText("继续下载");
-		}else if(util.getStatus() == -3 ) {
-			util.setStatus(-2);
-			btnControl.setText("继续下载");
-		}
+		IDownloader downloader = iNeedAV.getDownloader();
+		downloader.stopTask();
 	}
 
 	/**
-	 * 开始任务(方法内包含状态判断)
+	 * 继续任务(方法内包含状态判断)
 	 */
-	public void startTask() {
-		HttpRequestUtil util = iNeedAV.getUtil();
+	public void continueTask() {
+		String record = avid_qn + "-p" + page;
+		IDownloader downloader = iNeedAV.getDownloader();
 		//如果正在下载 或 下载完毕，则不需要下载
-		if(util.getStatus() != 1 && util.getStatus() != 0) {
-			util.setStatus(-3);
+		StatusEnum status = downloader.currentStatus();
+		if(status != StatusEnum.DOWNLOADING && status != StatusEnum.SUCCESS && status != StatusEnum.PROCESSING) {
+			downloader.startTask();
 			Global.downLoadThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
-					if(util.getStatus() == -2) {
+					if(downloader.currentStatus() == StatusEnum.STOP) {
 						System.out.println("已经人工停止,无需再下载");
 						return;
 					}
-					util.startDownload();
-					iNeedAV.downloadClip(url, avid_qn, page);
+					// 开始下载
+					if(downloader.download(url, avid, qn, page)) {
+						// 下载成功后保存到仓库
+						if(Global.saveToRepo) {
+							RepoUtil.appendAndSave(record);
+						}
+						CmdUtil.convertOrAppendCmdToRenameBat(avid_qn, formattedTitle, page);
+					}
 				}
 			});
 		}
@@ -194,11 +215,11 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	 * 删除任务
 	 */
 	public void removeTask(boolean deleteAll) {
-		HttpRequestUtil util = iNeedAV.getUtil();
 		//删除所有 或 删除已完成的任务
-		if(deleteAll || util.getStatus() == 1) {
+		// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3队列中
+		if (deleteAll || iNeedAV.getDownloader().currentStatus() == StatusEnum.SUCCESS) {
 			//停止下载
-			Global.downloadTaskList.get(this).stopDownload();
+			Global.downloadTaskList.get(this).stopTask();
 			//全局监控撤销
 			Global.downloadTaskList.remove(this);
 			//当前页面控件删除
@@ -207,11 +228,11 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 			Global.downloadTab.getJpContent().setPreferredSize(new Dimension(1100, 128 * Global.downloadTaskList.size()));
 			Global.downloadTab.getJpContent().updateUI();
 			Global.downloadTab.getJpContent().repaint();
-//		删除未完成的下载文件
-//		File file = new File(lbFileName.getText() + ".part");
-//		if( file.exists()) {
-//			file.delete();
-//		}
+			//删除未完成的下载文件
+			File file = new File(lbFileName.getText() + ".part");
+			if( file.exists()) {
+				file.delete();
+			}
 		}
 	}
 
@@ -258,7 +279,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		if(obj instanceof DownloadInfoPanel) {
 			DownloadInfoPanel down = (DownloadInfoPanel)obj;
 			return (avid.equals(down.avid) 
-					&& page.equals(down.page));
+					&& page == down.page);
 		}
 		return false;
 	}

@@ -1,4 +1,4 @@
-package nicelee.util;
+package nicelee.bilibili.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -21,31 +21,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import nicelee.bilibili.enums.StatusEnum;
 import nicelee.ui.Global;
 
 public class HttpRequestUtil {
 
-	static CookieManager defaultManager = new CookieManager();
+	private static CookieManager defaultManager = new CookieManager();
 	// 下载缓存区
-	byte[] buffer = new byte[1024 * 1024];
+	private byte[] buffer = new byte[1024 * 1024];
 	// 下载文件大小状态
-	long cnt;
-	long total;
-	// 是否还有下一步任务(用于redownload)
-	int currentTask = 1;
-	int totalTask = 1;
-	// String nextTask;// name##url
-	String cmd[];// 执行完任务后的命令
-	boolean isConverting; // 是否正在转码
+	private long downloadedFileSize;
+	private long totalFileSize;
 	// 下载文件
-	String savePath = "./download/";
-	File fileDownload;
-	HashMap<String, String> headersDownload;
-	String urlDownload;
+	private String savePath = "./download/";
+	private File fileDownload;
 	// 下载状态
-	int status; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3 队列中
+	private StatusEnum status = StatusEnum.NONE; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3 队列中
 	// 下载标志,置False可以停止下载
-	boolean bDown = true;
+	private boolean bDown = true;
 	// Cookie管理
 	CookieManager manager = new CookieManager();
 
@@ -74,70 +67,15 @@ public class HttpRequestUtil {
 	 */
 	public void stopDownload() {
 		bDown = false;
+		status = StatusEnum.STOP;
 	}
-
-	/**
-	 * 开始下载
-	 */
-	public void startDownload() {
-		status = 0;
-		bDown = true;
-	}
-
-//	/**
-//	 * 根据状态重新下载
-//	 */
-//	public boolean redownload() {
-//		status = 0;
-//		bDown = true;
-//		if (totalTask == 1) {
-//			return download(urlDownload, fileDownload.getName(), headersDownload);
-//		} else {
-//			if (nextTask != null) {
-//				// 下载第一个文件
-//				String[] args = nextTask.split("##");
-//				String audioName = args[0];
-//				String videoName = audioName.replace("_audio.m4s", "_video.m4s");
-//				String dstName = audioName.replace("_audio.m4s", ".mp4");
-//				String url = args[1];
-//
-//				System.out.println("下载第一个文件..");
-//				if (download(urlDownload, videoName, headersDownload)) {
-//					setNextTask(null);
-//				} else {
-//					return false;
-//				}
-//				System.out.println("下载第二个文件..");
-//				// 下载第二个文件
-//				total = 0;
-//				if (download(url, audioName, headersDownload)) {
-//					CmdUtil.convert(videoName, audioName, dstName);
-//					return true;
-//				} else {
-//					return false;
-//				}
-//			} else {
-//				// 直接第二个文件
-//				String audioName = fileDownload.getName();
-//				String videoName = audioName.replace("_audio.m4s", "_video.m4s");
-//				String dstName = audioName.replace("_audio.m4s", ".mp4");
-//				if (download(urlDownload, audioName, headersDownload)) {
-//					CmdUtil.convert(videoName, audioName, dstName);
-//					return true;
-//				} else {
-//					return false;
-//				}
-//			}
-//
-//		}
-//	}
 
 	/**
 	 * 获取文件大小
 	 */
 	final static Pattern sizePattern = Pattern.compile("bytes 0-[0-9]+/([0-9]+)");
 
-	long getfileSize(String url, HashMap<String, String> headers) throws Exception {
+	protected long getfileSize(String url, HashMap<String, String> headers) throws Exception {
 		String urlNameString = url;
 		URL realUrl = new URL(urlNameString);
 		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
@@ -150,16 +88,27 @@ public class HttpRequestUtil {
 		conn.connect();
 		// 获取所有响应头字段
 		Map<String, List<String>> map = conn.getHeaderFields();
-		// 遍历所有的响应头字段
-//		for (String key : map.keySet()) {
-//			System.out.println(key + "--->" + map.get(key));
-//		}
 		Matcher matcher = sizePattern.matcher(map.get("Content-Range").get(0));
 		matcher.find();
-		total = Long.parseLong(matcher.group(1));
-		return total;
+		long totalSize = Long.parseLong(matcher.group(1));
+		return totalSize;
 	}
-
+	
+	/**
+	 * 重置统计参数
+	 */
+	public void init() {
+		bDown = true;
+		status = StatusEnum.NONE;
+		reset();
+	}
+	/**
+	 * 重置统计参数
+	 */
+	public void reset() {
+		downloadedFileSize = 0;
+		totalFileSize = 0;
+	}
 	/**
 	 * 下载文件 请确认 文件大小total为 0 或者正确值
 	 * 
@@ -171,17 +120,14 @@ public class HttpRequestUtil {
 	static Pattern filePartPattern = Pattern.compile("^(.*)-part[0-9]+\\.(flv|mp4)$");
 	public boolean download(String url, String fileName, HashMap<String, String> headers) {
 		//如果已经人工停止，那么直接返回
-		if(status == -2) {
+		if(status == StatusEnum.STOP) {
 			return false;
 		}
-		urlDownload = url;
-		headersDownload = headers;
-		status = 0;
+		status = StatusEnum.DOWNLOADING;
 		// System.out.println(url);
 		InputStream inn = null;
 		RandomAccessFile raf = null;
 		try {
-			// System.out.println(optionsContent(url, headers, null));
 			// 确保没有重复文件
 			fileDownload = getFile(fileName);
 			File fileDst = new File(fileDownload.getParent(),
@@ -191,15 +137,16 @@ public class HttpRequestUtil {
 			Matcher ma = filePartPattern.matcher(fileDst.getName());
 			if(ma.find()) {
 				// 文件已存在,无需下载
-				if(new File(fileDst.getParent(), ma.group(1) + "." + ma.group(2)).exists()) {
-					status = 1;
+				File fTemp = new File(fileDst.getParent(), ma.group(1) + "." + ma.group(2));
+				if(fTemp.exists()) {
+					status = StatusEnum.SUCCESS;
 					return true;
 				}
 			}
 			if (fileDownload.exists() || fileDst.exists()) {
-				total = fileDownload.length();
-				cnt = fileDownload.length();
-				status = 1;
+				totalFileSize = fileDownload.length();
+				downloadedFileSize = fileDownload.length();
+				status = StatusEnum.SUCCESS;
 				// 文件已存在,无需下载
 				return true;
 			}
@@ -235,7 +182,7 @@ public class HttpRequestUtil {
 //			}
 			System.out.printf("文件大小: %s 字节.\r\n", map.get("Content-Length"));
 
-			total = offset + Long.parseUnsignedLong(map.get("Content-Length").get(0));
+			totalFileSize = offset + Long.parseUnsignedLong(map.get("Content-Length").get(0));
 			try {
 				inn = conn.getInputStream();
 			} catch (Exception e) {
@@ -250,19 +197,19 @@ public class HttpRequestUtil {
 			}
 
 			int lenRead = inn.read(buffer);
-			cnt = offset + lenRead;
+			downloadedFileSize = offset + lenRead;
 			while (lenRead > -1) {
 				if (!bDown) {
-					status = -2;
+					status = StatusEnum.STOP;
 					return false;
 				}
 				raf.write(buffer, 0, lenRead);
 				// System.out.println("当前完成度: " + cnt*100/total + "%");
 				lenRead = inn.read(buffer);
-				cnt += lenRead;
+				downloadedFileSize += lenRead;
 			}
 			raf.close();
-			if (fileDownloadPart.length() < total) {
+			if (fileDownloadPart.length() < totalFileSize) {
 				download(urlNameString, fileName, headers);
 			} else {
 				fileDownloadPart.renameTo(fileDownload);
@@ -271,7 +218,7 @@ public class HttpRequestUtil {
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
 			e.printStackTrace();
-			status = -1;
+			status = StatusEnum.FAIL;
 			return false;
 		}
 		// 使用finally块来关闭输入流
@@ -292,75 +239,12 @@ public class HttpRequestUtil {
 				e2.printStackTrace();
 			}
 		}
-		status = 1;
+		status = StatusEnum.SUCCESS;
 		return true;
 	}
 
 	public String getContent(String url, HashMap<String, String> headers) {
 		return getContent(url, headers, null);
-	}
-
-	/**
-	 * do a Http OPTIONS Not Worked with http stream with Chunked
-	 * 
-	 * @param url
-	 * @param headers
-	 * @return content, mostly a html page
-	 * @throws IOException
-	 */
-	public String optionsContent(String url, HashMap<String, String> headers, List<HttpCookie> listCookie) {
-		StringBuffer result = new StringBuffer();
-		BufferedReader in = null;
-		try {
-			String urlNameString = url;
-			URL realUrl = new URL(urlNameString);
-			HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-			conn.setConnectTimeout(2000);
-			conn.setReadTimeout(2000);
-			conn.setRequestMethod("OPTIONS");
-			for (Map.Entry<String, String> entry : headers.entrySet()) {
-				conn.setRequestProperty(entry.getKey(), entry.getValue());
-			}
-			// 设置Cookie
-			if (listCookie != null) {
-				StringBuilder sb = new StringBuilder();
-				for (HttpCookie cookie : listCookie) {
-					sb.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
-				}
-				String cookie = sb.toString();
-				if (cookie.endsWith("; ")) {
-					cookie = cookie.substring(0, cookie.length() - 2);
-				}
-				conn.setRequestProperty("Cookie", cookie);
-			}
-			conn.connect();
-
-			String encoding = conn.getContentEncoding();
-			InputStream ism = conn.getInputStream();
-			if (encoding != null && encoding.contains("gzip")) {// 首先判断服务器返回的数据是否支持gzip压缩，
-				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
-				ism = new GZIPInputStream(conn.getInputStream());
-			}
-			in = new BufferedReader(new InputStreamReader(ism));
-			String line;
-			while ((line = in.readLine()) != null) {
-				line = new String(line.getBytes(), "UTF-8");
-				result.append(line);
-			}
-		} catch (Exception e) {
-			System.out.println("发送GET请求出现异常！" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-		// printCookie(manager.getCookieStore());
-		return result.toString();
 	}
 
 	/**
@@ -515,86 +399,20 @@ public class HttpRequestUtil {
 		return result.toString();
 	}
 
-	/**
-	 * 如果存在, 返回空
-	 * 
-	 * @param dst
-	 * @return
-	 */
 	private File getFile(String dst) {
-		// 当前文件所在目录
-		// File curfolder = new File(dst).getParentFile();
-		// 新建download文件夹
-		// File folder = new File(curfolder, "download");
 		File folder = new File(savePath);
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
-		// 判断download文件下的文件状况
 		File file = new File(folder, dst);
 		return file;
-	}
-
-	/**
-	 * 弃用
-	 * 
-	 * @param dst
-	 * @return
-	 */
-	File getFileEnsureNoExists(String dst) {
-		// 当前文件所在目录
-		// File curfolder = new File(dst).getParentFile();
-		// 新建download文件夹
-		// File folder = new File(curfolder, "download");
-		File folder = new File(savePath);
-		if (!folder.exists()) {
-			folder.mkdir();
-		}
-		// 判断download文件下的文件状况
-		File file = new File(folder, dst);
-		if (file.exists()) {
-			String name = file.getName().replaceAll(".[^.]+$", "");
-			String suffix = file.getName().replace(name, "");
-			for (int i = 1; i < 1000; i++) {
-				file = new File(folder, name + "-" + i + suffix);
-				System.out.println("目标文件已存在,尝试新建文件: " + name + "-" + i + suffix);
-				if (!file.exists())
-					return file;
-			}
-		}
-		return file;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	public long getCnt() {
-		return cnt;
-	}
-
-	public void setTotal(long total) {
-		this.total = total;
-	}
-
-	public long getTotal() {
-		return total;
 	}
 
 	public File getFileDownload() {
 		return fileDownload;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
-	public int getStatus() {
+	public StatusEnum getStatus() {
 		return status;
 	}
 
@@ -622,48 +440,12 @@ public class HttpRequestUtil {
 		return sb.toString();
 	}
 
-//	public String getNextTask() {
-//		return nextTask;
-//	}
-//
-//	public void setNextTask(String nextTask) {
-//		this.nextTask = nextTask;
-//	}
-
-	public String[] getCmd() {
-		return cmd;
+	public long getDownloadedFileSize() {
+		return downloadedFileSize;
 	}
 
-	public void setCmd(String cmd[]) {
-		this.cmd = cmd;
-	}
-
-	public int getTotalTask() {
-		return totalTask;
-	}
-
-	public void setTotalTask(int totalTask) {
-		this.totalTask = totalTask;
-	}
-
-	public boolean isConverting() {
-		return isConverting;
-	}
-
-	public void setConverting(boolean isConverting) {
-		this.isConverting = isConverting;
-	}
-
-	public void setFileDownload(File fileDownload) {
-		this.fileDownload = fileDownload;
-	}
-
-	public int getCurrentTask() {
-		return currentTask;
-	}
-
-	public void setCurrentTask(int currentTask) {
-		this.currentTask = currentTask;
+	public long getTotalFileSize() {
+		return totalFileSize;
 	}
 
 }

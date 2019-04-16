@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import nicelee.bilibili.INeedAVbPhone;
-import nicelee.model.VideoInfo;
+import nicelee.bilibili.model.VideoInfo;
 
 public class ILookAVByPhoneTest {
 

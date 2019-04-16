@@ -1,4 +1,4 @@
-package nicelee.util;
+package nicelee.bilibili.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -79,5 +79,12 @@ public class ConfigUtil {
 		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));
 		Global.themeDefault = "default".equals(System.getProperty("bilibili.theme"));
 		Global.restrictTempMode = "on".equals(System.getProperty("bilibili.restrictTempMode"));
+		Global.useRepo = "on".equals(System.getProperty("bilibili.repo"));
+		boolean saveToRepo = "on".equals(System.getProperty("bilibili.repo.save"));
+		Global.saveToRepo =  Global.useRepo || saveToRepo;
+		Global.repoInDefinitionStrictMode = "on".equals(System.getProperty("bilibili.repo.definitionStrictMode"));
+		//重命名配置
+		Global.formatStr = System.getProperty("bilibili.name.format");
+		Global.doRenameAfterComplete = "true".equals(System.getProperty("bilibili.name.doAfterComplete"));
 	}
 }

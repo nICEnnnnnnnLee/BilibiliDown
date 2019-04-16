@@ -1,18 +1,22 @@
-package nicelee.model;
+package nicelee.bilibili.model;
 
 import java.util.HashMap;
 
 public class ClipInfo {
+	String avTitle;
 	long cId;
 	String avId;
 	int page;
 	String title;
 	HashMap<Integer, String> links;
+	
+	int remark = -1; // 用于ss番剧查询时显示顺序
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("------------------------------\r\n");
+		sb.append("--avTitle为 :").append(avTitle).append(" \r\n");
 		sb.append("--page为 :").append(page).append(" \r\n");
 		sb.append("--cId为 :").append(cId).append(" \r\n");
 		sb.append("--title为 :").append(title).append(" \r\n");
@@ -82,6 +86,23 @@ public class ClipInfo {
 
 	public void setLinks(HashMap<Integer, String> links) {
 		this.links = links;
+	}
+
+	public int getRemark() {
+		int p = remark == -1 ? page : remark;
+		return p;
+	}
+
+	public void setRemark(int remark) {
+		this.remark = remark;
+	}
+
+	public String getAvTitle() {
+		return avTitle;
+	}
+
+	public void setAvTitle(String avTitle) {
+		this.avTitle = avTitle;
 	}
 
 }

@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import nicelee.bilibili.INeedLogin;
-import nicelee.util.HttpCookies;
+import nicelee.bilibili.util.HttpCookies;
 
 public class INeedLoginTest {
 

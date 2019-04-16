@@ -139,13 +139,12 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		String avId = txtSearch.getText();
 		if(!placeHolder.equals(avId)) {
 			INeedAV iNeedAV = new INeedAV();
-			iNeedAV.setDownFormat(Global.downloadFormat);
-			iNeedAV.setPageSize(Global.pageSize);
-			avId = iNeedAV.getAvID(avId);
+			avId = iNeedAV.getValidID(avId);
 			System.out.println("当前解析的id为：");
 			System.out.println(avId);
 			if(avId.contains(" ")) {
 				String avs[] = avId.trim().split(" ");
+				System.out.println("将弹出窗口个数： " + avs.length);
 				for(String av : avs) {
 					popVideoInfoTab(av);
 				}

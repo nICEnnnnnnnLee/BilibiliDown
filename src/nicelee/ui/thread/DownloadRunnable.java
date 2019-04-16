@@ -1,74 +1,96 @@
 package nicelee.ui.thread;
 
 import java.awt.Dimension;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import nicelee.bilibili.INeedAV;
+import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.util.CmdUtil;
+import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class DownloadRunnable implements Runnable {
-	String title;
+	
+	ClipInfo clip;
+	String displayName;
 	String avid;
 	String cid;
-	String page;
-	int qn;
+	int page;
+	int remark;
+	String record;
+	int qn; //想要申请的链接视频质量
 
-	public DownloadRunnable(String title, String avid, String cid, String page, int qn) {
-		this.title = title;
-		this.avid = avid;
-		this.cid = cid;
-		this.page = page;
+	public DownloadRunnable(ClipInfo clip, int qn) {
+		this.displayName = clip.getAvTitle() + "p" + clip.getRemark() + "-" +clip.getTitle();
+		this.clip = clip;
+		this.avid = clip.getAvId();
+		this.cid = String.valueOf(clip.getcId());
+		this.page = clip.getPage();
+		this.remark = clip.getRemark();
 		this.qn = qn;
+		this.record = avid + "-" + qn  + "-p" + page;
 	}
-
-	final static Pattern urlFLVPattern = Pattern.compile("-([0-9]+)\\.(flv|mp4)\\?");
-	final static Pattern urlM4SPattern = Pattern.compile("-300([0-9]+)\\.m4s\\?");
 
 	@Override
 	public void run() {
 		System.out.println("你点击了一次下载按钮...");
+		//判断是否已经下载过
+		if(Global.useRepo && RepoUtil.isInRepo(record)) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(null, "您已经下载过视频" + record, "提示", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}).start();
+			System.out.println("已经下载过 " + record);
+			return;
+		}
 		// 新建下载部件
-		DownloadInfoPanel downPanel = new DownloadInfoPanel(title + "-p" + page, avid, cid, page, qn);
+		DownloadInfoPanel downPanel = new DownloadInfoPanel(clip, qn);
+		// 判断是否在下载任务中
 		if (Global.downloadTaskList.get(downPanel) != null) {
 			System.out.println("已经存在相关下载");
 			return;
 		}
+		// 查询下载链接
 		INeedAV iNeedAV = new INeedAV();
-		iNeedAV.setDownFormat(Global.downloadFormat);
-		String url = iNeedAV.getVideoLink(avid, cid, qn); //该步含网络查询， 可能较为耗时
-		String avid_qn = avid;
-		String title_qn = title;
-		Matcher ma = urlM4SPattern.matcher(url);
-		if (ma.find()) {
-			avid_qn += "-" + ma.group(1);
-			title_qn += "-" + ma.group(1);
-		}else {
-			ma = urlFLVPattern.matcher(url);
-			if (ma.find()) {
-				avid_qn += "-" + ma.group(1);
-				title_qn += "-" + ma.group(1);
-			}
+		String url = iNeedAV.getInputParser(avid).getVideoLink(avid, cid, qn, Global.downloadFormat); //该步含网络查询， 可能较为耗时
+		int realQN = iNeedAV.getInputParser(avid).getVideoLinkQN();
+		// 生成格式化名称
+		String formattedTitle = CmdUtil.genFormatedName(
+				avid, 
+				"p" + page, 
+				"pn" + remark, 
+				realQN, 
+				clip.getAvTitle(), 
+				clip.getTitle());
+		String avid_qn = avid + "-" + realQN;
+		this.record = avid_qn  + "-p" + page;
+		//如果清晰度不符合预期，再判断一次记录
+		//判断是否已经下载过
+		if (qn != realQN && Global.useRepo && RepoUtil.isInRepo(record)) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(null, "您已经下载过视频" + record, "提示", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}).start();
+			System.out.println("已经下载过 " + record);
+			return;
 		}
-		
-		System.out.println(avid_qn);
-		final String avid_q = avid_qn;
-		final String title_q = title_qn;
-		downPanel.iNeedAV = iNeedAV;
-		downPanel.avid_qn = avid_qn;
-		downPanel.url = url;
+		//获取实际清晰度后，初始化下载部件参数
+		downPanel.initDownloadParams(iNeedAV, url, avid_qn, formattedTitle);
 		// 再进行一次判断，看下载列表是否已经存在相应任务(防止并发误判)
 		if (Global.downloadTaskList.get(downPanel) != null) {
 			System.out.println("已经存在相关下载");
 			return;
 		}
 		// 将下载任务(HttpRequestUtil + DownloadInfoPanel)添加至全局列表, 让监控进程周期获取信息并刷新
-		Global.downloadTaskList.put(downPanel, iNeedAV.getUtil());
+		Global.downloadTaskList.put(downPanel, iNeedAV.getDownloader());
 		// 根据信息初始化绘制下载部件
 		JPanel jpContent = Global.downloadTab.getJpContent();
 		jpContent.add(downPanel);
@@ -77,31 +99,18 @@ public class DownloadRunnable implements Runnable {
 			@Override
 			public void run() {
 				try {
-					if(iNeedAV.getUtil().getStatus() == -2) {
+					if(iNeedAV.getDownloader().currentStatus() == StatusEnum.STOP) {
 						System.out.println("已经人工停止,无需再下载");
 						return;
 					}
 					// 开始下载
-					iNeedAV.downloadClip(url, avid_q, page);
-					// 追加重命名文件
-					File f = new File(Global.savePath, "rename.bat");
-					boolean isExist = f.exists();
-					System.out.println(f.getAbsolutePath() + "是否存在? " + f.exists());
-					FileWriter fw = new FileWriter(f, true);
-					if (!isExist) {
-						// .bat切为UTF-8编码, 防止中文乱码
-						fw.write("@echo off\r\nchcp 65001\r\n");
+					if(iNeedAV.downloadClip(url, avid, iNeedAV.getInputParser(avid).getVideoLinkQN(), page)) {
+						// 下载成功后保存到仓库
+						if(Global.saveToRepo) {
+							RepoUtil.appendAndSave(record);
+						}
+						CmdUtil.convertOrAppendCmdToRenameBat(avid_qn, formattedTitle, page);
 					}
-					if (Global.downloadFormat >= 0) {
-						String cmd = String.format("rename \"%s.mp4\" \"%s.mp4\"\r\n", avid_q + "-p" + page,
-								title_q.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·") + "-p" + page);
-						fw.write(cmd);
-						// }else {
-						cmd = String.format("rename \"%s.flv\" \"%s.flv\"\r\n", avid_q + "-p" + page,
-								title_q.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·") + "-p" + page);
-						fw.write(cmd);
-					}
-					fw.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

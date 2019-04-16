@@ -3,9 +3,9 @@ package nicelee.ui.thread;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
-import nicelee.util.HttpRequestUtil;
 
 public class MonitoringThread extends Thread {
 	
@@ -13,97 +13,82 @@ public class MonitoringThread extends Thread {
 		this.setName("Thread - Monitoring Download");
 	}
 	public void run() {
-		ConcurrentHashMap<DownloadInfoPanel, HttpRequestUtil> map = Global.downloadTaskList;
+		ConcurrentHashMap<DownloadInfoPanel, IDownloader> map = Global.downloadTaskList;
 		while (true) {
 			//每一次while循环， 统计一次任务状态， 并在UI上更新
 			int totalTask = 0, activeTask = 0, pauseTask = 0, doneTask = 0, queuingTask = 0;
-			for (Entry<DownloadInfoPanel, HttpRequestUtil> entry : map.entrySet()) {
+			for (Entry<DownloadInfoPanel, IDownloader> entry : map.entrySet()) {
 				DownloadInfoPanel dp = entry.getKey();
-				HttpRequestUtil httpUtil = entry.getValue();
+				IDownloader downloader = entry.getValue();
 				try {
-					dp.getBtnControl().setVisible(true);
-					dp.getLbFileName().setText(httpUtil.getFileDownload().getAbsolutePath()
-							.replaceFirst("_(video|audio)\\.m4s$", ".mp4")
-							.replaceFirst("-part[0-9]+\\.flv$", ".flv"));
-					String fileSize = getFileSize(httpUtil.getTotal());
-					
-					if (httpUtil.getStatus() == 1) {//下载已完成(包括转码中)
+					String path = downloader.file().getAbsolutePath();
+					if(Global.doRenameAfterComplete) {
+						path = path.replaceFirst("av[0-9]+-[0-9]+-p[0-9]+", dp.formattedTitle);
+					}
+					dp.getLbFileName().setText(path);
+					switch (downloader.currentStatus()) {
+					case SUCCESS:
 						doneTask ++;
-						String tip = httpUtil.isConverting()? "正在转码中...":"转码已完成";
-						if(httpUtil.getTotalTask() == 1) {
-							dp.getLbCurrentStatus().setText("下载完成. " + tip);
-							dp.getLbDownFile().setText("文件大小: "  + fileSize);
-						}else {
-							String txt = String.format("%d/%d 下载完成. " + tip,
-									httpUtil.getCurrentTask(),
-									httpUtil.getTotalTask());
-							dp.getLbCurrentStatus().setText(txt);
-							dp.getLbDownFile().setText(String.format("文件%d大小: %s",
-									httpUtil.getCurrentTask(),
-									fileSize));
-						}
-						dp.getBtnControl().setEnabled(false);
-						//map.remove(dp);
-					} else if (httpUtil.getStatus() == 0) { //仍在下载
+						dp.getLbCurrentStatus().setText(genTips("%d/%d 下载完成. ", downloader));
+						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
+						dp.getBtnControl().setVisible(false);
+						break;
+					case FAIL:
+						pauseTask ++;
+						dp.getLbCurrentStatus().setText(genTips("%d/%d 下载异常. ", downloader));
+						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
+						dp.getBtnControl().setText("继续下载");
+						dp.getBtnControl().setVisible(true);
+						break;
+					case STOP:
+						pauseTask ++;
+						dp.getLbCurrentStatus().setText(genTips("%d/%d 人工停止. ", downloader));
+						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
+						dp.getBtnControl().setText("继续下载");
+						dp.getBtnControl().setVisible(true);
+						break;
+					case PROCESSING:
+						doneTask ++;
+						dp.getLbCurrentStatus().setText(genTips("%d/%d 转码中... ", downloader));
+						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
+						dp.getBtnControl().setVisible(false);
+						break;
+					case NONE:
+						queuingTask ++;
+						dp.getLbCurrentStatus().setText("等待下载中..");
+						dp.getLbDownFile().setText("等待下载中..");
+						dp.getBtnControl().setText("暂停");
+						dp.getBtnControl().setVisible(true);
+						break;
+					case DOWNLOADING:
 						activeTask++;
 						//计算下载速度
 						long currrentTime = System.currentTimeMillis();
 						int period = (int) (currrentTime - dp.getLastCntTime()) ; //ms
-						int downSize = (int) (httpUtil.getCnt() - dp.getLastCnt());//byte
+						int downSize = (int) (downloader.sumDownloadedFileSize() - dp.getLastCnt());//byte
 						int speedKBPerSec = downSize / period;
-						dp.setLastCnt(httpUtil.getCnt());
+						dp.setLastCnt(downloader.sumDownloadedFileSize());
 						dp.setLastCntTime(currrentTime);
-						if(httpUtil.getTotalTask() == 1) {
-							dp.getLbCurrentStatus().setText("正在下载中... " + speedKBPerSec + " kB/s");//k=1000,K=1024
-						}else {
-							String txt = String.format("%d/%d 正在下载中... %d kB/s",
-									httpUtil.getCurrentTask(),
-									httpUtil.getTotalTask(),
-									speedKBPerSec);
-							dp.getLbCurrentStatus().setText(txt);
-						}
-						dp.getLbDownFile().setText(
-								String.format("当前已下载 %d %%: %s/%s", 
-										 httpUtil.getCnt()*100/httpUtil.getTotal(),
-										 getFileSize(httpUtil.getCnt()).replaceAll("[^0-9\\.]", ""),
-										 fileSize));
+						String txt = String.format("%d/%d 正在下载中... %d kB/s",
+								downloader.currentTask(),
+								downloader.totalTaskCount(),
+								speedKBPerSec);
+						
+						dp.getLbCurrentStatus().setText(txt);
+						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 						dp.getBtnControl().setText("暂停");
-					} else if (httpUtil.getStatus() == -1) {// 下载异常
-						pauseTask ++;
-						if(httpUtil.getTotalTask() == 1) {
-							dp.getLbCurrentStatus().setText("下载异常");
-						}else {
-							String txt = String.format("%d/%d 下载异常",
-									httpUtil.getCurrentTask(),
-									httpUtil.getTotalTask());
-							dp.getLbCurrentStatus().setText(txt);
-						}
-						dp.getBtnControl().setText("继续下载");
-					}else if (httpUtil.getStatus() == -2) {// 下载暂停
-						pauseTask ++;
-						if(httpUtil.getTotalTask() == 1) {
-							dp.getLbCurrentStatus().setText("人工停止");
-						}else {
-							String txt = String.format("%d/%d 人工停止",
-									httpUtil.getCurrentTask(),
-									httpUtil.getTotalTask());
-							dp.getLbCurrentStatus().setText(txt);
-						}
-						dp.getBtnControl().setText("继续下载");
-					}else if (httpUtil.getStatus() == -3) {// 已经提交Task，但由于线程并发过多原因尚未进行下载
-						queuingTask ++;
-						dp.getLbFileName().setText(dp.getAvid() + "-" + dp.getQn());
-						dp.getLbDownFile().setText("等待下载中..");
-						dp.getBtnControl().setVisible(false);
+						dp.getBtnControl().setVisible(true);
+						break;
+					default:
+						break;
 					}
 				}catch(Exception e) { //等待队列中
 					queuingTask ++;
-					//e.printStackTrace();
-					dp.getLbFileName().setText(dp.getAvid() + "-" + dp.getQn());
+					dp.getLbCurrentStatus().setText("等待下载中..");
 					dp.getLbDownFile().setText("等待下载中..");
-					dp.getBtnControl().setVisible(false);
+					dp.getBtnControl().setText("暂停");
+					dp.getBtnControl().setVisible(true);
 				}
-				
 			}
 			totalTask = map.size();
 			//System.out.println("当前map总任务数： " + totalTask);
@@ -120,22 +105,33 @@ public class MonitoringThread extends Thread {
 			}
 		}
 	}
-	
-	final long KB = 1024L;
-	final long MB = KB * 1024L;
-	final long GB = MB * 1024L;
-	String getFileSize(long size) {
-		double dSize;
-		if(size >= GB) {
-			dSize = size * 1.0 / GB;
-			return String.format("%.2f GB", dSize);
-		}else if(size >= MB) {
-			dSize = size * 1.0 / MB;
-			return String.format("%.2f MB", dSize);
-		}else if(size >= KB) {
-			dSize = size * 1.0 / KB;
-			return String.format("%.2f KB", dSize);
-		}
-		return size + " Byte";
+	/**
+	 * 
+	 * @param format
+	 * @param downloader
+	 * @return
+	 */
+	String genTips(String format, IDownloader downloader) {
+		String tips;
+		tips = String.format(format,
+				downloader.currentTask(),
+				downloader.totalTaskCount());
+		return tips;
 	}
+	
+	/**
+	 * 
+	 * @param format
+	 * @param downloader
+	 * @return
+	 */
+	String genSizeCntStr(String format, IDownloader downloader) {
+		// 文件1进度： 32MB/43MB
+		String tips = String.format(format,
+				downloader.currentTask(),
+				IDownloader.transToSizeStr(downloader.currentFileDownloadedSize()),
+				IDownloader.transToSizeStr(downloader.currentFileTotalSize()));
+		return tips;
+	}
+	
 }

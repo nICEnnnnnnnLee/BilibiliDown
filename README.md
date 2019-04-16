@@ -62,14 +62,26 @@ Bilibili 视频下载器，用于下载B站视频。
 </details>
 </details>
 
-* 其它  
-    * 关闭作品信息页面 - 双击Tab标签（单击Tab标签为切换焦点）  
-    * 复制作品信息 - 在作品Tab页单击想要复制的目标文字   
-    * 修改下载视频格式 - 在```config/app.config```中配置```bilibili.format```选项    
-    * 批量重命名 - 找到下载目录中的```rename.bat```，双击它   
-    * 卸载 - 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
-    * 设置代理 - 在```config/app.config```中配置相应代理类型的地址和端口    
-    * 修改其它配置 - 编辑```config/app.config```即可，详见文件见备注
+<details>
+<summary>其它</summary>
+
+
+* 关闭作品信息页面
+    * 双击Tab标签（单击Tab标签为切换焦点）  
+* 复制作品信息
+    * 在作品Tab页单击想要复制的目标文字   
+* 修改优先下载的视频格式
+    * 在```config/app.config```中配置```bilibili.format```选项    
+* 批量重命名
+    * 找到下载目录中的`rename.bat`，双击它(`V3.1`增加自定义重命名，且支持下载完自动改名)   
+* 卸载 
+    * 找到下载目录中的```unistall.bat```，双击它(仅仅只是删除了文件夹)   
+* 设置代理
+    * 在```config/app.config```中配置相应代理类型的地址和端口    
+* 修改其它配置
+    * ```config/app.config```即可，详见文件见备注  
+* 更多问题请见[Wiki](https://github.com/nICEnnnnnnnLee/BilibiliDown/wiki)
+</details>
 
 <details>
 <summary>清晰度说明</summary>

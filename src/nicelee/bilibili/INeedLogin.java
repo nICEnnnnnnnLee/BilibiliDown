@@ -16,11 +16,11 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import nicelee.model.UserInfo;
-import nicelee.util.HttpCookies;
-import nicelee.util.HttpHeaders;
-import nicelee.util.HttpRequestUtil;
-import nicelee.util.QrCodeUtil;
+import nicelee.bilibili.model.UserInfo;
+import nicelee.bilibili.util.HttpCookies;
+import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.QrCodeUtil;
 
 public class INeedLogin {
 

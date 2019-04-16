@@ -1,4 +1,4 @@
-package nicelee.util;
+package nicelee.bilibili.util;
 
 import java.net.HttpCookie;
 import java.util.ArrayList;

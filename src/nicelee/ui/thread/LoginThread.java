@@ -10,9 +10,9 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import nicelee.bilibili.INeedLogin;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.ui.FrameQRCode;
 import nicelee.ui.Global;
-import nicelee.util.HttpCookies;
 
 public class LoginThread extends Thread {
 
@@ -53,8 +53,11 @@ public class LoginThread extends Thread {
 				}
 				System.out.println("成功登录...");
 				return;
+			}else {
+				System.out.println("本地Cookies验证无效...");
+				// 置空全局Cookie
+				HttpCookies.setGlobalCookies(null);
 			}
-			System.out.println("本地Cookies验证无效...");
 		}
 		System.out.println("没有检查到本地Cookies...");
 		/**

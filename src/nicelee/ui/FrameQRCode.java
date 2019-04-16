@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRootPane;
 
-import nicelee.util.QrCodeUtil;
+import nicelee.bilibili.util.QrCodeUtil;
 
 public class FrameQRCode extends JFrame{
 	

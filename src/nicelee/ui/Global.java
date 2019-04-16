@@ -1,13 +1,11 @@
 package nicelee.ui;
 
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.ui.item.DownloadInfoPanel;
-import nicelee.util.HttpRequestUtil;
 
 public class Global {
 	// 下载相关
@@ -19,10 +17,15 @@ public class Global {
 	public static ExecutorService downLoadThreadPool;// 下载线程池
 	public static ExecutorService queryThreadPool = Executors.newFixedThreadPool(1);// 查询线程池(同一时间并发不能太多, 为了保证任务面板的顺序，采用fixed(1))
 	public static TabDownload downloadTab; // 下载显示界面
-	public static ConcurrentHashMap<DownloadInfoPanel, HttpRequestUtil> downloadTaskList = new ConcurrentHashMap<DownloadInfoPanel, HttpRequestUtil>();
-	public static LinkedHashMap<String, Integer> nameQnMap; // 清晰度名称转数值字典
-	public static LinkedHashMap<Integer, String> qnNameMap; // 清晰度数值转名称字典
+	public static ConcurrentHashMap<DownloadInfoPanel, IDownloader> downloadTaskList = new ConcurrentHashMap<DownloadInfoPanel, IDownloader>();
 	
+	public static boolean useRepo = true; //从仓库判断是否需要下载
+	public static boolean saveToRepo = true; //使用仓库保存下载成功的记录
+	
+	public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
+	public static boolean doRenameAfterComplete = true;
+	/* 存在某一清晰度后, 在下载另一种清晰度时是否判断已完成*/
+	public static boolean repoInDefinitionStrictMode = false; //
 	//public static int totalTask = 0, activeTask = 0, pauseTask = 0, doneTask = 0, queuingTask = 0;//用于下载任务统计
 	// 登录相关
 	public static boolean needToLogin = false;
@@ -39,25 +42,4 @@ public class Global {
 	// 临时文件相关
 	public static boolean restrictTempMode = true;
 	
-	static {
-		nameQnMap = new LinkedHashMap<>();
-		nameQnMap.put("1080P60", 116);
-		nameQnMap.put("1080P+", 112);
-		nameQnMap.put("1080P", 80);
-		nameQnMap.put("720P60", 74);
-		nameQnMap.put("720P", 64);
-		nameQnMap.put("480P", 32);
-		nameQnMap.put("320P", 16);
-		qnNameMap = new LinkedHashMap<>();
-		qnNameMap.put(116, "高清1080P60");
-		qnNameMap.put(112, "高清1080P+");
-		qnNameMap.put(80, "高清1080P");
-		qnNameMap.put(74, "高清720P60");
-		qnNameMap.put(64, "高清720P");
-		qnNameMap.put(32, "清晰480P");
-		qnNameMap.put(16, "流畅320P");
-		for(Entry<String, Integer> entry: nameQnMap.entrySet()) {
-			qnNameMap.put(entry.getValue(), entry.getKey());
-		}
-	}
 }

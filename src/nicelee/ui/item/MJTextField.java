@@ -90,6 +90,10 @@ public class MJTextField extends JTextField implements MouseListener, KeyListene
         if (e.getSource() == copy) { // 复制
             this.copy();
         } else if (e.getSource() == paste) { // 粘贴
+        	if(this.getText().equals(placeHolder)) {
+        		this.setText("");
+        	}
+        	this.setForeground(Color.BLACK);
             this.paste();
         } else if (e.getSource() == cut) { // 剪切
             this.cut();
@@ -165,14 +169,14 @@ public class MJTextField extends JTextField implements MouseListener, KeyListene
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			System.out.println("输入了Enter键");
 			Global.index.search();
 		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package nicelee.util;
+package nicelee.bilibili.util;
 
 import java.util.HashMap;
 

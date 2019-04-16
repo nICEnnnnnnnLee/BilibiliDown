@@ -1,4 +1,4 @@
-package nicelee.model;
+package nicelee.bilibili.model;
 
 import java.util.LinkedHashMap;
 
@@ -9,7 +9,7 @@ public class VideoInfo {
 	String authorId;
 	String videoPreview;
 	String brief;
-	LinkedHashMap<Integer, ClipInfo> clips;// 未使用 Integer 为 Page
+	LinkedHashMap<Long, ClipInfo> clips;// 未使用 Integer 为 Page
 	String videoLink;
 
 	public void print() {
@@ -92,11 +92,11 @@ public class VideoInfo {
 		this.videoLink = videoLink;
 	}
 
-	public LinkedHashMap<Integer, ClipInfo> getClips() {
+	public LinkedHashMap<Long, ClipInfo> getClips() {
 		return clips;
 	}
 
-	public void setClips(LinkedHashMap<Integer, ClipInfo> clips) {
+	public void setClips(LinkedHashMap<Long, ClipInfo> clips) {
 		this.clips = clips;
 	}
 

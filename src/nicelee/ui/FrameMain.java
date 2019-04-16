@@ -12,10 +12,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
 import nicelee.bilibili.INeedLogin;
+import nicelee.bilibili.util.CmdUtil;
+import nicelee.bilibili.util.ConfigUtil;
+import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
-import nicelee.util.CmdUtil;
-import nicelee.util.ConfigUtil;
 
 public class FrameMain extends JFrame {
 
@@ -28,21 +29,29 @@ public class FrameMain extends JFrame {
 	public static void main(String[] args) {
 		// System.getProperties().setProperty("file.encoding", "utf-8");
 		ConfigUtil.initConfigs();
+		//初始化主题
 		initUITheme();
+		
+		//初始化UI
 		FrameMain main = new FrameMain();
 		main.InitUI();
+		
+		//初始化监控线程，用于刷新下载面板
 		MonitoringThread th = new MonitoringThread();
 		th.start();
 
+		//初始化 - 登录
 		INeedLogin inl = new INeedLogin();
 		if (inl.readCookies() != null) {
 			Global.needToLogin = true;
 		}
-		;
-
 		LoginThread loginTh = new LoginThread();
 		loginTh.start();
 
+		//
+		if(Global.saveToRepo) {
+			RepoUtil.init();
+		}
 //		FrameQRCode qr = new FrameQRCode("https://www.bilibili.com/");
 //		qr.initUI();
 //		qr.dispose();

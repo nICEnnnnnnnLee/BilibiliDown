@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import nicelee.util.HttpHeaders;
-import nicelee.util.HttpRequestUtil;
+import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpRequestUtil;
 
 public class M4sTest {
 

@@ -21,8 +21,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import nicelee.model.ClipInfo;
-import nicelee.model.VideoInfo;
+import nicelee.bilibili.enums.VideoQualityEnum;
+import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.ui.thread.DownloadRunnable;
 
 public class TabVideo extends JPanel implements ActionListener, MouseListener {
@@ -84,15 +85,15 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		JLabel label1 = new JLabel("优先清晰度");
 		this.add(label1);
 		cbQn = new JComboBox<>();
-		for(String str: Global.nameQnMap.keySet()) {
-			cbQn.addItem(str);
+		for(VideoQualityEnum item: VideoQualityEnum.values()) {
+			cbQn.addItem(item.getQuality());
 		}
 		cbQn.setSelectedIndex(2);
 		btnDownAll = new JButton("批量下载");
 		btnDownAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				download(true, Global.nameQnMap.get(cbQn.getSelectedItem()));
+				download(true, VideoQualityEnum.getQN(cbQn.getSelectedItem().toString()));
 			}
 		});
 		this.add(cbQn);
@@ -178,8 +179,7 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	private void download(int i, int qn) {
 		try {
 			ClipInfo clip = (ClipInfo) avInfo.getClips().values().toArray()[i];
-			DownloadRunnable downThread = new DownloadRunnable(avInfo.getVideoName() + "-" + clip.getTitle(),
-					clip.getAvId(), String.valueOf(clip.getcId()), String.valueOf(clip.getPage()), qn);
+			DownloadRunnable downThread = new DownloadRunnable(clip, qn);
 			// new Thread(downThread).start();
 			Global.queryThreadPool.execute(downThread);
 		} catch (Exception e) {

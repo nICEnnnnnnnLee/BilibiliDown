@@ -2,9 +2,9 @@ package nicelee.bilibili;
 
 import org.json.JSONObject;
 
-import nicelee.model.VideoInfo;
-import nicelee.util.HttpHeaders;
-import nicelee.util.HttpRequestUtil;
+import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpRequestUtil;
 
 public class INeedAVbPhone {
 	

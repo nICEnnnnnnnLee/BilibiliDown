@@ -1,10 +1,12 @@
-package nicelee.util;
+package nicelee.bilibili.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +43,7 @@ public class CmdUtil {
 	 * @param audioName
 	 * @param dstName
 	 */
-	public static void convert(String videoName, String audioName, String dstName) {
+	public static boolean convert(String videoName, String audioName, String dstName) {
 		String cmd[] = createConvertCmd(videoName, audioName, dstName);
 		File mp4File = new File(Global.savePath + dstName);
 		File video = new File(Global.savePath + videoName);
@@ -52,11 +54,14 @@ public class CmdUtil {
 			if (mp4File.exists() && mp4File.length() > video.length()) {
 				video.delete();
 				audio.delete();
+				return true;
 			}
 			System.out.println("转码完毕");
 		} else {
 			System.out.println("下载完毕");
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -66,7 +71,7 @@ public class CmdUtil {
 	 * @param audioName
 	 * @param dstName
 	 */
-	public static void convert(String dstName, int part) {
+	public static boolean convert(String dstName, int part) {
 		String cmd[] = createConvertCmd(dstName, part);
 		File videoFile = new File(Global.savePath + dstName);
 		if (!videoFile.exists()) {
@@ -94,11 +99,14 @@ public class CmdUtil {
 					}
 					// new File(Global.savePath + dstName + ".txt").delete();
 					deleteAllInactiveCmdTemp();
+					return true;
 				}
 			}
 		} else {
 			System.out.println("下载完毕");
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -139,10 +147,11 @@ public class CmdUtil {
 	 * 删除已经生效过的临时cmd 文件
 	 * 
 	 * 类似于
+	 * 
 	 * @ex1 av12345-64-p1.flv.txt
-	 * @ex2  av12345-64-p2-part1.flv
-	 * @ex3  av12345-64-p2-part1.flv.part
-	 * @ex4  av12345-64-p3.mp4.part
+	 * @ex2 av12345-64-p2-part1.flv
+	 * @ex3 av12345-64-p2-part1.flv.part
+	 * @ex4 av12345-64-p3.mp4.part
 	 * 
 	 * @return
 	 */
@@ -167,12 +176,12 @@ public class CmdUtil {
 					}
 					return false;
 				}
-				if(Global.restrictTempMode) {
+				if (Global.restrictTempMode) {
 					// .part文件，如果已经存在转换完的对应视频，则可以删除
 					Matcher matcherPart = cmdPartPattern.matcher(name);
 					if (matcherPart.find()) {
 						String fName = matcherPart.group(1).replaceFirst("-part[0-9]+", "");
-						if(standardFileNamePattern.matcher(fName).matches()) {
+						if (standardFileNamePattern.matcher(fName).matches()) {
 							File file = new File(dir, fName);
 							if (file.exists()) {
 								return true;
@@ -183,7 +192,7 @@ public class CmdUtil {
 					// 部分完成了的flv|mp4文件，如果已经存在转换完的对应视频，则可以删除
 					Matcher matcherDonePart = cmdDonePartPattern.matcher(name);
 					if (matcherDonePart.find()) {
-						File file = new File(dir, matcherDonePart.group());
+						File file = new File(dir, matcherDonePart.group().replaceFirst("-part[0-9]+", ""));
 						if (file.exists()) {
 							return true;
 						}
@@ -215,5 +224,103 @@ public class CmdUtil {
 				Global.savePath + audioName, Global.savePath + dstName);
 		System.out.println(str);
 		return cmd;
+	}
+
+	/**
+	 * 下载成功后重命名 或者 追加重命名文件
+	 * 
+	 * @param avid_q
+	 * @param formattedTitle
+	 * @throws IOException
+	 */
+	// public static boolean doRenameAfterComplete = true;
+	public synchronized static void convertOrAppendCmdToRenameBat(final String avid_q, final String formattedTitle,
+			int page) {
+		try {
+			// 获取已完成文件
+			File originFile = getFileByAvQnP(avid_q, page);
+			String fName = originFile.getName();
+			String tail = fName.substring(fName.length() - 4);
+
+			if (Global.doRenameAfterComplete) {
+				File file = new File(Global.savePath, formattedTitle + tail);
+				originFile.renameTo(file);
+			} else {
+				File f = new File(Global.savePath, "rename.bat");
+				boolean isExist = f.exists();
+				System.out.println(f.getAbsolutePath() + "是否存在? " + f.exists());
+				FileWriter fw;
+				fw = new FileWriter(f, true);
+				if (!isExist) {
+					// .bat切为UTF-8编码, 防止中文乱码
+					fw.write("@echo off\r\nchcp 65001\r\n");
+				}
+				String cmd = String.format("rename \"%s\" \"%s%s\"\r\n", fName, formattedTitle, tail);
+				fw.write(cmd);
+				fw.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 获取文件
+	 * 
+	 * @param avid_q
+	 * @param page
+	 * @return
+	 */
+	public static File getFileByAvQnP(String avid_q, int page) {
+		String name = avid_q + "-p" + page;
+		System.out.println(name);
+		File fMp4 = new File(Global.savePath, name + ".mp4");
+		if (fMp4.exists()) {
+			return fMp4;
+		}
+		File fFlv = new File(Global.savePath, name + ".flv");
+		if (fFlv.exists()) {
+			return fFlv;
+		}
+		return null;
+	}
+
+	// ## avId - av号 e.g. av1234567
+	// ## pAv - av 的第几个视频 e.g. p1/p2
+	// ## pDisplay - 合集的第几个视频 e.g. pn1/pn2
+	// ## qn - 清晰度值 e.g. 32/64/80
+	// ## avTitle - av标题
+	// ## clipTitle - 视频小标题
+	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
+	static Pattern splitUnit = Pattern.compile("avId|pAv|pDisplay|qn|avTitle|clipTitle");
+
+	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
+			String clipTitle) {
+		// 生成KV表
+		HashMap<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("avId", avId);
+		paramMap.put("pAv", pAv);
+		paramMap.put("pDisplay", pDisplay);
+		paramMap.put("qn", "" + qn);
+		paramMap.put("avTitle", avTitle);
+		paramMap.put("clipTitle", clipTitle);
+
+		StringBuilder sb = new StringBuilder();
+		// 匹配格式字符串
+		Matcher matcher = splitUnit.matcher(Global.formatStr);
+		// avTitle-pDisplay-clipTitle-qn
+		int pointer = 0;
+		while (matcher.find()) {
+			// 加入匹配单位前的字符串
+			sb.append(Global.formatStr.substring(pointer, matcher.start()));
+			// 加入匹配单位对应的值
+			sb.append(paramMap.get(matcher.group()));
+			// 改变指针位置
+			pointer = matcher.end();
+		}
+		// 加入最后不匹配单位的部分
+		sb.append(Global.formatStr.substring(pointer));
+		// 去掉文件名称的非法字符
+		return sb.toString().replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·");
 	}
 }

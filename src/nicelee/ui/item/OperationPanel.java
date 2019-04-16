@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.ui.Global;
 
 /**
@@ -69,8 +70,8 @@ public class OperationPanel extends JPanel {
 		JLabel label3 = new JLabel("优先清晰度");
 		jp2.add(label3);
 		cbQn = new JComboBox<>();
-		for(String str: Global.nameQnMap.keySet()) {
-			cbQn.addItem(str);
+		for(VideoQualityEnum item: VideoQualityEnum.values()) {
+			cbQn.addItem(item.getQuality());
 		}
 		cbQn.setSelectedIndex(2);
 		jp2.add(cbQn);
@@ -80,7 +81,7 @@ public class OperationPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean downAll = cbType.getSelectedItem().toString().startsWith("全部");
-				int qn = Global.nameQnMap.get(cbQn.getSelectedItem());
+				int qn = VideoQualityEnum.getQN(cbQn.getSelectedItem().toString());
 				Global.index.downVideoTabs(downAll, qn);
 			}
 			

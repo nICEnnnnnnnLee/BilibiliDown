@@ -1,4 +1,4 @@
-package nicelee.model;
+package nicelee.bilibili.model;
 
 public class UserInfo {
 	String name;

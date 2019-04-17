@@ -9,5 +9,8 @@
 *.flv
 *.mp4
 *.exe
+*.jar
+*.part
+*.m4s
 /bin
 /target

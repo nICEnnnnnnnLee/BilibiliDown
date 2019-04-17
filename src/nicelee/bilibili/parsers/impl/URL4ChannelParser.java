@@ -1,6 +1,5 @@
 package nicelee.bilibili.parsers.impl;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -12,12 +11,15 @@ import nicelee.bilibili.util.HttpHeaders;
 
 @Bilibili(name = "URL4ChannelParser",
 		note = "UP 某主题频道文件夹的视频解析")
-public class URL4ChannelParser extends AVParser {
+public class URL4ChannelParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/channel/detail\\?cid=([0-9]+)");
 	private String spaceID;
 	private String cid;
 	
+	public URL4ChannelParser(Object... obj) {
+		super(obj);
+	}
 	@Override
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);
@@ -26,10 +28,6 @@ public class URL4ChannelParser extends AVParser {
 			spaceID = matcher.group(1);
 			cid = matcher.group(2);
 			
-			Matcher paramMatcher = paramPattern.matcher(input);
-			if (paramMatcher.find()) {
-				page = Integer.parseInt(paramMatcher.group(1));
-			}
 			return true;
 		}else {
 			return false;
@@ -39,7 +37,7 @@ public class URL4ChannelParser extends AVParser {
 
 	@Override
 	public String validStr(String input) {
-		return getAVList4Channel(spaceID, cid, page);
+		return getAVList4Channel(spaceID, cid, paramSetter.getPage());
 	}
 
 	@Override

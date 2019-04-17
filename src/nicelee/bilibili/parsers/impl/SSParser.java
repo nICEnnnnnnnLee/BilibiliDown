@@ -12,11 +12,14 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 
 @Bilibili(name = "ss")
-public class SSParser extends AVParser {
+public class SSParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("ss[0-9]+");
 	private String ssId;
 
+	public SSParser(Object... obj) {
+		super(obj);
+	}
 	@Override
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);

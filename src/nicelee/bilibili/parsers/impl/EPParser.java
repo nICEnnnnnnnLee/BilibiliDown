@@ -9,11 +9,15 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 
 @Bilibili(name = "ep")
-public class EPParser extends AVParser {
+public class EPParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("ep[0-9]+");
 	private String epId;
 
+	//public EPParser(HttpRequestUtil util,IParamSetter paramSetter, int pageSize)  {
+	public EPParser(Object... obj) {
+		super(obj);
+	}
 	@Override
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);

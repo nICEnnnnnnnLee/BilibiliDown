@@ -1,7 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
 import java.util.LinkedHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -16,7 +15,7 @@ import nicelee.bilibili.util.HttpHeaders;
 
 @Bilibili(name = "ml-parser",
 		note = "收藏夹解析器")
-public class MLParser extends AVParser {
+public class MLParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("ml([0-9]+)");
 	protected final int FAV_PMAX = 20; // 超过20， 将会返回空
@@ -24,16 +23,14 @@ public class MLParser extends AVParser {
 	protected String mlIdNumber;
 	protected VideoInfo video;
 
+	public MLParser(Object... obj) {
+		super(obj);
+	}
 	@Override
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);
 		if (matcher.find()) {
 			mlIdNumber = matcher.group(1);
-			//获取参数
-			Matcher paramMatcher = paramPattern.matcher(input);
-			if(paramMatcher.find()) {
-				page = Integer.parseInt(paramMatcher.group(1));
-			}
 			return true;
 		}
 		return false;
@@ -41,7 +38,7 @@ public class MLParser extends AVParser {
 
 	@Override
 	public String validStr(String input) {
-		return "ml" + mlIdNumber;
+		return "ml" + mlIdNumber + "p=" + paramSetter.getPage();
 	}
 
 	@Override
@@ -50,7 +47,7 @@ public class MLParser extends AVParser {
 		video = new VideoInfo();
 		video.setClips(new LinkedHashMap<>());
 		//getAVList4FaviListBySinglePage(videoFormat, getVideoLink, mlIdNumber, page, 1, 20);
-		getAVList4FaviList(videoFormat, getVideoLink,  mlIdNumber, page);
+		getAVList4FaviList(videoFormat, getVideoLink,  mlIdNumber, paramSetter.getPage());
 		return video;
 	}
 	

@@ -16,16 +16,15 @@ import nicelee.ui.Global;
 public class INeedAV {
 
 	private HttpRequestUtil util;
-	private IInputParser inputParser = null;
-	private IDownloader downloader = null;
+	private InputParser inputParser = null;
+	private Downloader downloader = null;
 
 	public INeedAV() {
 		util = new HttpRequestUtil();
 		downloader = new Downloader();
 		downloader.init(util);
-		inputParser = new InputParser();
-		inputParser.init(util);
-		inputParser.setPageSize(Global.pageSize);
+		inputParser = new InputParser(util, Global.pageSize);
+		//inputParser.init(util);
 	}
 
 	public static void main(String[] args) {

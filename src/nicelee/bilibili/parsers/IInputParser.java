@@ -1,20 +1,10 @@
 package nicelee.bilibili.parsers;
 
 import nicelee.bilibili.model.VideoInfo;
-import nicelee.bilibili.util.HttpRequestUtil;
 
 public interface IInputParser {
 	
-	/**
-	 * 初始化
-	 * @param util
-	 */
-	public void init(HttpRequestUtil util);
-	/**
-	 * 设置分页参数
-	 * @param pageSize
-	 */
-	public void setPageSize(int pageSize);
+	
 	/**
 	 * 该Parser类型是否可以解析
 	 * @return

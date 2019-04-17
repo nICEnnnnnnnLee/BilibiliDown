@@ -14,10 +14,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import nicelee.bilibili.INeedAV;
+import nicelee.bilibili.downloaders.Downloader;
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.util.CmdUtil;
+import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
 
@@ -80,7 +82,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.setPreferredSize(new Dimension(1100, 120));
 
-		lbFileName = new JLabel(path + fileName);
+		lbFileName = new JLabel("尚未生成");
 		lbFileName.setPreferredSize(new Dimension(600, 45));
 		lbFileName.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbFileName);
@@ -177,7 +179,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	 * 停止任务(方法内包含状态判断)
 	 */
 	public void stopTask() {
-		IDownloader downloader = iNeedAV.getDownloader();
+		Downloader downloader = iNeedAV.getDownloader();
 		downloader.stopTask();
 	}
 
@@ -186,7 +188,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	 */
 	public void continueTask() {
 		String record = avid_qn + "-p" + page;
-		IDownloader downloader = iNeedAV.getDownloader();
+		Downloader downloader = iNeedAV.getDownloader();
 		//如果正在下载 或 下载完毕，则不需要下载
 		StatusEnum status = downloader.currentStatus();
 		if(status != StatusEnum.DOWNLOADING && status != StatusEnum.SUCCESS && status != StatusEnum.PROCESSING) {
@@ -195,7 +197,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 				@Override
 				public void run() {
 					if(downloader.currentStatus() == StatusEnum.STOP) {
-						System.out.println("已经人工停止,无需再下载");
+						Logger.println("已经人工停止,无需再下载");
 						return;
 					}
 					// 开始下载

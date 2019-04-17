@@ -22,13 +22,13 @@ public class TabDownload extends JPanel implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 8714599826187286737L;
+	private static boolean stopAll = false;
 	ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
 
 	JPanel jpContent;
 	JScrollPane jpScorll;
 	JLabel lbStatus;
 	JButton btnContinue, btnStop, btnDeleteAll, btnDeleteDown;
-
 	public TabDownload() {
 		initUI();
 	}
@@ -47,7 +47,7 @@ public class TabDownload extends JPanel implements ActionListener {
 
 		// 状态 totalTask, activeTask, pauseTask, doneTask, queuingTask
 		lbStatus = new JLabel();
-		lbStatus.setPreferredSize(new Dimension(320, 30));
+		lbStatus.setPreferredSize(new Dimension(350, 30));
 		lbStatus.setOpaque(true);
 		lbStatus.setBackground(new Color(204, 255, 255));
 		lbStatus.setBorder(BorderFactory.createLineBorder(Color.BLUE));
@@ -95,6 +95,7 @@ public class TabDownload extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnContinue) {
+			stopAll = false;
 			System.out.println(Global.downloadTaskList.keySet().size());
 			System.out.println(jpContent.getComponentCount());
 			for(int i = 0; i < jpContent.getComponentCount(); i++) {
@@ -107,6 +108,8 @@ public class TabDownload extends JPanel implements ActionListener {
 //				dp.startTask();
 //			}
 		} else if (e.getSource() == btnStop) {
+			// 约3s后置false
+			stopAll = true;
 			btnContinue.setEnabled(false);
 			btnStop.setEnabled(false);
 			btnDeleteAll.setEnabled(false);
@@ -121,9 +124,14 @@ public class TabDownload extends JPanel implements ActionListener {
 						Thread.sleep(3000);
 					} catch (InterruptedException e) {
 					}
+					//双保险
+					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
+						dp.stopTask();
+					}
 					btnContinue.setEnabled(true);
 					btnStop.setEnabled(true);
 					btnDeleteAll.setEnabled(true);
+					stopAll = false;
 				}
 			}).start();
 		} else if (e.getSource() == btnDeleteAll) {
@@ -143,6 +151,10 @@ public class TabDownload extends JPanel implements ActionListener {
 
 	public void setJpContent(JPanel jpContent) {
 		this.jpContent = jpContent;
+	}
+
+	public static boolean isStopAll() {
+		return stopAll;
 	}
 
 }

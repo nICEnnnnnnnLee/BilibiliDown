@@ -7,12 +7,14 @@ import java.util.List;
 import nicelee.bilibili.PackageScanLoader;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
 
 public class Downloader implements IDownloader{
 	
 	private List<IDownloader> downloaders = null;
 	private IDownloader downloader = null;
 	private HttpRequestUtil util;
+	private StatusEnum status;
 	
 	@Override
 	public boolean matches(String url) {
@@ -22,7 +24,9 @@ public class Downloader implements IDownloader{
 	@Override
 	public void init(HttpRequestUtil util) {
 		downloaders = new ArrayList<>();
+		status = StatusEnum.NONE;
 		this.util = util;
+		
 		try {
 			for (Class<?> clazz : PackageScanLoader.validDownloaderClasses) {
 				IDownloader downloader = (IDownloader) clazz.newInstance();
@@ -39,18 +43,24 @@ public class Downloader implements IDownloader{
 		for (IDownloader downloader : downloaders) {
 			if (downloader.matches(url)) {
 				this.downloader = downloader;
+				status = StatusEnum.DOWNLOADING;
 				downloader.init(util);
 				return downloader.download(url, avId, qn, page);
 			}
 		}
 		System.out.println("未找到匹配当前url的下载器");
+		status = StatusEnum.FAIL;
 		return false;
 	}
 
 	@Override
 	public void startTask() {
 		if(downloader !=null) {
+			status = StatusEnum.DOWNLOADING;
 			downloader.startTask();
+		}else {
+			Logger.println(StatusEnum.NONE.toString());
+			status = StatusEnum.NONE;
 		}
 	}
 
@@ -59,6 +69,7 @@ public class Downloader implements IDownloader{
 		if(downloader !=null) {
 			downloader.stopTask();
 		}
+		status = StatusEnum.STOP;
 	}
 
 	@Override
@@ -71,10 +82,12 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public StatusEnum currentStatus() {
+		//如果有downloader， 以downloader为准
 		if(downloader !=null) {
 			return downloader.currentStatus();
+		}else {
+			return status;
 		}
-		return null;
 	}
 
 	@Override

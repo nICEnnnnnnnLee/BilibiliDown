@@ -49,16 +49,16 @@ public class CmdUtil {
 		File video = new File(Global.savePath + videoName);
 		File audio = new File(Global.savePath + audioName);
 		if (!mp4File.exists()) {
-			System.out.println("下载完毕, 正在运行转码程序...");
+			Logger.println("下载完毕, 正在运行转码程序...");
 			run(cmd);
 			if (mp4File.exists() && mp4File.length() > video.length()) {
 				video.delete();
 				audio.delete();
 				return true;
 			}
-			System.out.println("转码完毕");
+			Logger.println("转码完毕");
 		} else {
-			System.out.println("下载完毕");
+			Logger.println("下载完毕");
 			return true;
 		}
 		return false;
@@ -75,9 +75,9 @@ public class CmdUtil {
 		String cmd[] = createConvertCmd(dstName, part);
 		File videoFile = new File(Global.savePath + dstName);
 		if (!videoFile.exists()) {
-			System.out.println("下载完毕, 正在运行转码程序...");
+			Logger.println("下载完毕, 正在运行转码程序...");
 			run(cmd);
-			System.out.println("转码完毕");
+			Logger.println("转码完毕");
 			// 删除文件
 			if (videoFile.exists()) {
 				Matcher matcher = filePattern.matcher(dstName);
@@ -91,8 +91,8 @@ public class CmdUtil {
 					fList.add(file);
 					fSize += file.length();
 				}
-				System.out.println("转码后文件大小: " + videoFile.length());
-				System.out.println("转码前文件大小和: " + fSize);
+				Logger.println("转码后文件大小: " + videoFile.length());
+				Logger.println("转码前文件大小和: " + fSize);
 				if (videoFile.length() >= fSize * 0.8) {
 					for (File f : fList) {
 						f.delete();
@@ -103,7 +103,7 @@ public class CmdUtil {
 				}
 			}
 		} else {
-			System.out.println("下载完毕");
+			Logger.println("下载完毕");
 			return true;
 		}
 		return false;
@@ -321,6 +321,6 @@ public class CmdUtil {
 		// 加入最后不匹配单位的部分
 		sb.append(Global.formatStr.substring(pointer));
 		// 去掉文件名称的非法字符
-		return sb.toString().replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"]", "·");
+		return sb.toString().replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"$]", ".");
 	}
 }

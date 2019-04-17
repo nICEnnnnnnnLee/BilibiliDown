@@ -14,8 +14,7 @@ import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.parsers.IInputParser;
-import nicelee.bilibili.parsers.impl.URL4ChannelParser;
-import nicelee.bilibili.parsers.impl.URL4UPAllParser;
+import nicelee.bilibili.parsers.InputParser;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.ui.Global;
 
@@ -40,7 +39,7 @@ public class ParserTest {
 	/**
 	 * 测试根据av号获取信息
 	 */
-	//@Test
+	@Test
 	public void testAVParser() {
 		INeedAV avs = new INeedAV();
 		VideoInfo video = null;
@@ -120,17 +119,6 @@ public class ParserTest {
 		assertEquals(video.getClips().get(84745928L).getAvId(), "av48384067");
 	}
 
-	
-	/**
-	 * 测试解析收藏夹 mlId --> 众多avId 
-	 */
-	@Test
-	public void testAVList4FaviList() {
-		INeedAV util = new INeedAV();
-		//assertEquals(util.getAVList4FaviList("229929928", 1), " av32424575 av32113696 av13017167 av23150912");
-		//assertEquals(util.getAVList4FaviList("101422828", 2), " av5685627 av6107466 av6544912 av6971831 av7189243");
-	}
-	
 	/**
 	 * 测试解析UP主 个人特定频道 
 	 * https://space.bilibili.com/546195/channel/detail?cid=21838
@@ -138,8 +126,7 @@ public class ParserTest {
 	//@Test
 	public void testAVList4Channel() {
 		HttpRequestUtil util = new HttpRequestUtil();
-		IInputParser parser = new URL4ChannelParser();
-		parser.init(util);
+		IInputParser parser = new InputParser(util, 20);
 		
 		assert(parser.matches("https://space.bilibili.com/546195/channel/detail?cid=21838 p=1"));
 		String result = (parser.validStr("https://space.bilibili.com/546195/channel/detail?cid=21838 p=1"));
@@ -153,9 +140,8 @@ public class ParserTest {
 	@Test
 	public void testAVList4Space() {
 		HttpRequestUtil util = new HttpRequestUtil();
-		IInputParser parser = new URL4UPAllParser();
-		parser.setPageSize(5);
-		parser.init(util);
+		IInputParser parser = new InputParser(util, 5);
+		//parser.setPageSize(5);
 		
 		assert(parser.matches("https://space.bilibili.com/5276/video p=2"));
 		String result = (parser.validStr("https://space.bilibili.com/5276/video p=2"));

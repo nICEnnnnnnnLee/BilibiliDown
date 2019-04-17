@@ -14,6 +14,9 @@ public class MdParser extends SSParser {
 	private final static Pattern pattern = Pattern.compile("md[0-9]+");
 	private String mdId;
 
+	public MdParser(Object... obj) {
+		super(obj);
+	}
 	@Override
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);

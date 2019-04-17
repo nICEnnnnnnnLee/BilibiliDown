@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -40,6 +42,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	JTextField txtSearch = new MJTextField(placeHolder);
 	//new MJTextField("https://www.bilibili.com/video/av35296336");
 	JButton btnSearch = new JButton("查找");
+	JButton btnSearchNextPage = new JButton("下一页");
 	
 	
 	JTextArea consoleArea = new JTextArea(20, 50);
@@ -78,8 +81,11 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		txtSearch.setPreferredSize(new Dimension(700, 40));
 		btnSearch.addActionListener(this);
 		btnSearch.setPreferredSize(new Dimension(90, 40));
+		btnSearchNextPage.addActionListener(this);
+		btnSearchNextPage.setPreferredSize(new Dimension(90, 40));
 		jpSearch.add(txtSearch);
 		jpSearch.add(btnSearch);
+		jpSearch.add(btnSearchNextPage);
 		jpSearch.setOpaque(false);
 		this.add(jpSearch);
 		this.setOpaque(false);
@@ -125,9 +131,23 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	/**
 	 * 对应 查找 按钮的点击事件
 	 */
+	static Pattern paramPattern = Pattern.compile("(.*)p=([0-9]+)$");
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnSearch) {
+			search();
+		}else if(e.getSource() == btnSearchNextPage){
+			String origin = txtSearch.getText();
+			int page = 1;
+			String modified = null;
+			Matcher matcher = paramPattern.matcher(origin);
+			if(matcher.find()) {
+				page = Integer.parseInt(matcher.group(2));
+				modified = matcher.group(1) + "p=" + (page+1);
+			}else {
+				modified = origin + " p=" + (page+1);
+			}
+			txtSearch.setText(modified);
 			search();
 		}
 	}

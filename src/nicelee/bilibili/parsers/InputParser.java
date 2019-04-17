@@ -11,7 +11,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpRequestUtil;
 
 public class InputParser implements IInputParser, IParamSetter {
-	
+
 	protected final static Pattern paramPattern = Pattern.compile("^(.*)p=([0-9]+)$");// 自定义参数, 目前只匹配个人主页视频的页码
 	private List<IInputParser> parsers = null;
 	private IInputParser parser = null;
@@ -24,7 +24,8 @@ public class InputParser implements IInputParser, IParamSetter {
 			for (Class<?> clazz : PackageScanLoader.validParserClasses) {
 				// IInputParser inputParser = (IInputParser) clazz.newInstance();
 				// 获取构造函数
-				//Constructor<IInputParser> con = (Constructor<IInputParser>) clazz.getConstructor(Object[].class);
+				// Constructor<IInputParser> con = (Constructor<IInputParser>)
+				// clazz.getConstructor(Object[].class);
 				Constructor<IInputParser> con = (Constructor<IInputParser>) clazz.getConstructors()[0];
 				IInputParser inputParser = con.newInstance(new Object[] { new Object[] { util, this, pageSize } });
 				parsers.add(inputParser);
@@ -49,9 +50,9 @@ public class InputParser implements IInputParser, IParamSetter {
 
 	@Override
 	public String validStr(String input) {
-		//获取参数, 并去掉参数字符串
+		// 获取参数, 并去掉参数字符串
 		Matcher paramMatcher = paramPattern.matcher(input);
-		if(paramMatcher.find()) {
+		if (paramMatcher.find()) {
 			int page = Integer.parseInt(paramMatcher.group(2));
 			this.page = page;
 			input = paramMatcher.group(1);
@@ -65,6 +66,13 @@ public class InputParser implements IInputParser, IParamSetter {
 
 	@Override
 	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {
+		// 获取参数, 并去掉参数字符串
+		Matcher paramMatcher = paramPattern.matcher(input);
+		if (paramMatcher.find()) {
+			int page = Integer.parseInt(paramMatcher.group(2));
+			this.page = page;
+			input = paramMatcher.group(1);
+		}
 		selectParser(input);
 		if (parser != null) {
 			return parser.result(input, videoFormat, getVideoLink);
@@ -102,7 +110,7 @@ public class InputParser implements IInputParser, IParamSetter {
 	@Override
 	public void setRealQN(int qn) {
 		realQN = qn;
-		
+
 	}
 
 	@Override

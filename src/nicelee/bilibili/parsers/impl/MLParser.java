@@ -129,7 +129,7 @@ public class MLParser extends AbstractBaseParser {
 			JSONObject jInfo = jobj.getJSONObject("data").getJSONObject("info");
 			if(video.getVideoName() == null) {
 				video.setVideoId("ml" + favID);
-				video.setVideoName(jInfo.getString("title"));
+				video.setVideoName(jInfo.getString("title") + paramSetter.getPage());
 				video.setBrief(jInfo.getJSONObject("upper").getString("name") + " 的收藏夹");
 				video.setAuthor(jInfo.getJSONObject("upper").getString("name"));
 				video.setAuthorId(""+ jInfo.getJSONObject("upper").getLong("mid"));

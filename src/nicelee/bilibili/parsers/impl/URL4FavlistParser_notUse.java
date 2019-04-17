@@ -10,7 +10,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 
-@Bilibili(name = "URL4FavlistParser_notUse", note = "收藏夹 - 采取弹出式")
+//@Bilibili(name = "URL4FavlistParser_notUse", note = "收藏夹 - 采取弹出式")
 public class URL4FavlistParser_notUse extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=([0-9]+)");// 个人收藏夹

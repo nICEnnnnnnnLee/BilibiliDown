@@ -4,6 +4,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import nicelee.bilibili.downloaders.IDownloader;
+import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
 
@@ -22,7 +24,7 @@ public class MonitoringThread extends Thread {
 				IDownloader downloader = entry.getValue();
 				try {
 					String path = downloader.file().getAbsolutePath();
-					if(Global.doRenameAfterComplete) {
+					if(Global.doRenameAfterComplete && downloader.currentStatus() == StatusEnum.SUCCESS) {
 						path = path.replaceFirst("av[0-9]+-[0-9]+-p[0-9]+", dp.formattedTitle);
 					}
 					dp.getLbFileName().setText(path);
@@ -82,12 +84,22 @@ public class MonitoringThread extends Thread {
 					default:
 						break;
 					}
-				}catch(Exception e) { //等待队列中
-					queuingTask ++;
-					dp.getLbCurrentStatus().setText("等待下载中..");
-					dp.getLbDownFile().setText("等待下载中..");
-					dp.getBtnControl().setText("暂停");
-					dp.getBtnControl().setVisible(true);
+				}catch(Exception e) { 
+					//e.printStackTrace();
+					if(downloader.currentStatus() == StatusEnum.STOP) {
+						pauseTask ++;
+						dp.getLbCurrentStatus().setText("任务取消");
+						dp.getLbDownFile().setText("任务取消");
+						dp.getBtnControl().setText("继续下载");
+						dp.getBtnControl().setVisible(true);
+					}else {
+						//等待队列中
+						queuingTask ++;
+						dp.getLbCurrentStatus().setText("等待下载中..");
+						dp.getLbDownFile().setText("等待下载中..");
+						dp.getBtnControl().setText("暂停");
+						dp.getBtnControl().setVisible(true);
+					}
 				}
 			}
 			totalTask = map.size();

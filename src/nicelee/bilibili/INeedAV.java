@@ -4,10 +4,8 @@ import java.net.HttpCookie;
 import java.util.List;
 
 import nicelee.bilibili.downloaders.Downloader;
-import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
-import nicelee.bilibili.parsers.IInputParser;
 import nicelee.bilibili.parsers.InputParser;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpRequestUtil;
@@ -101,11 +99,11 @@ public class INeedAV {
 		return inputParser.validStr(avId);
 	}
 
-	public IInputParser getInputParser(String avId) {
+	public InputParser getInputParser(String avId) {
 		return inputParser;
 	}
 
-	public IDownloader getDownloader() {
+	public Downloader getDownloader() {
 		return downloader;
 	}
 }

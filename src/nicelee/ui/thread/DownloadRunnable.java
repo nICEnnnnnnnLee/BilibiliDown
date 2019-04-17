@@ -9,8 +9,10 @@ import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.util.CmdUtil;
+import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
+import nicelee.ui.TabDownload;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class DownloadRunnable implements Runnable {
@@ -38,6 +40,11 @@ public class DownloadRunnable implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("你点击了一次下载按钮...");
+		// 如果点击了全部暂停按钮，而此时在队列中
+		if(TabDownload.isStopAll()) {
+			System.out.println("你点击了一次暂停按钮...");
+			return;
+		}
 		//判断是否已经下载过
 		if(Global.useRepo && RepoUtil.isInRepo(record)) {
 			new Thread(new Runnable() {
@@ -100,7 +107,7 @@ public class DownloadRunnable implements Runnable {
 			public void run() {
 				try {
 					if(iNeedAV.getDownloader().currentStatus() == StatusEnum.STOP) {
-						System.out.println("已经人工停止,无需再下载");
+						Logger.println("已经人工停止,无需再下载");
 						return;
 					}
 					// 开始下载

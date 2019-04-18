@@ -84,7 +84,7 @@ public class FrameMain extends JFrame {
 	 */
 	public void InitUI() {
 
-		this.setTitle("BiliBili~~~");
+		this.setTitle("BiliBili Down~~" + Global.version);
 		this.setSize(1200, 727);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);

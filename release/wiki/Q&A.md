@@ -100,8 +100,8 @@
     * 开启仓库模式 => `bilibili.repo = on`
     * 开启后成功的下载记录会一直保存在`config/repo.config` (程序对该文件只存在append操作，不想要的记录请人工删除，也可以根据需要人工添加哦)
     * 仓库里的视频将不会再进行下载
-    * 同一视频已经有了某清晰度，不想再下 => `bilibili.restrictTempMode = off`
-    * 同一视频已经有了某清晰度，还想再下另一种清晰度 => `bilibili.restrictTempMode = on`
+    * 同一视频已经有了某清晰度，不想再下 => `bilibili.definitionStrictMode = off`
+    * 同一视频已经有了某清晰度，还想再下另一种清晰度 => `bilibili.definitionStrictMode = on`
 </details>
 
 <details>
@@ -110,7 +110,7 @@
 
 * 请确认你真的没有下载？？
 * 请确认是否下过该视频的另一种清晰度的版本？
-    * 是 => `bilibili.restrictTempMode = on`
+    * 是 => `bilibili.definitionStrictMode = on`
     * 否，请继续
 * 找到`config/repo.config`里的记录，把它删除 或者
 * 关闭仓库模式 => `bilibili.repo = off`
@@ -167,6 +167,20 @@
 * 例如 `ml101422828 p=3`
 * 想一次打开多一点页面
     * 修改配置 => `bilibili.pageSize = 5`
+</details>
+
+<details>
+<summary>我想把收藏夹/频道结果放到一个页面？</summary>
+
+
+* 一个页面显示 ==> `bilibili.pageDisplay = listAll`
+</details>
+
+<details>
+<summary>我想把收藏夹/频道结果每个av分别显示</summary>
+
+
+* 弹出页面显示 ==> `bilibili.pageDisplay = promptAll`
 </details>
 
 <details>

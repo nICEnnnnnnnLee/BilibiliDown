@@ -12,5 +12,6 @@
 *.jar
 *.part
 *.m4s
+*.txt
 /bin
 /target

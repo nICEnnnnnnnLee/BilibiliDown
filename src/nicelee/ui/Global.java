@@ -8,6 +8,10 @@ import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
+	// 界面显示相关
+	public static String version = "v3.1 beta";
+	public static boolean themeDefault = true;
+	
 	// 下载相关
 	public final static int MP4 = 0;
 	public final static int FLV = 1;
@@ -35,9 +39,7 @@ public class Global {
 
 	// 信息查询相关
 	public static int pageSize = 5; // 当有分页时，每页显示个数
-
-	// 界面显示相关
-	public static boolean themeDefault = true;
+	public static String pageDisplay; // 当有分页时，每页显示个数
 	
 	// 临时文件相关
 	public static boolean restrictTempMode = true;

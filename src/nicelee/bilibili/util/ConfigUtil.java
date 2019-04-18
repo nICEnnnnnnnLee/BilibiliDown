@@ -77,6 +77,7 @@ public class ConfigUtil {
 		Global.downloadFormat = Integer.parseInt(System.getProperty("bilibili.format"));
 		Global.savePath = System.getProperty("bilibili.savePath");
 		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));
+		Global.pageDisplay = System.getProperty("bilibili.pageDisplay");
 		Global.themeDefault = "default".equals(System.getProperty("bilibili.theme"));
 		Global.restrictTempMode = "on".equals(System.getProperty("bilibili.restrictTempMode"));
 		Global.useRepo = "on".equals(System.getProperty("bilibili.repo"));

@@ -124,7 +124,6 @@ public class HttpRequestUtil {
 			return false;
 		}
 		status = StatusEnum.DOWNLOADING;
-		// System.out.println(url);
 		InputStream inn = null;
 		RandomAccessFile raf = null;
 		try {
@@ -186,7 +185,7 @@ public class HttpRequestUtil {
 			try {
 				inn = conn.getInputStream();
 			} catch (Exception e) {
-				System.out.println(headers.get("range"));
+				Logger.println(headers.get("range"));
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
 				String temp;
 				while ((temp = reader.readLine()) != null) {
@@ -361,7 +360,7 @@ public class HttpRequestUtil {
 				if (cookie.endsWith("; ")) {
 					cookie = cookie.substring(0, cookie.length() - 2);
 				}
-				System.out.println(cookie);
+				Logger.println(cookie);
 				conn.setRequestProperty("Cookie", cookie);
 			}
 			conn.connect();

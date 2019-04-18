@@ -34,6 +34,7 @@ public class GetVideoDetailThread extends Thread{
 			URL fileURL = new URL(avInfo.getVideoPreview());
 			ImageIcon imag1 = new ImageIcon(fileURL);
 			imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_SMOOTH) );
+			video.getLbAvPrivew().setText("");
 			video.getLbAvPrivew().setIcon(imag1);
 			video.getLbBreif().setText(avInfo.getBrief());
 			video.getLbVideoTitle().setText(avInfo.getVideoName());

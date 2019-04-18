@@ -3,6 +3,8 @@ package nicelee.test.junit;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,6 +41,22 @@ public class UtilTest {
 	}
 	
 	/**
+	 * 测试 打开文件夹并选择文件
+	 */
+	@Test
+	public void testOpenFolder() {
+		// 打开并选中
+		//String cmd[] = { "explorer", "/e,/select,"+"D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\ffmpeg.exe" };
+		try {
+			String cmd = "explorer /e,/select," +"D:\\Workspace\\javaweb-springboot\\BilibiliDown\\download\\翎霜ヾ的视频列表-pn10-【翎霜】运动会雪初音倾情献跳b with u【单录版】-b with u 操场-64.mp4";
+			Runtime.getRuntime().exec(cmd);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 测试 根据格式生成文件名
 	 */
 	//@Test
@@ -55,9 +73,9 @@ public class UtilTest {
 	}
 	
 	/**
-	 * 测试 根据格式生成文件名
+	 * 测试 根据文件名
 	 */
-	@Test
+	//@Test
 	public void testRename() {
 		String str = "test$]WHAT ";
 		str = str.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"$]", ".");

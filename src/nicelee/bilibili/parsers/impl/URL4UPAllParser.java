@@ -15,7 +15,7 @@ import nicelee.bilibili.util.Logger;
 @Bilibili(name = "URL4UPAllParser", ifLoad = "listAll", note = "个人上传的视频列表")
 public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
-	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/? *$)");
+	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/? *$|\\?)");
 	private String spaceID;
 
 	public URL4UPAllParser(Object... obj) {

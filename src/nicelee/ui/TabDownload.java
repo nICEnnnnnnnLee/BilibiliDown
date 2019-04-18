@@ -96,17 +96,12 @@ public class TabDownload extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnContinue) {
 			stopAll = false;
-			System.out.println(Global.downloadTaskList.keySet().size());
-			System.out.println(jpContent.getComponentCount());
 			for(int i = 0; i < jpContent.getComponentCount(); i++) {
 				Component comp = jpContent.getComponent(i);
 				if(comp instanceof DownloadInfoPanel ) {
 					((DownloadInfoPanel)comp).continueTask();
 				}
 			}
-//			for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
-//				dp.startTask();
-//			}
 		} else if (e.getSource() == btnStop) {
 			// 约3s后置false
 			stopAll = true;

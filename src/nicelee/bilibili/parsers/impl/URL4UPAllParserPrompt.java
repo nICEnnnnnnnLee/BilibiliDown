@@ -12,7 +12,7 @@ import nicelee.bilibili.util.HttpHeaders;
 @Bilibili(name = "URL4UPAllParser", ifLoad = "promptAll", note = "个人上传的视频列表")
 public class URL4UPAllParserPrompt extends AbstractPageQueryParser<StringBuilder> {
 
-	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/video");
+	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/? *$|\\?)");
 	private String spaceID;
 
 	public URL4UPAllParserPrompt(Object... obj) {

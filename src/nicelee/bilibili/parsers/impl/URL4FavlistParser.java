@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import nicelee.bilibili.annotations.Bilibili;
 
-@Bilibili(name = "URL-favlist-parser", note = "收藏夹解析器， 基于MLParser")
+@Bilibili(name = "URL-favlist-parser", ifLoad = "listAll", note = "收藏夹解析器， 基于MLParser")
 public class URL4FavlistParser extends MLParser {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=([0-9]+)");// 个人收藏夹

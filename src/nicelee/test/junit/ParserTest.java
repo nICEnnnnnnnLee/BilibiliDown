@@ -126,7 +126,7 @@ public class ParserTest {
 	//@Test
 	public void testAVList4Channel() {
 		HttpRequestUtil util = new HttpRequestUtil();
-		IInputParser parser = new InputParser(util, 20);
+		IInputParser parser = new InputParser(util, 20, "listAll");
 		
 		assert(parser.matches("https://space.bilibili.com/546195/channel/detail?cid=21838 p=1"));
 		String result = (parser.validStr("https://space.bilibili.com/546195/channel/detail?cid=21838 p=1"));
@@ -140,7 +140,7 @@ public class ParserTest {
 	@Test
 	public void testAVList4Space() {
 		HttpRequestUtil util = new HttpRequestUtil();
-		IInputParser parser = new InputParser(util, 5);
+		IInputParser parser = new InputParser(util, 5, "listAll");
 		//parser.setPageSize(5);
 		
 		assert(parser.matches("https://space.bilibili.com/5276/video p=2"));

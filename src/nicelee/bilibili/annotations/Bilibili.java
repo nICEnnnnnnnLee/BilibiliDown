@@ -16,5 +16,7 @@ public @interface Bilibili {
 	
 	String type() default "parser";
 	
+	String ifLoad() default "";
+	
 	String note() default "";
 }

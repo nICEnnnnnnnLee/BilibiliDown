@@ -7,8 +7,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nicelee.bilibili.PackageScanLoader;
+import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
 
 public class InputParser implements IInputParser, IParamSetter {
 
@@ -18,17 +20,23 @@ public class InputParser implements IInputParser, IParamSetter {
 	private int page = 1;
 	private int realQN = 1;
 
-	public InputParser(HttpRequestUtil util, int pageSize) {
+	public InputParser(HttpRequestUtil util, int pageSize, String loadContition) {
 		parsers = new ArrayList<>();
 		try {
 			for (Class<?> clazz : PackageScanLoader.validParserClasses) {
-				// IInputParser inputParser = (IInputParser) clazz.newInstance();
-				// 获取构造函数
-				// Constructor<IInputParser> con = (Constructor<IInputParser>)
-				// clazz.getConstructor(Object[].class);
-				Constructor<IInputParser> con = (Constructor<IInputParser>) clazz.getConstructors()[0];
-				IInputParser inputParser = con.newInstance(new Object[] { new Object[] { util, this, pageSize } });
-				parsers.add(inputParser);
+				// 判断是否需要载入
+				Bilibili bili = clazz.getAnnotation(Bilibili.class);
+				if (bili.ifLoad().isEmpty() || bili.ifLoad().equals(loadContition)) {
+					// 实例化并加入parser列表
+					// IInputParser inputParser = (IInputParser) clazz.newInstance();
+					// 获取构造函数
+					// Constructor<IInputParser> con = (Constructor<IInputParser>)
+					// clazz.getConstructor(Object[].class);
+					Constructor<IInputParser> con = (Constructor<IInputParser>) clazz.getConstructors()[0];
+					IInputParser inputParser = con.newInstance(new Object[] { new Object[] { util, this, pageSize } });
+					parsers.add(inputParser);
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,6 +69,7 @@ public class InputParser implements IInputParser, IParamSetter {
 		if (parser != null) {
 			return parser.validStr(input);
 		}
+		Logger.println("当前没有parser匹配");
 		return "";
 	}
 

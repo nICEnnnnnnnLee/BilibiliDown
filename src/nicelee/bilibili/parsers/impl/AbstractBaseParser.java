@@ -35,6 +35,31 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 	@Override
 	public abstract VideoInfo result(String input, int videoFormat, boolean getVideoLink) ;
+	
+	/**
+	 * 
+	 * @param avId 字符串带av
+	 * @param videoFormat
+	 * @param getVideoLink
+	 * @return
+	 */
+	protected VideoInfo getAVDetail(String avId, int videoFormat, boolean getVideoLink) {
+		String avIdNum = avId.replace("av", "");
+		return getAVDetail(avId, avIdNum, videoFormat, getVideoLink);
+	}
+	
+	/**
+	 * 
+	 * @param avId
+	 * @param videoFormat
+	 * @param getVideoLink
+	 * @return
+	 */
+	protected VideoInfo getAVDetail(long avId, int videoFormat, boolean getVideoLink) {
+		String avIdNum = "" +avId;
+		String avIdStr = "av" +avIdNum;
+		return getAVDetail(avIdStr, avIdNum, videoFormat, getVideoLink);
+	}
 
 	/**
 	 * 获取详细av信息
@@ -44,10 +69,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 * @param getVideoLink
 	 * @return
 	 */
-	protected VideoInfo getAVDetail(String avId, int videoFormat, boolean getVideoLink) {
+	private VideoInfo getAVDetail(String avId, String avIdNum, int videoFormat, boolean getVideoLink) {
 		VideoInfo viInfo = new VideoInfo();
 		viInfo.setVideoId(avId);
-		String avIdNum = avId.replace("av", "");
 		String url = "https://api.bilibili.com/x/web-interface/view?aid=" + avIdNum;
 		HttpHeaders headers = new HttpHeaders();
 		String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());

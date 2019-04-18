@@ -10,13 +10,13 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 
-//@Bilibili(name = "URL4FavlistParser_notUse", note = "收藏夹 - 采取弹出式")
-public class URL4FavlistParser_notUse extends AbstractBaseParser {
+@Bilibili(name = "URL4FavlistParser_PromptTab", ifLoad = "promptAll", note = "收藏夹 - 采取弹出式")
+public class URL4FavlistParserPrompt extends AbstractPageQueryParser<StringBuilder> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=([0-9]+)");// 个人收藏夹
 	private String mlIdNumber;
 	
-	public URL4FavlistParser_notUse(Object... obj) {
+	public URL4FavlistParserPrompt(Object... obj) {
 		super(obj);
 	}
 	@Override
@@ -32,7 +32,7 @@ public class URL4FavlistParser_notUse extends AbstractBaseParser {
 
 	@Override
 	public String validStr(String input) {
-		return getAVList4FavList(mlIdNumber, paramSetter.getPage());
+		return result(pageSize, paramSetter.getPage(), mlIdNumber).toString();
 	}
 
 	@Override
@@ -41,34 +41,44 @@ public class URL4FavlistParser_notUse extends AbstractBaseParser {
 		return null;
 	}
 	
+	@Override
+	public void initPageQueryParam() {
+		API_PMAX = 20;
+		pageQueryResult = new StringBuilder();
+	}
+	
 	/**
-	 * 获取up主收藏夹的视频列表, 默认每页5个
 	 * 
-	 * @input HttpRequestUtil util
-	 * @input int pageSize
-	 * @param favID
-	 * @param page
-	 * @return
+	 * <p>
+	 * 查询第p 页的结果，将第min 到 第max 的数据加入 result
+	 * </p>
+	 * (此处每页大小为固定设置，与配置文件不一定相符)
+	 * 
+	 * @param begin
+	 * @param end
+	 * @param obj
+	 * @return 查询成功/ 失败
 	 */
-	public String getAVList4FavList(String favID, int page) {
+	@Override
+	protected boolean query(int page, int min, int max, Object... obj) {
+		String favID = (String) obj[0];
 		try {
 			// String urlFormat =
 			// 					"https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=%s&pn=%d&ps=%d&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp";
 			String urlFormat = "https://api.bilibili.com/medialist/gateway/base/detail?media_id=%s&pn=%d&ps=%d";
-			String url = String.format(urlFormat, favID, page, pageSize);
+			String url = String.format(urlFormat, favID, page, API_PMAX);
 			String json = util.getContent(url, new HttpHeaders().getFavListHeaders(favID),
 					HttpCookies.getGlobalCookies());
 			// System.out.println(url);
 			// System.out.println(json);
 			JSONObject jobj = new JSONObject(json);
 			JSONArray arr = jobj.getJSONObject("data").getJSONArray("medias");// .getJSONArray("archives");
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < arr.length(); i++) {
-				sb.append(" av").append(arr.getJSONObject(i).getLong("id"));
+			for (int i = min - 1; i < arr.length() && i < max; i++) {
+				pageQueryResult.append(" av").append(arr.getJSONObject(i).getLong("id"));
 			}
-			return sb.toString();
+			return true;
 		} catch (Exception e) {
-			return "";
+			return false;
 		}
 	}
 }

@@ -21,7 +21,7 @@ public class INeedAV {
 		util = new HttpRequestUtil();
 		downloader = new Downloader();
 		downloader.init(util);
-		inputParser = new InputParser(util, Global.pageSize);
+		inputParser = new InputParser(util, Global.pageSize, Global.pageDisplay);
 		//inputParser.init(util);
 	}
 

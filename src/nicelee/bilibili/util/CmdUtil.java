@@ -222,7 +222,7 @@ public class CmdUtil {
 				Global.savePath + dstName };
 		String str = String.format("ffmpeg命令为: \r\nffmpeg -i %s -i %s -c copy %s", Global.savePath + videoName,
 				Global.savePath + audioName, Global.savePath + dstName);
-		System.out.println(str);
+		Logger.println(str);
 		return cmd;
 	}
 
@@ -273,7 +273,7 @@ public class CmdUtil {
 	 */
 	public static File getFileByAvQnP(String avid_q, int page) {
 		String name = avid_q + "-p" + page;
-		System.out.println(name);
+		Logger.println(name);
 		File fMp4 = new File(Global.savePath, name + ".mp4");
 		if (fMp4.exists()) {
 			return fMp4;

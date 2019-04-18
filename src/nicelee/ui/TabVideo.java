@@ -3,6 +3,7 @@ package nicelee.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -122,9 +123,10 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		jlBLANK4.setPreferredSize(new Dimension(100, 460));
 		this.add(jlBLANK4);
 
-		ImageIcon imag1 = new ImageIcon(this.getClass().getResource("/resources/loading.gif"));
-		imag1.setImage(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_DEFAULT));
-		lbAvPrivew = new JLabel(imag1 );
+		//ImageIcon imag1 = new ImageIcon(this.getClass().getResource("/resources/loading.gif"));
+		//imag1.setImage(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_DEFAULT));
+		lbAvPrivew = new JLabel("加载中", JLabel.CENTER);
+		lbAvPrivew.setFont(new Font("黑体", Font.BOLD, 120));
 		lbAvPrivew.setBorder(BorderFactory.createLineBorder(Color.red));
 		lbAvPrivew.setPreferredSize(new Dimension(700, 460));
 //		try {

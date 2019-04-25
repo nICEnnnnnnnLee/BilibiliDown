@@ -10,6 +10,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.Logger;
 
 @Bilibili(name = "ss")
 public class SSParser extends AbstractBaseParser {
@@ -60,7 +61,8 @@ public class SSParser extends AbstractBaseParser {
 		int begin = html.indexOf("window.__INITIAL_STATE__=");
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);
-		System.out.println(json);
+		Logger.println(url);
+		Logger.println(json);
 		JSONObject jObj = new JSONObject(json);
 		viInfo.setVideoName(jObj.getJSONObject("mediaInfo").getString("title"));
 		viInfo.setBrief(jObj.getJSONObject("mediaInfo").getString("evaluate"));
@@ -79,6 +81,7 @@ public class SSParser extends AbstractBaseParser {
 			clip.setcId(clipObj.getLong("cid"));
 			//clip.setPage(Integer.parseInt(clipObj.getString("index")));
 			clip.setRemark(clipObj.getInt("i") + 1);
+			clip.setPicPreview("https:" +clipObj.getString("cover"));
 			//如果和前面avid一致，那么是前者page + 1, 否则为 1
 			if(i > 0 && array.getJSONObject(i-1).getInt("aid") == clipObj.getInt("aid")) {
 				clip.setPage(lastClip.getPage() + 1);

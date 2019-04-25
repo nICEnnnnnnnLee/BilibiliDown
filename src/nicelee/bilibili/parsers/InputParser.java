@@ -47,6 +47,7 @@ public class InputParser implements IInputParser, IParamSetter {
 		for (IInputParser parser : parsers) {
 			if (parser.matches(input)) {
 				this.parser = parser;
+				break;
 			}
 		}
 	}

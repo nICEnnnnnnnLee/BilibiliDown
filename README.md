@@ -63,6 +63,30 @@ Bilibili 视频下载器，用于下载B站视频。
 </details>
 
 <details>
+<summary>下载封面</summary>
+
+
+单击封面图片获取URL。
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/ClickPicToGetUrl.gif)  
+</details>
+
+<details>
+<summary>更换预览图(适用于单页呈现多部作品的情况)</summary>
+
+
+长按作品文字，然后对应预览图会更新(网络原因可能会有卡顿，正常)。
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/LongClickToChangePreview.gif)  
+</details>
+
+<details>
+<summary>获取作品信息(适用于单页呈现多部作品的情况)</summary>
+
+
+双击作品文字，然后文本 + `avId`将会复制到剪贴板。
+![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/prelook/doubleClick2CopyClipInfo.gif)  
+</details>
+
+<details>
 <summary>其它</summary>
 
 

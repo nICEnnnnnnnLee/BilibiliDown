@@ -131,14 +131,14 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		if (e.getSource() == btnOpenFolder) {
 			File file = new File(lbFileName.getText());
 			try {
-				String cmd = null;
 				if (file.exists()) {
 					// 打开并选中
-					cmd = "explorer /e,/select," + file.getAbsolutePath();
+					String cmd[] = { "explorer", "/e,/select,", file.getAbsolutePath() };
+					Runtime.getRuntime().exec(cmd);
 				} else {
-					cmd = "explorer " + file.getParent();
+					Desktop desktop = Desktop.getDesktop();
+					desktop.open(file.getParentFile());
 				}
-				Runtime.getRuntime().exec(cmd);
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "打开文件夹失败!", "失败", JOptionPane.INFORMATION_MESSAGE);
 			}

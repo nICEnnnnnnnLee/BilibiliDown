@@ -202,10 +202,12 @@ public class CmdUtil {
 				return false;
 			}
 		};
-		// 删除下载文件
-		for (File file : folderDown.listFiles(filter)) {
-			System.out.println("尝试删除" + file.getName());
-			file.delete();
+		if(folderDown.exists()) {
+			// 删除下载文件
+			for (File file : folderDown.listFiles(filter)) {
+				System.out.println("尝试删除" + file.getName());
+				file.delete();
+			}
 		}
 	}
 

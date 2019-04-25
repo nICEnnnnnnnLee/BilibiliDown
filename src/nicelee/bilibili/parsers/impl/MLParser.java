@@ -99,6 +99,7 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 					clip.setPage(jClip.getInt("page"));
 					clip.setRemark((page-1)*API_PMAX + i + 1);
 					clip.setTitle(avTitle + "-" +jClip.getString("title"));
+					clip.setPicPreview(jAV.getString("cover"));
 					
 					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 					// TODO json这里的清晰度到底是什么鬼哦？？不知道怎么解析

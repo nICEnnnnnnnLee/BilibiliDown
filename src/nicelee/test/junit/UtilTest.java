@@ -3,7 +3,15 @@ package nicelee.test.junit;
 
 import static org.junit.Assert.assertEquals;
 
+import java.awt.Desktop;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.util.HashSet;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -41,17 +49,58 @@ public class UtilTest {
 	}
 	
 	/**
+	 * 测试 删除repo重复记录
+	 */
+	//@Test
+	public void testDeleteRecords() {
+		try {
+			BufferedReader bReader = new BufferedReader(new FileReader("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo.config"));
+			String line = null;
+			HashSet<String> set = new HashSet<>();
+			while((line = bReader.readLine())!= null) {
+				set.add(line);
+			}
+			bReader.close();
+			
+			FileWriter fW = new FileWriter("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo2.config");
+			for(Object str: set.toArray()) {
+				fW.write(str.toString());
+				fW.write("\r\n");
+			}
+			fW.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 测试 打开文件夹并选择文件
 	 */
-	@Test
+	//@Test
 	public void testOpenFolder() {
 		// 打开并选中
-		//String cmd[] = { "explorer", "/e,/select,"+"D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\ffmpeg.exe" };
 		try {
-			String cmd = "explorer /e,/select," +"D:\\Workspace\\javaweb-springboot\\BilibiliDown\\download\\翎霜ヾ的视频列表-pn10-【翎霜】运动会雪初音倾情献跳b with u【单录版】-b with u 操场-64.mp4";
+			String cmd[] = { "explorer", "/e,/select,", "D:\\Workspace\\javaweb-springboot\\BilibiliDown\\test   test1 test.txt" };
+			//String cmd = "explorer /e,/select," +"D:\\Workspace\\javaweb-springboot\\BilibiliDown\\test   test1 test.txt";
 			Runtime.getRuntime().exec(cmd);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 测试 打开URI
+	 */
+	@Test
+	public void testOpenURI() {
+		// 打开并选中
+		try {
+			Desktop desktop = Desktop.getDesktop();
+			desktop.browse(new URI("https://www.baidu.com"));
+			//desktop.open(new File("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\test   test1 test.txt"));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

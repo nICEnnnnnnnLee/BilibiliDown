@@ -8,6 +8,7 @@ public class ClipInfo {
 	String avId;
 	int page;
 	String title;
+	String picPreview;
 	HashMap<Integer, String> links;
 	
 	int remark = -1; // 用于ss番剧查询时显示顺序
@@ -103,6 +104,14 @@ public class ClipInfo {
 
 	public void setAvTitle(String avTitle) {
 		this.avTitle = avTitle;
+	}
+
+	public String getPicPreview() {
+		return picPreview;
+	}
+
+	public void setPicPreview(String picPreview) {
+		this.picPreview = picPreview;
 	}
 
 }

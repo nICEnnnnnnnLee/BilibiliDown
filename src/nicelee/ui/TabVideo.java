@@ -44,7 +44,7 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	JScrollPane jpScorll;
 	JComboBox<String> cbQn; // 清晰度
 	JButton btnDownAll; // 批量下载
-
+	String currentDisplayPic; //当前预览图片路径
 	public TabVideo(JLabel lbTabTitle) {
 		this.lbTabTitle = lbTabTitle;
 		init();
@@ -126,9 +126,11 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		//ImageIcon imag1 = new ImageIcon(this.getClass().getResource("/resources/loading.gif"));
 		//imag1.setImage(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_DEFAULT));
 		lbAvPrivew = new JLabel("加载中", JLabel.CENTER);
+		lbAvPrivew.setToolTipText("单击获取图片链接");
 		lbAvPrivew.setFont(new Font("黑体", Font.BOLD, 120));
 		lbAvPrivew.setBorder(BorderFactory.createLineBorder(Color.red));
 		lbAvPrivew.setPreferredSize(new Dimension(700, 460));
+		lbAvPrivew.addMouseListener(this);
 //		try {
 //			ImageIcon imgIcon = new ImageIcon(QrCodeUtil.createQrCode("你好吗?我好呀", 900));
 //			imgIcon = new ImageIcon(imgIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH));
@@ -261,10 +263,18 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		JLabel label = (JLabel) e.getSource();
 		// 获取系统剪贴板
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		// 封装文本内容
-		Transferable trans = new StringSelection(label.getText());
-		// 把文本内容设置到系统剪贴板
-		clipboard.setContents(trans, null);
+		String txtToCopy = null;
+		if(label == lbAvPrivew ) {
+			txtToCopy = avInfo.getVideoPreview();
+		}else {
+			txtToCopy = label.getText();
+		}
+		if( txtToCopy!= null) {
+			// 封装文本内容
+			Transferable trans = new StringSelection(txtToCopy);
+			// 把文本内容设置到系统剪贴板
+			clipboard.setContents(trans, null);
+		}
 	}
 
 	@Override
@@ -296,5 +306,13 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 
 	public void setAvInfo(VideoInfo avInfo) {
 		this.avInfo = avInfo;
+	}
+
+	public String getCurrentDisplayPic() {
+		return currentDisplayPic;
+	}
+
+	public void setCurrentDisplayPic(String currentDisplayPic) {
+		this.currentDisplayPic = currentDisplayPic;
 	}
 }

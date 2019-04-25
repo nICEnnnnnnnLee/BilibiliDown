@@ -13,6 +13,7 @@ import nicelee.bilibili.parsers.IParamSetter;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
 
 public abstract class AbstractBaseParser implements IInputParser {
 
@@ -75,7 +76,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 		String url = "https://api.bilibili.com/x/web-interface/view?aid=" + avIdNum;
 		HttpHeaders headers = new HttpHeaders();
 		String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-		// System.out.println(json);
+		Logger.println(url);
+		Logger.println(json);
 		JSONObject jObj = new JSONObject(json).getJSONObject("data");
 		String videoName = jObj.getString("title");
 		String brief = jObj.getString("desc");
@@ -99,6 +101,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			clip.setcId(clipObj.getLong("cid"));
 			clip.setPage(clipObj.getInt("page"));
 			clip.setTitle(clipObj.getString("part"));
+			clip.setPicPreview(videoPreview);
 
 			LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 			try {

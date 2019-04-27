@@ -72,14 +72,18 @@ public class ConfigUtil {
 			}
 		}
 		System.out.println("----Config ini end...----");
+		//下载设置相关
 		int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
 		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
 		Global.downloadFormat = Integer.parseInt(System.getProperty("bilibili.format"));
 		Global.savePath = System.getProperty("bilibili.savePath");
+		//查询或显示相关
 		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));
 		Global.pageDisplay = System.getProperty("bilibili.pageDisplay");
 		Global.themeDefault = "default".equals(System.getProperty("bilibili.theme"));
+		//临时文件
 		Global.restrictTempMode = "on".equals(System.getProperty("bilibili.restrictTempMode"));
+		//仓库功能
 		Global.useRepo = "on".equals(System.getProperty("bilibili.repo"));
 		boolean saveToRepo = "on".equals(System.getProperty("bilibili.repo.save"));
 		Global.saveToRepo =  Global.useRepo || saveToRepo;
@@ -87,5 +91,9 @@ public class ConfigUtil {
 		//重命名配置
 		Global.formatStr = System.getProperty("bilibili.name.format");
 		Global.doRenameAfterComplete = "true".equals(System.getProperty("bilibili.name.doAfterComplete"));
+		//弹出框设置
+		Global.isAlertIfDownloded = "true".equals(System.getProperty("bilibili.alert.isAlertIfDownloded"));
+		Global.maxAlertPrompt = Integer.parseInt(System.getProperty("bilibili.alert.maxAlertPrompt"));
+		System.out.println(Global.maxAlertPrompt);
 	}
 }

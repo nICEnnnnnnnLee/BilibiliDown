@@ -9,9 +9,11 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v3.2";
+	public static String version = "v3.3";
 	public static boolean themeDefault = true;
 	
+	public static boolean isAlertIfDownloded = true;
+	public static int maxAlertPrompt = 5;
 	// 下载相关
 	public final static int MP4 = 0;
 	public final static int FLV = 1;

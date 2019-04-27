@@ -14,6 +14,7 @@ import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
 import nicelee.ui.TabDownload;
 import nicelee.ui.item.DownloadInfoPanel;
+import nicelee.ui.item.JOptionPaneManager;
 
 public class DownloadRunnable implements Runnable {
 	
@@ -47,12 +48,7 @@ public class DownloadRunnable implements Runnable {
 		}
 		//判断是否已经下载过
 		if(Global.useRepo && RepoUtil.isInRepo(record)) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					JOptionPane.showMessageDialog(null, "您已经下载过视频" + record, "提示", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}).start();
+			JOptionPaneManager.showMsgWithNewThread("提示", "您已经下载过视频" + record);
 			System.out.println("已经下载过 " + record);
 			return;
 		}

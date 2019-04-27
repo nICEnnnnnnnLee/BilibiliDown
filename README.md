@@ -146,8 +146,8 @@ https://www.bilibili.com/bangumi/play/ep116157/
 * 使用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-LGPL%20(%3E%3D%202.1)%2FGPL%20(%3E%3D%202)-green.svg)](http://www.ffmpeg.org/legal.html)  
 
 ## :smile:媒体素材使用声明  
-* [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
-* [加载等待图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[数英 - Seven Dai](https://www.digitaling.com/articles/18383.html)  
+* [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/background.gif?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
+* ~~[加载等待图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[数英 - Seven Dai](https://www.digitaling.com/articles/18383.html) ~~(取消`ver>=V3.1`) 
 ## :smile:Win32/Linux/Mac用户请看过来
 + 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  

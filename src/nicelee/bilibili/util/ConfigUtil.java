@@ -94,6 +94,9 @@ public class ConfigUtil {
 		//弹出框设置
 		Global.isAlertIfDownloded = "true".equals(System.getProperty("bilibili.alert.isAlertIfDownloded"));
 		Global.maxAlertPrompt = Integer.parseInt(System.getProperty("bilibili.alert.maxAlertPrompt"));
-		System.out.println(Global.maxAlertPrompt);
+		String version = System.getProperty("bilibili.version");
+		if(version != null) {
+			Global.version = version;
+		}
 	}
 }

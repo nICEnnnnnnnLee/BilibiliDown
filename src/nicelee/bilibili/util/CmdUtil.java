@@ -32,7 +32,7 @@ public class CmdUtil {
 		}
 	}
 
-	public void run(String cmd) {
+	public static void run(String cmd) {
 		run(new String[] { cmd });
 	}
 

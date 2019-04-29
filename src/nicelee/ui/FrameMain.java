@@ -15,6 +15,7 @@ import nicelee.bilibili.INeedLogin;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.RepoUtil;
+import nicelee.ui.item.MJMenuBar;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
 
@@ -24,7 +25,7 @@ public class FrameMain extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JTabbedPane jTabbedpane = new JTabbedPane();// 存放选项卡的组件
+	JTabbedPane jTabbedpane;// 存放选项卡的组件
 
 	public static void main(String[] args) {
 		// System.getProperties().setProperty("file.encoding", "utf-8");
@@ -85,7 +86,7 @@ public class FrameMain extends JFrame {
 	public void InitUI() {
 
 		this.setTitle("BiliBili Down~~" + Global.version);
-		this.setSize(1200, 727);
+		this.setSize(1200, 767);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,6 +94,11 @@ public class FrameMain extends JFrame {
 		ImageIcon icon = new ImageIcon(iconURL);
 		this.setIconImage(icon.getImage());
 
+		//菜单栏
+		MJMenuBar menu = new MJMenuBar(this);
+		this.setJMenuBar(menu);
+		
+		jTabbedpane = new JTabbedPane();
 		// Index Tab
 		Global.index = new TabIndex(jTabbedpane);
 		jTabbedpane.addTab("主页", Global.index);

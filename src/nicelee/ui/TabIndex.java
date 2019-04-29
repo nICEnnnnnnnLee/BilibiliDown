@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.INeedAV;
 import nicelee.ui.item.MJTextField;
-import nicelee.ui.item.OperationPanel;
 import nicelee.ui.thread.GetVideoDetailThread;
 import nicelee.ui.thread.LoginThread;
 
@@ -44,7 +43,6 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	JButton btnSearch = new JButton("查找");
 	JButton btnSearchNextPage = new JButton("下一页");
 	
-	
 	JTextArea consoleArea = new JTextArea(20, 50);
 	JTabbedPane jTabbedpane;
 
@@ -55,12 +53,19 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 
 	public void init() {
 		this.setPreferredSize(new Dimension(1150, 620));
-		OperationPanel operPanel = new OperationPanel();
-		this.add(operPanel);
+//		OperationPanel operPanel = new OperationPanel();
+//		this.add(operPanel);
+		
+//		btnUpdate = new JLabel("<html>更新<br/>版本</html>", JLabel.CENTER);
+//		btnUpdate.setOpaque(true);
+//		btnUpdate.setPreferredSize(new Dimension(80, 80));
+//		btnUpdate.setFont(new Font("黑体", Font.BOLD, 30));
+//		btnUpdate.addMouseListener(this);
+//		this.add(btnUpdate);
 		
 		// 空白模块- 占位
 		JLabel jpBLANK = new JLabel();
-		jpBLANK.setPreferredSize(new Dimension(700, 80));
+		jpBLANK.setPreferredSize(new Dimension(920, 80));
 		this.add(jpBLANK);
 		
 		// 空白模块- 占位
@@ -226,12 +231,16 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		Global.index.jlHeader.setBorder(BorderFactory.createLineBorder(Color.red));
+		if(e.getSource() == jlHeader) {
+			jlHeader.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		Global.index.jlHeader.setBorder(null);
+		if(e.getSource() == jlHeader) {
+			jlHeader.setBorder(null);
+		}
 	}
 
 	@Override

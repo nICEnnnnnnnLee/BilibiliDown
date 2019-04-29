@@ -17,6 +17,8 @@ import nicelee.ui.Global;
 
 /**
  * 内嵌于主页 nicelee.ui.TabIndex
+ * 
+ * 舍弃，使用菜单栏FunctionMenuBar代替
  */
 public class OperationPanel extends JPanel {
 	private static final long serialVersionUID = -752743062676819407L;
@@ -41,6 +43,7 @@ public class OperationPanel extends JPanel {
 		
 		JPanel jp1 = new JPanel();
 		jp1.setPreferredSize(new Dimension(350, 36));
+		
 		
 		JLabel label = new JLabel("关闭全部Tab");
 		label.setPreferredSize(new Dimension(277, 36));

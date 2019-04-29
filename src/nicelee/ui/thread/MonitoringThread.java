@@ -1,5 +1,6 @@
 package nicelee.ui.thread;
 
+import java.awt.Color;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,6 +17,10 @@ public class MonitoringThread extends Thread {
 	}
 	public void run() {
 		ConcurrentHashMap<DownloadInfoPanel, IDownloader> map = Global.downloadTaskList;
+		Color lightGreen = new Color(153, 214, 92);
+		Color lightRed = new Color(255, 71, 10);
+		Color lightPink = new Color(255, 122, 122);
+		Color lightOrange = new Color(255, 207, 61);
 		while (true) {
 			//每一次while循环， 统计一次任务状态， 并在UI上更新
 			int totalTask = 0, activeTask = 0, pauseTask = 0, doneTask = 0, queuingTask = 0;
@@ -34,6 +39,7 @@ public class MonitoringThread extends Thread {
 						dp.getLbCurrentStatus().setText(genTips("%d/%d 下载完成. ", downloader));
 						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
 						dp.getBtnControl().setVisible(false);
+						dp.setBackground(lightGreen);
 						break;
 					case FAIL:
 						pauseTask ++;
@@ -41,6 +47,7 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 						dp.getBtnControl().setText("继续下载");
 						dp.getBtnControl().setVisible(true);
+						dp.setBackground(lightRed);
 						break;
 					case STOP:
 						pauseTask ++;
@@ -48,9 +55,10 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 						dp.getBtnControl().setText("继续下载");
 						dp.getBtnControl().setVisible(true);
+						dp.setBackground(lightPink);
 						break;
 					case PROCESSING:
-						doneTask ++;
+						activeTask ++;
 						dp.getLbCurrentStatus().setText(genTips("%d/%d 转码中... ", downloader));
 						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
 						dp.getBtnControl().setVisible(false);
@@ -61,6 +69,7 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText("等待下载中..");
 						dp.getBtnControl().setText("暂停");
 						dp.getBtnControl().setVisible(true);
+						dp.setBackground(lightOrange);
 						break;
 					case DOWNLOADING:
 						activeTask++;
@@ -80,6 +89,7 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 						dp.getBtnControl().setText("暂停");
 						dp.getBtnControl().setVisible(true);
+						dp.setBackground(null);
 						break;
 					default:
 						break;
@@ -92,6 +102,7 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText("任务取消");
 						dp.getBtnControl().setText("继续下载");
 						dp.getBtnControl().setVisible(true);
+						dp.setBackground(lightPink);
 					}else {
 						//等待队列中
 						queuingTask ++;
@@ -99,6 +110,7 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText("等待下载中..");
 						dp.getBtnControl().setText("暂停");
 						dp.getBtnControl().setVisible(true);
+						dp.setBackground(lightOrange);
 					}
 				}
 			}

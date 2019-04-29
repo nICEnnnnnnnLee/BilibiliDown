@@ -72,10 +72,10 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		fileName = "timg.gif";
 		totalSize = 0L;
 		currentDown = 0L;
-		initUI();
+		initUI(this);
 	}
 
-	void initUI() {
+	void initUI(DownloadInfoPanel dp) {
 		// this.setOpaque(false);
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.setPreferredSize(new Dimension(1100, 120));
@@ -83,6 +83,31 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		lbFileName = new JLabel("尚未生成");
 		lbFileName.setPreferredSize(new Dimension(600, 45));
 		lbFileName.setBorder(BorderFactory.createLineBorder(Color.red));
+//		lbFileName.addMouseListener(new MouseListener() {
+//			Color lightGreen = new Color(153, 214, 92);
+//			Color lightRed = new Color(255, 71, 10);
+//			Color lightPink = new Color(255, 122, 122);
+//			Color lightOrange = new Color(255, 207, 61);
+//			int cnt = 0;
+//			Color[] colors = {null, lightGreen, lightRed, lightPink, lightOrange};
+//			@Override
+//			public void mouseReleased(MouseEvent e) {
+//			}
+//			@Override
+//			public void mousePressed(MouseEvent e) {
+//				cnt = (cnt + 1)%colors.length;
+//				dp.setBackground(colors[cnt]);
+//			}
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//			}
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//			}
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//			}
+//		});
 		this.add(lbFileName);
 
 		btnOpen = new JButton("打开文件");

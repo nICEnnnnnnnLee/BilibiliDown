@@ -2,7 +2,6 @@ package nicelee.ui.thread;
 
 import java.awt.Dimension;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import nicelee.bilibili.INeedAV;
@@ -76,12 +75,7 @@ public class DownloadRunnable implements Runnable {
 		//如果清晰度不符合预期，再判断一次记录
 		//判断是否已经下载过
 		if (qn != realQN && Global.useRepo && RepoUtil.isInRepo(record)) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					JOptionPane.showMessageDialog(null, "您已经下载过视频" + record, "提示", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}).start();
+			JOptionPaneManager.showMsgWithNewThread("提示", "您已经下载过视频" + record);
 			System.out.println("已经下载过 " + record);
 			return;
 		}

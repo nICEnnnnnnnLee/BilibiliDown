@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.awt.Desktop;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -89,9 +90,22 @@ public class UtilTest {
 	}
 	
 	/**
-	 * 测试 打开URI
+	 * 测试 打开bat
 	 */
 	@Test
+	public void testOpenBat() {
+		// 打开并选中
+		try {
+			Desktop desktop = Desktop.getDesktop();
+			desktop.open(new File("run.bat"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 测试 打开URI
+	 */
+	//@Test
 	public void testOpenURI() {
 		// 打开并选中
 		try {

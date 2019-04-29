@@ -57,6 +57,9 @@ public class HttpRequestUtil {
 		// 单纯API 可以自己设置Global里面的参数
 		savePath = Global.savePath;
 	}
+	public void setSavePath(String savePath) {
+		this.savePath = savePath;
+	}
 
 	public static CookieManager DefaultCookieManager() {
 		return defaultManager;

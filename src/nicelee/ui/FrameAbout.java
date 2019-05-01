@@ -1,17 +1,20 @@
 package nicelee.ui;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.io.File;
 import java.net.URL;
 
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JRootPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import nicelee.bilibili.util.Logger;
+import nicelee.ui.item.MJTitleBar;
 import nicelee.ui.item.impl.TextTransferHandler;
 
 public class FrameAbout extends JFrame implements HyperlinkListener {
@@ -28,21 +31,32 @@ public class FrameAbout extends JFrame implements HyperlinkListener {
 		this.setSize(800, 480);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
-		this.setUndecorated(true);
-		this.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-		this.setTitle("信息");
+		this.setTitle("用爱发电 bilibili~~");
+		//this.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+		
+		// 作为内容容器
+		JPanel pane = new JPanel();
+		pane.setLayout(new FlowLayout());
+		// 添加标题栏
+		MJTitleBar titleBar = new MJTitleBar(this, true);
+		pane.add(titleBar);
+		
+		// 添加内容
 		JEditorPane editorPane = new JEditorPane();
 		editorPane.setEditable(false);
 		editorPane.setTransferHandler(new TextTransferHandler());
-		JScrollPane scrollPane = new JScrollPane(editorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.add(scrollPane);
 		try {
 			editorPane.setPage(this.getClass().getResource("/resources/about.html"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		editorPane.addHyperlinkListener(this);
+		JScrollPane scrollPane = new JScrollPane(editorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setPreferredSize(new Dimension(800, 460));
+		pane.add(scrollPane);
+		
+		this.setContentPane(pane);
 	}
 
 	public static void showAbout() {

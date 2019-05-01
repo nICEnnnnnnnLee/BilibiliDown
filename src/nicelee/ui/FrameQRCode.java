@@ -8,9 +8,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JRootPane;
 
 import nicelee.bilibili.util.QrCodeUtil;
+import nicelee.ui.item.MJTitleBar;
 
 public class FrameQRCode extends JFrame{
 	
@@ -25,10 +25,12 @@ public class FrameQRCode extends JFrame{
 	
 	public void initUI() {
 		System.out.println("正在生成二维码图片Frame");
-		this.setUndecorated(true);
-		this.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
 		this.setTitle("请扫描二维码...");
 		this.setSize(450, 500);
+		//this.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+		MJTitleBar titleBar = new MJTitleBar(this);
+		this.setGlassPane(titleBar);
+		titleBar.setVisible(true);
 		// this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -15,3 +15,5 @@
 *.txt
 /bin
 /target
+/release/prelook/png
+/release/prelook/gif

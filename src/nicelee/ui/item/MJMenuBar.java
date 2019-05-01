@@ -1,5 +1,6 @@
 package nicelee.ui.item;
 
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
@@ -35,6 +36,7 @@ public class MJMenuBar extends JMenuBar {
 	}
 
 	private void init() {
+		this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		/*
 		 * 创建一级菜单
 		 */
@@ -114,10 +116,14 @@ public class MJMenuBar extends JMenuBar {
 				Enumeration<AbstractButton> btns = btnQnGroup.getElements();
 				while (btns.hasMoreElements()) {
 					JRadioButtonMenuItem item = (JRadioButtonMenuItem) btns.nextElement();
-					int qn = VideoQualityEnum.getQN(item.getText());
-					Logger.println(item.getText());
-					Global.index.downVideoTabs(downAll, qn);
-					break;
+					
+					Logger.println(item.isSelected());
+					if(item.isSelected()) {
+						Logger.println(item.getText());
+						int qn = VideoQualityEnum.getQN(item.getText());
+						Global.index.downVideoTabs(downAll, qn);
+						break;
+					}
 				}
 			}
 		});

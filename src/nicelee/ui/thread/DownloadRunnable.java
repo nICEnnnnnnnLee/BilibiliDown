@@ -80,7 +80,7 @@ public class DownloadRunnable implements Runnable {
 			return;
 		}
 		//获取实际清晰度后，初始化下载部件参数
-		downPanel.initDownloadParams(iNeedAV, url, avid_qn, formattedTitle);
+		downPanel.initDownloadParams(iNeedAV, url, avid_qn, formattedTitle, realQN);
 		// 再进行一次判断，看下载列表是否已经存在相应任务(防止并发误判)
 		if (Global.downloadTaskList.get(downPanel) != null) {
 			System.out.println("已经存在相关下载");

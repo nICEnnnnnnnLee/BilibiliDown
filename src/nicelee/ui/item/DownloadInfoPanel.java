@@ -31,6 +31,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	int page;
 	int remark;
 	int qn;
+	int realqn;
 
 	// 下载相关
 	public INeedAV iNeedAV;
@@ -67,7 +68,6 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.page = clip.getPage();
 		this.remark = clip.getRemark();
 		this.qn = qn;
-
 		path = "D:\\bilibiliDown\\";
 		fileName = "timg.gif";
 		totalSize = 0L;
@@ -135,12 +135,12 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.add(lbavName);
 
 		lbCurrentStatus = new JLabel("正在下载...");
-		lbCurrentStatus.setPreferredSize(new Dimension(300, 45));
+		lbCurrentStatus.setPreferredSize(new Dimension(200, 45));
 		lbCurrentStatus.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbCurrentStatus);
 
 		lbDownFile = new JLabel(currentDown + "/" + totalSize);
-		lbCurrentStatus.setPreferredSize(new Dimension(250, 45));
+		lbDownFile.setPreferredSize(new Dimension(200, 45));
 		lbDownFile.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbDownFile);
 		this.setBackground(new Color(204, 255, 255));
@@ -193,12 +193,13 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	/**
 	 * 下载前的初始化工作
 	 */
-	public void initDownloadParams(INeedAV iNeedAV, String url, String avid_qn, String formattedTitle) {
+	public void initDownloadParams(INeedAV iNeedAV, String url, String avid_qn, String formattedTitle, int realqn) {
 		this.iNeedAV = iNeedAV;
 		this.avid_qn = avid_qn;
 		this.formattedTitle = formattedTitle;
 		this.url = url;
-		lbavName.setText(formattedTitle);
+		this.realqn = realqn;
+		this.lbavName.setText(formattedTitle);
 	}
 
 	/**
@@ -226,8 +227,9 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 						Logger.println("已经人工停止,无需再下载");
 						return;
 					}
+					Logger.println("预期下载清晰度：" + qn +"实际清晰度：" +realqn);
 					// 开始下载
-					if (downloader.download(url, avid, qn, page)) {
+					if (downloader.download(url, avid, realqn, page)) {
 						// 下载成功后保存到仓库
 						if (Global.saveToRepo) {
 							RepoUtil.appendAndSave(record);
@@ -334,14 +336,6 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 
 	public void setAvid(String avid) {
 		this.avid = avid;
-	}
-
-	public int getQn() {
-		return qn;
-	}
-
-	public void setQn(int qn) {
-		this.qn = qn;
 	}
 
 }

@@ -50,7 +50,7 @@ public class UtilTest {
 	/**
 	 * 测试 删除repo重复记录
 	 */
-	//@Test
+	@Test
 	public void testDeleteRecords() {
 		try {
 			BufferedReader bReader = new BufferedReader(new FileReader("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo.config"));
@@ -92,7 +92,7 @@ public class UtilTest {
 	/**
 	 * 测试 打开bat
 	 */
-	@Test
+	//@Test
 	public void testOpenBat() {
 		// 打开并选中
 		try {

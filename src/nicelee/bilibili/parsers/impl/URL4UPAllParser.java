@@ -55,8 +55,8 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	@Override
 	protected boolean query(int page, int min, int max, Object... obj) {
-		int videoFormat = (int)obj[0];
-		boolean getVideoLink = (boolean)obj[1];
+		int videoFormat = (int) obj[0];
+		boolean getVideoLink = (boolean) obj[1];
 		try {
 			String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
 			String url = String.format(urlFormat, spaceID, API_PMAX, page);
@@ -65,8 +65,8 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			System.out.println(json);
 			JSONObject jobj = new JSONObject(json);
 			JSONArray arr = jobj.getJSONObject("data").getJSONArray("vlist");
-			
-			//设置av信息
+
+			// 设置av信息
 			if (pageQueryResult.getVideoName() == null) {
 				pageQueryResult.setVideoId(spaceID);
 				pageQueryResult.setAuthor(arr.getJSONObject(0).getString("author"));
@@ -75,36 +75,40 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 				pageQueryResult.setAuthorId(spaceID);
 				pageQueryResult.setBrief("视频列表 - " + paramSetter.getPage());
 			}
-			
+
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
 				JSONObject jAV = arr.getJSONObject(i);
-				map.putAll(convertVideoToClipMap(jAV.getLong("aid"), 
-						(page -1)* API_PMAX + i+ 1,
-						videoFormat,
+				map.putAll(convertVideoToClipMap(jAV.getLong("aid"), (page - 1) * API_PMAX + i + 1, videoFormat,
 						getVideoLink));
 			}
 			return true;
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
 	 * 使用此方法会产生许多请求，慎用
+	 * 
 	 * @param avId
 	 * @param remark
 	 * @param videoFormat
 	 * @param getVideoLink
 	 * @return 将所有avId的视频封装成Map
 	 */
-	private LinkedHashMap<Long, ClipInfo> convertVideoToClipMap(long avId, int remark, int videoFormat, boolean getVideoLink){
+	private LinkedHashMap<Long, ClipInfo> convertVideoToClipMap(long avId, int remark, int videoFormat,
+			boolean getVideoLink) {
 		LinkedHashMap<Long, ClipInfo> map = new LinkedHashMap<>();
 		VideoInfo video = getAVDetail(avId, videoFormat, getVideoLink); // 耗时
-		for(ClipInfo clip: video.getClips().values()) {
-			clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
-			clip.setAvTitle(pageQueryResult.getVideoName());
+		for (ClipInfo clip : video.getClips().values()) {
+			//clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
+			//clip.setAvTitle(pageQueryResult.getVideoName());
+			// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
+			clip.setListName(pageQueryResult.getVideoName());
+			clip.setListOwnerName(pageQueryResult.getAuthor());
+			
 			clip.setRemark(remark);
 			map.put(clip.getcId(), clip);
 		}

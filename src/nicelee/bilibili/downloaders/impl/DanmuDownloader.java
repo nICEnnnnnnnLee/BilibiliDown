@@ -1,0 +1,133 @@
+package nicelee.bilibili.downloaders.impl;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import nicelee.bilibili.annotations.Bilibili;
+import nicelee.bilibili.downloaders.IDownloader;
+import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
+
+//@Bilibili(name = "danmuku-downloader", type = "downloader", note = "弹幕下载")
+public class DanmuDownloader implements IDownloader {
+
+	protected HttpRequestUtil util;
+	protected File file = null;
+	protected StatusEnum status = StatusEnum.NONE;
+
+	// http://comment.bilibili.com/85464878.xml
+	// https://api.bilibili.com/x/v1/dm/list.so?oid=85464878
+	@Override
+	public boolean matches(String url) {
+		if (url.contains("dm/list.so") || url.contains(".xml")) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 下载弹幕
+	 * 
+	 * @param url
+	 * @param avId
+	 * @param qn
+	 * @param page
+	 * @return
+	 */
+	@Override
+	public boolean download(String url, String avId, int qn, int page) {
+		status = StatusEnum.DOWNLOADING;
+		String result = util.getContent(url, new HttpHeaders().getDanmuHeaders());
+		file = new File(avId + "-" + qn + "-p" + page + ".xml");
+		if ("".equals(result)) {
+			status = StatusEnum.FAIL;
+			return false;
+		}
+		FileWriter out = null;
+		try {
+			out = new FileWriter(file);
+			out.write(result);
+			status = StatusEnum.SUCCESS;
+			Logger.println(result);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			status = StatusEnum.FAIL;
+			return false;
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	@Override
+	public void init(HttpRequestUtil util) {
+		this.util = util;
+	}
+
+	@Override
+	public void startTask() {
+	}
+
+	@Override
+	public void stopTask() {
+	}
+
+	@Override
+	public File file() {
+		return file;
+	}
+
+	@Override
+	public StatusEnum currentStatus() {
+		return status;
+	}
+
+	@Override
+	public int totalTaskCount() {
+		return 1;
+	}
+
+	@Override
+	public int currentTask() {
+		return 1;
+	}
+
+	@Override
+	public long sumTotalFileSize() {
+		if(file != null &&file.exists()) {
+			return file.length();
+		}
+		return 0;
+	}
+
+	@Override
+	public long sumDownloadedFileSize() {
+		if(file != null &&file.exists()) {
+			return file.length();
+		}
+		return 0;
+	}
+
+	@Override
+	public long currentFileDownloadedSize() {
+		if(file != null &&file.exists()) {
+			return file.length();
+		}
+		return 0;
+	}
+
+	@Override
+	public long currentFileTotalSize() {
+		if(file != null &&file.exists()) {
+			return file.length();
+		}
+		return 0;
+	}
+
+}

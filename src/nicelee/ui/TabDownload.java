@@ -99,6 +99,7 @@ public class TabDownload extends JPanel implements ActionListener {
 			for(int i = 0; i < jpContent.getComponentCount(); i++) {
 				Component comp = jpContent.getComponent(i);
 				if(comp instanceof DownloadInfoPanel ) {
+					((DownloadInfoPanel)comp).setFailCnt(0);
 					((DownloadInfoPanel)comp).continueTask();
 				}
 			}

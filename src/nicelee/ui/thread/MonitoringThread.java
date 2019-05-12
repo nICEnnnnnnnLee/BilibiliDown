@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.enums.StatusEnum;
-import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
 
@@ -22,6 +21,7 @@ public class MonitoringThread extends Thread {
 		Color lightPink = new Color(255, 122, 122);
 		Color lightOrange = new Color(255, 207, 61);
 		while (true) {
+			int MAX_FAIL_CNT = Global.maxFailRetry;
 			//每一次while循环， 统计一次任务状态， 并在UI上更新
 			int totalTask = 0, activeTask = 0, pauseTask = 0, doneTask = 0, queuingTask = 0;
 			for (Entry<DownloadInfoPanel, IDownloader> entry : map.entrySet()) {
@@ -33,6 +33,7 @@ public class MonitoringThread extends Thread {
 						path = path.replaceFirst("av[0-9]+-[0-9]+-p[0-9]+", dp.formattedTitle);
 					}
 					dp.getLbFileName().setText(path);
+					dp.getLbFileName().setToolTipText(path);
 					switch (downloader.currentStatus()) {
 					case SUCCESS:
 						doneTask ++;
@@ -43,10 +44,16 @@ public class MonitoringThread extends Thread {
 						break;
 					case FAIL:
 						pauseTask ++;
-						dp.getLbCurrentStatus().setText(genTips("%d/%d 下载异常. ", downloader));
 						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
-						dp.getBtnControl().setText("继续下载");
-						dp.getBtnControl().setVisible(true);
+						if(dp.getFailCnt() == MAX_FAIL_CNT) {
+							dp.getLbCurrentStatus().setText(genTips("%d/%d 下载异常. ", downloader));
+							dp.getBtnControl().setText("继续下载");
+							dp.getBtnControl().setVisible(true);
+						}else {
+							dp.getLbCurrentStatus().setText(String.format("下载异常. 尝试重连 %d ", dp.getFailCnt()));
+							dp.setFailCnt(dp.getFailCnt() + 1);
+							dp.continueTask();
+						}
 						dp.setBackground(lightRed);
 						break;
 					case STOP:

@@ -48,11 +48,25 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		this.setPreferredSize(new Dimension(340, 110));
 		labelTitle = new JLabel(clip.getRemark() + " - " + clip.getTitle(), JLabel.CENTER);
 		labelTitle.addMouseListener(this);
+		//labelTitle.setBorder(BorderFactory.createLineBorder(Color.red));
 		//labelTitle.setToolTipText("双击复制title文本 + avId，长按查看更换预览图片");
 		labelTitle.setToolTipText(clip.getAvTitle() + clip.getTitle());
-		labelTitle.setPreferredSize(new Dimension(300, 30));
+		labelTitle.setPreferredSize(new Dimension(250, 30));
 		this.setOpaque(false);
 		this.add(labelTitle);
+		
+		JButton btnDanmuku = new JButton("弹幕");
+		btnDanmuku.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//
+				String url = "https://api.bilibili.com/x/v1/dm/list.so?oid=";
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				Transferable trans = new StringSelection(url + clip.getcId());
+				clipboard.setContents(trans, null);
+			}
+		});
+		this.add(btnDanmuku);
 		for (final int qn : clip.getLinks().keySet()) {
 			// JButton btn = new JButton("清晰度: " + qn);
 			String qnName = VideoQualityEnum.getQualityDescript(qn);

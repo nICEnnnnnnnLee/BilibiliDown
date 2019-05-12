@@ -38,6 +38,15 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	public String url;
 	public String avid_qn;
 	public String formattedTitle;
+	int failCnt = 0;
+	
+	public int getFailCnt() {
+		return failCnt;
+	}
+
+	public void setFailCnt(int failCnt) {
+		this.failCnt = failCnt;
+	}
 
 	long lastCntTime = 0L;
 	long lastCnt = 0L;
@@ -130,6 +139,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.add(blank);
 
 		lbavName = new JLabel(avTitle);
+		lbavName.setToolTipText(avTitle);
 		lbavName.setPreferredSize(new Dimension(500, 45));
 		lbavName.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(lbavName);
@@ -185,6 +195,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 			if (status == StatusEnum.DOWNLOADING) {
 				stopTask();
 			} else {
+				setFailCnt(0);
 				continueTask();
 			}
 		}

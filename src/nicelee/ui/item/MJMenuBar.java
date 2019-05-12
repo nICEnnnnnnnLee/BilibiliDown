@@ -15,7 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 import nicelee.bilibili.enums.VideoQualityEnum;
+import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
@@ -50,8 +52,13 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 创建二级 操作 子菜单
 		 */
+		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
+		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
 		JMenuItem closeAllMenuItem = new JMenuItem("关闭全部Tab页");
 		JMenuItem doMultiDownMenuItem = new JMenuItem("批量下载Tab页");
+		operMenu.add(reloadConfig);
+		operMenu.add(reloadRepo);
+		operMenu.addSeparator();
 		operMenu.add(closeAllMenuItem);
 		operMenu.add(doMultiDownMenuItem);
 
@@ -99,7 +106,22 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 添加动作
 		 */
-
+		// 修改app.config后，重新加载配置使生效
+		reloadConfig.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ConfigUtil.initConfigs();
+			}
+		});
+		
+		// 修改repo.config后，重新加载仓库使生效
+		reloadRepo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RepoUtil.init();
+			}
+		});
+		
 		// 关闭Tab页
 		closeAllMenuItem.addActionListener(new ActionListener() {
 			@Override

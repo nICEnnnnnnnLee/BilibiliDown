@@ -32,10 +32,6 @@ public class CmdUtil {
 		}
 	}
 
-	public static void run(String cmd) {
-		run(new String[] { cmd });
-	}
-
 	/**
 	 * 音视频合并转码
 	 * 
@@ -293,11 +289,16 @@ public class CmdUtil {
 	// ## qn - 清晰度值 e.g. 32/64/80
 	// ## avTitle - av标题
 	// ## clipTitle - 视频小标题
+	//
+	// 以下可能不存在
+	// 用法举例 (:listName 我在前面-listName-我在后面)   ===>  我在前面-某收藏夹的名称-我在后面
+	// ### listName - 集合名称  e.g. 某收藏夹的名称
+	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
-	static Pattern splitUnit = Pattern.compile("avId|pAv|pDisplay|qn|avTitle|clipTitle");
+	static Pattern splitUnit = Pattern.compile("avId|pAv|pDisplay|qn|avTitle|clipTitle|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
-			String clipTitle) {
+			String clipTitle, String listName, String listOwnerName) {
 		// 生成KV表
 		HashMap<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("avId", avId);
@@ -306,22 +307,42 @@ public class CmdUtil {
 		paramMap.put("qn", "" + qn);
 		paramMap.put("avTitle", avTitle);
 		paramMap.put("clipTitle", clipTitle);
+		paramMap.put("listName", listName);
+		paramMap.put("listOwnerName", listOwnerName);
+		//paramMap.put("clipTitle", clipTitle);
 
-		StringBuilder sb = new StringBuilder();
 		// 匹配格式字符串
-		Matcher matcher = splitUnit.matcher(Global.formatStr);
 		// avTitle-pDisplay-clipTitle-qn
+		return genFormatedName(paramMap, Global.formatStr);
+	}
+
+	/**
+	 * @param paramMap
+	 * @param matcher
+	 * @return
+	 */
+	private static String genFormatedName(HashMap<String, String> paramMap, String formatStr) {
+		StringBuilder sb = new StringBuilder();
+		Matcher matcher = splitUnit.matcher(formatStr);
 		int pointer = 0;
 		while (matcher.find()) {
 			// 加入匹配单位前的字符串
-			sb.append(Global.formatStr.substring(pointer, matcher.start()));
-			// 加入匹配单位对应的值
-			sb.append(paramMap.get(matcher.group()));
+			sb.append(formatStr.substring(pointer, matcher.start()));
+			String ifStr = matcher.group(1);//条件语句
+			if(ifStr != null) {
+				if(paramMap.get(ifStr)!= null) {
+					sb.append(genFormatedName(paramMap, matcher.group(2)));
+				}
+//				Logger.println();
+			}else {
+				// 加入匹配单位对应的值
+				sb.append(paramMap.get(matcher.group()));
+			}
 			// 改变指针位置
 			pointer = matcher.end();
 		}
 		// 加入最后不匹配单位的部分
-		sb.append(Global.formatStr.substring(pointer));
+		sb.append(formatStr.substring(pointer));
 		// 去掉文件名称的非法字符
 		return sb.toString().replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"$]", ".");
 	}

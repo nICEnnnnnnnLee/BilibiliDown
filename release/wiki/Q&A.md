@@ -117,6 +117,16 @@
 </details>
 
 <details>
+<summary>批量下载时弹出大量的已下载确认框？ ver>=3.3</summary>
+
+
+* 修改`config/app.config`
+    * 不想弹出提示 => `bilibili.alert.isAlertIfDownloded = false`
+    * 限制提示框数量 => `bilibili.alert.maxAlertPrompt = 5`
+    * 关闭仓库模式(无条件尝试下载) => `bilibili.repo = off`
+</details>
+
+<details>
 <summary>我不想保存任何下载记录 ver>=3.1</summary>
 
 

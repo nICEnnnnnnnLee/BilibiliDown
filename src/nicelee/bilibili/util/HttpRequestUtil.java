@@ -250,7 +250,7 @@ public class HttpRequestUtil {
 	}
 
 	/**
-	 * do a Http Get Not Worked with http stream with Chunked
+	 * do a Http Get Not Worked with http stream with Deflate
 	 * 
 	 * @param url
 	 * @param headers
@@ -291,10 +291,15 @@ public class HttpRequestUtil {
 				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
 				ism = new GZIPInputStream(ism);
 			}
-			in = new BufferedReader(new InputStreamReader(ism));
+//			ism = new ChunkedInputStream(ism);
+//			ism = new DeflaterInputStream(ism);
+//			ism = new InflaterInputStream(new InflateWithHeaderInputStream(ism));
+//			ism = new GZIPInputStream(ism);
+//			ism = new ZipInputStream(ism);
+			in = new BufferedReader(new InputStreamReader(ism, "UTF-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
-				line = new String(line.getBytes(), "UTF-8");
+				//line = new String(line.getBytes(), "UTF-8");
 				result.append(line);
 			}
 		} catch (Exception e) {
@@ -314,7 +319,7 @@ public class HttpRequestUtil {
 	}
 
 	/**
-	 * do a Http Post Not Worked with http stream with Chunked
+	 * do a Http Post Not Worked with http stream with Deflate
 	 * 
 	 * @param url
 	 * @param headers
@@ -326,7 +331,7 @@ public class HttpRequestUtil {
 	}
 
 	/**
-	 * do a Http Post Not Worked with http stream with Chunked
+	 * do a Http Post Not Worked with http stream with Deflate
 	 * 
 	 * @param url
 	 * @param headers

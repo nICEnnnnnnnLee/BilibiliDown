@@ -69,7 +69,9 @@ public class DownloadRunnable implements Runnable {
 				"pn" + remark, 
 				realQN, 
 				clip.getAvTitle(), 
-				clip.getTitle());
+				clip.getTitle(),
+				clip.getListName(),
+				clip.getListOwnerName());
 		String avid_qn = avid + "-" + realQN;
 		this.record = avid_qn  + "-p" + page;
 		//如果清晰度不符合预期，再判断一次记录

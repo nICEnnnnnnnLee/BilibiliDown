@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,9 +27,11 @@ public class RepoUtil {
 	
 	public static void init() {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
-		fRepo = new File("config/repo.config");
-		standardAvPattern = Pattern.compile("^(av[0-9]+)-([0-9]+)(-p[0-9]+)$");
-		downRepo = new HashSet<String>();
+		if(fRepo == null) {
+			fRepo = new File("config/repo.config");
+			standardAvPattern = Pattern.compile("^(av[0-9]+)-([0-9]+)(-p[0-9]+)$");
+			downRepo = new CopyOnWriteArraySet<String>();
+		}
 		// 先初始化downRepo
 		BufferedReader buReader = null;
 		try {

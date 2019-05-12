@@ -136,8 +136,12 @@ public class URL4ChannelParser extends AbstractPageQueryParser<VideoInfo> {
 		LinkedHashMap<Long, ClipInfo> map = new LinkedHashMap<>();
 		VideoInfo video = getAVDetail(avId, videoFormat, getVideoLink); // 耗时
 		for(ClipInfo clip: video.getClips().values()) {
-			clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
-			clip.setAvTitle(pageQueryResult.getVideoName());
+			//clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
+			//clip.setAvTitle(pageQueryResult.getVideoName());
+			// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
+			clip.setListName(pageQueryResult.getVideoName());
+			clip.setListOwnerName(pageQueryResult.getAuthor());
+			
 			clip.setRemark(remark);
 			map.put(clip.getcId(), clip);
 		}

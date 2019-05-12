@@ -38,7 +38,9 @@ public class GetVideoDetailThread extends Thread{
 			video.getLbAvPrivew().setText("");
 			video.getLbAvPrivew().setIcon(imag1);
 			video.getLbBreif().setText(avInfo.getBrief());
+			video.getLbBreif().setToolTipText(avInfo.getBrief());
 			video.getLbVideoTitle().setText(avInfo.getVideoName());
+			video.getLbVideoTitle().setToolTipText(avInfo.getVideoName());
 			String title = avInfo.getVideoName();
 			if(title.length() >= 12) {
 				title = title.substring(0, 9) + "...";

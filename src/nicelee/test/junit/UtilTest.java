@@ -50,7 +50,7 @@ public class UtilTest {
 	/**
 	 * 测试 删除repo重复记录
 	 */
-	@Test
+	//@Test
 	public void testDeleteRecords() {
 		try {
 			BufferedReader bReader = new BufferedReader(new FileReader("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo.config"));
@@ -120,15 +120,28 @@ public class UtilTest {
 	/**
 	 * 测试 根据格式生成文件名
 	 */
+	@Test
+	public void testTitleUnderCondition() {
+		Global.formatStr = "avTitle-pDisplay-clipTitle-qn-(:listName 我在前面-listName-我在后面-)ddd";
+		String formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题",null,null);
+		System.out.println(formatedName);
+		assertEquals("av的标题-pn2-片段的标题-80-ddd", formatedName);
+		formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题","哈哈哈",null);
+		System.out.println(formatedName);
+		assertEquals("av的标题-pn2-片段的标题-80-我在前面-哈哈哈-我在后面-ddd", formatedName);
+	}
+	/**
+	 * 测试 根据格式生成文件名
+	 */
 	//@Test
-	public void testEpIdToAvId() {
+	public void testTitle() {
 		Global.formatStr = "avTitle-pDisplay-clipTitle-qn";
-		String formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题");
+		String formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题",null,null);
 		System.out.println(formatedName);
 		assertEquals("av的标题-pn2-片段的标题-80", formatedName);
 		
 		Global.formatStr = "开头avTitle-pDisplay-clipTitle-qn-pAvkkk666";
-		formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题");
+		formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题",null,null);
 		System.out.println(formatedName);
 		assertEquals("开头av的标题-pn2-片段的标题-80-p1kkk666", formatedName);
 	}

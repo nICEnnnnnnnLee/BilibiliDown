@@ -51,6 +51,7 @@ public class VersionManagerUtil {
 			if (assetName.startsWith("BilibiliDown") && assetName.endsWith(".zip")) {
 				downName = assetName;
 				downUrl = asset.getString("browser_download_url");
+				break;
 			}
 		}
 		//return versionTag.equals(Global.version);

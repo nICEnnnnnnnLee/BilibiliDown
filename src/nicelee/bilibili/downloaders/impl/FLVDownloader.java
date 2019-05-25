@@ -109,8 +109,7 @@ public class FLVDownloader implements IDownloader {
 		// totalTask
 		// currentTask
 		// util status; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3 队列中
-		if(file != null && file.exists()) {
-			//System.out.println("文件已存在");
+		if(file != null && file.exists() && (convertingStatus == StatusEnum.SUCCESS || convertingStatus == StatusEnum.NONE)) {
 			return StatusEnum.SUCCESS;
 		}
 		//System.out.println("转码状态： " + convertingStatus.getDescription());
@@ -122,6 +121,8 @@ public class FLVDownloader implements IDownloader {
 				return StatusEnum.SUCCESS;
 			} else if (convertingStatus == StatusEnum.FAIL) {
 				return StatusEnum.FAIL;
+			} else if(convertingStatus == StatusEnum.PROCESSING){
+				return StatusEnum.PROCESSING;
 			} else { //与转码无关
 				return util.getStatus();
 			}

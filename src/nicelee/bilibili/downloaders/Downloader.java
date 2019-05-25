@@ -9,13 +9,13 @@ import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 
-public class Downloader implements IDownloader{
-	
+public class Downloader implements IDownloader {
+
 	private List<IDownloader> downloaders = null;
 	private IDownloader downloader = null;
 	private HttpRequestUtil util;
 	private StatusEnum status;
-	
+
 	@Override
 	public boolean matches(String url) {
 		return true;
@@ -26,7 +26,7 @@ public class Downloader implements IDownloader{
 		downloaders = new ArrayList<>();
 		status = StatusEnum.NONE;
 		this.util = util;
-		
+
 		try {
 			for (Class<?> clazz : PackageScanLoader.validDownloaderClasses) {
 				IDownloader downloader = (IDownloader) clazz.newInstance();
@@ -55,10 +55,10 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public void startTask() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			status = StatusEnum.DOWNLOADING;
 			downloader.startTask();
-		}else {
+		} else {
 			Logger.println(StatusEnum.NONE.toString());
 			status = StatusEnum.NONE;
 		}
@@ -66,7 +66,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public void stopTask() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			downloader.stopTask();
 		}
 		status = StatusEnum.STOP;
@@ -74,7 +74,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public File file() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.file();
 		}
 		return null;
@@ -82,17 +82,17 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public StatusEnum currentStatus() {
-		//如果有downloader， 以downloader为准
-		if(downloader !=null) {
+		// 如果有downloader， 以downloader为准
+		if (downloader != null) {
 			return downloader.currentStatus();
-		}else {
+		} else {
 			return status;
 		}
 	}
 
 	@Override
 	public int totalTaskCount() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.totalTaskCount();
 		}
 		return 0;
@@ -100,7 +100,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public int currentTask() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.currentTask();
 		}
 		return 0;
@@ -108,7 +108,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public long sumTotalFileSize() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.sumTotalFileSize();
 		}
 		return 0;
@@ -116,7 +116,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public long sumDownloadedFileSize() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.sumDownloadedFileSize();
 		}
 		return 0;
@@ -124,7 +124,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public long currentFileDownloadedSize() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.currentFileDownloadedSize();
 		}
 		return 0;
@@ -132,7 +132,7 @@ public class Downloader implements IDownloader{
 
 	@Override
 	public long currentFileTotalSize() {
-		if(downloader !=null) {
+		if (downloader != null) {
 			return downloader.currentFileTotalSize();
 		}
 		return 0;

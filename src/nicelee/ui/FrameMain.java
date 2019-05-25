@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -54,9 +55,15 @@ public class FrameMain extends JFrame {
 		LoginThread loginTh = new LoginThread();
 		loginTh.start();
 
+		// 初始化 - ffmpeg环境判断
+		String[] cmd = {"ffmpeg", "-version"};
+		if(!CmdUtil.run(cmd)) {
+			JOptionPane.showMessageDialog(null, "当前没有ffmpeg环境，大部分mp4及小部分flv文件将无法转码或合并", "请注意!!", JOptionPane.WARNING_MESSAGE);
+		}
+		
 		//
 		if (Global.saveToRepo) {
-			RepoUtil.init();
+			RepoUtil.init(false);
 		}
 //		FrameQRCode qr = new FrameQRCode("https://www.bilibili.com/");
 //		qr.initUI();

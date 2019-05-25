@@ -8,7 +8,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 
-@Bilibili(name = "ep")
+@Bilibili(name = "test")
 public class EPParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("ep[0-9]+");

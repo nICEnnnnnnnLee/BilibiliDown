@@ -38,7 +38,7 @@ public class RepoTest {
 	//@Test
 	public void testThreadRun() {
 		System.out.println("初始化开始");
-		RepoUtil.init();
+		RepoUtil.init(false);
 		System.out.println("初始化完毕");
 		for(int i = 0; i < 1000; i++) {
 			final int cnt = i;

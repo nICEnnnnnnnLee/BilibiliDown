@@ -120,7 +120,7 @@ public class UtilTest {
 	/**
 	 * 测试 根据格式生成文件名
 	 */
-	@Test
+	//@Test
 	public void testTitleUnderCondition() {
 		Global.formatStr = "avTitle-pDisplay-clipTitle-qn-(:listName 我在前面-listName-我在后面-)ddd";
 		String formatedName = CmdUtil.genFormatedName("av12345", "p1", "pn2", 80, "av的标题", "片段的标题",null,null);
@@ -155,6 +155,15 @@ public class UtilTest {
 		str = str.replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"$]", ".");
 		System.out.println(str);
 		str = "av21449435-16-p1.flv".replaceFirst("av[0-9]+-[0-9]+-p[0-9]+", str);
+	}
+	
+	/**
+	 * 测试 ffmpeg环境是否可用
+	 */
+	@Test
+	public void testFFmpeg() {
+		String[] cmd = {"ffmpeg", "-version"};
+		CmdUtil.run(cmd);
 	}
 	
 }

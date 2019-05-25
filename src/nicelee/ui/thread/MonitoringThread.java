@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
 
@@ -68,7 +69,9 @@ public class MonitoringThread extends Thread {
 						activeTask ++;
 						dp.getLbCurrentStatus().setText(genTips("%d/%d 转码中... ", downloader));
 						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
-						dp.getBtnControl().setVisible(false);
+						dp.setBackground(lightOrange);
+						dp.setBackground(null);
+						Logger.println("转码中。。。");
 						break;
 					case NONE:
 						queuingTask ++;
@@ -110,6 +113,13 @@ public class MonitoringThread extends Thread {
 						dp.getBtnControl().setText("继续下载");
 						dp.getBtnControl().setVisible(true);
 						dp.setBackground(lightPink);
+					}if(downloader.currentStatus() == StatusEnum.PROCESSING) {
+						activeTask ++;
+						dp.getLbCurrentStatus().setText(genTips("%d/%d 转码中... ", downloader));
+						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
+						dp.setBackground(lightOrange);
+						dp.setBackground(null);
+						Logger.println("转码中。。。");
 					}else {
 						//等待队列中
 						queuingTask ++;
@@ -125,9 +135,7 @@ public class MonitoringThread extends Thread {
 			//System.out.println("当前map总任务数： " + totalTask);
 			//totalTask = activeTask + pauseTask + doneTask + queuingTask;
 			//System.out.println("当前计算总任务数： " + totalTask);
-			String info = String.format(" 总计: %d / 下载中 : %d / 暂停 : %d / 下载完 : %d / 队列中 : %d", 
-					totalTask, activeTask, pauseTask, doneTask, queuingTask);
-			Global.downloadTab.refreshStatus(info);
+			Global.downloadTab.refreshStatus(totalTask, activeTask, pauseTask, doneTask, queuingTask);
 			//Global.activeTask = activeTask;
 			try {
 				Thread.sleep(1500);

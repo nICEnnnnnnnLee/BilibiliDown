@@ -52,7 +52,7 @@ public class FrameMain_v3_4 extends JFrame {
 
 		//
 		if(Global.saveToRepo) {
-			RepoUtil.init();
+			RepoUtil.init(false);
 		}
 		//Logger.println(.);
 //		FrameQRCode qr = new FrameQRCode("https://www.bilibili.com/");

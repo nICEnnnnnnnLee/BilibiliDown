@@ -118,7 +118,7 @@ public class MJMenuBar extends JMenuBar {
 		reloadRepo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				RepoUtil.init();
+				RepoUtil.init(true);
 			}
 		});
 		

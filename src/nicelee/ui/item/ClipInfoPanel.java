@@ -46,7 +46,12 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 	void initUI() {
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.setPreferredSize(new Dimension(340, 110));
-		labelTitle = new JLabel(clip.getRemark() + " - " + clip.getTitle(), JLabel.CENTER);
+		// 分情况显示
+		if(clip.getListName() != null) {
+			labelTitle = new JLabel(clip.getRemark() + " - " + clip.getAvTitle() +clip.getTitle(), JLabel.CENTER);
+		}else {
+			labelTitle = new JLabel(clip.getRemark() + " - " + clip.getTitle(), JLabel.CENTER);
+		}
 		labelTitle.addMouseListener(this);
 		//labelTitle.setBorder(BorderFactory.createLineBorder(Color.red));
 		//labelTitle.setToolTipText("双击复制title文本 + avId，长按查看更换预览图片");

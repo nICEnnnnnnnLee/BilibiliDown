@@ -16,7 +16,7 @@ import nicelee.ui.thread.StreamManager;
 
 public class CmdUtil {
 
-	public static void run(String cmd[]) {
+	public static boolean run(String cmd[]) {
 		Process process = null;
 		try {
 			process = Runtime.getRuntime().exec(cmd);
@@ -24,11 +24,14 @@ public class CmdUtil {
 			StreamManager outputStream = new StreamManager(process, process.getInputStream());
 			errorStream.start();
 			outputStream.start();
-			System.out.println("此处堵塞, 直至process 执行完毕");
+			//System.out.println("此处堵塞, 直至process 执行完毕");
 			process.waitFor();
 			System.out.println("process 执行完毕");
+			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			Logger.println(e.toString());
+			return false;
 		}
 	}
 
@@ -145,7 +148,7 @@ public class CmdUtil {
 	 * 类似于
 	 * 
 	 * @ex1 av12345-64-p1.flv.txt
-	 * @ex2 av12345-64-p2-part1.flv
+	 * @ex2 av12345-64-p2-part1.flv // 在转码判断里面删除，防止误删
 	 * @ex3 av12345-64-p2-part1.flv.part
 	 * @ex4 av12345-64-p3.mp4.part
 	 * 
@@ -185,15 +188,15 @@ public class CmdUtil {
 						}
 						return false;
 					}
-					// 部分完成了的flv|mp4文件，如果已经存在转换完的对应视频，则可以删除
-					Matcher matcherDonePart = cmdDonePartPattern.matcher(name);
-					if (matcherDonePart.find()) {
-						File file = new File(dir, matcherDonePart.group().replaceFirst("-part[0-9]+", ""));
-						if (file.exists()) {
-							return true;
-						}
-						return false;
-					}
+//					// 部分完成了的flv|mp4文件，如果已经存在转换完的对应视频，则可以删除
+//					Matcher matcherDonePart = cmdDonePartPattern.matcher(name);
+//					if (matcherDonePart.find()) {
+//						File file = new File(dir, matcherDonePart.group().replaceFirst("-part[0-9]+", ""));
+//						if (file.exists()) {
+//							return true;
+//						}
+//						return false;
+//					}
 				}
 				return false;
 			}

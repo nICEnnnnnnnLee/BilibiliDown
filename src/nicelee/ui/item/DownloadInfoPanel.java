@@ -211,6 +211,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.url = url;
 		this.realqn = realqn;
 		this.lbavName.setText(formattedTitle);
+		this.lbavName.setToolTipText(formattedTitle);
 	}
 
 	/**

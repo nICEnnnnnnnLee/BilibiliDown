@@ -16,10 +16,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import nicelee.bilibili.util.Logger;
+import nicelee.ui.Global;
 
 
 public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionListener{
@@ -155,8 +157,18 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getSource() == btnClose) {
+			if(Global.downloadTab.activeTask > 0) {
+				Object[] options = { "我要退出", "我再想想" };
+				String msg = String.format("当前仍有 %d 个任务在下载/转码，正在转码的文件退出后可能丢失或异常，确定要退出吗？", Global.downloadTab.activeTask);
+				int m = JOptionPane.showOptionDialog(null, msg, "警告", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+						null, options, options[0]);
+				Logger.println(m);
+				if(m != 0) 	return;
+			}
+			Logger.println("closing...");
 			WindowEvent event=new WindowEvent(frame,WindowEvent.WINDOW_CLOSING);
 			frame.dispatchEvent(event);
+			
 		}else if(e.getSource() == btnMin){
 			frame.setExtendedState(JFrame.ICONIFIED);
 		}

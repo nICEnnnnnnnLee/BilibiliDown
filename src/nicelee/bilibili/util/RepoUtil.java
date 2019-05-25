@@ -25,9 +25,9 @@ public class RepoUtil {
 	static Set<String> downRepo; // 已下载完成的av集合
 
 	
-	public static void init() {
+	public static void init(boolean refresh) {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
-		if(fRepo == null) {
+		if(fRepo == null || refresh) {
 			fRepo = new File("config/repo.config");
 			standardAvPattern = Pattern.compile("^(av[0-9]+)-([0-9]+)(-p[0-9]+)$");
 			downRepo = new CopyOnWriteArraySet<String>();

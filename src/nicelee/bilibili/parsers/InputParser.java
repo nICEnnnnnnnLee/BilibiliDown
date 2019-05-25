@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import nicelee.bilibili.PackageScanLoader;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.parsers.impl.TestParser;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 
@@ -46,6 +47,7 @@ public class InputParser implements IInputParser, IParamSetter {
 	public void selectParser(String input) {
 		for (IInputParser parser : parsers) {
 			if (parser.matches(input)) {
+				//Logger.println(input);
 				this.parser = parser;
 				break;
 			}

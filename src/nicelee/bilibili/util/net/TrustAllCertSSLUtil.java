@@ -13,7 +13,7 @@ public class TrustAllCertSSLUtil implements TrustManager, X509TrustManager {
 	private static SSLSocketFactory sslFactory = null;
 
 	public static SSLSocketFactory getFactory() throws Exception {
-		if (sslFactory != null) {
+		if (sslFactory == null) {
 			TrustManager[] trustAllCerts = new TrustManager[1];
 			TrustManager tm = new TrustAllCertSSLUtil();
 			trustAllCerts[0] = tm;

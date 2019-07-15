@@ -15,21 +15,6 @@ import nicelee.ui.Global;
 public class ConfigUtil {
 	final static Pattern patternConfig = Pattern.compile("^[ ]*([0-9|a-z|A-Z|.|_]+)[ ]*=[ ]*([^ ]+.*$)");
 
-	/**
-	 *
-	 * // HTTP 代理，只能代理 HTTP 请求 System.setProperty("http.proxyHost","127.0.0.1");
-	 * System.setProperty("http.proxyPort","9876");
-	 * 
-	 * // HTTPS 代理，只能代理 HTTPS 请求 System.setProperty("https.proxyHost","127.0.0.1");
-	 * System.setProperty("https.proxyPort","9876");
-	 * 
-	 * // 同时支持代理 HTTP/HTTPS 请求 System.setProperty("proxyHost","127.0.0.1");
-	 * System.setProperty("proxyPort","9876");
-	 * 
-	 * // SOCKS 代理，支持 HTTP 和 HTTPS 请求 // 注意：如果设置了 SOCKS 代理就不要设 HTTP/HTTPS 代理
-	 * System.setProperty("socksProxyHost","127.0.0.1");
-	 * System.setProperty("socksProxyPort","1080");
-	 */
 	public static void initConfigs() {
 		// 先初始化默认值
 		BufferedReader buReader = null;

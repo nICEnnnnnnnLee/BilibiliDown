@@ -13,6 +13,7 @@ import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class HttpRequestUtil {
 		// 单纯API 可以自己设置Global里面的参数
 		savePath = Global.savePath;
 	}
+
 	public void setSavePath(String savePath) {
 		this.savePath = savePath;
 	}
@@ -74,30 +76,6 @@ public class HttpRequestUtil {
 	}
 
 	/**
-	 * 获取文件大小
-	 */
-	final static Pattern sizePattern = Pattern.compile("bytes 0-[0-9]+/([0-9]+)");
-
-	protected long getfileSize(String url, HashMap<String, String> headers) throws Exception {
-		String urlNameString = url;
-		URL realUrl = new URL(urlNameString);
-		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-		conn.setConnectTimeout(2000);
-		conn.setReadTimeout(2000);
-		headers.put("range", "bytes=0-100");
-		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			conn.setRequestProperty(entry.getKey(), entry.getValue());
-		}
-		conn.connect();
-		// 获取所有响应头字段
-		Map<String, List<String>> map = conn.getHeaderFields();
-		Matcher matcher = sizePattern.matcher(map.get("Content-Range").get(0));
-		matcher.find();
-		long totalSize = Long.parseLong(matcher.group(1));
-		return totalSize;
-	}
-	
-	/**
 	 * 重置统计参数
 	 */
 	public void init() {
@@ -105,6 +83,7 @@ public class HttpRequestUtil {
 		status = StatusEnum.NONE;
 		reset();
 	}
+
 	/**
 	 * 重置统计参数
 	 */
@@ -112,6 +91,7 @@ public class HttpRequestUtil {
 		downloadedFileSize = 0;
 		totalFileSize = 0;
 	}
+
 	/**
 	 * 下载文件 请确认 文件大小total为 0 或者正确值
 	 * 
@@ -121,9 +101,10 @@ public class HttpRequestUtil {
 	 * @return
 	 */
 	static Pattern filePartPattern = Pattern.compile("^(.*)-part[0-9]+\\.(flv|mp4)$");
+
 	public boolean download(String url, String fileName, HashMap<String, String> headers) {
-		//如果已经人工停止，那么直接返回
-		if(status == StatusEnum.STOP) {
+		// 如果已经人工停止，那么直接返回
+		if (status == StatusEnum.STOP) {
 			return false;
 		}
 		status = StatusEnum.DOWNLOADING;
@@ -137,10 +118,10 @@ public class HttpRequestUtil {
 			System.out.println(fileDst.getName());
 			// 如果av1234-64-p4.flv已下完， 那么av1234-64-p4-part1.flv这种也不是必须的
 			Matcher ma = filePartPattern.matcher(fileDst.getName());
-			if(ma.find()) {
+			if (ma.find()) {
 				// 文件已存在,无需下载
 				File fTemp = new File(fileDst.getParent(), ma.group(1) + "." + ma.group(2));
-				if(fTemp.exists()) {
+				if (fTemp.exists()) {
 					status = StatusEnum.SUCCESS;
 					return true;
 				}
@@ -157,25 +138,20 @@ public class HttpRequestUtil {
 			raf = new RandomAccessFile(fileDownloadPart, "rw");
 			// 获取下载进度
 			long offset = 0;
-			headers.remove("range");
-			if (fileDownloadPart.exists() && fileDownloadPart.length() > 0) {
-				offset = fileDownloadPart.length();
-				// total = getfileSize(url, headers);
-				headers.put("range", "bytes=" + offset + "-");// + (total - 1)
-				System.out.println("当前已下载: [" + offset + "]字节");
-				raf.seek(offset);
-			}
+			offset = modifyHeaderMapByDownloaded(headers, raf, fileDownloadPart, offset);
 			// 开始下载
 			String urlNameString = url;
-			URL realUrl = new URL(urlNameString);
-			HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-			conn.setConnectTimeout(2000);
-			conn.setReadTimeout(2000);
-			for (Map.Entry<String, String> entry : headers.entrySet()) {
-				conn.setRequestProperty(entry.getKey(), entry.getValue());
-				// System.out.println(entry.getKey() + ":" + entry.getValue());
-			}
+			HttpURLConnection conn = connect(headers, urlNameString, null);
 			conn.connect();
+			
+			if (conn.getResponseCode() == 403) {
+				Logger.println("403被拒，尝试更换Headers(可能由于app版权的原因)");
+				conn.disconnect();
+				headers = HttpHeaders.getBiliAppDownHeaders();
+				offset = modifyHeaderMapByDownloaded(headers, raf, fileDownloadPart, offset);
+				conn = connect(headers, urlNameString, null);
+				conn.connect();
+			}
 			// 获取所有响应头字段
 			Map<String, List<String>> map = conn.getHeaderFields();
 			// 遍历所有的响应头字段
@@ -188,6 +164,7 @@ public class HttpRequestUtil {
 			try {
 				inn = conn.getInputStream();
 			} catch (Exception e) {
+				e.printStackTrace();
 				Logger.println(headers.get("range"));
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
 				String temp;
@@ -245,6 +222,63 @@ public class HttpRequestUtil {
 		return true;
 	}
 
+	/**
+	 * @param headers
+	 * @param url
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	private HttpURLConnection connect(HashMap<String, String> headers, String url, List<HttpCookie> listCookie)
+			throws MalformedURLException, IOException {
+		URL realUrl = new URL(url);
+		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+		conn.setConnectTimeout(10000);
+		conn.setReadTimeout(10000);
+		for (Map.Entry<String, String> entry : headers.entrySet()) {
+			conn.setRequestProperty(entry.getKey(), entry.getValue());
+//			 System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+		// 设置Cookie
+		if (listCookie != null) {
+			StringBuilder sb = new StringBuilder();
+			for (HttpCookie cookie : listCookie) {
+				sb.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
+			}
+			String cookie = sb.toString();
+			if (cookie.endsWith("; ")) {
+				cookie = cookie.substring(0, cookie.length() - 2);
+			}
+			// System.out.println(cookie);
+			conn.setRequestProperty("Cookie", cookie);
+		}
+		//conn.connect();
+		return conn;
+	}
+
+	/**
+	 * 获取已经下载字节数，并修饰Header
+	 * 
+	 * @param headers
+	 * @param raf
+	 * @param fileDownloadPart
+	 * @param offset
+	 * @return
+	 * @throws IOException
+	 */
+	private long modifyHeaderMapByDownloaded(HashMap<String, String> headers, RandomAccessFile raf,
+			File fileDownloadPart, long offset) throws IOException {
+		headers.remove("range");
+		if (fileDownloadPart.exists() && fileDownloadPart.length() > 0) {
+			offset = fileDownloadPart.length();
+			// total = getfileSize(url, headers);
+			headers.put("range", "bytes=" + offset + "-");// + (total - 1)
+			System.out.println("当前已下载: [" + offset + "]字节");
+			raf.seek(offset);
+		}
+		return offset;
+	}
+
 	public String getContent(String url, HashMap<String, String> headers) {
 		return getContent(url, headers, null);
 	}
@@ -261,29 +295,9 @@ public class HttpRequestUtil {
 		StringBuffer result = new StringBuffer();
 		BufferedReader in = null;
 		try {
-			String urlNameString = url;
-			URL realUrl = new URL(urlNameString);
-			HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-			conn.setConnectTimeout(2000);
-			conn.setReadTimeout(2000);
-			for (Map.Entry<String, String> entry : headers.entrySet()) {
-				conn.setRequestProperty(entry.getKey(), entry.getValue());
-				// System.out.println(entry.getKey()+ " : " +entry.getValue());
-			}
-			// 设置Cookie
-			if (listCookie != null) {
-				StringBuilder sb = new StringBuilder();
-				for (HttpCookie cookie : listCookie) {
-					sb.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
-				}
-				String cookie = sb.toString();
-				if (cookie.endsWith("; ")) {
-					cookie = cookie.substring(0, cookie.length() - 2);
-				}
-				// System.out.println(cookie);
-				conn.setRequestProperty("Cookie", cookie);
-			}
+			HttpURLConnection conn = connect(headers, url, listCookie);
 			conn.connect();
+			
 			String encoding = conn.getContentEncoding();
 			InputStream ism = conn.getInputStream();
 			if (encoding != null && encoding.contains("gzip")) {// 首先判断服务器返回的数据是否支持gzip压缩，
@@ -291,15 +305,10 @@ public class HttpRequestUtil {
 				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
 				ism = new GZIPInputStream(ism);
 			}
-//			ism = new ChunkedInputStream(ism);
-//			ism = new DeflaterInputStream(ism);
-//			ism = new InflaterInputStream(new InflateWithHeaderInputStream(ism));
-//			ism = new GZIPInputStream(ism);
-//			ism = new ZipInputStream(ism);
 			in = new BufferedReader(new InputStreamReader(ism, "UTF-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
-				//line = new String(line.getBytes(), "UTF-8");
+				// line = new String(line.getBytes(), "UTF-8");
 				result.append(line);
 			}
 		} catch (Exception e) {
@@ -343,35 +352,14 @@ public class HttpRequestUtil {
 		StringBuffer result = new StringBuffer();
 		BufferedReader in = null;
 		try {
-			// 建立连接
-			String urlNameString = url;
-			URL realUrl = new URL(urlNameString);
-			HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-			conn.setConnectTimeout(2000);
-			conn.setReadTimeout(2000);
+			HttpURLConnection conn = connect(headers, url, listCookie);
 			// 设置参数
 			conn.setDoOutput(true); // 需要输出
 			conn.setDoInput(true); // 需要输入
 			conn.setUseCaches(false); // 不允许缓存
 			conn.setRequestMethod("POST"); // 设置POST方式连接
-			// 设置Headers
-			for (Map.Entry<String, String> entry : headers.entrySet()) {
-				conn.setRequestProperty(entry.getKey(), entry.getValue());
-			}
-			// 设置Cookie
-			if (listCookie != null) {
-				StringBuilder sb = new StringBuilder();
-				for (HttpCookie cookie : listCookie) {
-					sb.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
-				}
-				String cookie = sb.toString();
-				if (cookie.endsWith("; ")) {
-					cookie = cookie.substring(0, cookie.length() - 2);
-				}
-				Logger.println(cookie);
-				conn.setRequestProperty("Cookie", cookie);
-			}
 			conn.connect();
+			
 			// 建立输入流，向指向的URL传入参数
 			DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 			dos.writeBytes(param);
@@ -393,7 +381,7 @@ public class HttpRequestUtil {
 			// printCookie(manager.getCookieStore());
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
-			//e.printStackTrace();
+			// e.printStackTrace();
 		} finally {
 			try {
 				if (in != null) {

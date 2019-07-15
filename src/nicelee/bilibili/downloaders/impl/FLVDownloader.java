@@ -53,6 +53,7 @@ public class FLVDownloader implements IDownloader {
 	
 	protected boolean download(String url, String avId, int qn, int page, String suffix) {
 		convertingStatus = StatusEnum.NONE;
+		currentTask = 1;
 		String fName = avId + "-" + qn + "-p" + page;
 		HttpHeaders header = new HttpHeaders();
 		if(file == null) {

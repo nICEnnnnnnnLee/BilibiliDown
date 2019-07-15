@@ -22,7 +22,11 @@ public class WebSocket extends WebSocketClient {
 		try {
 			// 请求头部
 			HashMap<String, String> headers = new HttpHeaders().getHeaders();
-			//headers.put("Origin", "http://coolaf.com");
+			headers.put("Host", "363553143-server.va.huya.com:5469");
+			headers.put("Connection", "Upgrade");
+			headers.put("Upgrade", "websocket");
+			headers.put("Origin", "http://www.huya.com");
+			
 //			List<HttpCookie> cookies = HttpCookies.convertCookies("");
 //			for (HttpCookie cookie : cookies) {
 //				headers.put(cookie.getName(), cookie.getValue());
@@ -31,13 +35,13 @@ public class WebSocket extends WebSocketClient {
 			// 请求连接
 			// URI url = new URI("wss://broadcast.chat.bilibili.com:7823/sub");
 			//URI url = new URI("ws://123.207.167.163:9010/ajaxchattest");
-			URI url = new URI("ws://121.40.165.18:8800");
+			URI url = new URI("wss://363553143-server.va.huya.com:5469/");
 			
 			// 实例化
 			wss = new WebSocket(url, headers);
 			//wss = new WebSocket(url);
 			// SSL设置信任所有证书
-			//wss.setSocketFactory(TrustAllCertSSLUtil.getFactory());
+			wss.setSocketFactory(TrustAllCertSSLUtil.getFactory());
 			// wss.connect();
 			wss.connectBlocking();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

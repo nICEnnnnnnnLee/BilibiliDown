@@ -61,7 +61,7 @@ public abstract class PackageScanLoader {
 				URL currentUrl = url.nextElement();
 				String type = currentUrl.getProtocol();
 				if (type.equals("jar")) { // jar 包
-					dealWithJar(currentUrl);
+					dealWithJar(currentUrl, packNameWithFileSep);
 				} else if (type.equals("file")) { // file
 					File file = new File(currentUrl.toURI());
 					if (file.isDirectory()) { // 目录
@@ -121,7 +121,7 @@ public abstract class PackageScanLoader {
 	}
 
 	// 处理jar包类型
-	private void dealWithJar(URL url) {
+	private void dealWithJar(URL url, String packNameWithFileSep) {
 		JarURLConnection jarURLConnection;
 		try {
 			jarURLConnection = (JarURLConnection) url.openConnection();
@@ -130,7 +130,7 @@ public abstract class PackageScanLoader {
 
 			while (jarEntries.hasMoreElements()) {
 				JarEntry jar = jarEntries.nextElement();
-				if (jar.isDirectory() || !jar.getName().endsWith(".class")) {
+				if (jar.isDirectory() || !jar.getName().endsWith(".class") || !jar.getName().startsWith(packNameWithFileSep)) {
 					continue;
 				}
 				// 处理class类型

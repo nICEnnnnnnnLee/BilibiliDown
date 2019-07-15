@@ -1,6 +1,11 @@
 ## UPDATE  
+* V3.8
+    * 新增app独享视频下载(PC端不能看，以av2478750为例)
+    * 增加4K清晰度(以av56995872为例)
+    * 包扫描机制优化
+    * INeedAV的Main入口做了部分优化
 * V3.7
-    * 新增`正在转码状态`,细化下载任务状态提示  
+    *  [issue#10](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/10)新增`正在转码状态`,细化下载任务状态提示  
     * 增加ffmpeg环境判断与提示  
     * 修复菜单里的Repo重载刷新问题  
     * Tab结果页里面av各p标题名称分情况显示  

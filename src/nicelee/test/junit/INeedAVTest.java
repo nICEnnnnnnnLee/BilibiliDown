@@ -3,6 +3,7 @@ package nicelee.test.junit;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.zip.DeflaterInputStream;
 
 import org.junit.After;
@@ -32,7 +33,7 @@ public class INeedAVTest {
 	/**
 	 * 测试 下载弹幕 TODO 浏览器打开没问题，但是这里是乱码
 	 */
-	@Test
+	//@Test
 	public void testDownloadDanmuku() {
 		ConfigUtil.initConfigs();
 		HttpRequestUtil util = new HttpRequestUtil();
@@ -150,4 +151,21 @@ public class INeedAVTest {
 		assertEquals(video.getClips().get(84745928L).getAvId(), "av48384067");
 	}
 
+	/**
+	 * 测试根据av号获取信息(av2478750, 只能在手机端播放)
+	 */
+	@Test
+	public void testGetAvInfoOnlyOnPhone() {
+//		INeedAV avs = new INeedAV();
+//		VideoInfo video = null;
+//		video = avs.getVideoDetail("av2478750", Global.downloadFormat, true);
+		
+		HttpRequestUtil util = new HttpRequestUtil();
+		String url = "http://upos-hz-mirrorbosu.acgvideo.com/upgcxcode/54/61/3876154/3876154-1-32.flv?e=ig8euxZM2rNcNbNV7zUVhoMghwuBhwdEto8g5X10ugNcXBlqNCNEto8g5gNvNE3DN0B5tZlqNxTEto8BTrNvN05fqx6S5ahE9IMvXBvE2ENvNCImNEVEK9GVqJIwqa80WXIekXRE9IB5QK==&deadline=1561830248&gen=playurl&nbs=1&oi=1961292611&os=bosu&platform=android&trid=e49a2ef9a77e4a028f3924c54470a632&uipk=5&upsig=d8f54521d15c8db8898dad58eb7ace15&uparams=e,deadline,gen,nbs,oi,os,platform,trid,uipk&mid=0";
+		
+		System.setProperty("http.proxyHost","127.0.0.1");
+		System.setProperty("http.proxyPort","8888");
+//		util.download(url, "test", HttpHeaders.getBiliAppDownHeaders());
+		util.download(url, "test", new HttpHeaders().getBiliWwwFLVHeaders("av2478750"));
+	}
 }

@@ -14,9 +14,13 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.MD5;
 
 public abstract class AbstractBaseParser implements IInputParser {
 
+	final static String appkey = "YvirImLGlLANCLvM";
+	final static String appSecret = "JNlZNgfNGKZEpaDTkCdPQVXntXhuiJEM";
+			
 	protected Matcher matcher;
 	protected HttpRequestUtil util;
 	protected int pageSize = 20;
@@ -140,23 +144,40 @@ public abstract class AbstractBaseParser implements IInputParser {
 		HttpHeaders headers = new HttpHeaders();
 		JSONArray jArr = null;
 		try {
-			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
+			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, 32);
-			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
-			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
-		} catch (Exception e) {
-			// e.printStackTrace();
-			System.out.println("地址解析失败,使用另一种方式");
-			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
-			url = String.format(url, avIdNum, cid, 32);
+			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
 			System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
+		} catch (Exception e) {
+			// e.printStackTrace();
+			System.out.println("地址解析失败,使用另一种方式");
+			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
+			url = String.format(url, avIdNum, cid, 32);
+			Logger.println(url);
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
+			Logger.println(json);
+			JSONObject result = new JSONObject(json);
+			if(result.getInt("code") == 0) {// -10403 -404
+				jArr = result.getJSONObject("data").getJSONArray("accept_quality");
+			} else {
+				System.out.println("版权限制，只能在app观看,使用另一种方式解析");
+				String params = "actionkey=appkey&aid=%s&appkey=%s&build=5423000&cid=%s&device=android&expire=0&fnval=80&fnver=0&force_host=0&fourk=0&mid=0&mobi_app=android&npcybs=0&otype=json&platform=android&qn=%s&quality=3&ts=" + System.currentTimeMillis();
+				params = String.format(params, avIdNum, appkey, cid, 32);
+				
+				String appUrl = "https://app.bilibili.com/x/playurl?" + params + "&sign=" + 
+						MD5.sign(params, appSecret);
+				//Logger.println(appUrl);
+				String appJson = util.getContent(appUrl, headers.getBiliAppJsonAPIHeaders(), HttpCookies.getGlobalCookies());
+				Logger.println(appJson);
+				jArr = new JSONObject(appJson).getJSONObject("data").getJSONArray("accept_quality");
+			}
 		}
 		int qnList[] = new int[jArr.length()];
 		for (int i = 0; i < qnList.length; i++) {
 			qnList[i] = jArr.getInt(i);
+			//Logger.println(qnList[i]);
 		}
 		return qnList;
 	}
@@ -197,19 +218,36 @@ public abstract class AbstractBaseParser implements IInputParser {
 		HttpHeaders headers = new HttpHeaders();
 		JSONObject jObj = null;
 		try {
-			String url = "https://api.bilibili.com/x/player/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
-			url = String.format(url, avIdNum, cid, qn);
-			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			// System.out.println(json);
-			jObj = new JSONObject(json).getJSONObject("data");
-		} catch (Exception e) {
-			// e.printStackTrace();
-			System.out.println("FLV链接地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
+			
+			
 			// System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
+		} catch (Exception e) {
+			// e.printStackTrace();
+			System.out.println("FLV链接地址解析失败,使用另一种方式");
+			String url = "https://api.bilibili.com/x/player/playurl?fnval=2&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
+			url = String.format(url, avIdNum, cid, qn);
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
+			System.out.println(json);
+			JSONObject result = new JSONObject(json);
+			
+			if(result.getInt("code") == 0) {
+				jObj = new JSONObject(json).getJSONObject("data");
+			} else {
+				System.out.println("版权限制，只能在app观看,使用另一种方式解析");
+				String params = "actionkey=appkey&aid=%s&appkey=%s&build=5423000&cid=%s&device=android&expire=0&fnval=80&fnver=0&force_host=0&fourk=0&mid=0&mobi_app=android&npcybs=0&otype=json&platform=android&qn=%s&quality=3&ts=" + System.currentTimeMillis();
+				params = String.format(params, avIdNum, appkey, cid, qn);
+				
+				String appUrl = "https://app.bilibili.com/x/playurl?" + params + "&sign=" + 
+						MD5.sign(params, appSecret);
+				//Logger.println(appUrl);
+				String appJson = util.getContent(appUrl, headers.getBiliAppJsonAPIHeaders(), HttpCookies.getGlobalCookies());
+				Logger.println(appJson);
+				jObj = new JSONObject(appJson).getJSONObject("data");
+			}
 		}
 
 		int linkQN = jObj.getInt("quality");
@@ -235,19 +273,36 @@ public abstract class AbstractBaseParser implements IInputParser {
 		HttpHeaders headers = new HttpHeaders();
 		JSONObject jObj = null;
 		try {
-			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&type=&otype=json&avid=%s&cid=%s&qn=%s";
-			url = String.format(url, avIdNum, cid, qn);
-			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
-			System.out.println(json);
-			jObj = new JSONObject(json).getJSONObject("data");
-		} catch (Exception e) {
-			// e.printStackTrace();
-			System.out.println("MP4链接地址解析失败,使用另一种方式");
 			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
 			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
+			
+			
+		} catch (Exception e) {
+			// e.printStackTrace();
+			System.out.println("MP4链接地址解析失败,使用另一种方式");
+			String url = "https://api.bilibili.com/x/player/playurl?fnval=16&fnver=0&type=&otype=json&avid=%s&cid=%s&qn=%s";
+			url = String.format(url, avIdNum, cid, qn);
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
+			
+			JSONObject result = new JSONObject(json);
+			Logger.println(json);
+			if(result.getInt("code") == 0) {
+				jObj = new JSONObject(json).getJSONObject("data");
+			} else {
+				System.out.println("版权限制，只能在app观看,使用另一种方式解析");
+				String params = "actionkey=appkey&aid=%s&appkey=%s&build=5423000&cid=%s&device=android&expire=0&fnval=80&fnver=0&force_host=0&fourk=0&mid=0&mobi_app=android&npcybs=0&otype=json&platform=android&qn=%s&quality=3&ts=" + System.currentTimeMillis();
+				params = String.format(params, avIdNum, appkey, cid, qn);
+				
+				String appUrl = "https://app.bilibili.com/x/playurl?" + params + "&sign=" + 
+						MD5.sign(params, appSecret);
+				//Logger.println(appUrl);
+				String appJson = util.getContent(appUrl, headers.getBiliAppJsonAPIHeaders(), HttpCookies.getGlobalCookies());
+				Logger.println(appJson);
+				jObj = new JSONObject(appJson).getJSONObject("data");
+			}
 		}
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);

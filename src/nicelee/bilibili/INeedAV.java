@@ -7,8 +7,10 @@ import nicelee.bilibili.downloaders.Downloader;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.parsers.InputParser;
+import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 
 public class INeedAV {
@@ -26,9 +28,13 @@ public class INeedAV {
 	}
 
 	public static void main(String[] args) {
+		args = new String[]{"https://space.bilibili.com/8741628/favlist?fid=70263328"};
 		System.out.println("-------------------------------");
 		System.out.println("输入av号, 下载当前cookie所能下载的最清晰链接");
 		System.out.println("-------------------------------");
+		// 初始化配置
+		ConfigUtil.initConfigs();
+		
 		INeedAV ina = new INeedAV();
 		INeedLogin inl = new INeedLogin();
 		// 0. 尝试读取cookie
@@ -42,10 +48,11 @@ public class INeedAV {
 
 		// 1. 获取av 信息, 并下载当前Cookies最清晰的链接
 		try {
-			VideoInfo avInfo = ina.getVideoDetail(args[0], 1, true);
+			VideoInfo avInfo = ina.getVideoDetail(args[0], Global.downloadFormat, false);
 
 			// 下载最清晰的链接
 			for (ClipInfo clip : avInfo.getClips().values()) {
+				Logger.println(clip.getAvTitle());
 				ina.downloadClip(clip);
 			}
 		} catch (Exception e) {
@@ -61,7 +68,9 @@ public class INeedAV {
 	 * @return
 	 */
 	public boolean downloadClip(ClipInfo avClip) {
-		return downloadClip(inputParser.getVideoLink(avClip.getAvId(), "" + avClip.getcId(), 116, 1), avClip.getAvId(), 80, avClip.getPage());
+		return downloadClip(
+				inputParser.getVideoLink(avClip.getAvId(), "" + avClip.getcId(), 120, 1), 
+				avClip.getAvId(), inputParser.getRealQN(), avClip.getPage());
 	}
 
 	/**

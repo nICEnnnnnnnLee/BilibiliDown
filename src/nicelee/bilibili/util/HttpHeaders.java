@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 public class HttpHeaders {
 	HashMap<String, String> headerMap = new HashMap<String, String>();
-	static HashMap<String, String> userInfoHeaderMap = null;
-	static HashMap<String, String> loginAuthHeaderMap = null;
-	static HashMap<String, String> loginAuthVaHeaderMap = null;
-	static HashMap<String, String> mobileHeaderMap = null;
+	private static HashMap<String, String> userInfoHeaderMap = null;
+	private static HashMap<String, String> loginAuthHeaderMap = null;
+	private static HashMap<String, String> loginAuthVaHeaderMap = null;
+	private static HashMap<String, String> mobileHeaderMap = null;
 
 	public void setHeader(String key, String value) {
 		headerMap.put(key, value);
@@ -79,6 +79,18 @@ public class HttpHeaders {
 		}
 		return loginAuthVaHeaderMap;
 	}
+	
+	/**
+	 * 该Header配置用于app版权视频下载
+	 */
+	static HashMap<String, String> appHeaderMap;
+	public static HashMap<String, String> getBiliAppDownHeaders() {
+		if (appHeaderMap == null) {
+			appHeaderMap = new HashMap<>();
+			appHeaderMap.put("User-Agent", "Bilibili Freedoooooom/MarkII");
+		}
+		return appHeaderMap;
+	}
 
 	/**
 	 * 该Header配置用于FLV视频下载
@@ -114,6 +126,24 @@ public class HttpHeaders {
 		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);// need addavId
 		headerMap.put("User-Agent",
 				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");
+//		headerMap.put("User-Agent",
+//				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+		headerMap.put("X-Requested-With", "ShockwaveFlash/28.0.0.137");
+		return headerMap;
+	}
+	
+	/**
+	 * 该Header配置用于api 信息查询(版权限制，只能在app上看的那种)
+	 */
+	public HashMap<String, String> getBiliAppJsonAPIHeaders() {
+		headerMap.put("Accept", "*/*");
+		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
+		headerMap.put("Connection", "keep-alive");
+		headerMap.put("Host", "app.bilibili.com");
+		headerMap.put("Referer", "https://app.bilibili.com");
+		headerMap.put("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
 		headerMap.put("X-Requested-With", "ShockwaveFlash/28.0.0.137");
 		return headerMap;
 	}

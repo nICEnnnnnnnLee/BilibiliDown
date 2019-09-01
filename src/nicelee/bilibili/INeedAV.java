@@ -28,7 +28,7 @@ public class INeedAV {
 	}
 
 	public static void main(String[] args) {
-		args = new String[]{"https://space.bilibili.com/8741628/favlist?fid=70263328"};
+//		args = new String[]{"https://space.bilibili.com/8741628/favlist?fid=70263328"};
 		System.out.println("-------------------------------");
 		System.out.println("输入av号, 下载当前cookie所能下载的最清晰链接");
 		System.out.println("-------------------------------");

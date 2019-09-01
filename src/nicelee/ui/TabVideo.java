@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import nicelee.bilibili.ccaption.ClosedCaptionDealer;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
@@ -42,6 +45,7 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	JScrollPane jpScorll;
 	JComboBox<String> cbQn; // 清晰度
 	JButton btnDownAll; // 批量下载
+	JButton btnDownCC; // 批量下载
 	String currentDisplayPic; //当前预览图片路径
 	public TabVideo(JLabel lbTabTitle) {
 		this.lbTabTitle = lbTabTitle;
@@ -95,11 +99,19 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 				download(true, VideoQualityEnum.getQN(cbQn.getSelectedItem().toString()));
 			}
 		});
+		btnDownCC = new JButton("字幕下载");
+		btnDownCC.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				downloadCC();
+			}
+		});
 		this.add(cbQn);
 		this.add(btnDownAll);
+		this.add(btnDownCC);
 		// 空白模块- 占位
 		JLabel jlBLANK11 = new JLabel();
-		jlBLANK11.setPreferredSize(new Dimension(220, 30));
+		jlBLANK11.setPreferredSize(new Dimension(140, 30));
 		this.add(jlBLANK11);
 
 		// 空白模块- 占位
@@ -169,7 +181,28 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 				download(i, qn);
 			}
 		}
-
+	}
+	
+	/**
+	 * 用于下载字幕
+	 * 
+	 */
+	public void downloadCC() {
+		Runnable ccRun = new Runnable() {
+			@Override
+			public void run() {
+				Collection<ClipInfo> clips = avInfo.getClips().values();
+				ClosedCaptionDealer ccDealer = new ClosedCaptionDealer();
+				HashSet<String> downloaded = new HashSet<>();
+				for(ClipInfo clip: clips) {
+					if(!downloaded.contains(clip.getAvId())) {
+						downloaded.add(clip.getAvId());
+						ccDealer.getCC(clip.getAvId(), Global.savePath, clip.getAvTitle());
+					}
+				}
+			}
+		};
+		Global.ccThreadPool.execute(ccRun);
 	}
 
 	/**

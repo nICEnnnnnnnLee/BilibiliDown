@@ -23,6 +23,7 @@ public class Global {
 	public static String savePath = "./download/"; // 下载文件保存路径
 	public static ExecutorService downLoadThreadPool;// 下载线程池
 	public static ExecutorService queryThreadPool = Executors.newFixedThreadPool(1);// 查询线程池(同一时间并发不能太多, 为了保证任务面板的顺序，采用fixed(1))
+	public static ExecutorService ccThreadPool = Executors.newFixedThreadPool(1);// 用于字幕下载
 	public static TabDownload downloadTab; // 下载显示界面
 	public static ConcurrentHashMap<DownloadInfoPanel, IDownloader> downloadTaskList = new ConcurrentHashMap<DownloadInfoPanel, IDownloader>();
 	

@@ -5,6 +5,7 @@
 ![开源协议Apache2.0](https://img.shields.io/badge/license-apache--2.0-green.svg)  
 ![当前版本](https://img.shields.io/github/release/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square)
 ![Release 下载总量](https://img.shields.io/github/downloads/nICEnnnnnnnLee/BilibiliDown/total.svg?style=flat-square)
+![最近更新](https://img.shields.io/github/last-commit/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square&color=FF9900)
 
 Bilibili 视频下载器，用于下载B站视频。  
 ===============================
@@ -20,6 +21,7 @@ Bilibili 视频下载器，用于下载B站视频。
 + 支持长视频，杜绝片头式下载!!!!(试金石av3248542)  
 + 支持断点续传下载!!!!!(因异常原因退出后, 只要下载目录不变, 直接在上次基础上继续下载)
 + 支持CC字幕下载  
++ 支持互动视频下载  
    
 ## :smile:使用方法
 <details>
@@ -125,6 +127,7 @@ Bilibili 视频下载器，用于下载B站视频。
   
 | 清晰度  | qn值 |
 | ------------- | ------------- |
+| 4K  | 120 |
 | 1080P60  | 116 |
 | 1080P+  | 112 |
 | 1080P  | 80 |
@@ -149,7 +152,33 @@ https://www.bilibili.com/bangumi/play/ep116157/
     * 大会员cookie 发起 ```720P60``` 请求 =====>  得到```720P```链接  
 </details>
 
+<details>
+<summary>关于互动视频说明</summary>
 
++ 仅支持单个视频，以及配置`bilibili.pageDisplay = promptAll`的批量下载。  
+  如果配置`bilibili.pageDisplay = listAll`，那么当从收藏夹/UP主链接查询时，仅下载互动视频的首片段。  
+
++ 输入互动视频av号查询时，将会罗列所有世界线的全部视频片段，同时也支持这些片段的下载。  
+片段title名称规则为：  
+`i.j-上次做出的选择`   
+其中，i为第i条世界线；j为世界线的第j+1个视频  
+
++ 举例 av64006660
+```
+【互动式视频】史蒂夫的故事，你决定Steve的命运《我的世界》
+该互动视频包含5个片段：
+    pn0-起始
+    pn1-0.1-A 造个木剑防御怪物
+    pn2-1.1-B 造个木镐开始挖矿_2.1-B 造个木镐开始挖矿
+    pn3-1.2-A 先造个庇护所
+    pn4-2.2-B 先种树再造房
+
+以上有3条世界线，观看顺序为：  
+    世界线0： pn0 -> pn1
+    世界线1： pn0 -> pn2 -> pn3
+    世界线2： pn0 -> pn2 -> pn4
+```
+</details>
 
 ## :smile:第三方库使用声明  
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)

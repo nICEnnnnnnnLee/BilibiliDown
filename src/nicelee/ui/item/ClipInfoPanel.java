@@ -11,6 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -19,8 +22,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
@@ -64,11 +69,23 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		btnDanmuku.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//
-				String url = "https://api.bilibili.com/x/v1/dm/list.so?oid=";
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				Transferable trans = new StringSelection(url + clip.getcId());
-				clipboard.setContents(trans, null);
+				Runnable danmukuRun = new Runnable() {
+					@Override
+					public void run() {
+						String url = "https://api.bilibili.com/x/v1/dm/list.so?oid=" + clip.getcId();
+						String content = new HttpRequestUtil().getContent(url, null);
+						File file = new File(Global.savePath, String.format("%s-%s.xml", clip.getAvTitle(), clip.getTitle()));
+						try {
+							BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+							writer.write(content);
+							writer.flush();
+							writer.close();
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				};
+				Global.ccThreadPool.execute(danmukuRun);
 			}
 		});
 		this.add(btnDanmuku);

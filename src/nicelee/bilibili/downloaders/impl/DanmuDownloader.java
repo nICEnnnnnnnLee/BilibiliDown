@@ -11,7 +11,7 @@ import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 
-//@Bilibili(name = "danmuku-downloader", type = "downloader", note = "弹幕下载")
+@Bilibili(name = "danmuku-downloader", type = "downloader", note = "弹幕下载")
 public class DanmuDownloader implements IDownloader {
 
 	protected HttpRequestUtil util;

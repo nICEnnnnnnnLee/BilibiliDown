@@ -2,10 +2,6 @@ package nicelee.test.junit;
 
 import static org.junit.Assert.*;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.zip.DeflaterInputStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +12,6 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
-import nicelee.bilibili.util.net.stream.InflateWithHeaderInputStream;
-import nicelee.bilibili.util.net.stream.TestStream;
 import nicelee.ui.Global;
 
 public class INeedAVTest {
@@ -41,62 +35,6 @@ public class INeedAVTest {
 		String danmuku = util.getContent("http://comment.bilibili.com/85464878.xml",
 				new HttpHeaders().getDanmuHeaders(), null);
 		System.out.println(danmuku);
-	}
-
-	// @Test
-	public void testDeflate() {
-		try {
-			// byte[] test = {0x33, 0x34, 0x34, 0x04, 0x00}; //"111"
-			// byte[] test = {0x33, 0x34, 0x02 0x00}; //"12"
-			// byte[] test = {0x33, 0x34, 0x04 0x00}; //"11"
-//			byte[] test = {0x33, 0x01, 0x00};  //"4"
-			// byte[] test = {0x33, 0x06, 0x00}; //"3"
-			// byte[] test = {0x33, 0x02, 0x00}; //"2"
-			// byte[] test = {0x33, 0x04, 0x00}; //"1"
-			byte[] test = { 0x03, 0x00 }; // ""
-			InputStream in = new InflateWithHeaderInputStream(new TestStream(test));
-			int value, cnt = 0;
-			while ((value = in.read()) != -1) {
-				// Logger.println(Integer.toHexString(value));
-				String hexStr = Integer.toHexString(value);
-				if (hexStr.length() == 1) {
-					System.out.print(0);
-				}
-				System.out.print(hexStr);
-				System.out.print(" ");
-				if (cnt == 30) {
-					System.out.print("\r\n");
-					cnt = 0;
-				}
-				cnt++;
-			}
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(" ");
-		try {
-			InputStream in = (new DeflaterInputStream(new TestStream("")));
-			int value, cnt = 0;
-			while ((value = in.read()) != -1) {
-				// Logger.println(Integer.toHexString(value));
-				String hexStr = Integer.toHexString(value);
-				if (hexStr.length() == 1) {
-					System.out.print(0);
-				}
-				System.out.print(hexStr);
-				System.out.print(" ");
-				if (cnt == 30) {
-					System.out.print("\r\n");
-					cnt = 0;
-				}
-				cnt++;
-			}
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	/**

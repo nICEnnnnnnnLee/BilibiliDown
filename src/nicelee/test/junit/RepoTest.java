@@ -50,7 +50,7 @@ public class RepoTest {
 			}).start();
 		}
 	}
-	@Test
+	//@Test
 	public void renameBatToRepo() {
 		Pattern standardAvPattern = Pattern.compile("(av[0-9]+)-([0-9]+)-(p[0-9]+)");
 		File file = new File("download/rename.bat");
@@ -73,6 +73,42 @@ public class RepoTest {
 		}
 		try {
 			File fRepo = new File("config/repo.config");
+			FileWriter fw = new FileWriter(fRepo, true);
+			for(Object avRecord: downRepo.toArray()) {
+				System.out.println(avRecord.toString());
+				fw.write(avRecord.toString());
+				fw.write("\r\n");
+			}
+			fw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// 去除重复记录
+	@Test
+	public void remakeRepo() {
+		Pattern standardAvPattern = Pattern.compile("(av[0-9]+)-([0-9]+)-(p[0-9]+)");
+		File file = new File("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo.config");
+		HashSet<String> downRepo = new HashSet<String>();
+		// 先初始化downRepo
+		BufferedReader buReader = null;
+		try {
+			buReader = new BufferedReader(new FileReader(file));
+			String avRecord;
+			while ((avRecord = buReader.readLine()) != null) {
+				Matcher matcher = standardAvPattern.matcher(avRecord);
+				if (matcher.find()) {
+					System.out.println(avRecord.toString());
+					downRepo.add(matcher.group());
+				}
+			}
+			buReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			File fRepo = new File("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo2.config");
 			FileWriter fw = new FileWriter(fRepo, true);
 			for(Object avRecord: downRepo.toArray()) {
 				System.out.println(avRecord.toString());

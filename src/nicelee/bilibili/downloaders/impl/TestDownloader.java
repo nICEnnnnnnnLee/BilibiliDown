@@ -1,6 +1,5 @@
 package nicelee.bilibili.downloaders.impl;
 
-import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;
 
 //@Bilibili(name = "test-downloader", type = "downloader", note = "用于测试")

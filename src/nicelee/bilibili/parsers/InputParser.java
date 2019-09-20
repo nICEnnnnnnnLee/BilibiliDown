@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import nicelee.bilibili.PackageScanLoader;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
-import nicelee.bilibili.parsers.impl.TestParser;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 

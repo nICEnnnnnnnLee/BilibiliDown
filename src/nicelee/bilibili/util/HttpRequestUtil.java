@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.ui.Global;
@@ -235,9 +237,11 @@ public class HttpRequestUtil {
 		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
 		conn.setConnectTimeout(10000);
 		conn.setReadTimeout(10000);
-		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			conn.setRequestProperty(entry.getKey(), entry.getValue());
+		if(headers != null) {
+			for (Map.Entry<String, String> entry : headers.entrySet()) {
+				conn.setRequestProperty(entry.getKey(), entry.getValue());
 //			 System.out.println(entry.getKey() + ":" + entry.getValue());
+			}
 		}
 		// 设置Cookie
 		if (listCookie != null) {
@@ -284,7 +288,7 @@ public class HttpRequestUtil {
 	}
 
 	/**
-	 * do a Http Get Not Worked with http stream with Deflate
+	 * do a Http Get
 	 * 
 	 * @param url
 	 * @param headers
@@ -304,12 +308,15 @@ public class HttpRequestUtil {
 				// System.out.println(encoding);
 				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
 				ism = new GZIPInputStream(ism);
+			}else if(encoding != null && encoding.contains("deflate")) {
+				ism = new InflaterInputStream(ism, new Inflater(true));
 			}
+			
 			in = new BufferedReader(new InputStreamReader(ism, "UTF-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
 				// line = new String(line.getBytes(), "UTF-8");
-				result.append(line);
+				result.append(line).append("\r\n");
 			}
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);

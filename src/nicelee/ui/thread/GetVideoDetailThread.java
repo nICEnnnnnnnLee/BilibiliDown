@@ -32,11 +32,15 @@ public class GetVideoDetailThread extends Thread{
 			video.setAvInfo(avInfo);
 			video.getLbAvID().setText(avInfo.getVideoId());
 			video.setCurrentDisplayPic(avInfo.getVideoPreview());
-			URL fileURL = new URL(avInfo.getVideoPreview());
-			ImageIcon imag1 = new ImageIcon(fileURL);
-			imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_SMOOTH) );
-			video.getLbAvPrivew().setText("");
-			video.getLbAvPrivew().setIcon(imag1);
+			try {
+				URL fileURL = new URL(avInfo.getVideoPreview());
+				ImageIcon imag1 = new ImageIcon(fileURL);
+				imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_DEFAULT));
+				video.getLbAvPrivew().setIcon(imag1);
+				video.getLbAvPrivew().setText("");
+			}catch (Exception e) {
+				video.getLbAvPrivew().setText("无效预览图");
+			}
 			video.getLbBreif().setText(avInfo.getBrief());
 			video.getLbBreif().setToolTipText(avInfo.getBrief());
 			video.getLbVideoTitle().setText(avInfo.getVideoName());

@@ -1,10 +1,7 @@
 package nicelee.test.junit;
 
-import java.awt.FlowLayout;
-import java.io.File;
 import java.io.IOException;
-
-import javax.swing.JFrame;
+import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,8 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nicelee.bilibili.ccaption.ClosedCaptionDealer;
-import nicelee.ui.item.JOptionPaneManager;
-import nicelee.ui.item.MJTitleBar;
+import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpRequestUtil;
 
 public class CCTest {
 
@@ -34,11 +31,22 @@ public class CCTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
+	//@Test
 	public void test() throws IOException {
 		ClosedCaptionDealer ccDealer = new ClosedCaptionDealer();
 		ccDealer.getCC("av54694376", ".", "test");
 //		ccDealer.save2srt("https://i0.hdslb.com/bfs/subtitle/a426a23a315d990261d74f713956c04e8449b961.json", new File("test.srt"));
+	}
+	
+	@Test
+	public void testDanmuku() throws IOException {
+		HttpRequestUtil util = new HttpRequestUtil();
+//		HashMap<String, String> headers = new HashMap<String, String>();
+		HashMap<String, String> headers = new HttpHeaders().getBiliJsonAPIHeaders("av67589226");
+		headers.put("Accept-Encoding", "none");
+		headers.remove("Referer");
+		String result = util.getContent("http://comment.bilibili.com/85464878.xml", headers);
+		System.out.println(result);
 	}
 
 }

@@ -39,7 +39,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	public String avid_qn;
 	public String formattedTitle;
 	int failCnt = 0;
-	
+
 	public int getFailCnt() {
 		return failCnt;
 	}
@@ -165,11 +165,15 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnOpenFolder) {
 			File file = new File(lbFileName.getText());
+			String os = System.getProperty("os.name");
 			try {
-				if (file.exists()) {
+				if (file.exists() && os.toLowerCase().startsWith("win")) {
 					// 打开并选中
 					String cmd[] = { "explorer", "/e,/select,", file.getAbsolutePath() };
 					Runtime.getRuntime().exec(cmd);
+				} else if(file.exists()){
+					Desktop desktop = Desktop.getDesktop();
+					desktop.open(file);
 				} else {
 					Desktop desktop = Desktop.getDesktop();
 					desktop.open(file.getParentFile());
@@ -239,7 +243,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 						Logger.println("已经人工停止,无需再下载");
 						return;
 					}
-					Logger.println("预期下载清晰度：" + qn +"实际清晰度：" +realqn);
+					Logger.println("预期下载清晰度：" + qn + "实际清晰度：" + realqn);
 					// 开始下载
 					if (downloader.download(url, avid, realqn, page)) {
 						// 下载成功后保存到仓库

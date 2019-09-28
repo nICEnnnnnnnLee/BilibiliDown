@@ -160,9 +160,18 @@ public class UtilTest {
 	/**
 	 * 测试 ffmpeg环境是否可用
 	 */
-	@Test
+	//@Test
 	public void testFFmpeg() {
 		String[] cmd = {"ffmpeg", "-version"};
+		CmdUtil.run(cmd);
+	}
+	
+	/**
+	 * 测试 环境变量是否有影响
+	 */
+	@Test
+	public void testRunCommandWithEnv() {
+		String[] cmd = {"git", "--version"};
 		CmdUtil.run(cmd);
 	}
 	

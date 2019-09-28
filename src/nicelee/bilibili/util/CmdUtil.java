@@ -16,6 +16,8 @@ import nicelee.ui.thread.StreamManager;
 
 public class CmdUtil {
 
+	public static String FFMPEG_PATH = "ffmpeg";
+	
 	public static boolean run(String cmd[]) {
 		Process process = null;
 		try {
@@ -137,7 +139,7 @@ public class CmdUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String cmd[] = { "ffmpeg", "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c", "copy",
+		String cmd[] = { FFMPEG_PATH, "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c", "copy",
 				Global.savePath + dstName };
 		return cmd;
 	}
@@ -219,9 +221,9 @@ public class CmdUtil {
 	 * @return
 	 */
 	public static String[] createConvertCmd(String videoName, String audioName, String dstName) {
-		String cmd[] = { "ffmpeg", "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c", "copy",
+		String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c", "copy",
 				Global.savePath + dstName };
-		String str = String.format("ffmpeg命令为: \r\nffmpeg -i %s -i %s -c copy %s", Global.savePath + videoName,
+		String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
 				Global.savePath + audioName, Global.savePath + dstName);
 		Logger.println(str);
 		return cmd;

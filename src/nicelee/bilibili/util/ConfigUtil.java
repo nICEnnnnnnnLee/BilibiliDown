@@ -1,6 +1,7 @@
 package nicelee.bilibili.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,8 +39,15 @@ public class ConfigUtil {
 		// 从配置文件读取
 		buReader = null;
 		System.out.println("----Config init begin...----");
+		File configFile = null;
 		try {
-			buReader = new BufferedReader(new FileReader("./config/app.config"));
+			configFile = new File("config/app.config");
+			if(!configFile.exists()) {
+				System.out.println("配置文件不存在： " + configFile.getCanonicalPath());
+				configFile = new File(baseDirectory(), "config/app.config");
+				System.out.println("尝试路径： " + configFile.getCanonicalPath());
+			}
+			buReader = new BufferedReader(new FileReader(configFile));
 			String config;
 			while ((config = buReader.readLine()) != null) {
 				Matcher matcher = patternConfig.matcher(config);
@@ -49,6 +57,7 @@ public class ConfigUtil {
 				}
 			}
 		} catch (IOException e) {
+			System.out.println("配置文件不存在! ");
 			// e.printStackTrace();
 		} finally {
 			try {
@@ -84,5 +93,41 @@ public class ConfigUtil {
 		if(version != null) {
 			Global.version = version;
 		}
+		//FFMPEG 路径设置
+		Global.ffmpegPath = System.getProperty("bilibili.ffmpegPath");
 	}
+	
+	public static String baseDirectory() {
+        try {
+            String path = ClassLoader.getSystemResource("").getPath();
+            if (path == null || "".equals(path))
+                return getProjectPath();
+            return path;
+        } catch (Exception ignored) {
+        	return getProjectPath();
+        }
+    }
+
+	private static String getProjectPath() {
+        java.net.URL url = ConfigUtil.class.getProtectionDomain().getCodeSource()
+                .getLocation();
+        String filePath = null;
+        try {
+            filePath = java.net.URLDecoder.decode(url.getPath(), "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (filePath.endsWith(".jar")) {
+        	int lastIndex = filePath.lastIndexOf("/");
+        	System.out.println(lastIndex);
+        	if(lastIndex > -1) {
+        		filePath = filePath.substring(0, lastIndex + 1);
+        	}else {
+        		filePath = filePath.substring(0, filePath.lastIndexOf("\\") + 1);
+        	}
+        }
+        File file = new File(filePath);
+        filePath = file.getAbsolutePath();
+        return filePath;
+    }
 }

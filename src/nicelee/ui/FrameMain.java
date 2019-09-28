@@ -35,6 +35,8 @@ public class FrameMain extends JFrame {
 
 	public static void main(String[] args) {
 		// System.getProperties().setProperty("file.encoding", "utf-8");
+		System.out.println(System.getProperty("os.name"));
+		System.out.println(ConfigUtil.baseDirectory());
 		ConfigUtil.initConfigs();
 		// 初始化主题
 		initUITheme();
@@ -58,7 +60,11 @@ public class FrameMain extends JFrame {
 		// 初始化 - ffmpeg环境判断
 		String[] cmd = {"ffmpeg", "-version"};
 		if(!CmdUtil.run(cmd)) {
-			JOptionPane.showMessageDialog(null, "当前没有ffmpeg环境，大部分mp4及小部分flv文件将无法转码或合并", "请注意!!", JOptionPane.WARNING_MESSAGE);
+			cmd = new String[]{Global.ffmpegPath, "-version"};
+			if(!CmdUtil.run(cmd))
+				JOptionPane.showMessageDialog(null, "当前没有ffmpeg环境，大部分mp4及小部分flv文件将无法转码或合并", "请注意!!", JOptionPane.WARNING_MESSAGE);
+			else
+				CmdUtil.FFMPEG_PATH = Global.ffmpegPath;
 		}
 		
 		//

@@ -31,7 +31,7 @@ public class HttpRequestUtil {
 
 	private static CookieManager defaultManager = new CookieManager();
 	// 下载缓存区
-	private byte[] buffer = new byte[1024 * 1024];
+	private byte[] buffer;
 	// 下载文件大小状态
 	private long downloadedFileSize;
 	private long totalFileSize;
@@ -46,11 +46,7 @@ public class HttpRequestUtil {
 	CookieManager manager = new CookieManager();
 
 	public HttpRequestUtil() {
-		this.manager = defaultManager;
-		manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-		CookieHandler.setDefault(manager);
-		// 单纯API 可以自己设置Global里面的参数
-		savePath = Global.savePath;
+		this(defaultManager);
 	}
 
 	public HttpRequestUtil(CookieManager manager) {
@@ -176,7 +172,8 @@ public class HttpRequestUtil {
 				reader.close();
 				throw e;
 			}
-
+			if(buffer == null)
+				buffer = new byte[1024 * 1024];
 			int lenRead = inn.read(buffer);
 			downloadedFileSize = offset + lenRead;
 			while (lenRead > -1) {

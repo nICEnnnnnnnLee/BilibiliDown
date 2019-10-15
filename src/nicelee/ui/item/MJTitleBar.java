@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import nicelee.bilibili.util.Logger;
+import nicelee.ui.FrameMain;
 import nicelee.ui.Global;
 
 
@@ -157,7 +158,8 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getSource() == btnClose) {
-			if(Global.downloadTab.activeTask > 0) {
+			// 如果是用户想要关闭程序，先判断是否仍然有活动的任务
+			if(frame instanceof FrameMain && Global.downloadTab.activeTask > 0) {
 				Object[] options = { "我要退出", "我再想想" };
 				String msg = String.format("当前仍有 %d 个任务在下载/转码，正在转码的文件退出后可能丢失或异常，确定要退出吗？", Global.downloadTab.activeTask);
 				int m = JOptionPane.showOptionDialog(null, msg, "警告", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,

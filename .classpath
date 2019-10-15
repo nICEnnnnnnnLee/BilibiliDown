@@ -4,6 +4,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="D:/Workspace/javaweb-springboot/BilibiliDown/libs/core-3.3.3.jar"/>
-	<classpathentry kind="lib" path="D:/Workspace/javaweb-springboot/BilibiliDown/libs/Java-WebSocket-1.4.0-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

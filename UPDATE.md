@@ -1,4 +1,8 @@
 ## UPDATE  
+* V4.2  
+	* 修复bug： 关闭扫码图/关于框时，如果有活动的任务，会错误地弹出提示
+	* 去除WebSocket依赖，实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)
+	* 部分util优化
 * V4.1
     * 增加HTTP Deflate解析
     * 增加弹幕下载(提供下载链接 => 直接下载文件)

@@ -9,7 +9,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v4.1";
+	public static String version = "v4.3";
 	public static boolean themeDefault = true;
 	
 	public static boolean isAlertIfDownloded = true;

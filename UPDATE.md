@@ -1,4 +1,13 @@
 ## UPDATE  
+* V4.3  
+	* 修复： 如果channel中存在已失效视频，那么该分页中已失效视频之后的视频信息将全部丢失
+	* 新增： 相簿/画廊解析
+        * `https://space.bilibili.com/[0-9]+/favlist?fid=albumfav` 相簿收藏夹√
+        * [`https://h.bilibili.com/38894082`](https://h.bilibili.com/38894082)  单个相簿√  
+        * [`https://space.bilibili.com/20358094/album`](https://space.bilibili.com/20358094/album) 某Up的所有相簿× `没有付出的爱是廉价的，你连收藏都不肯😳`
+	* 优化：自定义文件名
+        * 现在支持路径分隔符`/\`，e.g. 可将同质的某些视频放入同一个文件夹中
+        * 增加可自定义字段 阿婆主名称/id
 * V4.2  
 	* 修复bug： 关闭扫码图/关于框时，如果有活动的任务，会错误地弹出提示
 	* 去除WebSocket依赖，实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)

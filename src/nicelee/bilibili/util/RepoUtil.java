@@ -29,7 +29,7 @@ public class RepoUtil {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
 		if(fRepo == null || refresh) {
 			fRepo = new File("config/repo.config");
-			standardAvPattern = Pattern.compile("^(av[0-9]+)-([0-9]+)(-p[0-9]+)$");
+			standardAvPattern = Pattern.compile("^((?:av|h)[0-9]+)-([0-9]+)(-p[0-9]+)$");
 			downRepo = new CopyOnWriteArraySet<String>();
 		}
 		// 先初始化downRepo
@@ -65,6 +65,8 @@ public class RepoUtil {
 		}else {
 			Matcher matcher = standardAvPattern.matcher(avRecord);
 			if (matcher.find()) {
+				Logger.println(matcher.group(1));
+				Logger.println(matcher.group(3));
 				return downRepo.contains(matcher.group(1) + matcher.group(3));
 			}
 		}

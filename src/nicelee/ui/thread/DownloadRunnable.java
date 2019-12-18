@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
@@ -17,6 +18,7 @@ import nicelee.ui.item.JOptionPaneManager;
 
 public class DownloadRunnable implements Runnable {
 	
+	VideoInfo avInfo;
 	ClipInfo clip;
 	String displayName;
 	String avid;
@@ -26,7 +28,18 @@ public class DownloadRunnable implements Runnable {
 	String record;
 	int qn; //想要申请的链接视频质量
 
-	public DownloadRunnable(ClipInfo clip, int qn) {
+//	public DownloadRunnable(ClipInfo clip, int qn) {
+//		this.displayName = clip.getAvTitle() + "p" + clip.getRemark() + "-" +clip.getTitle();
+//		this.clip = clip;
+//		this.avid = clip.getAvId();
+//		this.cid = String.valueOf(clip.getcId());
+//		this.page = clip.getPage();
+//		this.remark = clip.getRemark();
+//		this.qn = qn;
+//		this.record = avid + "-" + qn  + "-p" + page;
+//	}
+	public DownloadRunnable(VideoInfo avInfo, ClipInfo clip, int qn) {
+		this.avInfo = avInfo;
 		this.displayName = clip.getAvTitle() + "p" + clip.getRemark() + "-" +clip.getTitle();
 		this.clip = clip;
 		this.avid = clip.getAvId();
@@ -60,18 +73,18 @@ public class DownloadRunnable implements Runnable {
 		}
 		// 查询下载链接
 		INeedAV iNeedAV = new INeedAV();
-		String url = iNeedAV.getInputParser(avid).getVideoLink(avid, cid, qn, Global.downloadFormat); //该步含网络查询， 可能较为耗时
-		int realQN = iNeedAV.getInputParser(avid).getVideoLinkQN();
+		String urlQuery = null;
+		int realQN = 0;
+		if(!avid.startsWith("h")){
+			urlQuery = iNeedAV.getInputParser(avid).getVideoLink(avid, cid, qn, Global.downloadFormat); //该步含网络查询， 可能较为耗时
+			realQN = iNeedAV.getInputParser(avid).getVideoLinkQN();
+		}else {
+			urlQuery = clip.getLinks().get(0);
+		}
+		String url = urlQuery;
 		// 生成格式化名称
 		String formattedTitle = CmdUtil.genFormatedName(
-				avid, 
-				"p" + page, 
-				"pn" + remark, 
-				realQN, 
-				clip.getAvTitle(), 
-				clip.getTitle(),
-				clip.getListName(),
-				clip.getListOwnerName());
+				avInfo,clip,realQN);
 		String avid_qn = avid + "-" + realQN;
 		this.record = avid_qn  + "-p" + page;
 		//如果清晰度不符合预期，再判断一次记录

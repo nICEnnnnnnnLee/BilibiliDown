@@ -214,7 +214,7 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	private void download(int i, int qn) {
 		try {
 			ClipInfo clip = (ClipInfo) avInfo.getClips().values().toArray()[i];
-			DownloadRunnable downThread = new DownloadRunnable(clip, qn);
+			DownloadRunnable downThread = new DownloadRunnable(avInfo, clip, qn);
 			// new Thread(downThread).start();
 			Global.queryThreadPool.execute(downThread);
 		} catch (Exception e) {

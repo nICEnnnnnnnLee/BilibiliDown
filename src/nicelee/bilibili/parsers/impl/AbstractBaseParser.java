@@ -142,7 +142,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 			clip.setPage(clipObj.getInt("page"));
 			clip.setTitle(clipObj.getString("part"));
 			clip.setPicPreview(videoPreview);
-
+			clip.setUpName(author);
+			clip.setUpId(authorId);
 			LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 			try {
 				int qnList[] = getVideoQNList(avId, String.valueOf(clip.getcId()));
@@ -195,7 +196,10 @@ public abstract class AbstractBaseParser implements IInputParser {
 					clip.setPage(clipMap.size());
 					clip.setTitle(String.format("%d.%d-%s", i, j, obj.getOption())); // 故事线i的第j个片段
 					clip.setPicPreview(viInfo.getVideoPreview());
-
+					clip.setUpName(viInfo.getAuthor());
+					clip.setUpId(viInfo.getAuthorId());
+					
+					
 					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 					try {
 						int qnList[] = getVideoQNList(avId, String.valueOf(clip.getcId()));

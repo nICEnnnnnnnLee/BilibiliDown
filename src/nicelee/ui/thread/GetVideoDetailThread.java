@@ -54,7 +54,7 @@ public class GetVideoDetailThread extends Thread{
 			JPanel jpContent = video.getJpContent();
 			jpContent.setPreferredSize(new Dimension(340, 116 * avInfo.getClips().size()));
 			for(ClipInfo cInfo:  avInfo.getClips().values()) {
-				ClipInfoPanel cp = new ClipInfoPanel(cInfo);
+				ClipInfoPanel cp = new ClipInfoPanel(avInfo, cInfo);
 				jpContent.add(cp);
 			}
 			jpContent.updateUI();

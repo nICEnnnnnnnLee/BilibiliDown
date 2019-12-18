@@ -90,6 +90,8 @@ public class SSParser extends AbstractBaseParser {
 			}
 			//clip.setTitle(clipObj.getString("index_title"));
 			clip.setTitle(clipObj.getString("longTitle"));
+			clip.setUpName(viInfo.getVideoName());
+			clip.setUpId(ssId);
 			
 			LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 			try {

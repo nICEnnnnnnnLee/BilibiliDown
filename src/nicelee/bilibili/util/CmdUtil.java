@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.ui.Global;
 import nicelee.ui.thread.StreamManager;
 
@@ -237,16 +239,22 @@ public class CmdUtil {
 	 * @throws IOException
 	 */
 	// public static boolean doRenameAfterComplete = true;
+	final static Pattern suffixPattern = Pattern.compile("\\.[^.]+$");
 	public synchronized static void convertOrAppendCmdToRenameBat(final String avid_q, final String formattedTitle,
 			int page) {
 		try {
 			// 获取已完成文件
 			File originFile = getFileByAvQnP(avid_q, page);
 			String fName = originFile.getName();
-			String tail = fName.substring(fName.length() - 4);
+			Matcher suffixM = suffixPattern.matcher(fName);
+			suffixM.find();
+			String tail = suffixM.group();
 
 			if (Global.doRenameAfterComplete) {
 				File file = new File(Global.savePath, formattedTitle + tail);
+				File folder = file.getParentFile();
+				if(!folder.exists())
+					folder.mkdirs();
 				originFile.renameTo(file);
 			} else {
 				File f = new File(Global.savePath, "rename.bat");
@@ -285,6 +293,18 @@ public class CmdUtil {
 		if (fFlv.exists()) {
 			return fFlv;
 		}
+		File fJpg = new File(Global.savePath, name + ".jpg");
+		if (fJpg.exists()) {
+			return fJpg;
+		}
+		File fWebp = new File(Global.savePath, name + ".webp");
+		if (fWebp.exists()) {
+			return fWebp;
+		}
+		File fPng = new File(Global.savePath, name + ".png");
+		if (fPng.exists()) {
+			return fPng;
+		}
 		return null;
 	}
 
@@ -300,7 +320,7 @@ public class CmdUtil {
 	// ### listName - 集合名称  e.g. 某收藏夹的名称
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
-	static Pattern splitUnit = Pattern.compile("avId|pAv|pDisplay|qn|avTitle|clipTitle|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
+	static Pattern splitUnit = Pattern.compile("avId|pAv|pDisplay|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
 			String clipTitle, String listName, String listOwnerName) {
@@ -310,12 +330,31 @@ public class CmdUtil {
 		paramMap.put("pAv", pAv);
 		paramMap.put("pDisplay", pDisplay);
 		paramMap.put("qn", "" + qn);
-		paramMap.put("avTitle", avTitle);
-		paramMap.put("clipTitle", clipTitle);
+		paramMap.put("avTitle", avTitle.replaceAll("[/\\\\]", "_"));
+		paramMap.put("clipTitle", clipTitle.replaceAll("[/\\\\]", "_"));
 		paramMap.put("listName", listName);
 		paramMap.put("listOwnerName", listOwnerName);
 		//paramMap.put("clipTitle", clipTitle);
 
+		// 匹配格式字符串
+		// avTitle-pDisplay-clipTitle-qn
+		return genFormatedName(paramMap, Global.formatStr);
+	}
+	
+	public static String genFormatedName(VideoInfo avInfo, ClipInfo clip, int realQN) {
+		// 生成KV表
+		HashMap<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("avId", clip.getAvId());
+		paramMap.put("pAv", "p" + clip.getPage());
+		paramMap.put("pDisplay", "pn" + clip.getRemark());
+		paramMap.put("qn", "" + realQN);
+		paramMap.put("avTitle", clip.getAvTitle().replaceAll("[/\\\\]", "_"));
+		paramMap.put("clipTitle", clip.getTitle().replaceAll("[/\\\\]", "_"));
+		paramMap.put("listName", clip.getListName()); // 已确保没有路径分隔符
+		paramMap.put("listOwnerName", clip.getListOwnerName()); // 已确保没有路径分隔符
+		paramMap.put("UpName", clip.getUpName().replaceAll("[/\\\\]", "_"));
+		paramMap.put("UpId", clip.getUpId());
+		
 		// 匹配格式字符串
 		// avTitle-pDisplay-clipTitle-qn
 		return genFormatedName(paramMap, Global.formatStr);
@@ -348,7 +387,7 @@ public class CmdUtil {
 		}
 		// 加入最后不匹配单位的部分
 		sb.append(formatStr.substring(pointer));
-		// 去掉文件名称的非法字符
-		return sb.toString().replaceAll("[\\\\|\\/|:\\*\\?|<|>|\\||\\\"$]", ".");
+		// 去掉文件名称的非法字符 |:*?<>"$
+		return sb.toString().replaceAll("[|:*?<>\"$]", "_");
 	}
 }

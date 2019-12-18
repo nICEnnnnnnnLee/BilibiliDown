@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
@@ -38,11 +39,13 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 	 */
 	private static final long serialVersionUID = -752743062676819403L;
 	String avTitle;
+	VideoInfo video;
 	ClipInfo clip;
 
 	private JLabel labelTitle;
 	private long lastMousePressed;
-	public ClipInfoPanel(ClipInfo clip) {
+	public ClipInfoPanel(VideoInfo video, ClipInfo clip) {
+		this.video = video;
 		this.clip = clip;
 		this.avTitle = clip.getAvTitle();
 		initUI();
@@ -52,8 +55,9 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.setPreferredSize(new Dimension(340, 110));
 		// 分情况显示
-		if(clip.getListName() != null) {
-			labelTitle = new JLabel(clip.getRemark() + " - " + clip.getAvTitle() +clip.getTitle(), JLabel.CENTER);
+		boolean isPic = clip.getAvId().startsWith("h");
+		if(clip.getListName() != null || isPic) {
+			labelTitle = new JLabel(clip.getRemark() + " - " + clip.getAvTitle()+ " " +clip.getTitle(), JLabel.CENTER);
 		}else {
 			labelTitle = new JLabel(clip.getRemark() + " - " + clip.getTitle(), JLabel.CENTER);
 		}
@@ -65,30 +69,33 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		this.setOpaque(false);
 		this.add(labelTitle);
 		
-		JButton btnDanmuku = new JButton("弹幕");
-		btnDanmuku.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Runnable danmukuRun = new Runnable() {
-					@Override
-					public void run() {
-						String url = "https://api.bilibili.com/x/v1/dm/list.so?oid=" + clip.getcId();
-						String content = new HttpRequestUtil().getContent(url, null);
-						File file = new File(Global.savePath, String.format("%s-%s.xml", clip.getAvTitle(), clip.getTitle()));
-						try {
-							BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-							writer.write(content);
-							writer.flush();
-							writer.close();
-						}catch (Exception e) {
-							e.printStackTrace();
+		if(!isPic) {
+			JButton btnDanmuku = new JButton("弹幕");
+			btnDanmuku.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Runnable danmukuRun = new Runnable() {
+						@Override
+						public void run() {
+							String url = "https://api.bilibili.com/x/v1/dm/list.so?oid=" + clip.getcId();
+							String content = new HttpRequestUtil().getContent(url, null);
+							File file = new File(Global.savePath, String.format("%s-%s.xml", clip.getAvTitle(), clip.getTitle()));
+							try {
+								BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+								writer.write(content);
+								writer.flush();
+								writer.close();
+							}catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
-					}
-				};
-				Global.ccThreadPool.execute(danmukuRun);
-			}
-		});
-		this.add(btnDanmuku);
+					};
+					Global.ccThreadPool.execute(danmukuRun);
+				}
+			});
+			this.add(btnDanmuku);
+		}
+		
 		for (final int qn : clip.getLinks().keySet()) {
 			// JButton btn = new JButton("清晰度: " + qn);
 			String qnName = VideoQualityEnum.getQualityDescript(qn);
@@ -102,7 +109,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DownloadRunnable downThread = new DownloadRunnable(clip, qn);
+					DownloadRunnable downThread = new DownloadRunnable(video, clip, qn);
 					// new Thread(downThread).start();
 					Global.queryThreadPool.execute(downThread);
 				}

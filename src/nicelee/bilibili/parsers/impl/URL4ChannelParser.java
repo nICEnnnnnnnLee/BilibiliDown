@@ -84,12 +84,16 @@ public class URL4ChannelParser extends AbstractPageQueryParser<VideoInfo> {
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
 				JSONObject jAV = arr.getJSONObject(i);
-				String avId = "av" + jAV.getLong("aid");
-				// 进行二次查询，增加请求次数为 pageSize
-				map.putAll(convertVideoToClipMap(jAV.getLong("aid"), 
-						(page -1)* API_PMAX + i + 1,
-						videoFormat,
-						getVideoLink));
+				//String avId = "av" + jAV.getLong("aid");
+				try {
+					// try给包围，出现 稿件不可见等已失效视频 的异常跳过即可
+					// 进行二次查询，增加请求次数为 pageSize
+					map.putAll(convertVideoToClipMap(jAV.getLong("aid"), 
+							(page -1)* API_PMAX + i + 1,
+							videoFormat,
+							getVideoLink));
+				}catch (Exception e) {
+				}
 				// 不再二次查询，直接根据内容，av返回的只有第一p，且不知道清晰度
 //				String avTitle = jAV.getString("title");
 //				ClipInfo clip = new ClipInfo();
@@ -139,8 +143,8 @@ public class URL4ChannelParser extends AbstractPageQueryParser<VideoInfo> {
 			//clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
 			//clip.setAvTitle(pageQueryResult.getVideoName());
 			// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
-			clip.setListName(pageQueryResult.getVideoName());
-			clip.setListOwnerName(pageQueryResult.getAuthor());
+			clip.setListName(pageQueryResult.getVideoName().replaceAll("[/\\\\]", "_"));
+			clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
 			
 			clip.setRemark(remark);
 			map.put(clip.getcId(), clip);

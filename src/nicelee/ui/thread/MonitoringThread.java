@@ -28,10 +28,11 @@ public class MonitoringThread extends Thread {
 			for (Entry<DownloadInfoPanel, IDownloader> entry : map.entrySet()) {
 				DownloadInfoPanel dp = entry.getKey();
 				IDownloader downloader = entry.getValue();
+				String formattedTitle = dp.formattedTitle.replace("\\", "\\\\");
 				try {
 					String path = downloader.file().getAbsolutePath();
 					if(Global.doRenameAfterComplete && downloader.currentStatus() == StatusEnum.SUCCESS) {
-						path = path.replaceFirst("av[0-9]+-[0-9]+-p[0-9]+", dp.formattedTitle);
+						path = path.replaceFirst("(?:av|h)[0-9]+-[0-9]+-p[0-9]+", formattedTitle);
 					}
 					dp.getLbFileName().setText(path);
 					dp.getLbFileName().setToolTipText(path);

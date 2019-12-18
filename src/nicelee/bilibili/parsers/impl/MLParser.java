@@ -87,8 +87,10 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 			JSONArray arr = jData.getJSONArray("medias");// .getJSONArray("archives");
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
 				JSONObject jAV = arr.getJSONObject(i);
-				String avId = "av" + arr.getJSONObject(i).getLong("id");
-				String avTitle =  arr.getJSONObject(i).getString("title");
+				String avId = "av" + jAV.getLong("id");
+				String avTitle =  jAV.getString("title");
+				String upName = jAV.getJSONObject("upper").getString("name");
+				String upId = "" + jAV.getJSONObject("upper").getLong("mid");
 				JSONArray jClips = jAV.getJSONArray("pages");
 				for(int pointer = 0; pointer < jClips.length(); pointer++) {
 					JSONObject jClip = jClips.getJSONObject(pointer);
@@ -101,8 +103,10 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 //					clip.setAvTitle(pageQueryResult.getVideoName());
 //					clip.setTitle(avTitle + "-" +jClip.getString("title"));
 					// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
-					clip.setListName(pageQueryResult.getVideoName());
-					clip.setListOwnerName(pageQueryResult.getAuthor());
+					clip.setListName(pageQueryResult.getVideoName().replaceAll("[/\\\\]", "_"));
+					clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
+					clip.setUpName(upName);
+					clip.setUpId(upId);
 					clip.setAvTitle(avTitle);
 					clip.setTitle(jClip.getString("title"));
 					

@@ -11,6 +11,8 @@ public class ClipInfo {
 	String picPreview;
 	String listName; // 收藏夹名称 或其它集合名称（不一定存在）
 	String listOwnerName; // 收藏夹主人 或其它集合的拥有者（不一定存在）
+	String upName;
+	String upId;
 	HashMap<Integer, String> links;
 	
 	int remark = -1; // 用于ss番剧查询时显示顺序
@@ -130,6 +132,22 @@ public class ClipInfo {
 
 	public void setListOwnerName(String listOwnerName) {
 		this.listOwnerName = listOwnerName;
+	}
+
+	public String getUpName() {
+		return upName;
+	}
+
+	public void setUpName(String upName) {
+		this.upName = upName;
+	}
+
+	public String getUpId() {
+		return upId;
+	}
+
+	public void setUpId(String upId) {
+		this.upId = upId;
 	}
 
 }

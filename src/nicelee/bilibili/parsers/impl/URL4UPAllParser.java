@@ -106,8 +106,8 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			//clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
 			//clip.setAvTitle(pageQueryResult.getVideoName());
 			// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
-			clip.setListName(pageQueryResult.getVideoName());
-			clip.setListOwnerName(pageQueryResult.getAuthor());
+			clip.setListName(pageQueryResult.getVideoName().replaceAll("[/\\\\]", "_"));
+			clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
 			
 			clip.setRemark(remark);
 			map.put(clip.getcId(), clip);

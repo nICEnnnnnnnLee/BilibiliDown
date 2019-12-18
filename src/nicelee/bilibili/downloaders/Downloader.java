@@ -48,7 +48,8 @@ public class Downloader implements IDownloader {
 				return downloader.download(url, avId, qn, page);
 			}
 		}
-		System.out.println("未找到匹配当前url的下载器");
+		System.out.print("未找到匹配当前url的下载器:");
+		System.out.println(url);
 		status = StatusEnum.FAIL;
 		return false;
 	}

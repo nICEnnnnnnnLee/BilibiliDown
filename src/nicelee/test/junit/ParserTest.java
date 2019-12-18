@@ -4,6 +4,9 @@ package nicelee.test.junit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +42,7 @@ public class ParserTest {
 	/**
 	 * 测试根据av号获取信息
 	 */
-	@Test
+	//@Test
 	public void testAVParser() {
 		INeedAV avs = new INeedAV();
 		VideoInfo video = null;
@@ -137,7 +140,7 @@ public class ParserTest {
 	 * 测试解析UP主 所有视频 
 	 * https://space.bilibili.com/5276/video
 	 */
-	@Test
+	//@Test
 	public void testAVList4Space() {
 		HttpRequestUtil util = new HttpRequestUtil();
 		IInputParser parser = new InputParser(util, 5, "listAll");
@@ -152,6 +155,35 @@ public class ParserTest {
 		for(int i =1; i <= 5; i++) {
 			assert(results[i].matches("^av[0-9]+$"));
 		}
+	}
+	
+	/**
+	 * https://h.bilibili.com/44254262
+	 * URL4PictureParser
+	 */
+	@Test
+	public void testURL4PictureParser() {
+		HttpRequestUtil util = new HttpRequestUtil();
+		IInputParser parser = new InputParser(util, 20, "listAll");
+		
+		System.out.println(parser.matches("https://h.bilibili.com/44254262"));
+		System.out.println(parser.matches("44254262"));
+		
+		System.out.println("[/\\|:*?<>\"$]".replaceAll("[|:*?<>\"$]", ""));
+		
+		
+		String path = "D:\\Workspace\\javaweb-springboot\\BilibiliDown\\download\\h43603721-0-p2.jpg";
+		String formattedTitle = "动漫基地投稿、Ⅴ\\\\动漫基地投稿、Ⅴ-pn1-第2张-0";
+		System.out.println(path);
+		System.out.println(formattedTitle);
+		path = path.replaceAll("(?:av|h)[0-9]+-[0-9]+-p[0-9]+", formattedTitle);
+		System.out.println(path);
+		
+		Pattern suffixPattern = Pattern.compile("\\.[^.]+$");
+		String fileName = "hello.test.webp";
+		Matcher suffixM = suffixPattern.matcher(fileName);
+		suffixM.find();
+		System.out.println(suffixM.group());;
 	}
 
 }

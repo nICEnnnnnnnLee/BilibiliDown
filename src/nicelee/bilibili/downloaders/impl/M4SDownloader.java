@@ -54,7 +54,15 @@ public class M4SDownloader extends FLVDownloader{
 			if(util.getStatus() == StatusEnum.STOP)
 				return false;
 			util.init();
-			if (util.download(links[1], audioName, header.getBiliWwwM4sHeaders(avId))) {
+			if(links.length == 1 || links[1].isEmpty()) {
+				convertingStatus = StatusEnum.PROCESSING;
+				boolean result = CmdUtil.convert(videoName, null, dstName);
+				if (result)
+					convertingStatus = StatusEnum.SUCCESS;
+				else
+					convertingStatus = StatusEnum.FAIL;
+				return result;
+			}else if (util.download(links[1], audioName, header.getBiliWwwM4sHeaders(avId))) {
 				// 如下载成功，统计数据后重置
 				sumSuccessDownloaded += util.getTotalFileSize();
 				util.reset();

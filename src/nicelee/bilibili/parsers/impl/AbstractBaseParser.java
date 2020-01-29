@@ -417,11 +417,13 @@ public abstract class AbstractBaseParser implements IInputParser {
 				}
 			}
 			// 获取音频链接(默认第一个)
-			JSONArray audios = jObj.getJSONObject("dash").getJSONArray("audio");
-			link.append(audios.getJSONObject(0).getString("baseUrl"));
-
+			JSONArray audios = jObj.getJSONObject("dash").optJSONArray("audio");
+			if(audios != null) {
+				link.append(audios.getJSONObject(0).getString("baseUrl"));
+			}
 			return link.toString();
 		} catch (Exception e) {
+			e.printStackTrace();
 			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
 			return parseUrlJArray(jObj.getJSONArray("durl"));
 		}

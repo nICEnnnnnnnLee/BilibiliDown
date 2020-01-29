@@ -19,7 +19,7 @@ import nicelee.ui.thread.StreamManager;
 public class CmdUtil {
 
 	public static String FFMPEG_PATH = "ffmpeg";
-	
+
 	public static boolean run(String cmd[]) {
 		Process process = null;
 		try {
@@ -28,12 +28,12 @@ public class CmdUtil {
 			StreamManager outputStream = new StreamManager(process, process.getInputStream());
 			errorStream.start();
 			outputStream.start();
-			//System.out.println("此处堵塞, 直至process 执行完毕");
+			// System.out.println("此处堵塞, 直至process 执行完毕");
 			process.waitFor();
 			System.out.println("process 执行完毕");
 			return true;
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			Logger.println(e.toString());
 			return false;
 		}
@@ -66,13 +66,38 @@ public class CmdUtil {
 		}
 		return false;
 	}
-
+	
 	/**
-	 * 片段合并转码
+	 * 音视频合并转码
 	 * 
 	 * @param videoName
 	 * @param audioName
 	 * @param dstName
+	 */
+	public static boolean convert(String videoName, String dstName) {
+		String cmd[] = createConvertCmd(videoName, null, dstName);
+		File mp4File = new File(Global.savePath + dstName);
+		File video = new File(Global.savePath + videoName);
+		if (!mp4File.exists()) {
+			Logger.println("下载完毕, 正在运行转码程序...");
+			run(cmd);
+			if (mp4File.exists() && mp4File.length() > video.length() * 0.8) {
+				video.delete();
+				return true;
+			}
+			Logger.println("转码完毕");
+		} else {
+			Logger.println("下载完毕");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 片段合并转码
+	 * 
+	 * @param dstName
+	 * @param part
 	 */
 	public static boolean convert(String dstName, int part) {
 		String cmd[] = createConvertCmd(dstName, part);
@@ -141,8 +166,8 @@ public class CmdUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String cmd[] = { FFMPEG_PATH, "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c", "copy",
-				Global.savePath + dstName };
+		String cmd[] = { FFMPEG_PATH, "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c",
+				"copy", Global.savePath + dstName };
 		return cmd;
 	}
 
@@ -205,7 +230,7 @@ public class CmdUtil {
 				return false;
 			}
 		};
-		if(folderDown.exists()) {
+		if (folderDown.exists()) {
 			// 删除下载文件
 			for (File file : folderDown.listFiles(filter)) {
 				System.out.println("尝试删除" + file.getName());
@@ -223,12 +248,20 @@ public class CmdUtil {
 	 * @return
 	 */
 	public static String[] createConvertCmd(String videoName, String audioName, String dstName) {
-		String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c", "copy",
-				Global.savePath + dstName };
-		String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
-				Global.savePath + audioName, Global.savePath + dstName);
-		Logger.println(str);
-		return cmd;
+		if (audioName == null) {
+			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
+			String str = String.format("ffmpeg命令为: \r\n%s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
+					Global.savePath + dstName);
+			Logger.println(str);
+			return cmd;
+		} else {
+			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
+					"copy", Global.savePath + dstName };
+			String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", FFMPEG_PATH,
+					Global.savePath + videoName, Global.savePath + audioName, Global.savePath + dstName);
+			Logger.println(str);
+			return cmd;
+		}
 	}
 
 	/**
@@ -240,6 +273,7 @@ public class CmdUtil {
 	 */
 	// public static boolean doRenameAfterComplete = true;
 	final static Pattern suffixPattern = Pattern.compile("\\.[^.]+$");
+
 	public synchronized static void convertOrAppendCmdToRenameBat(final String avid_q, final String formattedTitle,
 			int page) {
 		try {
@@ -253,7 +287,7 @@ public class CmdUtil {
 			if (Global.doRenameAfterComplete) {
 				File file = new File(Global.savePath, formattedTitle + tail);
 				File folder = file.getParentFile();
-				if(!folder.exists())
+				if (!folder.exists())
 					folder.mkdirs();
 				originFile.renameTo(file);
 			} else {
@@ -316,11 +350,12 @@ public class CmdUtil {
 	// ## clipTitle - 视频小标题
 	//
 	// 以下可能不存在
-	// 用法举例 (:listName 我在前面-listName-我在后面)   ===>  我在前面-某收藏夹的名称-我在后面
-	// ### listName - 集合名称  e.g. 某收藏夹的名称
+	// 用法举例 (:listName 我在前面-listName-我在后面) ===> 我在前面-某收藏夹的名称-我在后面
+	// ### listName - 集合名称 e.g. 某收藏夹的名称
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
-	static Pattern splitUnit = Pattern.compile("avId|pAv|pDisplay|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
+	static Pattern splitUnit = Pattern.compile(
+			"avId|pAv|pDisplay|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
 			String clipTitle, String listName, String listOwnerName) {
@@ -334,13 +369,13 @@ public class CmdUtil {
 		paramMap.put("clipTitle", clipTitle.replaceAll("[/\\\\]", "_"));
 		paramMap.put("listName", listName);
 		paramMap.put("listOwnerName", listOwnerName);
-		//paramMap.put("clipTitle", clipTitle);
+		// paramMap.put("clipTitle", clipTitle);
 
 		// 匹配格式字符串
 		// avTitle-pDisplay-clipTitle-qn
 		return genFormatedName(paramMap, Global.formatStr);
 	}
-	
+
 	public static String genFormatedName(VideoInfo avInfo, ClipInfo clip, int realQN) {
 		// 生成KV表
 		HashMap<String, String> paramMap = new HashMap<String, String>();
@@ -354,7 +389,7 @@ public class CmdUtil {
 		paramMap.put("listOwnerName", clip.getListOwnerName()); // 已确保没有路径分隔符
 		paramMap.put("UpName", clip.getUpName().replaceAll("[/\\\\]", "_"));
 		paramMap.put("UpId", clip.getUpId());
-		
+
 		// 匹配格式字符串
 		// avTitle-pDisplay-clipTitle-qn
 		return genFormatedName(paramMap, Global.formatStr);
@@ -372,13 +407,13 @@ public class CmdUtil {
 		while (matcher.find()) {
 			// 加入匹配单位前的字符串
 			sb.append(formatStr.substring(pointer, matcher.start()));
-			String ifStr = matcher.group(1);//条件语句
-			if(ifStr != null) {
-				if(paramMap.get(ifStr)!= null) {
+			String ifStr = matcher.group(1);// 条件语句
+			if (ifStr != null) {
+				if (paramMap.get(ifStr) != null) {
 					sb.append(genFormatedName(paramMap, matcher.group(2)));
 				}
 //				Logger.println();
-			}else {
+			} else {
 				// 加入匹配单位对应的值
 				sb.append(paramMap.get(matcher.group()));
 			}

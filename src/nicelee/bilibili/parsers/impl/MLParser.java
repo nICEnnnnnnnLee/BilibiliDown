@@ -103,7 +103,7 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 //					clip.setAvTitle(pageQueryResult.getVideoName());
 //					clip.setTitle(avTitle + "-" +jClip.getString("title"));
 					// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
-					clip.setListName(pageQueryResult.getVideoName().replaceAll("[/\\\\]", "_"));
+					clip.setListName(jInfo.getString("title").replaceAll("[/\\\\]", "_"));
 					clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
 					clip.setUpName(upName);
 					clip.setUpId(upId);

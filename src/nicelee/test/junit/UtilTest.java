@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nicelee.bilibili.util.CmdUtil;
+import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.ui.Global;
 
 public class UtilTest {
@@ -169,10 +171,21 @@ public class UtilTest {
 	/**
 	 * 测试 环境变量是否有影响
 	 */
-	@Test
+	//@Test
 	public void testRunCommandWithEnv() {
 		String[] cmd = {"git", "--version"};
 		CmdUtil.run(cmd);
+	}
+	
+	/**
+	 * 测试 视频链接的有效性
+	 */
+	@Test
+	public void testValidCheck() {
+		HttpRequestUtil util = new HttpRequestUtil();
+		String url = "http://cn-hbyc3-dx-v-06.acgvideo.com/upgcxcode/50/99/142109950/142109950-1-30280.m4s?expires=1580287500&platform=pc&ssig=yOiiVa3VgyAIS6mF3EvXzQ&oi=2936109567&trid=f9c8ce470a1841d6bdee1059378f3f58u&nfc=1&nfb=maPYqpoel5MI3qOUX6YpRA==&mid=0";
+		boolean result = util.checkValid(url, new HttpHeaders().getBiliWwwM4sHeaders("av83071175"), null);
+		System.out.println(result);
 	}
 	
 }

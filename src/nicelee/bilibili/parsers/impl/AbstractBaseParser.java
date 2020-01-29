@@ -198,8 +198,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 					clip.setPicPreview(viInfo.getVideoPreview());
 					clip.setUpName(viInfo.getAuthor());
 					clip.setUpId(viInfo.getAuthorId());
-					
-					
+
 					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 					try {
 						int qnList[] = getVideoQNList(avId, String.valueOf(clip.getcId()));
@@ -412,14 +411,46 @@ public abstract class AbstractBaseParser implements IInputParser {
 			for (int i = 0; i < videos.length(); i++) {
 				JSONObject video = videos.getJSONObject(i);
 				if (video.getInt("id") == linkQN) {
-					link.append(video.getString("baseUrl")).append("#");
-					break;
+					// 测试baseUrl有效性，如果无效404，使用backupUrl
+					String video_url = video.getString("baseUrl");
+					if (util.checkValid(video_url, headers.getBiliWwwM4sHeaders(avId), null)) {
+						link.append(video_url).append("#");
+						break;
+					}else {
+						JSONArray backup_urls = video.getJSONArray("backupUrl");
+						boolean findValidUrl = false;
+						for (int j = 0; j < backup_urls.length(); j++) {
+							video_url = backup_urls.getString(j);
+							if (util.checkValid(video_url, headers.getBiliWwwM4sHeaders(avId), null)) {
+								findValidUrl = true;
+								break;
+							}
+						}
+						if(findValidUrl) {
+							link.append(video_url).append("#");
+							break;
+						}
+					}
+					
 				}
 			}
 			// 获取音频链接(默认第一个)
 			JSONArray audios = jObj.getJSONObject("dash").optJSONArray("audio");
-			if(audios != null) {
-				link.append(audios.getJSONObject(0).getString("baseUrl"));
+			if (audios != null) {
+				JSONObject audio = audios.getJSONObject(0);
+				String audio_url = audio.getString("baseUrl");
+				if (util.checkValid(audio_url, headers.getBiliWwwM4sHeaders(avId), null)) {
+					link.append(audio_url);
+				} else {
+					JSONArray backup_urls = audio.getJSONArray("backupUrl");
+					for (int j = 0; j < backup_urls.length(); j++) {
+						audio_url = backup_urls.getString(j);
+						if (util.checkValid(audio_url, headers.getBiliWwwM4sHeaders(avId), null)) {
+							link.append(audio_url);
+							break;
+						}
+					}
+				}
 			}
 			return link.toString();
 		} catch (Exception e) {
@@ -431,6 +462,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 	/**
 	 * 将avId currentStory故事线的所有子结局全部放入List
+	 * 
 	 * @param avIdNum
 	 * @param node
 	 * @param graph_version

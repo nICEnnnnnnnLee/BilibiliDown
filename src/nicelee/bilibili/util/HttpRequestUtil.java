@@ -141,7 +141,7 @@ public class HttpRequestUtil {
 			String urlNameString = url;
 			HttpURLConnection conn = connect(headers, urlNameString, null);
 			conn.connect();
-			
+
 			if (conn.getResponseCode() == 403) {
 				Logger.println("403被拒，尝试更换Headers(可能由于app版权的原因)");
 				conn.disconnect();
@@ -172,7 +172,7 @@ public class HttpRequestUtil {
 				reader.close();
 				throw e;
 			}
-			if(buffer == null)
+			if (buffer == null)
 				buffer = new byte[1024 * 1024];
 			int lenRead = inn.read(buffer);
 			downloadedFileSize = offset + lenRead;
@@ -234,7 +234,7 @@ public class HttpRequestUtil {
 		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
 		conn.setConnectTimeout(10000);
 		conn.setReadTimeout(10000);
-		if(headers != null) {
+		if (headers != null) {
 			for (Map.Entry<String, String> entry : headers.entrySet()) {
 				conn.setRequestProperty(entry.getKey(), entry.getValue());
 //			 System.out.println(entry.getKey() + ":" + entry.getValue());
@@ -253,7 +253,7 @@ public class HttpRequestUtil {
 			// System.out.println(cookie);
 			conn.setRequestProperty("Cookie", cookie);
 		}
-		//conn.connect();
+		// conn.connect();
 		return conn;
 	}
 
@@ -298,17 +298,17 @@ public class HttpRequestUtil {
 		try {
 			HttpURLConnection conn = connect(headers, url, listCookie);
 			conn.connect();
-			
+
 			String encoding = conn.getContentEncoding();
 			InputStream ism = conn.getInputStream();
 			if (encoding != null && encoding.contains("gzip")) {// 首先判断服务器返回的数据是否支持gzip压缩，
 				// System.out.println(encoding);
 				// 如果支持则应该使用GZIPInputStream解压，否则会出现乱码无效数据
 				ism = new GZIPInputStream(ism);
-			}else if(encoding != null && encoding.contains("deflate")) {
+			} else if (encoding != null && encoding.contains("deflate")) {
 				ism = new InflaterInputStream(ism, new Inflater(true));
 			}
-			
+
 			in = new BufferedReader(new InputStreamReader(ism, "UTF-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
@@ -363,7 +363,7 @@ public class HttpRequestUtil {
 			conn.setUseCaches(false); // 不允许缓存
 			conn.setRequestMethod("POST"); // 设置POST方式连接
 			conn.connect();
-			
+
 			// 建立输入流，向指向的URL传入参数
 			DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 			dos.writeBytes(param);
@@ -396,6 +396,42 @@ public class HttpRequestUtil {
 			}
 		}
 		return result.toString();
+	}
+
+	/**
+	 * 测试视频链接url的有效性
+	 * 
+	 * @param url
+	 * @param headers
+	 * @param listCookie
+	 * @return
+	 */
+	public boolean checkValid(String url, HashMap<String, String> headers, List<HttpCookie> listCookie) {
+		BufferedReader in = null;
+		try {
+			HttpURLConnection conn = connect(headers, url, listCookie);
+			// 设置参数
+//			conn.setRequestMethod("OPTIONS"); // 设置OPTIONS方式连接
+			headers.put("range", "bytes=0-100");
+			conn.connect();
+
+//			System.out.println(url);
+//			System.out.println(conn.getResponseCode());
+			return conn.getResponseCode() != 404;
+			// printCookie(manager.getCookieStore());
+		} catch (Exception e) {
+			System.out.println("发送GET请求出现异常！" + e);
+			// e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 
 	private File getFile(String dst) {

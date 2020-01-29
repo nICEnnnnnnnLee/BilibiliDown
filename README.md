@@ -184,7 +184,7 @@ https://www.bilibili.com/bangumi/play/ep116157/
 ## :smile:第三方库使用声明  
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
-* 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-LGPL%20(%3E%3D%202.1)%2FGPL%20(%3E%3D%202)-green.svg)](http://www.ffmpeg.org/legal.html)  
+* 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-LGPL%203.0-green.svg)](http://www.ffmpeg.org/legal.html)  
 * ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)
 
 ## :smile:媒体素材使用声明             
@@ -192,10 +192,11 @@ https://www.bilibili.com/bangumi/play/ep116157/
 * ~~[加载等待图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[数英 - Seven Dai](https://www.digitaling.com/articles/18383.html)~~(取消`ver>=V3.1`) 
 
 ## :smile:Win32/Linux/Mac用户请看过来
++ ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)  
 + 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  
 ```javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
-+ 对于非WIN用户，使用程序的一键更新功能后，请人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
++ 对于非WIN用户，如需使用程序的一键更新功能后，请人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
 
 ## :smile:其它  
 * **下载地址**: [https://github.com/nICEnnnnnnnLee/BilibiliDown/releases](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)

@@ -91,7 +91,8 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		for(VideoQualityEnum item: VideoQualityEnum.values()) {
 			cbQn.addItem(item.getQuality());
 		}
-		cbQn.setSelectedIndex(2);
+		cbQn.setSelectedItem(Global.tab_qn);
+		//cbQn.setSelectedIndex(2);
 		btnDownAll = new JButton("批量下载");
 		btnDownAll.addActionListener(new ActionListener() {
 			@Override
@@ -296,7 +297,7 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		String txtToCopy = null;
 		if(label == lbAvPrivew ) {
-			txtToCopy = avInfo.getVideoPreview();
+			txtToCopy = currentDisplayPic != null ? currentDisplayPic :avInfo.getVideoPreview();
 		}else {
 			txtToCopy = label.getText();
 		}

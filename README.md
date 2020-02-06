@@ -184,16 +184,16 @@ https://www.bilibili.com/bangumi/play/ep116157/
 ## :smile:第三方库使用声明  
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
-* 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-LGPL%203.0-green.svg)](http://www.ffmpeg.org/legal.html)  
+* 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
 * ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)
 
 ## :smile:媒体素材使用声明             
 * [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/background.jpg?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
 * ~~[加载等待图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/loading.gif?raw=true)取自[数英 - Seven Dai](https://www.digitaling.com/articles/18383.html)~~(取消`ver>=V3.1`) 
 
-## :smile:Win32/Linux/Mac用户请看过来
+## :smile:Linux/Mac用户请看过来
 + ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)  
-+ 自带的```ffmpeg.exe```为WIN 64位，32位系统或其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
++ 自带的```ffmpeg.exe```为`Win10+Msys+MingW+msvc`自行编译，其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  
 ```javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
 + 对于非WIN用户，如需使用程序的一键更新功能后，请人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
@@ -204,11 +204,25 @@ https://www.bilibili.com/bangumi/play/ep116157/
 * **Gitee码云**: [https://gitee.com/NiceLeee/BilibiliDown](https://gitee.com/NiceLeee/BilibiliDown)  
 * [**更新日志**](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/UPDATE.md)
 
+
+## :smile:LICENSE  
++ [第三方LICENSE](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release/LICENSE/third-party)  
++ 本项目提供的`ffmpeg.exe`源码[链接](https://gitee.com/NiceLeee/FFmpeg/)，编译命令如下：  
 <details>
-<summary>LICENSE</summary>
+<summary>编译命令</summary>
 
 
-[第三方LICENSE](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release/LICENSE/third-party)
+
+```
+./configure --toolchain=msvc --arch=x86 --enable-yasm --enable-asm --disable-debug --disable-doc --disable-ffplay --disable-ffprobe --enable-static --disable-shared --disable-network --disable-autodetect --disable-decoders --disable-gpl --disable-version3 --enable-decoder='h264,aac*,mp3*,mp4' --disable-encoders --disable-demuxers --enable-demuxer='concat,mov,m4v,flv,mp3' --disable-muxers --enable-muxer='flv,mp4,mp3' --enable-encoder='libmp3lame,mp3' --disable-parsers --enable-parser=h264 --disable-protocols --enable-protocol='concat,file' --disable-bsfs --enable-bsf='h264_metadata,h264_mp4toannexb' --disable-filters --enable-filter='concat,aresample' --disable-iconv --enable-small
+make
+```
+</details> 
+
+
++ 本项目遵守开源协议`Apache 2.0`。  
+为了分发的便利，历史版本可能直接使用过其它编译版本ffmpeg.     
+当协议不兼容时，具体情况请以使用的ffmpeg版本为准（大概率是`GPL 3.0`）  
 ```
 Copyright (C) 2019 NiceLee. All Rights Reserved.
 
@@ -224,4 +238,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-</details>
+
+

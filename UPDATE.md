@@ -1,4 +1,11 @@
 ## UPDATE  
+* V4.5 
+    * 修复：4K返回1080P+的问题，现已正常[av56995872](https://www.bilibili.com/video/av56995872)
+    * 优化：账号登录后可获取收藏夹，不必再专门打开网页复制url了
+    * 优化：批量下载的默认设置可以在`app.config`中配置
+    * 优化：防止程序在运行时被重复打开。该功能配置默认关闭，`bilibili.lockCheck=true`可打开
+    * 优化：增加过渡动画，加载完毕后再显示界面，防止卡顿体验。双击动画可迅速跳过。
+    * 其它：下载控制、Httpheader整理、预览图片链接复制的一个bug
 * V4.4 
     * 优化：收藏夹对应的listName去掉分页数，自定义下载名称更加合理
     * 修复：[issue#21](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/21) 当API返回的首选下载链接失效时，使用备用链接

@@ -13,7 +13,14 @@
 *.part
 *.m4s
 *.txt
+*.jpg
+*.png
+*.webp
+*.config
 /bin
 /target
+/config
+/release/ffmpeg
 /release/prelook/png
 /release/prelook/gif
+/.idea

@@ -13,14 +13,12 @@
 *.part
 *.m4s
 *.txt
-*.jpg
-*.png
-*.webp
+*download
 *.config
+simplelogger.properties
 /bin
 /target
 /config
 /release/ffmpeg
-/release/prelook/png
-/release/prelook/gif
+/release/zip
 /.idea

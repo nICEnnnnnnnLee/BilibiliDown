@@ -370,7 +370,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 		HttpHeaders headers = new HttpHeaders();
 		JSONObject jObj = null;
 		try {
-			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
+//			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&player=1&otype=json&avid=%s&cid=%s&qn=%s";
+			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, avIdNum, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(avId), HttpCookies.getGlobalCookies());
 			System.out.println(json);

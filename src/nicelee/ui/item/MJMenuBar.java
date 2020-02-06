@@ -30,13 +30,44 @@ public class MJMenuBar extends JMenuBar {
 	private static final long serialVersionUID = -344077300590858072L;
 
 	private JFrame frame;
-
+	ButtonGroup btnTypeGroup; // 从菜单栏批量下载的计划类型
+	ButtonGroup btnQnGroup;	// 从菜单栏批量下载的优先清晰度选项
+	
 	public MJMenuBar(JFrame frame) {
 		super();
 		this.frame = frame;
 		init();
+		setDefaultTypeGroup(Global.menu_plan);
+		setDefaultQnGroup(Global.menu_qn);
+	}
+	
+	public void setDefaultTypeGroup(int planType) {
+		try {
+			Enumeration<AbstractButton> btns = btnTypeGroup.getElements();
+			int order = 0;
+			while (btns.hasMoreElements()) {
+				JRadioButtonMenuItem item = (JRadioButtonMenuItem) btns.nextElement();
+				if(order == planType) {
+					item.setSelected(true);
+					break;
+				}
+				order++;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
+	public void setDefaultQnGroup(String qn) {
+		Enumeration<AbstractButton> btns = btnQnGroup.getElements();
+		while (btns.hasMoreElements()) {
+			JRadioButtonMenuItem item = (JRadioButtonMenuItem) btns.nextElement();
+			if(item.getText().equals(qn)) {
+				item.setSelected(true);
+			}
+		}
+	}
+	
 	private void init() {
 		this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		/*
@@ -83,7 +114,7 @@ public class MJMenuBar extends JMenuBar {
 		 */
 		final JRadioButtonMenuItem dType01 = new JRadioButtonMenuItem("仅第一");
 		final JRadioButtonMenuItem dType02 = new JRadioButtonMenuItem("全部");
-		ButtonGroup btnTypeGroup = new ButtonGroup();
+		btnTypeGroup = new ButtonGroup();
 		btnTypeGroup.add(dType01);
 		btnTypeGroup.add(dType02);
 		dTypeMenuItem.add(dType01);
@@ -93,7 +124,7 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 创建三级 配置-优先清晰度
 		 */
-		ButtonGroup btnQnGroup = new ButtonGroup();
+		btnQnGroup = new ButtonGroup();
 		for (VideoQualityEnum item : VideoQualityEnum.values()) {
 			final JRadioButtonMenuItem dQN = new JRadioButtonMenuItem(item.getQuality());
 			dQNMenuItem.add(dQN);

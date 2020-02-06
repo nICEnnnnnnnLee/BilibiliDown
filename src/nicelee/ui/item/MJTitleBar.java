@@ -191,12 +191,10 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
 	}
 
 	@Override
@@ -213,7 +211,6 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
 	}
 
 	public void setTitle(String title) {

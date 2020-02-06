@@ -183,9 +183,8 @@ public class MJTextField extends JTextField implements MouseListener, KeyListene
 	public void focusGained(FocusEvent e) {
 		if (this.getText().equals(placeHolder)) {
 			this.setText("");
-			this.setForeground(Color.BLACK);
         }
-		
+		this.setForeground(Color.BLACK);
 	}
 
 	@Override

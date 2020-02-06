@@ -16,6 +16,42 @@ import nicelee.ui.Global;
 public class ConfigUtil {
 	final static Pattern patternConfig = Pattern.compile("^[ ]*([0-9|a-z|A-Z|.|_]+)[ ]*=[ ]*([^ ]+.*$)");
 
+	/**
+	 * 根据.lock文件判断，程序是否在运行
+	 * @return true/false
+	 */
+	public static boolean isRunning() {
+		File lockFile = new File(baseDirectory(), "config/.lock");
+		try {
+			System.out.println(lockFile.getCanonicalPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return lockFile.isFile();
+	}
+	
+	public static void createLock() {
+		File configDir = new File(baseDirectory(), "config");
+		if(!configDir.exists()) 
+			configDir.mkdirs();
+		File lockFile = new File(configDir, ".lock");
+		try {
+			lockFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void deleteLock() {
+		File lockFile = new File(baseDirectory(), "config/.lock");
+		lockFile.delete();
+	}
+	
+	public static void deleteLockOnExit() {
+		File lockFile = new File(baseDirectory(), "config/.lock");
+		lockFile.deleteOnExit();
+	}
+	
 	public static void initConfigs() {
 		// 先初始化默认值
 		BufferedReader buReader = null;
@@ -66,6 +102,10 @@ public class ConfigUtil {
 			}
 		}
 		System.out.println("----Config ini end...----");
+		//批量下载设置相关
+		Global.menu_plan = Integer.parseInt(System.getProperty("bilibili.menu.download.plan"));
+		Global.menu_qn = System.getProperty("bilibili.menu.download.qn");
+		Global.tab_qn = System.getProperty("bilibili.tab.download.qn");
 		//下载设置相关
 		int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
 		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
@@ -95,6 +135,8 @@ public class ConfigUtil {
 		}
 		//FFMPEG 路径设置
 		Global.ffmpegPath = System.getProperty("bilibili.ffmpegPath");
+		//简单的防多开功能
+		Global.lockCheck = "true".equals(System.getProperty("bilibili.lockCheck"));
 	}
 	
 	public static String baseDirectory() {

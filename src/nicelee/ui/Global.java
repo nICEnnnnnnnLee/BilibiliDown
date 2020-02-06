@@ -9,8 +9,10 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v4.4";
+	public static String version = "v4.5";
 	public static boolean themeDefault = true;
+	public static FrameWaiting frWaiting;
+	public static boolean lockCheck = false;
 	
 	public static boolean isAlertIfDownloded = true;
 	public static int maxAlertPrompt = 5;
@@ -50,5 +52,8 @@ public class Global {
 	
 	// FFMPEG 路径
 	public static String ffmpegPath;
-	
+	//批量下载设置相关
+	public static int menu_plan; // 0 仅下载1p； 1 下载全部
+	public static String menu_qn; // 参见VideoQualityEnum，值0,1,2,...
+	public static String tab_qn; // 参见VideoQualityEnum，值0,1,2,...
 }

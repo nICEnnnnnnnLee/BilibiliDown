@@ -17,6 +17,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
 import nicelee.bilibili.INeedLogin;
+import nicelee.bilibili.PackageScanLoader;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.RepoUtil;
@@ -34,6 +35,22 @@ public class FrameMain extends JFrame {
 	MJTitleBar titleBar;// 标题栏组件
 
 	public static void main(String[] args) {
+		System.out.println();
+		if(Global.lockCheck) {
+			if(ConfigUtil.isRunning()) {
+				JOptionPane.showMessageDialog(null, "程序已经在运行!", "请注意!!", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			ConfigUtil.createLock();
+			Runtime.getRuntime().addShutdownHook(new Thread(()->{
+				ConfigUtil.deleteLock();
+			}));
+		}
+		
+		// 显示过渡动画
+		Global.frWaiting = new FrameWaiting();
+		Global.frWaiting.start();
+		
 		// System.getProperties().setProperty("file.encoding", "utf-8");
 		System.out.println(System.getProperty("os.name"));
 		System.out.println(ConfigUtil.baseDirectory());
@@ -44,7 +61,7 @@ public class FrameMain extends JFrame {
 		// 初始化UI
 		FrameMain main = new FrameMain();
 		main.InitUI();
-
+		
 		// 初始化监控线程，用于刷新下载面板
 		MonitoringThread th = new MonitoringThread();
 		th.start();
@@ -60,6 +77,7 @@ public class FrameMain extends JFrame {
 		// 初始化 - ffmpeg环境判断
 		String[] cmd = {"ffmpeg", "-version"};
 		if(!CmdUtil.run(cmd)) {
+			System.out.println(Global.ffmpegPath);
 			cmd = new String[]{Global.ffmpegPath, "-version"};
 			if(!CmdUtil.run(cmd))
 				JOptionPane.showMessageDialog(null, "当前没有ffmpeg环境，大部分mp4及小部分flv文件将无法转码或合并", "请注意!!", JOptionPane.WARNING_MESSAGE);
@@ -74,6 +92,19 @@ public class FrameMain extends JFrame {
 //		FrameQRCode qr = new FrameQRCode("https://www.bilibili.com/");
 //		qr.initUI();
 //		qr.dispose();
+		// 预扫描加载类
+		PackageScanLoader.class.toString();
+		
+		System.out.println("如果过度界面显示时间过长，可双击跳过");
+		try {
+			while(Global.frWaiting.isVisible()) {
+				Thread.sleep(1000);
+			}
+		} catch (InterruptedException e) {
+			Global.frWaiting.stop();
+		}
+		main.setVisible(true);
+		main.toFront();
 	}
 
 	/**
@@ -144,7 +175,7 @@ public class FrameMain extends JFrame {
 				CmdUtil.deleteAllInactiveCmdTemp();
 			}
 		});
-		this.setVisible(true);
+//		this.setVisible(true);
 	}
 	
 	@Override

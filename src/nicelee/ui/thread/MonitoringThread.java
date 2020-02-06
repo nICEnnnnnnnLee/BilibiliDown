@@ -75,12 +75,21 @@ public class MonitoringThread extends Thread {
 						Logger.println("转码中。。。");
 						break;
 					case NONE:
-						queuingTask ++;
-						dp.getLbCurrentStatus().setText("等待下载中..");
-						dp.getLbDownFile().setText("等待下载中..");
-						dp.getBtnControl().setText("暂停");
-						dp.getBtnControl().setVisible(true);
-						dp.setBackground(lightOrange);
+						if(dp.stopOnQueue) {
+							pauseTask ++;
+							dp.getLbCurrentStatus().setText(genTips("%d/%d 人工停止. ", downloader));
+							dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
+							dp.getBtnControl().setText("继续下载");
+							dp.getBtnControl().setVisible(true);
+							dp.setBackground(lightPink);
+						}else {
+							queuingTask ++;
+							dp.getLbCurrentStatus().setText("等待下载中..");
+							dp.getLbDownFile().setText("等待下载中..");
+							dp.getBtnControl().setText("暂停");
+							dp.getBtnControl().setVisible(false);
+							dp.setBackground(lightOrange);
+						}
 						break;
 					case DOWNLOADING:
 						activeTask++;
@@ -123,12 +132,21 @@ public class MonitoringThread extends Thread {
 						Logger.println("转码中。。。");
 					}else {
 						//等待队列中
-						queuingTask ++;
-						dp.getLbCurrentStatus().setText("等待下载中..");
-						dp.getLbDownFile().setText("等待下载中..");
-						dp.getBtnControl().setText("暂停");
-						dp.getBtnControl().setVisible(true);
-						dp.setBackground(lightOrange);
+						if(dp.stopOnQueue) {
+							pauseTask ++;
+							dp.getLbCurrentStatus().setText(genTips("%d/%d 人工停止. ", downloader));
+							dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
+							dp.getBtnControl().setText("继续下载");
+							dp.getBtnControl().setVisible(true);
+							dp.setBackground(lightPink);
+						}else {
+							queuingTask ++;
+							dp.getLbCurrentStatus().setText("等待下载中..");
+							dp.getLbDownFile().setText("等待下载中..");
+							dp.getBtnControl().setText("暂停");
+							dp.getBtnControl().setVisible(false);
+							dp.setBackground(lightOrange);
+						}
 					}
 				}
 			}

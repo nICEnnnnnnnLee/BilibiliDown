@@ -111,6 +111,10 @@ public class DownloadRunnable implements Runnable {
 			@Override
 			public void run() {
 				try {
+					if(iNeedAV.getDownloader().currentStatus() == StatusEnum.NONE && downPanel.stopOnQueue) {
+						Logger.println("已经删除等待队列,无需再下载");
+						return;
+					}
 					if(iNeedAV.getDownloader().currentStatus() == StatusEnum.STOP) {
 						Logger.println("已经人工停止,无需再下载");
 						return;

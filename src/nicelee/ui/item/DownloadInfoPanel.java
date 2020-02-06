@@ -21,6 +21,7 @@ import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
+import nicelee.ui.TabDownload;
 
 public class DownloadInfoPanel extends JPanel implements ActionListener {
 
@@ -38,6 +39,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	public String url;
 	public String avid_qn;
 	public String formattedTitle;
+	public boolean stopOnQueue = false;
 	int failCnt = 0;
 
 	public int getFailCnt() {
@@ -193,8 +195,16 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 //			if(Global.downloadTaskList.get(this).getStatus() == 0) {
 //				JOptionPane.showMessageDialog(this, "当前正在文件下载中!", "警告", JOptionPane.WARNING_MESSAGE);
 //			}
+			if(TabDownload.isStopAll()) {
+				Logger.println("停止任务中，请误操作");
+				return;
+			}
 			removeTask(true);
 		} else if (e.getSource() == btnControl) {
+			if(TabDownload.isStopAll()) {
+				Logger.println("停止任务中，请误操作");
+				return;
+			}
 			StatusEnum status = iNeedAV.getDownloader().currentStatus();
 			if (status == StatusEnum.DOWNLOADING) {
 				stopTask();
@@ -216,6 +226,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.realqn = realqn;
 		this.lbavName.setText(formattedTitle);
 		this.lbavName.setToolTipText(formattedTitle);
+		this.stopOnQueue = false;
 	}
 
 	/**
@@ -224,14 +235,17 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	public void stopTask() {
 		Downloader downloader = iNeedAV.getDownloader();
 		downloader.stopTask();
+		stopOnQueue = true;
 	}
 
 	/**
 	 * 继续任务(方法内包含状态判断)
 	 */
 	public void continueTask() {
+		stopOnQueue = false;
 		String record = avid_qn + "-p" + page;
 		Downloader downloader = iNeedAV.getDownloader();
+		final DownloadInfoPanel dp = this;
 		// 如果正在下载 或 下载完毕，则不需要下载
 		StatusEnum status = downloader.currentStatus();
 		if (status != StatusEnum.DOWNLOADING && status != StatusEnum.SUCCESS && status != StatusEnum.PROCESSING) {
@@ -239,6 +253,10 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 			Global.downLoadThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
+					if(downloader.currentStatus() == StatusEnum.NONE && dp.stopOnQueue) {
+						Logger.println("已经删除等待队列,无需再下载");
+						return;
+					}
 					if (downloader.currentStatus() == StatusEnum.STOP) {
 						Logger.println("已经人工停止,无需再下载");
 						return;
@@ -264,6 +282,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		// 删除所有 或 删除已完成的任务
 		// 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3队列中
 		if (deleteAll || iNeedAV.getDownloader().currentStatus() == StatusEnum.SUCCESS) {
+			this.stopOnQueue = true;
 			// 停止下载
 			Global.downloadTaskList.get(this).stopTask();
 			// 全局监控撤销

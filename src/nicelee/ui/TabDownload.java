@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -113,6 +114,8 @@ public class TabDownload extends JPanel implements ActionListener {
 			btnContinue.setEnabled(false);
 			btnStop.setEnabled(false);
 			btnDeleteAll.setEnabled(false);
+			// 先shutdown, 队列里的线程无需再执行
+			Global.downLoadThreadPool.shutdownNow();
 			for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
 				dp.stopTask();
 			}
@@ -128,6 +131,8 @@ public class TabDownload extends JPanel implements ActionListener {
 					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
 						dp.stopTask();
 					}
+					int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
+					Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
 					btnContinue.setEnabled(true);
 					btnStop.setEnabled(true);
 					btnDeleteAll.setEnabled(true);

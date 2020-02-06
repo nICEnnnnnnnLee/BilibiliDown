@@ -91,28 +91,29 @@ public class INeedLogin {
 		boolean isLogin;
 		try {
 			/**
-			 * 
+			 * https://api.bilibili.com/x/web-interface/nav?build=0&mobi_app=web
 			 * https://api.bilibili.com/x/space/myinfo 可用(可查信息,登录状态)
 			 * https://account.bilibili.com/home/userInfo 可用(可查信息,登录状态)
 			 * https://passport.bilibili.com/web/site/user/info 可用(可查登录状态)
-			 * https://api.bilibili.com/x/space/acc/info?mid=8741628&jsonp=jsonp
 			 * 可查信息,可不登录,但需要ID ...
 			 */
-			String url = "https://account.bilibili.com/home/userInfo";
+			String url = "https://api.bilibili.com/x/web-interface/nav?build=0&mobi_app=web";
 			String json = util.getContent(url, headers.getBiliUserInfoHeaders(), iCookies);
 			// System.out.println(json);
 
-			JSONObject jObj = new JSONObject(json);
-			isLogin = jObj.getBoolean("status");
+			JSONObject jObj = new JSONObject(json).getJSONObject("data");
+			isLogin = jObj.getBoolean("isLogin");
 			if (isLogin) {
 				user = new UserInfo();
-				user.setName(jObj.getJSONObject("data").getString("uname"));
-				user.setPoster(jObj.getJSONObject("data").getString("face"));
+				user.setName(jObj.getString("uname"));
+				user.setPoster(jObj.getString("face"));
+				user.setUid(jObj.getJSONObject("wallet").getLong("mid"));
 				this.iCookies = iCookies;
 				// System.out.println(user.getName());
 				// System.out.println(user.getPoster());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			isLogin = false;
 		}
 		return isLogin;

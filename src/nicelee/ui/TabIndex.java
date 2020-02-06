@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
@@ -16,6 +18,7 @@ import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,11 +27,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import nicelee.bilibili.INeedAV;
+import nicelee.bilibili.model.FavList;
 import nicelee.ui.item.MJTextField;
 import nicelee.ui.thread.GetVideoDetailThread;
 import nicelee.ui.thread.LoginThread;
 
-public class TabIndex extends JPanel implements ActionListener, MouseListener {
+public class TabIndex extends JPanel implements ActionListener, MouseListener, ItemListener {
 
 	/**
 	 * 
@@ -37,6 +41,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	public ImageIcon imgIconHeaderDefault = new ImageIcon(this.getClass().getResource("/resources/header.png"));
 	public ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
 	public JLabel jlHeader;
+	public JComboBox<Object> cmbFavList=new JComboBox<>();
 	String placeHolder = "请在此输入B站 av/ep/ss/md/ml号或地址";
 	JTextField txtSearch = new MJTextField(placeHolder);
 	//new MJTextField("https://www.bilibili.com/video/av35296336");
@@ -69,11 +74,16 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		this.add(jpBLANK);
 		
 		// 空白模块- 占位
-		imgIconHeaderDefault = new ImageIcon(imgIconHeaderDefault.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+		imgIconHeaderDefault = new ImageIcon(imgIconHeaderDefault.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
 		jlHeader = new JLabel(imgIconHeaderDefault);
 		jlHeader.addMouseListener(this);
 		this.add(jlHeader);
 		
+//		// 空白模块- 占位
+//		JLabel jpBLANK1 = new JLabel();
+//		jpBLANK1.setPreferredSize(new Dimension(920, 80));
+//		this.add(jpBLANK1);
+
 		//头像模块
 		URL fileURL = this.getClass().getResource("/resources/title.png");
 		ImageIcon imgIcon = new ImageIcon(fileURL);
@@ -83,14 +93,19 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 		
 		// 查找模块
 		JPanel jpSearch = new JPanel();
-		txtSearch.setPreferredSize(new Dimension(700, 40));
+		txtSearch.setPreferredSize(new Dimension(680, 40));
 		btnSearch.addActionListener(this);
-		btnSearch.setPreferredSize(new Dimension(90, 40));
+		btnSearch.setPreferredSize(new Dimension(80, 40));
 		btnSearchNextPage.addActionListener(this);
-		btnSearchNextPage.setPreferredSize(new Dimension(90, 40));
+		btnSearchNextPage.setPreferredSize(new Dimension(80, 40));
+		
+        cmbFavList.addItem("---我的收藏夹---");
+        cmbFavList.setPreferredSize(new Dimension(120, 40));
+        cmbFavList.addItemListener(this);
 		jpSearch.add(txtSearch);
 		jpSearch.add(btnSearch);
 		jpSearch.add(btnSearchNextPage);
+		jpSearch.add(cmbFavList);
 		jpSearch.setOpaque(false);
 		this.add(jpSearch);
 		this.setOpaque(false);
@@ -250,5 +265,20 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+            if(e.getItem() instanceof FavList) {
+            	FavList fav = (FavList) e.getItem();
+            	String url = "https://space.bilibili.com/%s/favlist?fid=%s&ftype=create";
+            	url = String.format(url, fav.getOwnerId(), fav.getfId());
+            	txtSearch.setText(url);
+            	txtSearch.setForeground(Color.BLACK);
+    			search();
+            }
+            
+        }
 	}
 }

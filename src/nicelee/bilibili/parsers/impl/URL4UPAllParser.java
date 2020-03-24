@@ -79,7 +79,7 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
 				JSONObject jAV = arr.getJSONObject(i);
-				map.putAll(convertVideoToClipMap(jAV.getLong("aid"), (page - 1) * API_PMAX + i + 1, videoFormat,
+				map.putAll(convertVideoToClipMap(jAV.getString("bvid"), (page - 1) * API_PMAX + i + 1, videoFormat,
 						getVideoLink));
 			}
 			return true;
@@ -98,10 +98,10 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 	 * @param getVideoLink
 	 * @return 将所有avId的视频封装成Map
 	 */
-	private LinkedHashMap<Long, ClipInfo> convertVideoToClipMap(long avId, int remark, int videoFormat,
+	private LinkedHashMap<Long, ClipInfo> convertVideoToClipMap(String bvid, int remark, int videoFormat,
 			boolean getVideoLink) {
 		LinkedHashMap<Long, ClipInfo> map = new LinkedHashMap<>();
-		VideoInfo video = getAVDetail(avId, videoFormat, getVideoLink); // 耗时
+		VideoInfo video = getAVDetail(bvid, videoFormat, getVideoLink); // 耗时
 		for (ClipInfo clip : video.getClips().values()) {
 			//clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
 			//clip.setAvTitle(pageQueryResult.getVideoName());

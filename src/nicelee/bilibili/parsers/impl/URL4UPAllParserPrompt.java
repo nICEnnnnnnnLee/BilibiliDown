@@ -9,7 +9,8 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 
-@Bilibili(name = "URL4UPAllParser", ifLoad = "promptAll", note = "个人上传的视频列表")
+@Deprecated
+//@Bilibili(name = "URL4UPAllParser", ifLoad = "promptAll", note = "个人上传的视频列表")
 public class URL4UPAllParserPrompt extends AbstractPageQueryParser<StringBuilder> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/? *$|\\?)");

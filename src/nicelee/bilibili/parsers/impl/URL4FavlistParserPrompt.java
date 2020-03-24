@@ -5,12 +5,12 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 
-@Bilibili(name = "URL4FavlistParser_PromptTab", ifLoad = "promptAll", note = "收藏夹 - 采取弹出式")
+@Deprecated
+//@Bilibili(name = "URL4FavlistParser_PromptTab", ifLoad = "promptAll", note = "收藏夹 - 采取弹出式")
 public class URL4FavlistParserPrompt extends AbstractPageQueryParser<StringBuilder> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=([0-9]+)");// 个人收藏夹

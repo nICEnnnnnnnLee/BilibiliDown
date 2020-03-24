@@ -12,6 +12,7 @@ import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.Logger;
 
 @Bilibili(name = "ml-parser",
 		note = "收藏夹解析器")
@@ -69,8 +70,8 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 			String url = String.format(urlFormat, favID, page, API_PMAX);
 			String json = util.getContent(url, new HttpHeaders().getFavListHeaders(favID),
 					HttpCookies.getGlobalCookies());
-			System.out.println(url);
-			System.out.println(json);
+			Logger.println(url);
+			Logger.println(json);
 			JSONObject jobj = new JSONObject(json);
 			JSONObject jData = jobj.getJSONObject("data");
 			JSONObject jInfo = jobj.getJSONObject("data").getJSONObject("info");
@@ -87,7 +88,7 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 			JSONArray arr = jData.getJSONArray("medias");// .getJSONArray("archives");
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
 				JSONObject jAV = arr.getJSONObject(i);
-				String avId = "av" + jAV.getLong("id");
+				String avId = jAV.getString("bvid");
 				String avTitle =  jAV.getString("title");
 				String upName = jAV.getJSONObject("upper").getString("name");
 				String upId = "" + jAV.getJSONObject("upper").getLong("mid");

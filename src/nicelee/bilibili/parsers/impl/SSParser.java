@@ -77,13 +77,13 @@ public class SSParser extends AbstractBaseParser {
 			JSONObject clipObj = array.getJSONObject(i);
 			ClipInfo clip = new ClipInfo();
 			clip.setAvTitle(viInfo.getVideoName());
-			clip.setAvId("av" + clipObj.getInt("aid"));
+			clip.setAvId(clipObj.getString("bvid"));
 			clip.setcId(clipObj.getLong("cid"));
 			//clip.setPage(Integer.parseInt(clipObj.getString("index")));
 			clip.setRemark(clipObj.getInt("i") + 1);
 			clip.setPicPreview("https:" +clipObj.getString("cover"));
 			//如果和前面avid一致，那么是前者page + 1, 否则为 1
-			if(i > 0 && array.getJSONObject(i-1).getInt("aid") == clipObj.getInt("aid")) {
+			if(i > 0 && array.getJSONObject(i-1).getString("bvid").equals(clipObj.getString("bvid"))) {
 				clip.setPage(lastClip.getPage() + 1);
 			}else {
 				clip.setPage(1);

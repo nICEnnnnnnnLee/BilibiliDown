@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.Logger;
 
 @Bilibili(name = "EPParser")
 public class EPParser extends AbstractBaseParser {
@@ -35,15 +36,15 @@ public class EPParser extends AbstractBaseParser {
 
 	@Override
 	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {
-		return getAVDetail(EpIdToAvId(epId), videoFormat, getVideoLink);
+		return getAVDetail(EpIdToBvId(epId), videoFormat, getVideoLink);
 	}
 	
 	/**
-	 * 已知epId, 求avId 目前没有抓到api哦... 暂时从网页里面爬
+	 * 已知epId, 求bvId 目前没有抓到api哦... 暂时从网页里面爬
 	 * 
 	 * @input HttpRequestUtil util
 	 */
-	private String EpIdToAvId(String epId) {
+	private String EpIdToBvId(String epId) {
 		HttpHeaders headers = new HttpHeaders();
 		String url = "https://www.bilibili.com/bangumi/play/" + epId;
 		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
@@ -51,11 +52,11 @@ public class EPParser extends AbstractBaseParser {
 		int begin = html.indexOf("window.__INITIAL_STATE__=");
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);
-		System.out.println(json);
+		Logger.println(json);
 		JSONObject jObj = new JSONObject(json);
-		int avId = jObj.getJSONObject("epInfo").getInt("aid");
-		System.out.println("avId为: " + avId);
-		return "av" + avId;
+		String bvid = jObj.getJSONObject("epInfo").getString("bvid");
+		Logger.println("bvId为: " + bvid);
+		return bvid;
 	}
 
 }

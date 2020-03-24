@@ -118,6 +118,7 @@ public class HttpHeaders {
 
 	/**
 	 * 该Header配置用于api 信息查询
+	 * avId/bvId
 	 */
 	public HashMap<String, String> getBiliJsonAPIHeaders(String avId) {
 		headerMap.put("Accept", "*/*");

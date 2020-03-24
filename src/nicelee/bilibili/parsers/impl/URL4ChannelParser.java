@@ -88,7 +88,7 @@ public class URL4ChannelParser extends AbstractPageQueryParser<VideoInfo> {
 				try {
 					// try给包围，出现 稿件不可见等已失效视频 的异常跳过即可
 					// 进行二次查询，增加请求次数为 pageSize
-					map.putAll(convertVideoToClipMap(jAV.getLong("aid"), 
+					map.putAll(convertVideoToClipMap(jAV.getString("bvid"), 
 							(page -1)* API_PMAX + i + 1,
 							videoFormat,
 							getVideoLink));
@@ -130,15 +130,15 @@ public class URL4ChannelParser extends AbstractPageQueryParser<VideoInfo> {
 	
 	/**
 	 * 使用此方法会产生许多请求，慎用
-	 * @param avId
+	 * @param bvId
 	 * @param remark
 	 * @param videoFormat
 	 * @param getVideoLink
 	 * @return 将所有avId的视频封装成Map
 	 */
-	private LinkedHashMap<Long, ClipInfo> convertVideoToClipMap(long avId, int remark, int videoFormat, boolean getVideoLink){
+	private LinkedHashMap<Long, ClipInfo> convertVideoToClipMap(String bvId, int remark, int videoFormat, boolean getVideoLink){
 		LinkedHashMap<Long, ClipInfo> map = new LinkedHashMap<>();
-		VideoInfo video = getAVDetail(avId, videoFormat, getVideoLink); // 耗时
+		VideoInfo video = getAVDetail(bvId, videoFormat, getVideoLink); // 耗时
 		for(ClipInfo clip: video.getClips().values()) {
 			//clip.setTitle(clip.getAvTitle() + "-" + clip.getTitle());
 			//clip.setAvTitle(pageQueryResult.getVideoName());

@@ -63,7 +63,7 @@ public class URL4ChannelParserPrompt extends AbstractPageQueryParser<StringBuild
 			JSONObject jobj = new JSONObject(json);
 			JSONArray arr = jobj.getJSONObject("data").getJSONObject("list").getJSONArray("archives");
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
-				pageQueryResult.append(" av").append(arr.getJSONObject(i).getLong("aid"));
+				pageQueryResult.append(" av").append(arr.getJSONObject(i).getString("bvid"));
 			}
 			return true;
 		}catch (Exception e) {

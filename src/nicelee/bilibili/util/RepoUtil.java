@@ -1,14 +1,20 @@
 package nicelee.bilibili.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.JOptionPane;
+
+import org.json.JSONObject;
 
 import nicelee.ui.Global;
 
@@ -29,7 +35,7 @@ public class RepoUtil {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
 		if(fRepo == null || refresh) {
 			fRepo = new File("config/repo.config");
-			standardAvPattern = Pattern.compile("^((?:av|h)[0-9]+)-([0-9]+)(-p[0-9]+)$");
+			standardAvPattern = Pattern.compile("^((?:av|h|BV)[0-9a-zA-Z]+)-([0-9]+)(-p[0-9]+)$");
 			downRepo = new CopyOnWriteArraySet<String>();
 		}
 		// 先初始化downRepo
@@ -93,7 +99,112 @@ public class RepoUtil {
 		}
 	}
 	
+	static Thread convertThread;
+	public static void convert() {
+		if(convertThread == null) {
+			convertThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					convertSync();
+					System.out.println("转换结束");
+					convertThread = null;
+				}
+			});
+			convertThread.start();
+		}
+	}
 	
+	public static void stopConvert() {
+		if(convertThread != null) {
+			convertThread.interrupt();
+			System.out.println("人为转换结束");
+		}
+	}
+	
+	static void convertSync() {
+		Pattern avPattern = Pattern.compile("^av([0-9a-zA-Z]+)(-[0-9]+-p[0-9]+)$");
+		File fRepo = new File("config/repo.config");
+		File fRepoNew = new File("config/repo.new.config");
+		
+		HashMap<String, String> avBvMap = new HashMap<>();
+		// 先初始化downRepo
+		BufferedReader buReader = null;
+		BufferedWriter buWriter = null;
+		HttpHeaders headers = new HttpHeaders();
+		HttpRequestUtil util = new HttpRequestUtil();
+		
+		int count = 0;
+		try {
+			buReader = new BufferedReader(new FileReader(fRepoNew));
+			while (buReader.readLine() != null) {
+				count++;
+			}
+		}catch (Exception e) {
+		}
+		try {
+			buReader = new BufferedReader(new FileReader(fRepo));
+			buWriter = new BufferedWriter(new FileWriter(fRepoNew, true));
+			String avRecord;
+			int lineCnt = 0;
+			while ((avRecord = buReader.readLine()) != null) {
+				lineCnt ++;
+				if(lineCnt % 100 == 0) {
+					System.out.println("当前转换进度： " + lineCnt);
+				}
+				if(lineCnt <= count) {
+					continue;
+				}
+				Thread.sleep(0);
+				Matcher matcher = avPattern.matcher(avRecord);
+				String lineToAppend = null;
+				if (matcher.find()) {
+					String aid = matcher.group(1);
+					String bvid = avBvMap.get(aid);
+					if(bvid == null) {
+						String url = "https://api.bilibili.com/x/web-interface/view/detail?bvid=&jsonp=jsonp&callback=__jp0&aid="
+								+ aid;
+						HashMap<String, String> header = headers.getBiliJsonAPIHeaders(aid);
+						String callBack = util.getContent(url, header);
+						//Logger.println(callBack);
+						try {
+							JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 2)).getJSONObject("data")
+									.getJSONObject("View");
+							bvid = infoObj.getString("bvid");
+							lineToAppend = bvid + matcher.group(2);
+						}catch (Exception e) {
+							lineToAppend = avRecord;
+						}
+					}else {
+						lineToAppend = bvid + matcher.group(2);
+					}
+				}else {
+					lineToAppend = avRecord;
+				}
+				buWriter.write(lineToAppend);
+				buWriter.newLine();
+			}
+			buReader.close();
+			buWriter.close();
+			
+			File fRepoBackup = new File("config/repo.config.bk"+ System.currentTimeMillis()/1000);
+			FileUtil.copy(fRepo, fRepoBackup);
+			fRepo.delete();
+			FileUtil.copy(fRepoNew, fRepo);
+			fRepoNew.delete();
+			JOptionPane.showConfirmDialog(null, "转换完毕, 请重新加载");
+			
+		} catch (Exception e) {
+		}finally {
+			try {
+				buReader.close();
+			} catch (IOException e) {
+			}
+			try {
+				buWriter.close();
+			} catch (IOException e) {
+			}
+		}
+	}
 	
 	synchronized static void appendRecordToFile(String line) {
 		//System.out.println(Thread.currentThread().getName() + "开始记录");

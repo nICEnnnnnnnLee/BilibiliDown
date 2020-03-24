@@ -83,10 +83,15 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 创建二级 操作 子菜单
 		 */
+		JMenuItem convertRepo = new JMenuItem("开始转换仓库(慎点)");
+		JMenuItem convertRepoBreak = new JMenuItem("停止转换仓库");
 		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
 		JMenuItem closeAllMenuItem = new JMenuItem("关闭全部Tab页");
 		JMenuItem doMultiDownMenuItem = new JMenuItem("批量下载Tab页");
+		operMenu.add(convertRepo);
+		operMenu.add(convertRepoBreak);
+		operMenu.addSeparator();
 		operMenu.add(reloadConfig);
 		operMenu.add(reloadRepo);
 		operMenu.addSeparator();
@@ -137,6 +142,21 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 添加动作
 		 */
+		// 将repo中avid转换为bvid
+		convertRepo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RepoUtil.convert();
+			}
+		});
+		// 暂停将repo中avid转换为bvid
+		convertRepoBreak.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RepoUtil.stopConvert();
+			}
+		});
+		
 		// 修改app.config后，重新加载配置使生效
 		reloadConfig.addActionListener(new ActionListener() {
 			@Override

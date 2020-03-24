@@ -34,13 +34,13 @@ public class RepoTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
-	//@Test
+
+	// @Test
 	public void testThreadRun() {
 		System.out.println("初始化开始");
 		RepoUtil.init(false);
 		System.out.println("初始化完毕");
-		for(int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 1000; i++) {
 			final int cnt = i;
 			new Thread(new Runnable() {
 				@Override
@@ -50,7 +50,8 @@ public class RepoTest {
 			}).start();
 		}
 	}
-	//@Test
+
+	// @Test
 	public void renameBatToRepo() {
 		Pattern standardAvPattern = Pattern.compile("(av[0-9]+)-([0-9]+)-(p[0-9]+)");
 		File file = new File("download/rename.bat");
@@ -74,7 +75,7 @@ public class RepoTest {
 		try {
 			File fRepo = new File("config/repo.config");
 			FileWriter fw = new FileWriter(fRepo, true);
-			for(Object avRecord: downRepo.toArray()) {
+			for (Object avRecord : downRepo.toArray()) {
 				System.out.println(avRecord.toString());
 				fw.write(avRecord.toString());
 				fw.write("\r\n");
@@ -84,9 +85,9 @@ public class RepoTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// 去除重复记录
-	@Test
+	// @Test
 	public void remakeRepo() {
 		Pattern standardAvPattern = Pattern.compile("(av[0-9]+)-([0-9]+)-(p[0-9]+)");
 		File file = new File("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo.config");
@@ -110,7 +111,7 @@ public class RepoTest {
 		try {
 			File fRepo = new File("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\config\\repo2.config");
 			FileWriter fw = new FileWriter(fRepo, true);
-			for(Object avRecord: downRepo.toArray()) {
+			for (Object avRecord : downRepo.toArray()) {
 				System.out.println(avRecord.toString());
 				fw.write(avRecord.toString());
 				fw.write("\r\n");
@@ -121,4 +122,9 @@ public class RepoTest {
 		}
 	}
 
+	// 将avID转换为BVID
+	@Test
+	public void convertRepo() {
+		RepoUtil.convert();
+	}
 }

@@ -1,4 +1,6 @@
 ## UPDATE  
+* V4.7 
+    * 修复v4.6引入的多p视频只显示第一个的bug  
 * V4.6 
     * 新增BV Parser  
     * 修复Av/EP/SS/ML/UP主频道/UP主所有视频解析  

@@ -104,6 +104,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 		} else {
 			LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 			for (int i = 0; i < array.length(); i++) {
+				jObj = array.getJSONObject(i);
+				cid = jObj.getLong("cid");
 				ClipInfo clip = new ClipInfo();
 				clip.setAvTitle(viInfo.getVideoName());
 				clip.setAvId(bvId);

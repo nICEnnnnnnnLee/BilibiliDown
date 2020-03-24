@@ -79,7 +79,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 						public void run() {
 							String url = "https://api.bilibili.com/x/v1/dm/list.so?oid=" + clip.getcId();
 							String content = new HttpRequestUtil().getContent(url, null);
-							File file = new File(Global.savePath, String.format("%s-%s.xml", clip.getAvTitle(), clip.getTitle()));
+							File file = new File(Global.savePath, String.format("%s-%s.xml", clip.getAvTitle().replaceAll("[/\\\\]", "_"), clip.getTitle()));
 							try {
 								BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 								writer.write(content);

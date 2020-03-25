@@ -181,6 +181,7 @@ https://www.bilibili.com/bangumi/play/ep116157/
 </details>
 
 ## :smile:第三方库使用声明  
+* AV和BV转换参考了[AV-BV-Convert](https://github.com/CCRcmcpe/AV-BV-Convert)[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/CCRcmcpe/AV-BV-Convert/blob/master/LICENSE)  
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
 * 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  

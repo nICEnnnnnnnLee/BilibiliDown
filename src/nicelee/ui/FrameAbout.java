@@ -28,7 +28,7 @@ public class FrameAbout extends JFrame implements HyperlinkListener {
 	private void initUI() {
 		// this.setBounds(300, 200, 500, 400);
 		// this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		this.setSize(800, 480);
+		this.setSize(800, 500);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setTitle("用爱发电 bilibili~~");

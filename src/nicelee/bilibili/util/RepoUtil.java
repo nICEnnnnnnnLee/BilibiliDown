@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-import org.json.JSONObject;
-
+import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
 
 public class RepoUtil {
@@ -46,10 +45,22 @@ public class RepoUtil {
 			while ((avRecord = buReader.readLine()) != null) {
 				Matcher matcher = standardAvPattern.matcher(avRecord);
 				if (matcher.find()) {
-					if(definitionStrictMode) {
-						downRepo.add(avRecord);
+					if(avRecord.startsWith("av")) {
+						String bv = ConvertUtil.Av2Bv(matcher.group(1));
+						StringBuilder sb = new StringBuilder(bv);
+						if(definitionStrictMode) {
+							sb.append("-").append(matcher.group(2)).append(matcher.group(3));
+						}else {
+							sb.append(matcher.group(3));
+						}
+						downRepo.add(sb.toString());
+						System.out.println(sb.toString());
 					}else {
-						downRepo.add(matcher.group(1) + matcher.group(3));
+						if(definitionStrictMode) {
+							downRepo.add(avRecord);
+						}else {
+							downRepo.add(matcher.group(1) + matcher.group(3));
+						}
 					}
 				}
 			}
@@ -130,8 +141,8 @@ public class RepoUtil {
 		// 先初始化downRepo
 		BufferedReader buReader = null;
 		BufferedWriter buWriter = null;
-		HttpHeaders headers = new HttpHeaders();
-		HttpRequestUtil util = new HttpRequestUtil();
+//		HttpHeaders headers = new HttpHeaders();
+//		HttpRequestUtil util = new HttpRequestUtil();
 		
 		int count = 0;
 		try {
@@ -161,19 +172,23 @@ public class RepoUtil {
 					String aid = matcher.group(1);
 					String bvid = avBvMap.get(aid);
 					if(bvid == null) {
-						String url = "https://api.bilibili.com/x/web-interface/view/detail?bvid=&jsonp=jsonp&callback=__jp0&aid="
-								+ aid;
-						HashMap<String, String> header = headers.getBiliJsonAPIHeaders(aid);
-						String callBack = util.getContent(url, header);
-						//Logger.println(callBack);
-						try {
-							JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 2)).getJSONObject("data")
-									.getJSONObject("View");
-							bvid = infoObj.getString("bvid");
-							lineToAppend = bvid + matcher.group(2);
-						}catch (Exception e) {
-							lineToAppend = avRecord;
-						}
+						bvid = ConvertUtil.Av2Bv(Long.parseLong(aid));
+						avBvMap.put(aid, bvid);
+						lineToAppend = bvid + matcher.group(2);
+//						String url = "https://api.bilibili.com/x/web-interface/view/detail?bvid=&jsonp=jsonp&callback=__jp0&aid="
+//								+ aid;
+//						HashMap<String, String> header = headers.getBiliJsonAPIHeaders(aid);
+//						String callBack = util.getContent(url, header);
+//						//Logger.println(callBack);
+//						try {
+//							JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 2)).getJSONObject("data")
+//									.getJSONObject("View");
+//							bvid = infoObj.getString("bvid");
+//							avBvMap.put(aid, bvid);
+//							lineToAppend = bvid + matcher.group(2);
+//						}catch (Exception e) {
+//							lineToAppend = avRecord;
+//						}
 					}else {
 						lineToAppend = bvid + matcher.group(2);
 					}
@@ -191,7 +206,7 @@ public class RepoUtil {
 			fRepo.delete();
 			FileUtil.copy(fRepoNew, fRepo);
 			fRepoNew.delete();
-			JOptionPane.showConfirmDialog(null, "转换完毕, 请重新加载");
+			JOptionPane.showMessageDialog(null, "转换完毕, 请重新加载");
 			
 		} catch (Exception e) {
 		}finally {

@@ -1,6 +1,7 @@
 package nicelee.bilibili.parsers.impl;
 
 import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -16,8 +17,10 @@ import nicelee.bilibili.util.Logger;
 public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/? *$|\\?)");
+	private final static Pattern patternTid = Pattern.compile("tid=([0-9]+)");
 	private String spaceID;
-
+	private String tid = "0"; // 全部 0, 音乐 3...
+	
 	public URL4UPAllParser(Object... obj) {
 		super(obj);
 	}
@@ -28,6 +31,9 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 		if (matcher.find()) {
 			System.out.println("匹配UP主主页全部视频,返回 av1 av2 av3 ...");
 			spaceID = matcher.group(1);
+			Matcher m = patternTid.matcher(input);
+			if(m.find())
+				tid =m.group(1);
 			return true;
 		} else {
 			return false;
@@ -37,7 +43,8 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	@Override
 	public String validStr(String input) {
-		return matcher.group().trim() + "p=" + paramSetter.getPage();
+//		return matcher.group().trim() + "p=" + paramSetter.getPage();
+		return input.trim()+ "p=" + paramSetter.getPage();
 	}
 
 	@Override
@@ -58,18 +65,27 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 		int videoFormat = (int) obj[0];
 		boolean getVideoLink = (boolean) obj[1];
 		try {
-			String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
-			String url = String.format(urlFormat, spaceID, API_PMAX, page);
-			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("space.bilibili.com"));
+			//String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
+			String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=pubdate&jsonp=jsonp";
+			String url = String.format(urlFormat, spaceID, API_PMAX, tid, page);
+			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"));
 			System.out.println(url);
 			System.out.println(json);
 			JSONObject jobj = new JSONObject(json);
-			JSONArray arr = jobj.getJSONObject("data").getJSONArray("vlist");
+			JSONArray arr = jobj.getJSONObject("data").getJSONObject("list").getJSONArray("vlist");
 
 			// 设置av信息
 			if (pageQueryResult.getVideoName() == null) {
 				pageQueryResult.setVideoId(spaceID);
 				pageQueryResult.setAuthor(arr.getJSONObject(0).getString("author"));
+				// 防止联合投稿视频误报，寻找下一个作品的投稿人
+				int is_union_video = arr.getJSONObject(0).optInt("is_union_video", 0);
+				int pointer = 1;
+				while(is_union_video == 1 && pointer < arr.length()) {
+					pageQueryResult.setAuthor(arr.getJSONObject(pointer).getString("author"));
+					is_union_video = arr.getJSONObject(pointer).optInt("is_union_video", 0);
+					pointer ++;
+				}
 				pageQueryResult.setVideoName(pageQueryResult.getAuthor() + "的视频列表");
 				pageQueryResult.setVideoPreview("http:" + arr.getJSONObject(0).getString("pic"));
 				pageQueryResult.setAuthorId(spaceID);

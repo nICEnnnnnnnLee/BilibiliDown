@@ -1,4 +1,7 @@
 ## UPDATE  
+* V4.9
+    * 新增 [#27](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/27) 增加稍后再看的批量下载
+    * 修复 [#28](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/28) up所有视频下载解析失效问题
 * V4.8
     * 本地进行av和bv相互转换，减少网络请求  
 * V4.7 

@@ -42,7 +42,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 	public ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
 	public JLabel jlHeader;
 	public JComboBox<Object> cmbFavList=new JComboBox<>();
-	String placeHolder = "请在此输入B站 av/ep/ss/md/ml号或地址";
+	String placeHolder = "请在此输入B站 BV/av/ep/ss/md/ml号或地址";
 	JTextField txtSearch = new MJTextField(placeHolder);
 	//new MJTextField("https://www.bilibili.com/video/av35296336");
 	JButton btnSearch = new JButton("查找");
@@ -275,6 +275,10 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
             	String url = "https://space.bilibili.com/%s/favlist?fid=%s&ftype=create";
             	url = String.format(url, fav.getOwnerId(), fav.getfId());
             	txtSearch.setText(url);
+            	txtSearch.setForeground(Color.BLACK);
+    			search();
+            }else if("稍后再看".equals(e.getItem().toString())){
+            	txtSearch.setText("https://www.bilibili.com/watchlater/#/list");
             	txtSearch.setForeground(Color.BLACK);
     			search();
             }

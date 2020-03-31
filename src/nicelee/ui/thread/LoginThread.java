@@ -144,6 +144,7 @@ public class LoginThread extends Thread {
 //			System.out.println(jsonStr);
 			JSONArray list = new JSONObject(jsonStr).getJSONObject("data").getJSONArray("list");
 			if(Global.index.cmbFavList.getItemCount() == 1) {
+				Global.index.cmbFavList.addItem("稍后再看");
 				for(int i = 0; i < list.length(); i++) {
 					JSONObject favlist = list.getJSONObject(i);
 					FavList fav = new FavList(favlist.getLong("mid"),

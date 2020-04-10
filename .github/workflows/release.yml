@@ -1,0 +1,94 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: CI
+
+on:
+  push:
+    paths:
+      # Trigger only when src/** changes
+      - ".github/release.json"
+      
+  pull_request:
+    paths:
+    # Trigger only when src/** changes
+      - ".github/release.json"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+   
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+     
+    - name: Read tag_latest
+      id: tag_latest
+      uses:  ashley-taylor/read-json-property-action@v1.0
+      with:
+        path: ./.github/release.json
+        property: tag_latest
+        
+    - name: Read description
+      id: description
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./.github/release.info
+ 
+    - name: Package Jar
+      run: |
+        cd src
+        javac -encoding UTF-8 -d ../ CompileJarUtil.java
+        cd ..
+        java CompileJarUtil "." "nicelee.ui.FrameMain"
+
+    - name: ZIP files
+      run: |
+        rm -rf ./config/
+        rm -rf ./LICENSE/
+        mkdir ./config/
+        mkdir ./LICENSE/
+        mv -f ./release/install.vbs .
+        mv -f ./release/run-UI.bat .
+        mv -f ./release/run-UI-debug.bat .
+        mv -f ./release/unistall.bat .
+        mv -f ./release/update.bat .
+        mv -f ./release/config/* ./config/
+        mv -f ./release/LICENSE/* ./LICENSE/        
+        
+        zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip INeedBiliAV.jar
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./install.vbs
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./run-UI.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./run-UI-debug.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./unistall.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./update.bat
+        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./config/
+        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./LICENSE/
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: V${{steps.tag_latest.outputs.value}}
+        release_name: BilibiliDown - v${{steps.tag_latest.outputs.value}}
+        body: |
+          ${{steps.description.outputs.content}}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        asset_name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        asset_content_type: application/zip

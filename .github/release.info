@@ -1,0 +1,13 @@
+* 改动如下，按需更新  
+    * 新增 [#27](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/27) 稍后再看的下载
+           * 登录后,首页输入 `https://www.bilibili.com/watchlater/#/list`  
+           * 或登录后,首页 `--我的收藏夹--` --> `稍后再看`
+    * 修复 [#28](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/28) up所有视频下载解析失效问题
+
+<hr/>  
+
+* 如果没有ffmpeg环境，请将```ffmpeg```[下载](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe)后置于```INeedBiliAV.jar```同级目录下    
+     * 此处提供的[ffmpeg](https://gitee.com/NiceLeee/FFmpeg)编译详见[ReadMe](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/README.md)
+     * 非Windows系统ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)
+    * 结构目录参考[此处](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release)
+    * 附: [ffmpeg官网](http://www.ffmpeg.org/download.html)

@@ -5,6 +5,7 @@
 ![开源协议Apache2.0](https://img.shields.io/badge/license-apache--2.0-green.svg)  
 ![当前版本](https://img.shields.io/github/release/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square)
 ![Release 下载总量](https://img.shields.io/github/downloads/nICEnnnnnnnLee/BilibiliDown/total.svg?style=flat-square)
+![CI](https://github.com/nICEnnnnnnnLee/BilibiliDown/workflows/CI/badge.svg)
 ![最近更新](https://img.shields.io/github/last-commit/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square&color=FF9900)
 
 Bilibili 视频下载器，用于下载B站视频。  

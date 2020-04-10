@@ -48,8 +48,8 @@ jobs:
 
     - name: ZIP files
       run: |
-        rm -rf ./config/
-        rm -rf ./LICENSE/
+        rm -rf ./config
+        rm -rf ./LICENSE
         mkdir ./config/
         mkdir ./LICENSE/
         mv -f ./release/install.vbs .

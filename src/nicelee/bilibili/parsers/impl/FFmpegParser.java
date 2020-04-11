@@ -1,0 +1,63 @@
+package nicelee.bilibili.parsers.impl;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+import nicelee.bilibili.annotations.Bilibili;
+import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
+
+@Bilibili(name = "FFmpeg", note = "用于FFmpeg下载")
+public class FFmpegParser extends AbstractBaseParser {
+
+
+	public FFmpegParser(Object... obj) {
+		super(obj);
+	}
+	
+	@Override
+	public boolean matches(String input) {
+		return "ffmpeg".equals(input.trim().toLowerCase());
+	}
+
+	@Override
+	public String validStr(String input) {
+		return input;
+	}
+	
+	
+	@Override
+	public String getVideoLink(String avId, String cid, int qn, int downFormat) {
+		this.paramSetter.setRealQN(1000);
+		return "https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe";
+	}
+	
+	
+	@Override
+	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {
+		VideoInfo vInfos = new VideoInfo();
+		vInfos.setAuthor("nICEnnnnnnnLee");
+		vInfos.setAuthorId("nICEnnnnnnnLee");
+		vInfos.setBrief("自编译的FFmpeg版本");
+		vInfos.setVideoId("FFmpeg");
+		vInfos.setVideoName("FFmpeg");
+		vInfos.setVideoPreview("http://i2.hdslb.com/bfs/archive/0975f9fe3ec5a65b983f43bc437b8f5698e4ea8a.jpg");
+		LinkedHashMap<Long, ClipInfo> clips = new LinkedHashMap<>();
+		ClipInfo clip = new ClipInfo();
+		clip.setAvId("FFmpeg");
+		clip.setcId(1234L);
+		clip.setAvTitle("FFmpeg");
+		clip.setTitle("FFmpeg");
+		clip.setPage(1);
+		HashMap<Integer, String> links = new HashMap<Integer, String>();
+		links.put(1000, "");
+		clip.setUpId("nICEnnnnnnnLee");
+		clip.setUpName("nICEnnnnnnnLee");
+		clip.setLinks(links);
+		
+		clips.put(1234L, clip);
+		vInfos.setClips(clips);
+		return vInfos;
+	}
+
+}

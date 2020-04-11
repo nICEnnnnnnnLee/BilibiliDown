@@ -41,10 +41,42 @@ jobs:
  
     - name: Package Jar
       run: |
-        cd src
-        javac -encoding UTF-8 -d ../ CompileJarUtil.java
+        # 复制整个文件夹
+        mkdir target
+        cp -r src/. target
+
+        # 删除不需要的java文件
+        rm -rf ./target/nicelee/test
+
+        # 获取java文件列表
+        cd target
+        find `pwd` -name "*.java" > ../sources.txt
         cd ..
-        java CompileJarUtil "." "nicelee.ui.FrameMain"
+
+        # 获取环境变量,解压lib包
+        cd libs
+        find `pwd` -name "*.jar" > ../libs.txt
+        cat ../libs.txt
+        cd ../target
+        for jar in  `cat ../libs.txt`
+        do
+            jclasspath=$jar:$jclasspath
+            echo $jar
+            jar xvf $jar
+        done
+        cd ..
+        echo $jclasspath
+
+        # 编译java
+        javac -cp $jclasspath -encoding UTF-8 @sources.txt
+
+        # 删除所有.java文件
+        cd target
+        find . -name "*.java" |xargs rm -rf {}
+        cd ..
+
+        # 打包
+        jar cvfe INeedBiliAV.jar nicelee.ui.FrameMain -C ./target .
 
     - name: ZIP files
       run: |

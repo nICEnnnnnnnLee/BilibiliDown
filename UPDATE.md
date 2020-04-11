@@ -1,6 +1,9 @@
 ## UPDATE  
+* V5.0
+    * workflow发布测试，功能上无更新
+    * 提供了`package.sh`和`package.bat`两个脚本，支持不依赖IDE的jar包打包生成(**内含删除操作，请注意工作目录务必正确！！！**)
 * V4.9
-    * 新增 [#27](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/27) 增加稍后再看的批量下载
+    * 新增 [#27](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/27) 稍后再看的批量下载
     * 修复 [#28](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/28) up所有视频下载解析失效问题
 * V4.8
     * 本地进行av和bv相互转换，减少网络请求  

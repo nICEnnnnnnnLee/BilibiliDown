@@ -1,8 +1,5 @@
-* 改动如下，按需更新  
-    * 新增 [#27](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/27) 稍后再看的下载
-           * 登录后,首页输入 `https://www.bilibili.com/watchlater/#/list`  
-           * 或登录后,首页 `--我的收藏夹--` --> `稍后再看`
-    * 修复 [#28](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/28) up所有视频下载解析失效问题
+* 该Release版本为workflow自动打包发布，与`v4.9`在功能上没有差异。  
+* 提供了`package.sh`和`package.bat`两个脚本，支持不依赖IDE的jar包打包生成(**内含删除操作，请注意工作目录务必正确！！！**)
 
 <hr/>  
 

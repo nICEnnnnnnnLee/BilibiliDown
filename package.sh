@@ -1,3 +1,6 @@
+# cd 到脚本所在目录
+cd $(dirname $0)
+
 # 复制整个文件夹
 mkdir target
 cp -r src/. target

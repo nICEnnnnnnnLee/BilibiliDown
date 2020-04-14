@@ -1,3 +1,6 @@
+:: cd 到脚本所在目录
+cd /d %~dp0
+
 :: 复制整个文件夹
 xcopy src target\ /s /f /h
 

@@ -1,4 +1,6 @@
 ## UPDATE  
+* V5.1
+    * 为Windows用户增加了FFmpeg.exe下载功能  
 * V5.0
     * workflow发布测试，功能上无更新
     * 提供了`package.sh`和`package.bat`两个脚本，支持不依赖IDE的jar包打包生成(**内含删除操作，请注意工作目录务必正确！！！**)

@@ -31,8 +31,8 @@ Bilibili 视频下载器，用于下载B站视频。
 <summary>安装(可选)</summary>
 
 
-其实这是一款绿色软件，安装只是创建了一个快捷方式。。。
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/install.gif)  
+其实这是一款绿色软件，安装只是创建了一个快捷方式。。。  
+![](/release/preview/install.gif)  
 </details>
 
 <details>
@@ -40,7 +40,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/login.gif) 
+![](/release/preview/login.gif) 
 </details>
 
 <details>
@@ -48,7 +48,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/download.gif)  
+![](/release/preview/download.gif)  
 </details>
 
 <details>
@@ -60,13 +60,13 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 `V3.4后移至菜单栏`
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/downloadAllTab.png) 
+![](/release/preview/downloadAllTab.png) 
 </details>
 <details>
 <summary>根据策略批量下载多p视频</summary>
 
 
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/downloadSingleTab.png)  
+![](/release/preview/downloadSingleTab.png)  
 </details>
 </details>
 
@@ -75,7 +75,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 单击封面图片获取URL。
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/ClickPicToGetUrl.gif)  
+![](/release/preview/ClickPicToGetUrl.gif)  
 </details>
 
 <details>
@@ -83,7 +83,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 长按作品文字，然后对应预览图会更新(网络原因可能会有卡顿，正常)。
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/LongClickToChangePreview.gif)  
+![](/release/preview/LongClickToChangePreview.gif)  
 </details>
 
 <details>
@@ -91,7 +91,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 双击作品文字，然后文本 + `avId`将会复制到剪贴板。
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/doubleClick2CopyClipInfo.gif)  
+![](/release/preview/doubleClick2CopyClipInfo.gif)  
 </details>
 
 <details>
@@ -100,7 +100,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 `关于` -> `更新版本`。(最近版本比较多，省得麻烦😳 目前只是人工触发版本检查。  
 不是WINDOWS的话需要人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`( ╯□╰ )  
-![](https://raw.githubusercontent.com/nICEnnnnnnnLee/BilibiliDown/master/release/preview/AutoUpdate.gif)  
+![](/release/preview/AutoUpdate.gif)  
 </details>
 <details>
 <summary>其它</summary>

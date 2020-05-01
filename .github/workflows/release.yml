@@ -87,7 +87,7 @@ jobs:
         mv -f ./release/install.vbs .
         mv -f ./release/run-UI.bat .
         mv -f ./release/run-UI-debug.bat .
-        mv -f ./release/unistall.bat .
+        mv -f ./release/uninstall.bat .
         mv -f ./release/update.bat .
         mv -f ./release/config/* ./config/
         mv -f ./release/LICENSE/* ./LICENSE/        
@@ -96,7 +96,7 @@ jobs:
         zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./install.vbs
         zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./run-UI.bat
         zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./run-UI-debug.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./unistall.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./uninstall.bat
         zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./update.bat
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./config/
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./LICENSE/

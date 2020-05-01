@@ -1,10 +1,3 @@
-* 该Release版本为workflow自动打包发布，与`v4.9`在功能上没有差异。  
-* 提供了`package.sh`和`package.bat`两个脚本，支持不依赖IDE的jar包打包生成(**内含删除操作，请注意工作目录务必正确！！！**)
-
-<hr/>  
-
-* 如果没有ffmpeg环境，请将```ffmpeg```[下载](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe)后置于```INeedBiliAV.jar```同级目录下    
-     * 此处提供的[ffmpeg](https://gitee.com/NiceLeee/FFmpeg)编译详见[ReadMe](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/README.md)
-     * 非Windows系统ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)
-    * 结构目录参考[此处](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release)
-    * 附: [ffmpeg官网](http://www.ffmpeg.org/download.html)
+* 新增 为Windows用户增加了FFmpeg.exe下载功能(指向自编译的上传在Release assets的附件)，进一步小白化  
+* 完善 当某av下p数超过20时，不再为每个视频详细查询支持清晰度，减少网络请求(特别是某些教程，以BV1pt41127FZ为例，分p数约400~)  
+* 完善 打包脚本新增cd到文件所在目录操作，进一步防止误操作  

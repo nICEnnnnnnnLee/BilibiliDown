@@ -26,6 +26,12 @@ Bilibili 视频下载器，用于下载B站视频。
 + 支持互动视频下载  
 + 支持相簿图片下载
    
+## :smile:关于下载速度     
++ 从服务端来看，FLV链接会比M4S链接要慢上很多  
++ 默认最大同时下载数为3，有需要可以在`config/app.config`更改(不推荐)  
++ 关于下载速度，直接上截图
+![](/release/preview/download-speed.png)  
+   
 ## :smile:使用方法
 <details>
 <summary>安装(可选)</summary>

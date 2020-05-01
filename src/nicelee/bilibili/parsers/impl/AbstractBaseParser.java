@@ -103,6 +103,10 @@ public abstract class AbstractBaseParser implements IInputParser {
 			}
 		} else {
 			LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
+			int[] qnListDefault = null;
+			if (array.length() > 20) {
+				qnListDefault = new int[] { 120, 112, 80, 64, 32, 16 };
+			}
 			for (int i = 0; i < array.length(); i++) {
 				jObj = array.getJSONObject(i);
 				cid = jObj.getLong("cid");
@@ -117,7 +121,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 				clip.setUpId(viInfo.getAuthorId());
 				LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 				try {
-					int qnList[] = getVideoQNList(bvId, String.valueOf(clip.getcId()));
+					int qnList[] = qnListDefault != null ? qnListDefault
+							: getVideoQNList(bvId, String.valueOf(clip.getcId()));
 					for (int qn : qnList) {
 						if (getVideoLink) {
 							String link = getVideoLink(bvId, String.valueOf(clip.getcId()), qn, videoFormat);
@@ -317,7 +322,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 */
 	private void collectStoryList(String bvid, String node, String graph_version, List<StoryClipInfo> currentStory,
 			List<List<StoryClipInfo>> story_list) {
-		//String url_node_format = "https://api.bilibili.com/x/stein/nodeinfo?aid=%s&node_id=%s&graph_version=%s&platform=pc&portal=0&screen=0";
+		// String url_node_format =
+		// "https://api.bilibili.com/x/stein/nodeinfo?aid=%s&node_id=%s&graph_version=%s&platform=pc&portal=0&screen=0";
 		String url_node_format = "https://api.bilibili.com/x/stein/edgeinfo_v2?bvid=%s&edge_id=%s&graph_version=%s&platform=pc&portal=0&screen=0";
 		String url_node = String.format(url_node_format, bvid, node, graph_version);
 		Logger.println(url_node);
@@ -342,8 +348,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 						choice.getString("option"));
 				List<StoryClipInfo> cloneStory = new ArrayList<StoryClipInfo>(currentStory); // 确保不会对传入的故事线产生影响，而是生成新的时间线
 				cloneStory.add(sClip);
-				collectStoryList(bvid, "" + choice.getLong("id"), graph_version, cloneStory,
-						story_list);
+				collectStoryList(bvid, "" + choice.getLong("id"), graph_version, cloneStory, story_list);
 			}
 		}
 	}

@@ -1,4 +1,8 @@
 ## UPDATE  
+* V5.2
+    * 完善 当某ss下p数超过20时，不再为每个视频详细查询支持清晰度，减少网络请求(以[ss33378](https://www.bilibili.com/bangumi/play/ss33378)为例，集数过千。。。)  
+    * 修复 [issue#31](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/31) 为了适应flv合并的ffmpeg命令调用，保存文件夹配置路径末尾转化为`/`  
+    * 修复 [issue#31](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/31) 为了解决某些ffmpeg应对不了的flv合并情况，增加了该功能的java实现
 * V5.1
     * 新增 为Windows用户增加了FFmpeg.exe下载功能(指向自编译的上传在Release assets的附件)，进一步小白化  
 	* 完善 当某av下p数超过20时，不再为每个视频详细查询支持清晰度，减少网络请求(特别是某些教程，以BV1pt41127FZ为例，分p数约400~)  

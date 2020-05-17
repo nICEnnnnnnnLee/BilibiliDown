@@ -30,7 +30,7 @@ Bilibili 视频下载器，用于下载B站视频。
 + 从服务端来看，FLV链接会比M4S链接要慢上很多  
 + 默认最大同时下载数为3，有需要可以在`config/app.config`更改(不推荐)  
 + 关于下载速度，直接上截图
-![](/release/preview/download-speed.png)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/download-speed.png)  
    
 ## :smile:使用方法
 <details>
@@ -38,7 +38,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 其实这是一款绿色软件，安装只是创建了一个快捷方式。。。  
-![](/release/preview/install.gif)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/install.gif)  
 </details>
 
 <details>
@@ -46,7 +46,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](/release/preview/login.gif) 
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/login.gif) 
 </details>
 
 <details>
@@ -54,7 +54,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 
-![](/release/preview/download.gif)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/download.gif)  
 </details>
 
 <details>
@@ -66,13 +66,13 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 `V3.4后移至菜单栏`
-![](/release/preview/downloadAllTab.png) 
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/downloadAllTab.png) 
 </details>
 <details>
 <summary>根据策略批量下载多p视频</summary>
 
 
-![](/release/preview/downloadSingleTab.png)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/downloadSingleTab.png)  
 </details>
 </details>
 
@@ -81,7 +81,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 单击封面图片获取URL。
-![](/release/preview/ClickPicToGetUrl.gif)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/ClickPicToGetUrl.gif)  
 </details>
 
 <details>
@@ -89,7 +89,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 长按作品文字，然后对应预览图会更新(网络原因可能会有卡顿，正常)。
-![](/release/preview/LongClickToChangePreview.gif)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/LongClickToChangePreview.gif)  
 </details>
 
 <details>
@@ -97,7 +97,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 双击作品文字，然后文本 + `avId`将会复制到剪贴板。
-![](/release/preview/doubleClick2CopyClipInfo.gif)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/doubleClick2CopyClipInfo.gif)  
 </details>
 
 <details>
@@ -106,7 +106,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 `关于` -> `更新版本`。(最近版本比较多，省得麻烦😳 目前只是人工触发版本检查。  
 不是WINDOWS的话需要人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`( ╯□╰ )  
-![](/release/preview/AutoUpdate.gif)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/AutoUpdate.gif)  
 </details>
 <details>
 <summary>其它</summary>
@@ -203,7 +203,7 @@ https://www.bilibili.com/bangumi/play/ep116157/
 + 自带的```ffmpeg.exe```为`Win10+Msys+MingW+msvc`自行编译，其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  
 ```javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
-+ 对于非WIN用户，如需使用程序的一键更新功能后，请人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
++ 对于非WIN用户，如需使用程序的一键更新功能，请在程序操作完毕并退出后，人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
 
 ## :smile:其它  
 * **下载地址**: [https://github.com/nICEnnnnnnnLee/BilibiliDown/releases](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)

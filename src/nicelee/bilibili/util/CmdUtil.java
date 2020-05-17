@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.check.FlvMerger;
 import nicelee.ui.Global;
 import nicelee.ui.thread.StreamManager;
 
@@ -100,11 +101,30 @@ public class CmdUtil {
 	 * @param part
 	 */
 	public static boolean convert(String dstName, int part) {
-		String cmd[] = createConvertCmd(dstName, part);
+		
 		File videoFile = new File(Global.savePath + dstName);
 		if (!videoFile.exists()) {
 			Logger.println("下载完毕, 正在运行转码程序...");
-			run(cmd);
+			if(Global.flvUseFFmpeg) {
+				String cmd[] = createConvertCmd(dstName, part);
+				run(cmd);
+			}else {
+				List<File> flist = new ArrayList<File>();
+				Matcher matcher = filePattern.matcher(dstName);
+				matcher.find();
+				String prefix = matcher.group(1);
+				String suffix = matcher.group(2);
+				for (int i = 1; i <= part; i++) {
+					File f = new File(Global.savePath, prefix + "-part" + i + suffix);
+					flist.add(f);
+				}
+				try {
+					new FlvMerger().merge(flist, videoFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
 			Logger.println("转码完毕");
 			// 删除文件
 			if (videoFile.exists()) {

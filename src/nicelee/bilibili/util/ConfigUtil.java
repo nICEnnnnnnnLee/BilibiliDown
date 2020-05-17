@@ -142,6 +142,7 @@ public class ConfigUtil {
 		}
 		//FFMPEG 路径设置
 		Global.ffmpegPath = System.getProperty("bilibili.ffmpegPath");
+		Global.flvUseFFmpeg = "true".equals(System.getProperty("bilibili.flv.ffmpeg"));
 		//简单的防多开功能
 		Global.lockCheck = "true".equals(System.getProperty("bilibili.lockCheck"));
 	}

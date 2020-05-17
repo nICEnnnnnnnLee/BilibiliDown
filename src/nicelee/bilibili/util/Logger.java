@@ -2,6 +2,20 @@ package nicelee.bilibili.util;
 
 public class Logger {
 
+	/**
+	 * 测试用
+	 * @param str
+	 */
+	public static void print(Object str) {
+		System.out.print(str);
+	}
+	/**
+	 * 测试用
+	 * @param str
+	 */
+	public static void println() {
+		System.out.println();
+	}
 	
 	/**
 	 * 测试用

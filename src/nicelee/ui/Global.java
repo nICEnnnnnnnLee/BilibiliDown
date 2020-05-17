@@ -52,6 +52,7 @@ public class Global {
 	
 	// FFMPEG 路径
 	public static String ffmpegPath;
+	public static boolean flvUseFFmpeg = false;
 	//批量下载设置相关
 	public static int menu_plan; // 0 仅下载1p； 1 下载全部
 	public static String menu_qn; // 参见VideoQualityEnum，值0,1,2,...

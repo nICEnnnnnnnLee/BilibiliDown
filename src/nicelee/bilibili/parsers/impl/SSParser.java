@@ -73,6 +73,10 @@ public class SSParser extends AbstractBaseParser {
 		JSONArray array = jObj.getJSONArray("epList");
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 		ClipInfo lastClip = null;
+		int[] qnListDefault = null;
+		if (array.length() > 20) {
+			qnListDefault = new int[] { 120, 112, 80, 64, 32, 16 };
+		}
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject clipObj = array.getJSONObject(i);
 			ClipInfo clip = new ClipInfo();
@@ -95,7 +99,8 @@ public class SSParser extends AbstractBaseParser {
 			
 			LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 			try {
-				int qnList[] = getVideoQNList(clip.getAvId(), String.valueOf(clip.getcId()));
+				int qnList[] = qnListDefault != null ? qnListDefault
+						: getVideoQNList(clip.getAvId(), String.valueOf(clip.getcId()));
 				for (int qn : qnList) {
 					if (isGetLink) {
 						String link = getVideoLink(clip.getAvId(), String.valueOf(clip.getcId()), qn, videoFormat);

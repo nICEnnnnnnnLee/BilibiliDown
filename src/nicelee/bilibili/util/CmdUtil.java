@@ -158,6 +158,11 @@ public class CmdUtil {
 			File file = new File(folderDown, dstName + ".txt");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 			for (int i = 1; i <= part; i++) {
+				// Windows下
+				// 当-i的Global.savePath路径以/结尾时，会寻找路径Global.savePath + %file
+				// 当-i的Global.savePath路径以\结尾时，会寻找路径 %file
+				// 此处我们在txt里输入的%file均为文件名，
+				// 故必须要确保Global.savePath 以/结尾
 				bw.write("file '");
 				bw.write(prefix + "-part" + i + suffix);
 				bw.write("'\r\n");

@@ -110,7 +110,14 @@ public class ConfigUtil {
 		int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
 		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
 		Global.downloadFormat = Integer.parseInt(System.getProperty("bilibili.format"));
-		Global.savePath = System.getProperty("bilibili.savePath");
+		String savePath = System.getProperty("bilibili.savePath");
+		if(savePath.endsWith("\\")) {
+			savePath = savePath.substring(0, savePath.length()-1) + "/";
+		}else if(!savePath.endsWith("/")){
+			savePath += "/";
+		}
+		System.out.println("savePath: " + savePath);
+		Global.savePath = savePath;
 		Global.maxFailRetry = Integer.parseInt(System.getProperty("bilibili.download.maxFailRetry"));
 		//查询或显示相关
 		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));

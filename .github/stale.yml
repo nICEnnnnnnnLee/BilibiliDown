@@ -14,8 +14,7 @@ exemptMilestones: false
 # Label to use when marking an issue as stale
 staleLabel: stale
 # Comment to post when marking an issue as stale. Set to `false` to disable
-markComment: >
-  这个问题已经14天没有状态更新，7天后它将自动关闭。
+markComment: false
 # Comment to post when closing a stale issue. Set to `false` to disable
 closeComment: >
   由于长期没有状态更新，该问题自动关闭。如有需要可重新打开。

@@ -1,4 +1,8 @@
 ## UPDATE  
+* V5.3
+    * 完善 继番剧4K[av56995872](https://www.bilibili.com/video/av56995872)后，支持UP主4K视频下载
+        * 测试[BV1xV411C7UF 4K50帧](https://www.bilibili.com/video/BV1xV411C7UF)  
+        * 测试[BV1fK4y1t7hj 4K120帧](https://www.bilibili.com/video/BV1fK4y1t7hj)  
 * V5.2
     * 完善 当某ss下p数超过20时，不再为每个视频详细查询支持清晰度，减少网络请求(以[ss33378](https://www.bilibili.com/bangumi/play/ss33378)为例，集数过千。。。)  
     * 修复 [issue#31](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/31) 为了适应flv合并的ffmpeg命令调用，保存文件夹配置路径末尾转化为`/`  

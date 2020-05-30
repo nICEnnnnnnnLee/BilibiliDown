@@ -20,7 +20,7 @@ Bilibili 视频下载器，用于下载B站视频。
 + 支持收藏夹下载!!  
 + 支持稍后再看下载!!  
 + 支持UP主视频下载!!!  
-+ 支持长视频，杜绝片头式下载!!!!(试金石av3248542)  
++ 支持长视频，杜绝片头式下载!!!!  
 + 支持断点续传下载!!!!!(因异常原因退出后, 只要下载目录不变, 直接在上次基础上继续下载)
 + 支持CC字幕下载  
 + 支持互动视频下载  
@@ -29,7 +29,7 @@ Bilibili 视频下载器，用于下载B站视频。
 ## :smile:关于下载速度     
 + 从服务端来看，FLV链接会比M4S链接要慢上很多  
 + 默认最大同时下载数为3，有需要可以在`config/app.config`更改(不推荐)  
-+ 关于下载速度，直接上截图
++ 关于下载速度，直接上截图  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/download-speed.png)  
    
 ## :smile:使用方法
@@ -65,7 +65,7 @@ Bilibili 视频下载器，用于下载B站视频。
 <summary>根据策略下载所有打开标签页的(全部/第一个)视频</summary>
 
 
-`V3.4后移至菜单栏`
+`V3.4后移至菜单栏`  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/downloadAllTab.png) 
 </details>
 <details>
@@ -80,7 +80,7 @@ Bilibili 视频下载器，用于下载B站视频。
 <summary>下载封面</summary>
 
 
-单击封面图片获取URL。
+单击封面图片获取URL。  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/ClickPicToGetUrl.gif)  
 </details>
 
@@ -88,7 +88,7 @@ Bilibili 视频下载器，用于下载B站视频。
 <summary>更换预览图(适用于单页呈现多部作品的情况)</summary>
 
 
-长按作品文字，然后对应预览图会更新(网络原因可能会有卡顿，正常)。
+长按作品文字，然后对应预览图会更新(网络原因可能会有卡顿，正常)。  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/LongClickToChangePreview.gif)  
 </details>
 
@@ -96,7 +96,7 @@ Bilibili 视频下载器，用于下载B站视频。
 <summary>获取作品信息(适用于单页呈现多部作品的情况)</summary>
 
 
-双击作品文字，然后文本 + `avId`将会复制到剪贴板。
+双击作品文字，然后文本 + `avId`将会复制到剪贴板。  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/doubleClick2CopyClipInfo.gif)  
 </details>
 
@@ -105,7 +105,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 `关于` -> `更新版本`。(最近版本比较多，省得麻烦😳 目前只是人工触发版本检查。  
-不是WINDOWS的话需要人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`( ╯□╰ )  
+不是WINDOWS的话需要人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`( ╯□╰ )   
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/AutoUpdate.gif)  
 </details>
 <details>
@@ -198,7 +198,8 @@ https://www.bilibili.com/bangumi/play/ep116157/
 ## :smile:媒体素材使用声明             
 * [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/background.jpg?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
 
-## :smile:Linux/Mac用户请看过来
+## :smile:Linux/Mac用户请看过来  
++ Mac用户可参考[简单说下如何在mac下跑起来](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/32)  
 + ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)  
 + 自带的```ffmpeg.exe```为`Win10+Msys+MingW+msvc`自行编译，其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  

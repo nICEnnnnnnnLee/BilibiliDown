@@ -53,7 +53,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 
 	void initUI() {
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
-		this.setPreferredSize(new Dimension(340, 110));
+		this.setPreferredSize(new Dimension(340, 140));
 		// 分情况显示
 		boolean isPic = clip.getAvId().startsWith("h");
 		if(clip.getListName() != null || isPic) {

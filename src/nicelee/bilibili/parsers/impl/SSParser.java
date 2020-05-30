@@ -75,7 +75,7 @@ public class SSParser extends AbstractBaseParser {
 		ClipInfo lastClip = null;
 		int[] qnListDefault = null;
 		if (array.length() > 20) {
-			qnListDefault = new int[] { 120, 112, 80, 64, 32, 16 };
+			qnListDefault = new int[] { 120, 116, 112, 80, 74, 64, 32, 16 };
 		}
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject clipObj = array.getJSONObject(i);

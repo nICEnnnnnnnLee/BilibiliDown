@@ -1,0 +1,64 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: CloseStaleIssue
+
+on:
+   schedule: 
+       - cron: '1 15 1/2 * *'
+       
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Close issues of hosts label
+      uses: actions/github-script@0.4.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          let response = await github.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open'
+          });
+          let data = response['data'];
+          
+          data.forEach(function(issue){
+            var labels = issue['labels'];
+            var is2Deal = true;
+            for(var i=0,l=labels.length;i<l;i++){
+                if(labels[i]['name'] == 'pending' || labels[i]['name'] == 'help wanted' || labels[i]['name'] == 'instruction'){
+                    is2Deal = false;
+                    break;
+                }
+            }
+            if(is2Deal){
+                var updated_at = new Date(issue['updated_at']);
+                var time_now = new Date();
+                var deta = time_now.getTime() - updated_at.getTime();
+                console.log('deta: ' + deta);
+                if(deta < 1000*60*60*24*30){
+                    is2Deal = false;
+                }   
+            }
+            if(is2Deal){
+                var id = issue['number'];
+                github.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: id,
+                    body: '由于长期没有状态更新，该问题自动关闭。如有需要可重新打开。'
+                });
+                github.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: id,
+                  state: 'closed'
+                });
+            }                
+          });
+
+    
+
+

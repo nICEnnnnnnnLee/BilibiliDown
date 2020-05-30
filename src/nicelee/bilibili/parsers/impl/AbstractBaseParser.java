@@ -105,7 +105,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 			int[] qnListDefault = null;
 			if (array.length() > 20) {
-				qnListDefault = new int[] { 120, 112, 80, 64, 32, 16 };
+				qnListDefault = new int[] { 120, 116, 112, 80, 74, 64, 32, 16 };
 			}
 			for (int i = 0; i < array.length(); i++) {
 				jObj = array.getJSONObject(i);
@@ -166,7 +166,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=16";
+			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=16&fourk=1";
 			url = String.format(url, cid, bvId, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());
@@ -236,7 +236,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=16";
+			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=16&fourk=1";
 			url = String.format(url, cid, bvId, qn);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());

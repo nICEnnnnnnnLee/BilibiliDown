@@ -16,7 +16,10 @@ import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nicelee.bilibili.INeedAV;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.ui.Global;
+import nicelee.ui.thread.DownloadRunnable;
 
 public class VersionManagerUtil {
 
@@ -84,28 +87,35 @@ public class VersionManagerUtil {
 	 */
 	public static void downloadLatestVersion() throws Exception {
 		if (!queryLatestVersion()) {
-			util.setSavePath("update/");
-			if (util.download(downUrl, downName, headers.getHeaders())) {
-				unzipTargetJar();
-				Object[] options = { "是", "否" };
-				int m = JOptionPane.showOptionDialog(null, "已经下载成功，需要关闭程序才能更新，现在是否重启?", "成功！",
-						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-				Logger.println(m);
-				if (m == 0) {
-					RunCmdAndCloseApp("1");
-				}
-			} else {
-				throw new Exception("下载失败");
-			}
+			VideoInfo avInfo = new INeedAV().getVideoDetail(downName, 0, false);
+			DownloadRunnable downThread = new DownloadRunnable(avInfo, avInfo.getClips().get(1234L), 0);
+			Global.queryThreadPool.execute(downThread);
+//			util.setSavePath("update/");
+//			if (util.download(downUrl, downName, headers.getHeaders())) {
+//				unzipTargetJar();
+//				Object[] options = { "是", "否" };
+//				int m = JOptionPane.showOptionDialog(null, "已经下载成功，需要关闭程序才能更新，现在是否重启?", "成功！",
+//						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+//				Logger.println(m);
+//				if (m == 0) {
+//					RunCmdAndCloseApp("1");
+//				}
+//			} else {
+//				throw new Exception("下载失败");
+//			}
 		} else {
 			System.out.print("当前版本已是最新，无需更新");
 		}
 	}
 
+	private static void unzipTargetJar() throws IOException {
+		unzipTargetJar(downName);
+	}
+	
 	/**
 	 * 解压出包中的"INeedBiliAV.jar"
 	 */
-	private static void unzipTargetJar() throws IOException {
+	public static void unzipTargetJar(String downName) throws IOException {
 		File targetfolder = new File("update/");
 		ZipInputStream zi = new ZipInputStream(new FileInputStream("update/" + downName));
 		ZipEntry ze = null;
@@ -138,11 +148,15 @@ public class VersionManagerUtil {
 	 * code : 0 更新后不再打开程序，1 更新后打开程序
 	 * </p>
 	 */
-	private static void RunCmdAndCloseApp(String code) {
+	public static void RunCmdAndCloseApp(String code) {
 		try {
-			String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-			String cmd[] = { "cmd", "/c", "start", "update.bat", code, pid };
-			CmdUtil.run(cmd);
+			if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+				String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+				String cmd[] = { "cmd", "/c", "start", "update.bat", code, pid };
+				CmdUtil.run(cmd);
+			}else {
+				//TODO
+			}
 			System.exit(1);
 		} catch (Exception e) {
 			e.printStackTrace();

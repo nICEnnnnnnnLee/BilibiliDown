@@ -353,7 +353,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		}
 	}
 
-	private String parseUrlJArray(JSONArray urlList) {
+	protected String parseUrlJArray(JSONArray urlList) {
 		if (urlList.length() == 1) {
 			return urlList.getJSONObject(0).getString("url");
 

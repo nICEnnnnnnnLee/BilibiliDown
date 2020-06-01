@@ -15,7 +15,7 @@ import nicelee.bilibili.util.Logger;
 @Bilibili(name = "ss")
 public class SSParser extends AbstractBaseParser {
 
-	private final static Pattern pattern = Pattern.compile("ss[0-9]+");
+	private final static Pattern pattern = Pattern.compile("(?!/cheese/play/ss[0-9]+)ss[0-9]+");
 	private String ssId;
 
 	public SSParser(Object... obj) {

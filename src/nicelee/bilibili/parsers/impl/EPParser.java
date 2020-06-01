@@ -12,7 +12,7 @@ import nicelee.bilibili.util.Logger;
 @Bilibili(name = "EPParser")
 public class EPParser extends AbstractBaseParser {
 
-	private final static Pattern pattern = Pattern.compile("ep[0-9]+");
+	private final static Pattern pattern = Pattern.compile("(?!/cheese/play/ep[0-9]+)ep[0-9]+");
 	private String epId;
 
 	//public EPParser(HttpRequestUtil util,IParamSetter paramSetter, int pageSize)  {

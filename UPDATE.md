@@ -1,4 +1,12 @@
 ## UPDATE  
+* V5.4
+    * 版本更新时，从后台下载改为列入下载面板下载，可以直观看到下载进度
+    * 新增课程解析  
+        * <https://www.bilibili.com/cheese/play/ep1808>  
+        * <https://www.bilibili.com/cheese/play/ss117>
+    * 修复 [issue#33](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/33) 
+        * <https://www.bilibili.com/video/BV1bb411Y7HH>  
+        * <https://www.bilibili.com/video/BV1De411s71p>  
 * V5.3
     * 完善 继番剧4K[av56995872](https://www.bilibili.com/video/av56995872)后，支持UP主4K视频下载
         * 测试[BV1xV411C7UF 4K50帧](https://www.bilibili.com/video/BV1xV411C7UF)  

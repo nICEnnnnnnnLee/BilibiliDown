@@ -8,7 +8,7 @@
 ![CI](https://github.com/nICEnnnnnnnLee/BilibiliDown/workflows/CI/badge.svg)
 ![最近更新](https://img.shields.io/github/last-commit/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square&color=FF9900)
 
-Bilibili 视频下载器，用于下载B站视频。  
+Bilibili 视频下载器，用于下载B站视频/相册。  
 ===============================
 **以下多图警告**
 
@@ -24,6 +24,7 @@ Bilibili 视频下载器，用于下载B站视频。
 + 支持断点续传下载!!!!!(因异常原因退出后, 只要下载目录不变, 直接在上次基础上继续下载)
 + 支持CC字幕下载  
 + 支持互动视频下载  
++ 支持课程视频下载  
 + 支持相簿图片下载
    
 ## :smile:关于下载速度     
@@ -186,6 +187,21 @@ https://www.bilibili.com/bangumi/play/ep116157/
     世界线1： pn0 -> pn2 -> pn3
     世界线2： pn0 -> pn2 -> pn4
 ```
+</details>
+
+<details>
+<summary>关于字幕的说明</summary>
+
++ 本程序的逻辑认为字幕是一种特别清晰度的视频，而基于程序**不会同时下载同一视频的不同清晰度的链接的Feature**，  
+    + 当下载面板存在视频任务时，其对应的字幕下载任务不会被发起
+    + 当下载面板存在字幕任务时，其对应的视频下载任务不会被发起
+    + 如有需要，请在下载面板删除对应任务后再继续尝试
++ 如果存在多语种，默认优先下载中文简体`zh-CN`  
++ 如有需要，可在`app.config`更改配置，如：    
+```
+bilibili.cc.lang = en-US
+```  
++ 关于语言的配置，详见[此处](/release/wiki/langs.txt)  
 </details>
 
 ## :smile:第三方库使用声明  

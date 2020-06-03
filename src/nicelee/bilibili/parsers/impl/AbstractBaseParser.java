@@ -203,6 +203,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 */
 	@Override
 	public String getVideoLink(String bvId, String cid, int qn, int downFormat) {
+		if(qn == 800) {
+			return getVideoSubtitleLink(bvId, cid, qn);
+		}
 		return getVideoM4sLink(bvId, cid, qn);
 //		if (downFormat == 0) {
 //			return getVideoM4sLink(avId, cid, qn);
@@ -211,6 +214,31 @@ public abstract class AbstractBaseParser implements IInputParser {
 //		}
 	}
 
+	
+	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
+		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid,
+				bvId);
+		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
+		String xml = util.getContent(url, headers_json, HttpCookies.getGlobalCookies());
+		Pattern p = Pattern.compile("<subtitle>(.*?)</subtitle>");
+		Matcher matcher = p.matcher(xml);
+		if(matcher.find()) {
+			paramSetter.setRealQN(qn);
+			JSONArray subList = new JSONObject(matcher.group(1)).getJSONArray("subtitles");
+			for(int i=0; i<subList.length(); i++) {
+				JSONObject sub = subList.getJSONObject(i);
+				String subLang = sub.getString("lan");
+				if("zh-CN".equals(subLang)) {
+					return "https:" + sub.getString("subtitle_url");
+				}
+			}
+			
+			return "https:" + subList.getJSONObject(0).getString("subtitle_url");
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * 查询视频链接(MP4)
 	 * 

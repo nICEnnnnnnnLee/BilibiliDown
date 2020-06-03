@@ -364,6 +364,10 @@ public class CmdUtil {
 		if (fPng.exists()) {
 			return fPng;
 		}
+		File fSrt = new File(Global.savePath, name + ".srt");
+		if (fSrt.exists()) {
+			return fSrt;
+		}
 		return null;
 	}
 

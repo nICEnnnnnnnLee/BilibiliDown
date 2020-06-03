@@ -1,6 +1,7 @@
 package nicelee.bilibili.enums;
 
 public enum VideoQualityEnum {
+//	QCC("CC", 800, "字幕"),
 	Q4K("4K", 120, "超清4K"),
 	Q1080P60("1080P60", 116, "高清1080P60"),
 	Q1080PPlus("1080P+", 112, "高清1080P+"),

@@ -77,13 +77,16 @@ public class RepoUtil {
 	 */
 	public static boolean isInRepo(String avRecord) {
 		System.out.println("查询记录" + avRecord);
+		if(avRecord.contains("-800-")) {
+			return false;
+		}
 		if(definitionStrictMode) {
 			return downRepo.contains(avRecord);
 		}else {
 			Matcher matcher = standardAvPattern.matcher(avRecord);
 			if (matcher.find()) {
-				Logger.println(matcher.group(1));
-				Logger.println(matcher.group(3));
+//				Logger.println(matcher.group(1));
+//				Logger.println(matcher.group(3));
 				return downRepo.contains(matcher.group(1) + matcher.group(3));
 			}
 		}
@@ -97,6 +100,10 @@ public class RepoUtil {
 	 */
 	public static void appendAndSave(String avRecord) {
 		System.out.println("已完成下载： " + avRecord);
+		if(avRecord.contains("-800-")) {
+			Logger.println("字幕文件，不计入下载记录");
+			return;
+		}
 		if(!isInRepo(avRecord)) {
 			Matcher matcher = standardAvPattern.matcher(avRecord);
 			if (matcher.find()) {

@@ -13,6 +13,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.convert.ConvertUtil;
 
 @Bilibili(name = "CheeseSSParser", note = "课程集合")
 public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
@@ -167,7 +168,9 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 
 	@Override
 	public String getVideoLink(String ssId, String cid, int qn, int downFormat) {
-
+		if(qn == 800) {
+			return getVideoSubtitleLink(ConvertUtil.Av2Bv(avID), cid, qn);
+		}
 		String urlFormat = "https://api.bilibili.com/pugv/player/web/playurl?avid=%s&cid=%s&bvid=&qn=%d&type=&otype=json&ep_id=%s&fourk=1&fnver=0&fnval=16";
 		String url = String.format(urlFormat, avID, cid, qn, epID);
 		HashMap<String, String> headers = new HashMap<>();

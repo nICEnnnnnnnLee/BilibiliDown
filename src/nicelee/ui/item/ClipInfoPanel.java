@@ -90,7 +90,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 							}
 						}
 					};
-					Global.ccThreadPool.execute(danmukuRun);
+					Global.queryThreadPool.execute(danmukuRun);// 占用时间少
 				}
 			});
 			this.add(btnDanmuku);
@@ -105,17 +105,29 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 			} else {
 				btn = new JButton("清晰度: " + qn);
 			}
-			btn.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					DownloadRunnable downThread = new DownloadRunnable(video, clip, qn);
-					// new Thread(downThread).start();
-					Global.queryThreadPool.execute(downThread);
-				}
-			});
-			this.add(btn);
+			initQnBtn(qn, btn);
 		}
+		if(!isPic) {
+			JButton btn = new JButton("字幕");
+			initQnBtn(800, btn);
+		}
+	}
+
+	/**
+	 * @param qn
+	 * @param btn
+	 */
+	private void initQnBtn(final int qn, JButton btn) {
+		btn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DownloadRunnable downThread = new DownloadRunnable(video, clip, qn);
+				// new Thread(downThread).start();
+				Global.queryThreadPool.execute(downThread);
+			}
+		});
+		this.add(btn);
 	}
 
 	@Override

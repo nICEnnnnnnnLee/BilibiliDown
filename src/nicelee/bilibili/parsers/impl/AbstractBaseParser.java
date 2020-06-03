@@ -19,6 +19,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
+import nicelee.ui.Global;
 
 public abstract class AbstractBaseParser implements IInputParser {
 
@@ -228,7 +229,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			for(int i=0; i<subList.length(); i++) {
 				JSONObject sub = subList.getJSONObject(i);
 				String subLang = sub.getString("lan");
-				if("zh-CN".equals(subLang)) {
+				if(Global.cc_lang.equals(subLang)) {
 					return "https:" + sub.getString("subtitle_url");
 				}
 			}

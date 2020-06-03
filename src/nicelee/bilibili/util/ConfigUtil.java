@@ -145,6 +145,9 @@ public class ConfigUtil {
 		Global.flvUseFFmpeg = "true".equals(System.getProperty("bilibili.flv.ffmpeg"));
 		//简单的防多开功能
 		Global.lockCheck = "true".equals(System.getProperty("bilibili.lockCheck"));
+		//字幕优先语种
+		Global.cc_lang = System.getProperty("bilibili.cc.lang");
+		
 	}
 	
 	public static String baseDirectory() {

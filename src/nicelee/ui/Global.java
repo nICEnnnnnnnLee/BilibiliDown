@@ -9,7 +9,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v5.3";
+	public static String version = "v5.4";
 	public static boolean themeDefault = true;
 	public static FrameWaiting frWaiting;
 	public static boolean lockCheck = false;
@@ -25,7 +25,7 @@ public class Global {
 	public static String savePath = "./download/"; // 下载文件保存路径
 	public static ExecutorService downLoadThreadPool;// 下载线程池
 	public static ExecutorService queryThreadPool = Executors.newFixedThreadPool(1);// 查询线程池(同一时间并发不能太多, 为了保证任务面板的顺序，采用fixed(1))
-	public static ExecutorService ccThreadPool = Executors.newFixedThreadPool(1);// 用于字幕下载
+//	public static ExecutorService ccThreadPool = Executors.newFixedThreadPool(1);// 用于字幕下载
 	public static TabDownload downloadTab; // 下载显示界面
 	public static ConcurrentHashMap<DownloadInfoPanel, IDownloader> downloadTaskList = new ConcurrentHashMap<DownloadInfoPanel, IDownloader>();
 	
@@ -57,4 +57,6 @@ public class Global {
 	public static int menu_plan; // 0 仅下载1p； 1 下载全部
 	public static String menu_qn; // 参见VideoQualityEnum，值0,1,2,...
 	public static String tab_qn; // 参见VideoQualityEnum，值0,1,2,...
+	//字幕弹幕相关
+	public static String cc_lang; // 字幕优先语种,如zh-CN等, 详见 release/wiki/langs.txt
 }

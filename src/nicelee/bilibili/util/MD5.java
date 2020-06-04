@@ -7,24 +7,7 @@ import java.security.NoSuchAlgorithmException;
 public class MD5 {
 
 	
-	private static String appkey(String key, int add) {
-		byte[] keyBytes = key.getBytes();
-		for (int i = 0; i < keyBytes.length; i++) {
-	        int index = 0;
-	        int ch = keyBytes[i];
-	        int num = keyBytes[i] + add; 
-	        num = (num - 65) % 57 + 65; 
-	        while (90 < num && 97 > num) {
-	            add = (index * add) + add; index ++;
-	            num = ch + add;
-	            num = (num - 65) % 57 + 65;
-	        }
-	        keyBytes[i] = (byte) num;
-	    }
-	    return new String(keyBytes);
-	}
-	
-	private static String encrypt(String param) {
+	public static String encrypt(String param) {
 		byte[] secretBytes = null;
 		try {
 			// 生成一个MD5加密计算摘要

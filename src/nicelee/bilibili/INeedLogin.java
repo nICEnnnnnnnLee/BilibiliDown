@@ -3,26 +3,44 @@ package nicelee.bilibili;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.crypto.Cipher;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import nicelee.bilibili.model.UserInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.MD5;
 import nicelee.bilibili.util.QrCodeUtil;
 
 public class INeedLogin {
+
+	final static String appKey = "1d8b6e7d45233436";
+	final static String salt = "560c52ccd288fed045859ed18bffd973";
 
 	HttpRequestUtil util = new HttpRequestUtil();
 	public List<HttpCookie> iCookies;
@@ -94,8 +112,8 @@ public class INeedLogin {
 			 * https://api.bilibili.com/x/web-interface/nav?build=0&mobi_app=web
 			 * https://api.bilibili.com/x/space/myinfo 可用(可查信息,登录状态)
 			 * https://account.bilibili.com/home/userInfo 可用(可查信息,登录状态)
-			 * https://passport.bilibili.com/web/site/user/info 可用(可查登录状态)
-			 * 可查信息,可不登录,但需要ID ...
+			 * https://passport.bilibili.com/web/site/user/info 可用(可查登录状态) 可查信息,可不登录,但需要ID
+			 * ...
 			 */
 			String url = "https://api.bilibili.com/x/web-interface/nav?build=0&mobi_app=web";
 			String json = util.getContent(url, headers.getBiliUserInfoHeaders(), iCookies);
@@ -219,5 +237,135 @@ public class INeedLogin {
 
 	public void setUtil(HttpRequestUtil util) {
 		this.util = util;
+	}
+
+	/**
+	 * 以下实现均参考： https://github.com/Hsury/Bilibili-Toolkit
+	 * <p>
+	 * Bilibili Toolkit is under The Star And Thank Author License (SATA)
+	 * </p>
+	 */
+
+	/**
+	 * 获取验证码图片
+	 */
+	public byte[] getCaptcha() throws IOException {
+		URL realUrl = new URL("https://passport.bilibili.com/captcha");
+		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+		conn.connect();
+		InputStream in = conn.getInputStream();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024 * 1024];
+		for (int len = 0; (len = in.read(buffer)) != -1;) {
+			out.write(buffer, 0, len);
+		}
+		byte[] captcha = out.toByteArray();
+		return captcha;
+	}
+
+	/**
+	 * 使用识图接口获取验证码 https://github.com/kerlomz/captcha_trainer
+	 * 
+	 * @param bytes 验证码数据
+	 * @return
+	 * @throws IOException
+	 */
+	public String getCaptchaStr(byte[] bytes) throws IOException {
+		String url = "https://bili.dev:2233/captcha";
+		StringBuilder payload = new StringBuilder("{\"image\":\"").append(Base64.getEncoder().encodeToString(bytes))
+				.append("\"}");
+		Logger.println(payload);
+		String response = util.postContent(url, new HashMap<>(), payload.toString());
+		Logger.println(response);
+		JSONObject obj = new JSONObject(response);
+		if (obj.getBoolean("success")) {
+			return obj.getString("message");
+		}
+		return null;
+	}
+
+	/**
+	 * 登录
+	 * 
+	 * @param userName
+	 * @param pwd
+	 * @param captcha
+	 * @return 成功返回null，否则返回失败原因
+	 */
+	public String login(String userName, String pwd, String captcha) {
+		try {
+			userName = URLEncoder.encode(userName, "UTF-8");
+			pwd = URLEncoder.encode(pwd, "UTF-8");
+
+			String url = "https://passport.bilibili.com/api/oauth2/getKey";
+			String param = String.format("appkey=%s", appKey);
+			String sign = MD5.encrypt(param + salt);
+			param += "&sign=" + sign;
+			HashMap<String, String> headers = new HashMap<String, String>();
+
+			String result = util.postContent(url, headers, param);
+			JSONObject obj = new JSONObject(result).getJSONObject("data");
+			Logger.println(result);
+			String hash = obj.optString("hash", "");
+			if (hash.isEmpty()) {
+				return "服务器繁忙，登录失败";
+			}
+			String pubKey = obj.getString("key").replace("-----BEGIN PUBLIC KEY-----", "")
+					.replace("-----END PUBLIC KEY-----", "").replace("\n", "");
+
+			String encryptPwd = encrypt(hash + pwd, pubKey);
+			encryptPwd = URLEncoder.encode(encryptPwd, "UTF-8");
+			url = "https://passport.bilibili.com/api/v2/oauth2/login";
+			param = "appkey=%s&captcha=%s&password=%s&username=%s";
+			param = String.format(param, appKey, captcha, encryptPwd, userName);
+			param = param + "&sign=" + MD5.encrypt(param + salt);
+			headers.put("Content-type", "application/x-www-form-urlencoded");
+			headers.put("User-Agent", "Mozilla/5.0 BiliDroid/5.51.1 (bbcallen@gmail.com)");
+			result = util.postContent(url, headers, param);
+			Logger.println(result);
+			JSONObject response = new JSONObject(result);
+			if (response.optInt("code") == 0) {
+				iCookies = new ArrayList<HttpCookie>();
+				JSONArray cookieInfo = response.getJSONObject("data").getJSONObject("cookie_info")
+						.getJSONArray("cookies");
+				for (int i = 0; i < cookieInfo.length(); i++) {
+					JSONObject cc = cookieInfo.getJSONObject(i);
+					HttpCookie cCookie = new HttpCookie(cc.getString("name"), cc.getString("value"));
+					iCookies.add(cCookie);
+				}
+				return null;
+			} else {
+				return response.optString("message", "未知错误，返回信息中没有错误描述");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "未知错误，可能由网络引起";
+		}
+	}
+
+	/**
+	 * RSA加密
+	 * 
+	 * @param origin    待加密文本
+	 * @param publicKey 公钥
+	 * @return
+	 */
+	private static String encrypt(String origin, String publicKey) {
+		try {
+			// base64编码的公钥
+			byte[] decoded = Base64.getDecoder().decode(publicKey);
+			X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+			KeyFactory kf = KeyFactory.getInstance("RSA");
+			RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(spec);
+			// RSA加密
+			Cipher cipher = Cipher.getInstance("RSA");
+			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+			String outStr = Base64.getEncoder().encodeToString(cipher.doFinal(origin.getBytes("UTF-8")));
+			return outStr;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

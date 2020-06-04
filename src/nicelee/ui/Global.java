@@ -38,6 +38,9 @@ public class Global {
 	public static boolean repoInDefinitionStrictMode = false; //
 	//public static int totalTask = 0, activeTask = 0, pauseTask = 0, doneTask = 0, queuingTask = 0;//用于下载任务统计
 	// 登录相关
+	public static String userName;
+	public static String password;
+	public static boolean deleteUserFile;
 	public static boolean needToLogin = false;
 	public static boolean isLogin = false;
 	public static FrameQRCode qr; // 二维码图片显示界面

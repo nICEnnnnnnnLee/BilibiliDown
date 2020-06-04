@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ public class LoginThread extends Thread {
 	public void run() {
 		try {
 			login();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			Global.frWaiting.stop();
 		}
 	}
@@ -35,13 +36,13 @@ public class LoginThread extends Thread {
 		System.out.println("登录线程被调用...");
 //		System.out.println(Global.index.getParent().getParent().getParent().getParent().getParent().isVisible());
 //		System.exit(1);
-		//Global.index.jlHeader.removeMouseListener(Global.index);
+		// Global.index.jlHeader.removeMouseListener(Global.index);
 		INeedLogin inl = new INeedLogin();
 		/**
 		 * 0. 登录状态查询
 		 */
 		if (Global.isLogin || !Global.needToLogin) {
-			//Global.index.jlHeader.addMouseListener(Global.index);
+			// Global.index.jlHeader.addMouseListener(Global.index);
 			System.out.println("已经登录,或没有发起登录请求");
 			Global.frWaiting.stop();
 			return;
@@ -62,7 +63,7 @@ public class LoginThread extends Thread {
 				Global.isLogin = true;
 				Global.frWaiting.stop();
 				return;
-			}else {
+			} else {
 				System.out.println("本地Cookies验证无效...");
 				// 置空全局Cookie
 				HttpCookies.setGlobalCookies(null);
@@ -70,6 +71,62 @@ public class LoginThread extends Thread {
 		}
 		System.out.println("没有检查到本地Cookies...");
 		Global.frWaiting.stop();
+		if (Global.userName != null && Global.password != null) {
+			PwdAutoLogin(inl);
+		} else {
+			QRLogin(inl);
+		}
+
+		if (Global.isLogin) {
+			// 保存cookie到本地
+			inl.saveCookies(inl.iCookies.toString());
+			// 设置全局Cookie
+			HttpCookies.setGlobalCookies(inl.iCookies);
+			// 获取用户信息
+			inl.getLoginStatus(inl.iCookies);
+			// 初始化用户数据显示
+			initUserInfo(inl);
+			System.out.println("成功登录...");
+		} else {
+			// Global.index.jlHeader.addMouseListener(Global.index);
+			Global.needToLogin = true;
+		}
+	}
+
+	/**
+	 * 账户密码登录
+	 * 
+	 * @param inl
+	 */
+	private void PwdAutoLogin(INeedLogin inl) {
+		byte[] bytes = null;
+		try {
+			bytes = inl.getCaptcha();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "验证码获取失败，请再次点击登录按钮进行尝试", "请注意!!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		String captcha = null;
+		try {
+			captcha = inl.getCaptchaStr(bytes);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "验证码识图转换失败，请再次点击登录按钮进行尝试", "请注意!!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		String result = inl.login(Global.userName, Global.password, captcha);
+		if(result != null) {
+			JOptionPane.showMessageDialog(null, "登录失败，错误原因：" + result, "请注意!!", JOptionPane.WARNING_MESSAGE);
+		}else {
+			Global.isLogin = true;
+		}
+	}
+
+	/**
+	 * 二维码扫码登录
+	 * 
+	 * @param inl
+	 */
+	private void QRLogin(INeedLogin inl) {
 		/**
 		 * 1. 访问 Get 访问 https://passport.bilibili.com/qrcode/getLoginUrl 获取 oauthKey ==>
 		 * 链接 ==> 二维码
@@ -97,29 +154,14 @@ public class LoginThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		if (Global.isLogin) {
-			// 保存cookie到本地
-			inl.saveCookies(inl.iCookies.toString());
-			// 设置全局Cookie
-			HttpCookies.setGlobalCookies(inl.iCookies);
-			// 获取用户信息
-			inl.getLoginStatus(inl.iCookies);
-			// 初始化用户数据显示
-			initUserInfo(inl);
-			System.out.println("成功登录...");
-		} else {
-			//Global.index.jlHeader.addMouseListener(Global.index);
-			Global.needToLogin = true;
-		}
 		// 销毁图片
 		System.out.println("登录线程结束...");
 		qr.dispose();
-
 	}
-	
+
 	/**
-	 * 初始化index页面头像
-	 * 初始化index页面收藏夹选项
+	 * 初始化index页面头像 初始化index页面收藏夹选项
+	 * 
 	 * @param inl
 	 */
 	public void initUserInfo(INeedLogin inl) {
@@ -131,28 +173,30 @@ public class LoginThread extends Thread {
 			imag1 = new ImageIcon(imag1.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
 			Global.index.jlHeader.setToolTipText("当前用户为: " + inl.user.getName());
 			Global.index.jlHeader.setIcon(imag1);
-			//Global.index.jlHeader.removeMouseListener(Global.index);
+			// Global.index.jlHeader.removeMouseListener(Global.index);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		// 设置收藏夹
 		try {
-			String favUrl = "https://api.bilibili.com/medialist/gateway/base/created?pn=1&ps=100&is_space=0&jsonp=jsonp&up_mid=" + inl.user.getUid();
+			String favUrl = "https://api.bilibili.com/medialist/gateway/base/created?pn=1&ps=100&is_space=0&jsonp=jsonp&up_mid="
+					+ inl.user.getUid();
 			HttpRequestUtil util = new HttpRequestUtil();
-			String jsonStr = util.getContent(favUrl, new HttpHeaders().getAllFavListHeaders(inl.user.getUid()), HttpCookies.getGlobalCookies());
+			String jsonStr = util.getContent(favUrl, new HttpHeaders().getAllFavListHeaders(inl.user.getUid()),
+					HttpCookies.getGlobalCookies());
 //			System.out.println(favUrl);
 //			System.out.println(jsonStr);
 			JSONArray list = new JSONObject(jsonStr).getJSONObject("data").getJSONArray("list");
-			if(Global.index.cmbFavList.getItemCount() == 1) {
+			if (Global.index.cmbFavList.getItemCount() == 1) {
 				Global.index.cmbFavList.addItem("稍后再看");
-				for(int i = 0; i < list.length(); i++) {
+				for (int i = 0; i < list.length(); i++) {
 					JSONObject favlist = list.getJSONObject(i);
-					FavList fav = new FavList(favlist.getLong("mid"),
-							favlist.getLong("id"), favlist.getInt("media_count"), favlist.getString("title"));
+					FavList fav = new FavList(favlist.getLong("mid"), favlist.getLong("id"),
+							favlist.getInt("media_count"), favlist.getString("title"));
 					Global.index.cmbFavList.addItem(fav);
 				}
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

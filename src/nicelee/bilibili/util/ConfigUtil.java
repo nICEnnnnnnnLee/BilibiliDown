@@ -75,32 +75,8 @@ public class ConfigUtil {
 		// 从配置文件读取
 		buReader = null;
 		System.out.println("----Config init begin...----");
-		File configFile = null;
-		try {
-			configFile = new File("config/app.config");
-			if(!configFile.exists()) {
-				System.out.println("配置文件不存在： " + configFile.getCanonicalPath());
-				configFile = new File(baseDirectory(), "config/app.config");
-				System.out.println("尝试路径： " + configFile.getCanonicalPath());
-			}
-			buReader = new BufferedReader(new FileReader(configFile));
-			String config;
-			while ((config = buReader.readLine()) != null) {
-				Matcher matcher = patternConfig.matcher(config);
-				if (matcher.find()) {
-					System.setProperty(matcher.group(1), matcher.group(2).trim());
-					System.out.printf("  key-->value:  %s --> %s\r\n", matcher.group(1), matcher.group(2));
-				}
-			}
-		} catch (IOException e) {
-			System.out.println("配置文件不存在! ");
-			// e.printStackTrace();
-		} finally {
-			try {
-				buReader.close();
-			} catch (Exception e) {
-			}
-		}
+		readConfig("config/app.config");
+		readConfig("config/user.config");
 		System.out.println("----Config ini end...----");
 		//批量下载设置相关
 		Global.menu_plan = Integer.parseInt(System.getProperty("bilibili.menu.download.plan"));
@@ -147,7 +123,52 @@ public class ConfigUtil {
 		Global.lockCheck = "true".equals(System.getProperty("bilibili.lockCheck"));
 		//字幕优先语种
 		Global.cc_lang = System.getProperty("bilibili.cc.lang");
-		
+		// 登录设置
+		Global.userName = System.getProperty("bilibili.user.userName");
+		Global.password = System.getProperty("bilibili.user.password");
+		Global.deleteUserFile = !"false".equals(System.getProperty("bilibili.user.delete"));
+		if(Global.deleteUserFile) {
+			deleteUserConfig();
+		}
+	}
+
+	private static void deleteUserConfig() {
+		File user = new File("config/user.config");
+		if(user.exists()) {
+			user.delete();
+		}else {
+			user = new File(baseDirectory(), "config/user.config");
+			user.delete();
+		}
+	}
+	private static void readConfig(String file) {
+		BufferedReader buReader = null;
+		File configFile;
+		try {
+			configFile = new File(file);
+			if(!configFile.exists()) {
+				System.out.println("配置文件不存在： " + configFile.getCanonicalPath());
+				configFile = new File(baseDirectory(), file);
+				System.out.println("尝试路径： " + configFile.getCanonicalPath());
+			}
+			buReader = new BufferedReader(new FileReader(configFile));
+			String config;
+			while ((config = buReader.readLine()) != null) {
+				Matcher matcher = patternConfig.matcher(config);
+				if (matcher.find()) {
+					System.setProperty(matcher.group(1), matcher.group(2).trim());
+					System.out.printf("  key-->value:  %s --> %s\r\n", matcher.group(1), matcher.group(2));
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("配置文件不存在! ");
+			// e.printStackTrace();
+		} finally {
+			try {
+				buReader.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 	public static String baseDirectory() {

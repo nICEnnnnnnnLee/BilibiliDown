@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import nicelee.ui.item.DownloadInfoPanel;
+import nicelee.ui.item.MJButton;
 
 public class TabDownload extends JPanel implements ActionListener {
 
@@ -59,10 +60,16 @@ public class TabDownload extends JPanel implements ActionListener {
 		this.add(lbStatus);
 
 		// 功能按钮
-		btnContinue = new JButton("全部继续");
-		btnStop = new JButton("全部暂停");
-		btnDeleteAll = new JButton("全部删除");
-		btnDeleteDown = new JButton("删除已完成");
+		btnContinue = new MJButton("全部继续");
+		btnStop = new MJButton("全部暂停");
+		btnDeleteAll = new MJButton("全部删除");
+		btnDeleteDown = new MJButton("删除已完成");
+		Dimension size = new Dimension(100, 30);
+		btnContinue.setPreferredSize(size);
+		btnStop.setPreferredSize(size);
+		btnDeleteAll.setPreferredSize(size);
+		btnDeleteDown.setPreferredSize(size);
+		
 		btnContinue.addActionListener(this);
 		btnStop.addActionListener(this);
 		btnDeleteAll.addActionListener(this);

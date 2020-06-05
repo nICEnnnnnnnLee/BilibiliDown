@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.model.FavList;
+import nicelee.ui.item.MJButton;
 import nicelee.ui.item.MJTextField;
 import nicelee.ui.thread.GetVideoDetailThread;
 import nicelee.ui.thread.LoginThread;
@@ -45,8 +46,8 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 	String placeHolder = "请在此输入B站 BV/av/ep/ss/md/ml号或地址";
 	JTextField txtSearch = new MJTextField(placeHolder);
 	//new MJTextField("https://www.bilibili.com/video/av35296336");
-	JButton btnSearch = new JButton("查找");
-	JButton btnSearchNextPage = new JButton("下一页");
+	JButton btnSearch = new MJButton("查找");
+	JButton btnSearchNextPage = new MJButton("下一页");
 	
 	JTextArea consoleArea = new JTextArea(20, 50);
 	JTabbedPane jTabbedpane;

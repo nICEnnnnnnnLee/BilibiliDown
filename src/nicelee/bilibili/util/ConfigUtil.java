@@ -99,6 +99,7 @@ public class ConfigUtil {
 		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));
 		Global.pageDisplay = System.getProperty("bilibili.pageDisplay");
 		Global.themeDefault = "default".equals(System.getProperty("bilibili.theme"));
+		Global.btnStyle = "design".equals(System.getProperty("bilibili.button.style"));
 		//临时文件
 		Global.restrictTempMode = "on".equals(System.getProperty("bilibili.restrictTempMode"));
 		//仓库功能

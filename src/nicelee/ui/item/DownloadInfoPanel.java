@@ -121,17 +121,17 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 //		});
 		this.add(lbFileName);
 
-		btnOpen = new JButton("打开文件");
+		btnOpen = new MJButton("打开文件");
 		btnOpen.setPreferredSize(new Dimension(100, 45));
 		btnOpen.addActionListener(this);
 		this.add(btnOpen);
 
-		btnOpenFolder = new JButton("打开文件夹");
+		btnOpenFolder = new MJButton("打开文件夹");
 		btnOpenFolder.setPreferredSize(new Dimension(100, 45));
 		btnOpenFolder.addActionListener(this);
 		this.add(btnOpenFolder);
 
-		btnRemove = new JButton("删除任务");
+		btnRemove = new MJButton("删除任务");
 		btnRemove.setPreferredSize(new Dimension(100, 45));
 		btnRemove.addActionListener(this);
 		this.add(btnRemove);
@@ -157,7 +157,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		this.add(lbDownFile);
 		this.setBackground(new Color(204, 255, 255));
 
-		btnControl = new JButton("暂停");
+		btnControl = new MJButton("暂停");
 		btnControl.setPreferredSize(new Dimension(100, 45));
 		btnControl.addActionListener(this);
 		this.add(btnControl);

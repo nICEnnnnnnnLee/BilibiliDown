@@ -12,8 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Collection;
-import java.util.HashSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,6 +23,7 @@ import javax.swing.JScrollPane;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.ui.item.MJButton;
 import nicelee.ui.thread.DownloadRunnable;
 
 public class TabVideo extends JPanel implements ActionListener, MouseListener {
@@ -53,6 +52,7 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	}
 
 	public void init() {
+		Dimension size = new Dimension(86, 26);
 		this.setOpaque(false);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		// 空白模块- 占位
@@ -93,14 +93,16 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		}
 		cbQn.setSelectedItem(Global.tab_qn);
 		// cbQn.setSelectedIndex(2);
-		btnDownAll = new JButton("批量下载");
+		btnDownAll = new MJButton("批量下载");
+		btnDownAll.setPreferredSize(size);
 		btnDownAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				download(true, VideoQualityEnum.getQN(cbQn.getSelectedItem().toString()));
 			}
 		});
-		btnDownCC = new JButton("字幕下载");
+		btnDownCC = new MJButton("字幕下载");
+		btnDownCC.setPreferredSize(size);
 		btnDownCC.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

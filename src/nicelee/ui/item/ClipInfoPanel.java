@@ -44,6 +44,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 
 	private JLabel labelTitle;
 	private long lastMousePressed;
+	Dimension btnSize = new Dimension(100, 26);
 	public ClipInfoPanel(VideoInfo video, ClipInfo clip) {
 		this.video = video;
 		this.clip = clip;
@@ -70,7 +71,9 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		this.add(labelTitle);
 		
 		if(!isPic) {
-			JButton btnDanmuku = new JButton("弹幕");
+			JButton btnDanmuku = new MJButton("弹幕");
+			Dimension size = new Dimension(60, 26);
+			btnDanmuku.setPreferredSize(size);
 			btnDanmuku.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -101,14 +104,14 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 			String qnName = VideoQualityEnum.getQualityDescript(qn);
 			JButton btn = null;
 			if (qnName != null) {
-				btn = new JButton(qnName);
+				btn = new MJButton(qnName);
 			} else {
-				btn = new JButton("清晰度: " + qn);
+				btn = new MJButton("清晰度: " + qn);
 			}
 			initQnBtn(qn, btn);
 		}
 		if(!isPic) {
-			JButton btn = new JButton("字幕");
+			JButton btn = new MJButton("字幕");
 			initQnBtn(800, btn);
 		}
 	}
@@ -118,6 +121,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 	 * @param btn
 	 */
 	private void initQnBtn(final int qn, JButton btn) {
+		btn.setPreferredSize(btnSize);
 		btn.addActionListener(new ActionListener() {
 
 			@Override

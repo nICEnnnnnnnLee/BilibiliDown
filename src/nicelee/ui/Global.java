@@ -11,6 +11,7 @@ public class Global {
 	// 界面显示相关
 	public static String version = "v5.4";
 	public static boolean themeDefault = true;
+	public static boolean btnStyle = true;
 	public static FrameWaiting frWaiting;
 	public static boolean lockCheck = false;
 	

@@ -40,7 +40,8 @@ import nicelee.bilibili.util.QrCodeUtil;
 public class INeedLogin {
 
 	final static String appKey = "1d8b6e7d45233436";
-	final static String salt = "560c52ccd288fed045859ed18bffd973";
+	final static String salt = "560c52ccd288fed045859ed18bffd973";  // 与 appKey 必须匹配
+	final static String biliUserAgent = "Mozilla/5.0 BiliDroid/5.37.0 (bbcallen@gmail.com)";
 
 	HttpRequestUtil util = new HttpRequestUtil();
 	public List<HttpCookie> iCookies;
@@ -294,8 +295,7 @@ public class INeedLogin {
 	 */
 	public String login(String userName, String pwd, String captcha) {
 		try {
-			userName = URLEncoder.encode(userName, "UTF-8");
-			pwd = URLEncoder.encode(pwd, "UTF-8");
+			userName = URLEncoder.encode(userName, "UTF-8"); // 账号没有特殊字符，OK
 
 			String url = "https://passport.bilibili.com/api/oauth2/getKey";
 			String param = String.format("appkey=%s", appKey);
@@ -304,6 +304,7 @@ public class INeedLogin {
 			HashMap<String, String> headers = new HashMap<String, String>();
 
 			String result = util.postContent(url, headers, param);
+			Logger.println(result);
 			JSONObject obj = new JSONObject(result).getJSONObject("data");
 			Logger.println(result);
 			String hash = obj.optString("hash", "");
@@ -320,7 +321,7 @@ public class INeedLogin {
 			param = String.format(param, appKey, captcha, encryptPwd, userName);
 			param = param + "&sign=" + MD5.encrypt(param + salt);
 			headers.put("Content-type", "application/x-www-form-urlencoded");
-			headers.put("User-Agent", "Mozilla/5.0 BiliDroid/5.51.1 (bbcallen@gmail.com)");
+			headers.put("User-Agent", biliUserAgent);
 			result = util.postContent(url, headers, param);
 			Logger.println(result);
 			JSONObject response = new JSONObject(result);

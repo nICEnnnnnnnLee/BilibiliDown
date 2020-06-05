@@ -25,16 +25,4 @@ public class MD5 {
 		}
 		return md5code;
 	}
-
-	public static String sign(String param, String appSecret) {
-		return encrypt(param + appSecret);
-	}
-	// 主函数调用测试
-	public static void main(String[] args) {
-		System.out.println(sign("actionkey=appkey&aid=2478750&appkey=YvirImLGlLANCLvM&build=5423000&cid=3876154&device=android&expire=0&fnval=80&fnver=0&force_host=0&fourk=0&mid=0&mobi_app=android&npcybs=0&otype=json&platform=android&qn=80&quality=3&ts=1561814729",
-				 "JNlZNgfNGKZEpaDTkCdPQVXntXhuiJEM"));
-		
-		System.out.println("4ae40cf1894d2c30bb0b364c599f09c7");
-	}
-
 }

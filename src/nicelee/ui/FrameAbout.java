@@ -28,7 +28,7 @@ public class FrameAbout extends JFrame implements HyperlinkListener {
 	private void initUI() {
 		// this.setBounds(300, 200, 500, 400);
 		// this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		this.setSize(800, 500);
+		this.setSize(800, 580);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setTitle("用爱发电 bilibili~~");
@@ -53,7 +53,7 @@ public class FrameAbout extends JFrame implements HyperlinkListener {
 		editorPane.addHyperlinkListener(this);
 		JScrollPane scrollPane = new JScrollPane(editorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setPreferredSize(new Dimension(800, 460));
+		scrollPane.setPreferredSize(new Dimension(800, 540));
 		pane.add(scrollPane);
 		
 		this.setContentPane(pane);

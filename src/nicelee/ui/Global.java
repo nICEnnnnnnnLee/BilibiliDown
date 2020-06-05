@@ -41,6 +41,11 @@ public class Global {
 	public static String userName;
 	public static String password;
 	public static boolean deleteUserFile;
+	public static boolean pwdLogin = false; //使用用户名密码登录方式
+	public static boolean pwdAutoLogin = false; //使用用户名密码自动登录方式
+	public static boolean pwdAutoCaptcha = false; //自动提取二维码
+	
+	
 	public static boolean needToLogin = false;
 	public static boolean isLogin = false;
 	public static FrameQRCode qr; // 二维码图片显示界面

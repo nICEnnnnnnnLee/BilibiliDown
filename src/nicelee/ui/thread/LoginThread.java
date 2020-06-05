@@ -18,6 +18,8 @@ import nicelee.bilibili.model.FavList;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
+import nicelee.ui.DialogLogin;
 import nicelee.ui.FrameQRCode;
 import nicelee.ui.Global;
 
@@ -28,6 +30,7 @@ public class LoginThread extends Thread {
 		try {
 			login();
 		} catch (Exception e) {
+			e.printStackTrace();
 			Global.frWaiting.stop();
 		}
 	}
@@ -71,12 +74,17 @@ public class LoginThread extends Thread {
 		}
 		System.out.println("没有检查到本地Cookies...");
 		Global.frWaiting.stop();
-		if (Global.userName != null && Global.password != null) {
-			PwdAutoLogin(inl);
-		} else {
+		if(Global.pwdLogin) {
+			if(Global.pwdAutoLogin && Global.userName != null && Global.password != null) {
+				PwdAutoLogin(inl);
+			}else {
+				PwdLogin(inl);
+			}
+		}else {
 			QRLogin(inl);
 		}
 
+		Logger.println("线程即将结束，当前登录状态： " + Global.isLogin);
 		if (Global.isLogin) {
 			// 保存cookie到本地
 			inl.saveCookies(inl.iCookies.toString());
@@ -94,7 +102,17 @@ public class LoginThread extends Thread {
 	}
 
 	/**
-	 * 账户密码登录
+	 * 账户密码登录(人工)
+	 * 
+	 * @param inl
+	 */
+	private void PwdLogin(INeedLogin inl) {
+		DialogLogin dialog = new DialogLogin(inl);
+		dialog.init();
+	}
+	
+	/**
+	 * 账户密码登录(自动)
 	 * 
 	 * @param inl
 	 */

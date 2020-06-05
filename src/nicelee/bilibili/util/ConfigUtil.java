@@ -130,6 +130,9 @@ public class ConfigUtil {
 		if(Global.deleteUserFile) {
 			deleteUserConfig();
 		}
+		Global.pwdLogin = "pwd".equals(System.getProperty("bilibili.user.login"));
+		Global.pwdAutoLogin = "auto".equals(System.getProperty("bilibili.user.login.pwd"));
+		Global.pwdAutoCaptcha = "true".equals(System.getProperty("bilibili.user.login.pwd.autoCaptcha"));
 	}
 
 	private static void deleteUserConfig() {

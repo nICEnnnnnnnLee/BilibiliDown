@@ -42,6 +42,7 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/install.gif)  
 </details>
 
+<details>
 <summary>密码登录(可选)</summary>
 
 

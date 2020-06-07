@@ -373,6 +373,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			story_list.add(currentStory);
 		} else {
 			JSONArray choices = questions.getJSONObject(0).getJSONArray("choices");
+			boolean is2Added = false;
 			for (int i = 0; i < choices.length(); i++) {
 				JSONObject choice = choices.getJSONObject(i);
 				StoryClipInfo sClip = new StoryClipInfo(choice.optLong("cid"), choice.getLong("id"),
@@ -385,8 +386,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 				if (node_list.contains(sClip)) {
 					// 如果当前选择出现回退选项，说明已经到达末尾。故事线完整，可以收集
 					// 如果当前选择在其它故事线中出现过，说明将与其他内容重复。故事线虽不完整，但可以收集
-					story_list.add(currentStory);
-					break;
+					// 存在某些选择在其它故事线中出现过，但其它选择仍然可以开启新分支的情况，此处不能break
+					is2Added = true;
+					continue;
 				} else {
 					List<StoryClipInfo> cloneStory = new ArrayList<StoryClipInfo>(currentStory); // 确保不会对传入的故事线产生影响，而是生成新的时间线
 					cloneStory.add(sClip);
@@ -394,6 +396,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 					collectStoryList(bvid, "" + choice.getLong("id"), graph_version, cloneStory, story_list, node_list);
 				}
 			}
+			if(is2Added)
+				story_list.add(currentStory);
 
 		}
 	}

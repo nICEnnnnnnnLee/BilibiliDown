@@ -1,13 +1,11 @@
 package nicelee.bilibili.model;
 
-import nicelee.bilibili.util.Logger;
-
 public class StoryClipInfo {
 
 	long node_id;
 	String option; // 跳入当前片段的选择
 	long cid;
-	long choices[]; // 当前的选择
+//	long choices[]; // 当前的选择
 	
 	public StoryClipInfo(long cid) {
 		this.cid = cid;
@@ -46,7 +44,6 @@ public class StoryClipInfo {
 		if (this != null && obj != null) {
 			if (obj instanceof StoryClipInfo) {
 				StoryClipInfo clip = (StoryClipInfo) obj;
-				Logger.println(this.getCid() + " == " + clip.getCid() + "?");
 				return (this.getCid() == clip.getCid());
 			}
 		}

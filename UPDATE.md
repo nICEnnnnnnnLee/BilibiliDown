@@ -1,4 +1,10 @@
 ## UPDATE  
+* V5.5
+    * 修复一个bug，该bug导致某些类型的互动视频查询会陷入死循环  
+    * 优化 [issue#34](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/34) 实现用户名密码自动登录  
+    * 尝试一种新的button按钮样式，如不适应，可在配置文件中回退，设置如下：  
+        `bilibili.button.style = default`  
+    
 * V5.4
     * 版本更新时，从后台下载改为列入下载面板下载，可以直观看到下载进度
     * 新增课程解析  

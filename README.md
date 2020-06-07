@@ -14,7 +14,7 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 
 ## :smile:特性  
 + 支持UI界面(自认为是傻瓜式操作)  
-+ 支持扫码登录(能看=能下，反过来也一样)  
++ 支持扫码/密码登录(能看=能下，反过来也一样)  
 + 支持各种链接解析(直接输入BVXXX/avXXX/epXXX/ssXXX/mdXXX，或者各种网页链接， V4.3 新增画廊/相簿解析)
 + 支持多p下载!(看了看部分别人的作品, 听说有的只支持单p?)  
 + 支持收藏夹下载!!  
@@ -40,6 +40,14 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 
 其实这是一款绿色软件，安装只是创建了一个快捷方式。。。  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/install.gif)  
+</details>
+
+<summary>密码登录(可选)</summary>
+
+
++ 默认为扫码登录，使用该功能需要在`app.config`中更改配置项  
+`bilibili.user.login = pwd`  
++ 程序打开后，点击主界面右上角登录按钮即可  
 </details>
 
 <details>
@@ -205,11 +213,13 @@ bilibili.cc.lang = en-US
 </details>
 
 ## :smile:第三方库使用声明  
+* 账号密码登录实现参考了[Bilibili-Toolkit](https://github.com/Hsury/Bilibili-Toolkit)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/Hsury/Bilibili-Toolkit/blob/master/LICENSE)  
 * AV和BV转换参考了[AV-BV-Convert](https://github.com/CCRcmcpe/AV-BV-Convert)[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/CCRcmcpe/AV-BV-Convert/blob/master/LICENSE)  
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
 * 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
-* ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)
+* ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)  
+* 图形验证码识别API调用了[https://bili.dev:2233/captcha](https://github.com/Hsury/Bilibili-Toolkit/#图形验证码识别api)
 
 ## :smile:媒体素材使用声明             
 * [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/background.jpg?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  

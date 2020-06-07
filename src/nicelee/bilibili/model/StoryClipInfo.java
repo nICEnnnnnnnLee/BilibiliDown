@@ -1,23 +1,26 @@
 package nicelee.bilibili.model;
 
+import nicelee.bilibili.util.Logger;
+
 public class StoryClipInfo {
 
-	String node_id;
-	String option;
+	long node_id;
+	String option; // 跳入当前片段的选择
 	long cid;
+	long choices[]; // 当前的选择
 	
 	public StoryClipInfo(long cid) {
 		this.cid = cid;
 	}
-	public StoryClipInfo(long cid, String node_id, String option) {
+	public StoryClipInfo(long cid, long node_id, String option) {
 		this.cid = cid;
 		this.node_id = node_id;
 		this.option = option;
 	}
-	public String getNode_id() {
+	public long getNode_id() {
 		return node_id;
 	}
-	public void setNode_id(String node_id) {
+	public void setNode_id(long node_id) {
 		this.node_id = node_id;
 	}
 	public long getCid() {
@@ -31,5 +34,22 @@ public class StoryClipInfo {
 	}
 	public void setOption(String option) {
 		this.option = option;
+	}
+
+	@Override
+	public int hashCode() {
+		return (int) cid;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this != null && obj != null) {
+			if (obj instanceof StoryClipInfo) {
+				StoryClipInfo clip = (StoryClipInfo) obj;
+				Logger.println(this.getCid() + " == " + clip.getCid() + "?");
+				return (this.getCid() == clip.getCid());
+			}
+		}
+		return false;
 	}
 }

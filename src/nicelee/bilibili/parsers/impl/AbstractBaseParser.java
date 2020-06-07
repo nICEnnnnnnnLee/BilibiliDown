@@ -2,6 +2,7 @@ package nicelee.bilibili.parsers.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -94,8 +95,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 				List<StoryClipInfo> originStory = new ArrayList<StoryClipInfo>();
 				StoryClipInfo storyClip = new StoryClipInfo(cid);
 				originStory.add(storyClip);
+				HashSet<StoryClipInfo> node_list = new HashSet<>();
 				// 从根节点，一直遍历到子节点，找到所有故事线，放到story_list
-				collectStoryList(bvId, "", graph_version, originStory, story_list);
+				collectStoryList(bvId, "", graph_version, originStory, story_list, node_list);
 				LinkedHashMap<Long, ClipInfo> clipMap = storyList2Map(bvId, videoFormat, getVideoLink, viInfo,
 						story_list);
 				viInfo.setClips(clipMap);
@@ -204,7 +206,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 */
 	@Override
 	public String getVideoLink(String bvId, String cid, int qn, int downFormat) {
-		if(qn == 800) {
+		if (qn == 800) {
 			return getVideoSubtitleLink(bvId, cid, qn);
 		}
 		return getVideoM4sLink(bvId, cid, qn);
@@ -215,31 +217,29 @@ public abstract class AbstractBaseParser implements IInputParser {
 //		}
 	}
 
-	
 	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
-		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid,
-				bvId);
+		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
 		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
 		String xml = util.getContent(url, headers_json, HttpCookies.getGlobalCookies());
 		Pattern p = Pattern.compile("<subtitle>(.*?)</subtitle>");
 		Matcher matcher = p.matcher(xml);
-		if(matcher.find()) {
+		if (matcher.find()) {
 			paramSetter.setRealQN(qn);
 			JSONArray subList = new JSONObject(matcher.group(1)).getJSONArray("subtitles");
-			for(int i=0; i<subList.length(); i++) {
+			for (int i = 0; i < subList.length(); i++) {
 				JSONObject sub = subList.getJSONObject(i);
 				String subLang = sub.getString("lan");
-				if(Global.cc_lang.equals(subLang)) {
+				if (Global.cc_lang.equals(subLang)) {
 					return "https:" + sub.getString("subtitle_url");
 				}
 			}
-			
+
 			return "https:" + subList.getJSONObject(0).getString("subtitle_url");
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * 查询视频链接(MP4)
 	 * 
@@ -346,11 +346,12 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 * @param avIdNum
 	 * @param node
 	 * @param graph_version
-	 * @param currentStory
-	 * @param story_list
+	 * @param currentStory 当前故事线
+	 * @param story_list  故事线集合
+	 * @param node_list  时间节点集合
 	 */
 	private void collectStoryList(String bvid, String node, String graph_version, List<StoryClipInfo> currentStory,
-			List<List<StoryClipInfo>> story_list) {
+			List<List<StoryClipInfo>> story_list, HashSet<StoryClipInfo> node_list) {
 		// String url_node_format =
 		// "https://api.bilibili.com/x/stein/nodeinfo?aid=%s&node_id=%s&graph_version=%s&platform=pc&portal=0&screen=0";
 		String url_node_format = "https://api.bilibili.com/x/stein/edgeinfo_v2?bvid=%s&edge_id=%s&graph_version=%s&platform=pc&portal=0&screen=0";
@@ -364,8 +365,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 		JSONArray questions = nodeInfo.optJSONObject("edges").optJSONArray("questions");
 		if (node == null || "".equals(node)) { // 如果是第一个片段，补全信息
 			StoryClipInfo sClip = currentStory.get(0);
-			sClip.setNode_id("" + nodeInfo.optLong("node_id"));
+			sClip.setNode_id(nodeInfo.optLong("node_id"));
 			sClip.setOption(nodeInfo.getString("title"));
+			node_list.add(sClip);
 		}
 		if (questions == null) { // 如果没有选择，则到达末尾，则故事线完整，可以收集
 			story_list.add(currentStory);
@@ -373,12 +375,26 @@ public abstract class AbstractBaseParser implements IInputParser {
 			JSONArray choices = questions.getJSONObject(0).getJSONArray("choices");
 			for (int i = 0; i < choices.length(); i++) {
 				JSONObject choice = choices.getJSONObject(i);
-				StoryClipInfo sClip = new StoryClipInfo(choice.optLong("cid"), "" + choice.getLong("id"),
+				StoryClipInfo sClip = new StoryClipInfo(choice.optLong("cid"), choice.getLong("id"),
 						choice.getString("option"));
-				List<StoryClipInfo> cloneStory = new ArrayList<StoryClipInfo>(currentStory); // 确保不会对传入的故事线产生影响，而是生成新的时间线
-				cloneStory.add(sClip);
-				collectStoryList(bvid, "" + choice.getLong("id"), graph_version, cloneStory, story_list);
+//				if (currentStory.contains(sClip)) {
+//					// 如果当前选择出现回退选项，说明已经到达末尾。故事线完整，可以收集
+//					story_list.add(currentStory);
+//					break;
+//				} else 
+				if (node_list.contains(sClip)) {
+					// 如果当前选择出现回退选项，说明已经到达末尾。故事线完整，可以收集
+					// 如果当前选择在其它故事线中出现过，说明将与其他内容重复。故事线虽不完整，但可以收集
+					story_list.add(currentStory);
+					break;
+				} else {
+					List<StoryClipInfo> cloneStory = new ArrayList<StoryClipInfo>(currentStory); // 确保不会对传入的故事线产生影响，而是生成新的时间线
+					cloneStory.add(sClip);
+					node_list.add(sClip);
+					collectStoryList(bvid, "" + choice.getLong("id"), graph_version, cloneStory, story_list, node_list);
+				}
 			}
+
 		}
 	}
 
@@ -454,7 +470,10 @@ public abstract class AbstractBaseParser implements IInputParser {
 					clipMap.put(clip.getcId(), clip);
 				} else {
 					ClipInfo clip = (ClipInfo) clip_t;
-					clip.setTitle(String.format("%s_%d.%d-%s", clip.getTitle(), i, j, obj.getOption()));
+					if (i == 0)
+						clip.setTitle(String.format("%s_%d.%d-%s", clip.getTitle(), i, j, obj.getOption()));
+					else
+						clip.setTitle(String.format("%s_%d.%d", clip.getTitle(), i, j));
 					if (j == 0)
 						clip.setTitle("起始");
 				}

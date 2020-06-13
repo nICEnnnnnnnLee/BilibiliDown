@@ -1,4 +1,6 @@
 ## UPDATE  
+* V5.6
+    * 修复一个bug，该bug导致某些类型的互动视频查询不全  
 * V5.5
     * 修复一个bug，该bug导致某些类型的互动视频查询会陷入死循环  
     * 优化 [issue#34](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/34) 实现用户名密码自动登录  

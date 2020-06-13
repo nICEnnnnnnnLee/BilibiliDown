@@ -46,7 +46,7 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 <summary>密码登录(可选)</summary>
 
 
-+ 默认为扫码登录，使用该功能需要在`app.config`中更改配置项  
++ 默认为扫码登录，使用该功能需要在`config/app.config`中更改配置项  
 `bilibili.user.login = pwd`  
 + 程序打开后，点击主界面右上角登录按钮即可  
 </details>
@@ -55,7 +55,9 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 <summary>扫码登录(可选)</summary>
 
 
-点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
++ 如果当前为密码登录，可在`config/app.config`中更改配置项  
+`bilibili.user.login = qr`  
++ 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/login.gif) 
 </details>
 

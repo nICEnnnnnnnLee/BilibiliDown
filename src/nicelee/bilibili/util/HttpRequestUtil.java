@@ -10,7 +10,6 @@ import java.io.RandomAccessFile;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -29,27 +28,28 @@ import nicelee.ui.Global;
 
 public class HttpRequestUtil {
 
-	private static CookieManager defaultManager = new CookieManager();
+	protected static CookieManager defaultManager = new CookieManager();
 	// 下载缓存区
-	private byte[] buffer;
+	protected byte[] buffer;
 	// 下载文件大小状态
-	private long downloadedFileSize;
-	private long totalFileSize;
+	protected Long downloadedFileSize;
+	protected long totalFileSize;
 	// 下载文件
-	private String savePath = "./download/";
-	private File fileDownload;
+	protected String savePath = "./download/";
+	protected File fileDownload;
 	// 下载状态
-	private StatusEnum status = StatusEnum.NONE; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3 队列中
+	protected volatile StatusEnum status = StatusEnum.NONE; // 0 正在下载; 1 下载完毕; -1 出现错误; -2 人工停止;-3 队列中
 	// 下载标志,置False可以停止下载
-	private boolean bDown = true;
+	protected volatile boolean bDown = true;
 	// Cookie管理
-	CookieManager manager = new CookieManager();
+	CookieManager manager;
 
 	public HttpRequestUtil() {
 		this(defaultManager);
 	}
 
 	public HttpRequestUtil(CookieManager manager) {
+		downloadedFileSize = 0L;
 		this.manager = manager;
 		manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
 		CookieHandler.setDefault(manager);
@@ -86,10 +86,47 @@ public class HttpRequestUtil {
 	 * 重置统计参数
 	 */
 	public void reset() {
-		downloadedFileSize = 0;
+		downloadedFileSize = 0L;
 		totalFileSize = 0;
 	}
 
+	/**
+	 *  是否要继续下载
+	 * @param fileName
+	 * @return 为null，继续，否则直接返回结果
+	 */
+	protected Boolean check(String fileName) {
+		// 如果已经人工停止，那么直接返回
+		if (status == StatusEnum.STOP) {
+			return false;
+		}
+		status = StatusEnum.DOWNLOADING;
+
+		// 确保没有重复文件
+		fileDownload = getFile(fileName);
+		File fileDst = new File(fileDownload.getParent(),
+				fileDownload.getName().replaceAll("_(video|audio)", "").replaceAll("\\.m4s$", ".mp4"));
+		System.out.println(fileDst.getName());
+		// 如果av1234-64-p4.flv已下完， 那么av1234-64-p4-part1.flv这种也不是必须的
+		Matcher ma = filePartPattern.matcher(fileDst.getName());
+		if (ma.find()) {
+			// 文件已存在,无需下载
+			File fTemp = new File(fileDst.getParent(), ma.group(1) + "." + ma.group(2));
+			if (fTemp.exists()) {
+				status = StatusEnum.SUCCESS;
+				return true;
+			}
+		}
+		if (fileDownload.exists() || fileDst.exists()) {
+			totalFileSize = fileDownload.length();
+			downloadedFileSize = fileDownload.length();
+			status = StatusEnum.SUCCESS;
+			// 文件已存在,无需下载
+			return true;
+		}
+		return null;
+	}
+	
 	/**
 	 * 下载文件 请确认 文件大小total为 0 或者正确值
 	 * 
@@ -99,38 +136,14 @@ public class HttpRequestUtil {
 	 * @return
 	 */
 	static Pattern filePartPattern = Pattern.compile("^(.*)-part[0-9]+\\.(flv|mp4)$");
-
 	public boolean download(String url, String fileName, HashMap<String, String> headers) {
-		// 如果已经人工停止，那么直接返回
-		if (status == StatusEnum.STOP) {
-			return false;
-		}
-		status = StatusEnum.DOWNLOADING;
+		Boolean result = check(fileName);
+		if(result != null)
+			return result;
+		
 		InputStream inn = null;
 		RandomAccessFile raf = null;
 		try {
-			// 确保没有重复文件
-			fileDownload = getFile(fileName);
-			File fileDst = new File(fileDownload.getParent(),
-					fileDownload.getName().replaceAll("_(video|audio)", "").replaceAll("\\.m4s$", ".mp4"));
-			System.out.println(fileDst.getName());
-			// 如果av1234-64-p4.flv已下完， 那么av1234-64-p4-part1.flv这种也不是必须的
-			Matcher ma = filePartPattern.matcher(fileDst.getName());
-			if (ma.find()) {
-				// 文件已存在,无需下载
-				File fTemp = new File(fileDst.getParent(), ma.group(1) + "." + ma.group(2));
-				if (fTemp.exists()) {
-					status = StatusEnum.SUCCESS;
-					return true;
-				}
-			}
-			if (fileDownload.exists() || fileDst.exists()) {
-				totalFileSize = fileDownload.length();
-				downloadedFileSize = fileDownload.length();
-				status = StatusEnum.SUCCESS;
-				// 文件已存在,无需下载
-				return true;
-			}
 			// 文件下载中先添加.part后缀
 			File fileDownloadPart = new File(fileDownload.getParent(), fileDownload.getName() + ".part");
 			raf = new RandomAccessFile(fileDownloadPart, "rw");
@@ -143,7 +156,7 @@ public class HttpRequestUtil {
 			conn.connect();
 
 			if (conn.getResponseCode() == 403) {
-				Logger.println("403被拒，尝试更换Headers(可能由于app版权的原因)");
+				Logger.println("403被拒，尝试更换Headers");
 				conn.disconnect();
 				headers = HttpHeaders.getBiliAppDownHeaders();
 				offset = modifyHeaderMapByDownloaded(headers, raf, fileDownloadPart, offset);
@@ -228,7 +241,7 @@ public class HttpRequestUtil {
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	private HttpURLConnection connect(HashMap<String, String> headers, String url, List<HttpCookie> listCookie)
+	protected HttpURLConnection connect(HashMap<String, String> headers, String url, List<HttpCookie> listCookie)
 			throws MalformedURLException, IOException {
 		URL realUrl = new URL(url);
 		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
@@ -237,7 +250,6 @@ public class HttpRequestUtil {
 		if (headers != null) {
 			for (Map.Entry<String, String> entry : headers.entrySet()) {
 				conn.setRequestProperty(entry.getKey(), entry.getValue());
-//			 System.out.println(entry.getKey() + ":" + entry.getValue());
 			}
 		}
 		// 设置Cookie
@@ -250,7 +262,6 @@ public class HttpRequestUtil {
 			if (cookie.endsWith("; ")) {
 				cookie = cookie.substring(0, cookie.length() - 2);
 			}
-			// System.out.println(cookie);
 			conn.setRequestProperty("Cookie", cookie);
 		}
 		// conn.connect();
@@ -267,7 +278,7 @@ public class HttpRequestUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	private long modifyHeaderMapByDownloaded(HashMap<String, String> headers, RandomAccessFile raf,
+	protected long modifyHeaderMapByDownloaded(HashMap<String, String> headers, RandomAccessFile raf,
 			File fileDownloadPart, long offset) throws IOException {
 		headers.remove("range");
 		if (fileDownloadPart.exists() && fileDownloadPart.length() > 0) {
@@ -312,7 +323,6 @@ public class HttpRequestUtil {
 			in = new BufferedReader(new InputStreamReader(ism, "UTF-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
-				// line = new String(line.getBytes(), "UTF-8");
 				result.append(line).append("\r\n");
 			}
 		} catch (Exception e) {
@@ -327,24 +337,15 @@ public class HttpRequestUtil {
 				e2.printStackTrace();
 			}
 		}
-		// printCookie(manager.getCookieStore());
 		return result.toString();
 	}
 
-	/**
-	 * do a Http Post Not Worked with http stream with Deflate
-	 * 
-	 * @param url
-	 * @param headers
-	 * @param param
-	 * @return
-	 */
 	public String postContent(String url, HashMap<String, String> headers, String param) {
 		return postContent(url, headers, param, null);
 	}
 
 	/**
-	 * do a Http Post Not Worked with http stream with Deflate
+	 * do a Http Post
 	 * 
 	 * @param url
 	 * @param headers
@@ -382,10 +383,8 @@ public class HttpRequestUtil {
 				line = new String(line.getBytes(), "UTF-8");
 				result.append(line);
 			}
-			// printCookie(manager.getCookieStore());
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
-			// e.printStackTrace();
 		} finally {
 			try {
 				if (in != null) {
@@ -411,17 +410,11 @@ public class HttpRequestUtil {
 		try {
 			HttpURLConnection conn = connect(headers, url, listCookie);
 			// 设置参数
-//			conn.setRequestMethod("OPTIONS"); // 设置OPTIONS方式连接
 			headers.put("range", "bytes=0-100");
 			conn.connect();
-
-//			System.out.println(url);
-//			System.out.println(conn.getResponseCode());
 			return conn.getResponseCode() != 404;
-			// printCookie(manager.getCookieStore());
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
-			// e.printStackTrace();
 			return false;
 		} finally {
 			try {
@@ -434,7 +427,7 @@ public class HttpRequestUtil {
 		}
 	}
 
-	private File getFile(String dst) {
+	protected File getFile(String dst) {
 		File folder = new File(savePath);
 		if (!folder.exists()) {
 			folder.mkdirs();
@@ -449,30 +442,6 @@ public class HttpRequestUtil {
 
 	public StatusEnum getStatus() {
 		return status;
-	}
-
-	// 打印cookie信息
-	public static String printCookie(CookieStore cookieStore) {
-		List<HttpCookie> listCookie = cookieStore.getCookies();
-		StringBuilder sb = new StringBuilder();
-		for (HttpCookie httpCookie : listCookie) {
-//			System.out.println("--------------------------------------" + httpCookie.toString());
-			sb.append(httpCookie.toString()).append("; ");
-			System.out.println("class      : " + httpCookie.getClass());
-			System.out.println("comment    : " + httpCookie.getComment());
-			System.out.println("commentURL : " + httpCookie.getCommentURL());
-			System.out.println("discard    : " + httpCookie.getDiscard());
-			System.out.println("maxAge     : " + httpCookie.getMaxAge());
-			System.out.println("name       : " + httpCookie.getName());
-			System.out.println("portlist   : " + httpCookie.getPortlist());
-			System.out.println("secure     : " + httpCookie.getSecure());
-			System.out.println("version    : " + httpCookie.getVersion());
-			System.out.println("domain     : " + httpCookie.getDomain());
-			System.out.println("path       : " + httpCookie.getPath());
-			System.out.println("value      : " + httpCookie.getValue());
-			System.out.println("httpCookie : " + httpCookie);
-		}
-		return sb.toString();
 	}
 
 	public long getDownloadedFileSize() {

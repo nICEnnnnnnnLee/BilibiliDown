@@ -3,13 +3,14 @@ package nicelee.ui;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v5.5";
+	public static String version = "v5.6";
 	public static boolean themeDefault = true;
 	public static boolean btnStyle = true;
 	public static FrameWaiting frWaiting;
@@ -29,6 +30,10 @@ public class Global {
 //	public static ExecutorService ccThreadPool = Executors.newFixedThreadPool(1);// 用于字幕下载
 	public static TabDownload downloadTab; // 下载显示界面
 	public static ConcurrentHashMap<DownloadInfoPanel, IDownloader> downloadTaskList = new ConcurrentHashMap<DownloadInfoPanel, IDownloader>();
+	
+	public static int multiThreadCnt = 3; // 多线程下载开启的线程数 0为不开启多线程下载
+	public static long multiThreadMinFileSize = 10*1024*1024; // 文件大小小于阈值，则不开启开启多线程下载
+	public static Pattern singleThreadPattern = Pattern.compile("github|ffmpeg|\\.jpg|\\.png|\\.webp|\\.xml"); // url匹配该正则，则不开启开启多线程下载
 	
 	public static boolean useRepo = true; //从仓库判断是否需要下载
 	public static boolean saveToRepo = true; //使用仓库保存下载成功的记录

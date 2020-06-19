@@ -95,6 +95,10 @@ public class ConfigUtil {
 		System.out.println("savePath: " + savePath);
 		Global.savePath = savePath;
 		Global.maxFailRetry = Integer.parseInt(System.getProperty("bilibili.download.maxFailRetry"));
+		// 多线程设置
+		Global.multiThreadCnt = Integer.parseInt(System.getProperty("bilibili.download.multiThread.count"));
+		Global.multiThreadMinFileSize = 1024 * 1024 * Integer.parseInt(System.getProperty("bilibili.download.multiThread.minFileSize"));
+		Global.singleThreadPattern = Pattern.compile(System.getProperty("bilibili.download.multiThread.singlePattern"));
 		//查询或显示相关
 		Global.pageSize = Integer.parseInt(System.getProperty("bilibili.pageSize"));
 		Global.pageDisplay = System.getProperty("bilibili.pageDisplay");

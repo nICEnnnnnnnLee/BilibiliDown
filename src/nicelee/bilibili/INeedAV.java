@@ -10,6 +10,7 @@ import nicelee.bilibili.parsers.InputParser;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.HttpRequestUtilEx;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 
@@ -20,7 +21,7 @@ public class INeedAV {
 	private Downloader downloader = null;
 
 	public INeedAV() {
-		util = new HttpRequestUtil();
+		util = new HttpRequestUtilEx();
 		downloader = new Downloader();
 		downloader.init(util);
 		inputParser = new InputParser(util, Global.pageSize, Global.pageDisplay);

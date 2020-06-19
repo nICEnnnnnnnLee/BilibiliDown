@@ -1,6 +1,7 @@
 ## UPDATE  
 * V5.6
     * 修复一个bug，该bug导致某些类型的互动视频查询不全  
+    * 添加多线程下载实现。该功能默认关闭，不建议开启。具体使用详见`app.config`注释
 * V5.5
     * 修复一个bug，该bug导致某些类型的互动视频查询会陷入死循环  
     * 优化 [issue#34](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/34) 实现用户名密码自动登录  

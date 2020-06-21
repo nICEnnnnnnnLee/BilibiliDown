@@ -10,6 +10,7 @@ import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.ResourcesUtil;
 
 @Bilibili(name = "danmuku-downloader", type = "downloader", note = "弹幕下载")
 public class DanmuDownloader implements IDownloader {
@@ -58,10 +59,7 @@ public class DanmuDownloader implements IDownloader {
 			status = StatusEnum.FAIL;
 			return false;
 		} finally {
-			try {
-				out.close();
-			} catch (IOException e) {
-			}
+			ResourcesUtil.closeQuietly(out);
 		}
 	}
 

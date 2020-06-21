@@ -217,14 +217,8 @@ public class RepoUtil {
 			
 		} catch (Exception e) {
 		}finally {
-			try {
-				buReader.close();
-			} catch (IOException e) {
-			}
-			try {
-				buWriter.close();
-			} catch (IOException e) {
-			}
+			ResourcesUtil.closeQuietly(buReader);
+			ResourcesUtil.closeQuietly(buWriter);
 		}
 	}
 	

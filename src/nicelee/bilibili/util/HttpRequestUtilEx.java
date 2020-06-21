@@ -133,20 +133,8 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 					// 使用finally块来关闭输入流
 					finally {
 						// System.out.println("下载Finally...");
-						try {
-							if (inn != null) {
-								inn.close();
-							}
-						} catch (Exception e2) {
-							e2.printStackTrace();
-						}
-						try {
-							if (raf != null) {
-								raf.close();
-							}
-						} catch (Exception e2) {
-							e2.printStackTrace();
-						}
+						ResourcesUtil.closeQuietly(inn);
+						ResourcesUtil.closeQuietly(raf);
 						synchronized (lock) {
 							if (count.decrementAndGet() == 0)
 								lock.notifyAll();

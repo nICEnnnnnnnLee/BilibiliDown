@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 
@@ -187,13 +188,15 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 			// 获取所有响应头字段
 			Map<String, List<String>> map = conn.getHeaderFields();
 			long size = Long.parseUnsignedLong(map.get("Content-Length").get(0));
+//			Logger.println(url);
 //			for(Entry<String, List<String>> entry: map.entrySet()){
 //				Logger.println(entry.getKey()+ ": " + entry.getValue());
 //			}
-			List<String> acRanges = map.get("Accept-Ranges");
-			if(acRanges == null) {
-				return 0;
-			}
+//			List<String> acRanges = map.get("Accept-Ranges");
+//			List<String> acExposeHeaders = map.get("Access-Control-Expose-Headers");
+//			if(acRanges == null && acExposeHeaders.contains("Content-Range")) {
+//				return 0;
+//			}
 			return size;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 
@@ -87,7 +86,15 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 						// 开始下载
 						HttpURLConnection conn = connect(specificHeader, url, null);
 						conn.connect();
-
+						if (conn.getResponseCode() == 403) {
+							Logger.println("403被拒，尝试更换Headers");
+							conn.disconnect();
+							specificHeader.clear();
+							specificHeader.putAll(HttpHeaders.getBiliAppDownHeaders());
+							specificHeader.put("range", String.format(range, min + offset, max));
+							conn = connect(specificHeader, url, null);
+							conn.connect();
+						}
 						// 获取所有响应头字段
 						// Map<String, List<String>> map = conn.getHeaderFields();
 						// Logger.println("Content-Range" + map.get("Content-Range"));

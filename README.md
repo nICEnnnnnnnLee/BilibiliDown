@@ -221,6 +221,7 @@ bilibili.cc.lang = en-US
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
 * 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
+* 内置hosts文件使用了[GithubHost](https://github.com/ButterAndButterfly/GithubHost)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/ButterAndButterfly/GithubHost/blob/master/LICENSE.txt)  
 * ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)  
 * 图形验证码识别API调用了[https://bili.dev:2233/captcha](https://github.com/Hsury/Bilibili-Toolkit/#图形验证码识别api)
 

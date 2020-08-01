@@ -86,7 +86,15 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 						// 开始下载
 						HttpURLConnection conn = connect(specificHeader, url, null);
 						conn.connect();
-
+						if (conn.getResponseCode() == 403) {
+							Logger.println("403被拒，尝试更换Headers");
+							conn.disconnect();
+							specificHeader.clear();
+							specificHeader.putAll(HttpHeaders.getBiliAppDownHeaders());
+							specificHeader.put("range", String.format(range, min + offset, max));
+							conn = connect(specificHeader, url, null);
+							conn.connect();
+						}
 						// 获取所有响应头字段
 						// Map<String, List<String>> map = conn.getHeaderFields();
 						// Logger.println("Content-Range" + map.get("Content-Range"));
@@ -133,20 +141,8 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 					// 使用finally块来关闭输入流
 					finally {
 						// System.out.println("下载Finally...");
-						try {
-							if (inn != null) {
-								inn.close();
-							}
-						} catch (Exception e2) {
-							e2.printStackTrace();
-						}
-						try {
-							if (raf != null) {
-								raf.close();
-							}
-						} catch (Exception e2) {
-							e2.printStackTrace();
-						}
+						ResourcesUtil.closeQuietly(inn);
+						ResourcesUtil.closeQuietly(raf);
 						synchronized (lock) {
 							if (count.decrementAndGet() == 0)
 								lock.notifyAll();
@@ -199,13 +195,15 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 			// 获取所有响应头字段
 			Map<String, List<String>> map = conn.getHeaderFields();
 			long size = Long.parseUnsignedLong(map.get("Content-Length").get(0));
+//			Logger.println(url);
 //			for(Entry<String, List<String>> entry: map.entrySet()){
 //				Logger.println(entry.getKey()+ ": " + entry.getValue());
 //			}
-			List<String> acRanges = map.get("Accept-Ranges");
-			if(acRanges == null) {
-				return 0;
-			}
+//			List<String> acRanges = map.get("Accept-Ranges");
+//			List<String> acExposeHeaders = map.get("Access-Control-Expose-Headers");
+//			if(acRanges == null && acExposeHeaders.contains("Content-Range")) {
+//				return 0;
+//			}
 			return size;
 		} catch (Exception e) {
 			e.printStackTrace();

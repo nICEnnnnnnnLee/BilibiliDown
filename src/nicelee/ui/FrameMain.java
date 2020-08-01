@@ -24,6 +24,7 @@ import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
+import nicelee.bilibili.util.net.HostSetUtil;
 import nicelee.ui.item.MJTitleBar;
 import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
@@ -59,6 +60,11 @@ public class FrameMain extends JFrame {
 		System.out.println(System.getProperty("os.name"));
 		System.out.println(ConfigUtil.baseDirectory());
 		ConfigUtil.initConfigs();
+		
+		// 如果存在hosts文件，那么使之生效
+		if(HostSetUtil.readHostsFromFile("config/hosts.config")) {
+			HostSetUtil.injectHosts();
+		}
 		// 初始化主题
 		initUITheme();
 

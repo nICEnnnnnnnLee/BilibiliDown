@@ -215,20 +215,8 @@ public class HttpRequestUtil {
 		// 使用finally块来关闭输入流
 		finally {
 			// System.out.println("下载Finally...");
-			try {
-				if (inn != null) {
-					inn.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-			try {
-				if (raf != null) {
-					raf.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			ResourcesUtil.closeQuietly(inn);
+			ResourcesUtil.closeQuietly(raf);
 		}
 		status = StatusEnum.SUCCESS;
 		return true;
@@ -329,13 +317,7 @@ public class HttpRequestUtil {
 			System.out.println("发送GET请求出现异常！" + e);
 			e.printStackTrace();
 		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			ResourcesUtil.closeQuietly(in);
 		}
 		return result.toString();
 	}
@@ -386,13 +368,7 @@ public class HttpRequestUtil {
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
 		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			ResourcesUtil.closeQuietly(in);
 		}
 		return result.toString();
 	}
@@ -417,13 +393,7 @@ public class HttpRequestUtil {
 			System.out.println("发送GET请求出现异常！" + e);
 			return false;
 		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			ResourcesUtil.closeQuietly(in);
 		}
 	}
 

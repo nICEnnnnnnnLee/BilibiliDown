@@ -1,7 +1,11 @@
 ## UPDATE  
+* V5.7
+    * 新增b23.tv短链接解析(<https://b23.tv/U9SiGZ>)  
+    * 多线程下载时去除Accept-Ranges头部判断
+    * 新增内置hosts功能，防止github域名被污染导致版本查询失败
 * V5.6
     * 修复一个bug，该bug导致某些类型的互动视频查询不全  
-    * 添加多线程下载实现。该功能默认关闭，不建议开启。具体使用详见`app.config`注释
+    * [issue#37](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/37)添加多线程下载实现。该功能默认关闭，不建议开启。具体使用详见`app.config`注释
 * V5.5
     * 修复一个bug，该bug导致某些类型的互动视频查询会陷入死循环  
     * 优化 [issue#34](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/34) 实现用户名密码自动登录  

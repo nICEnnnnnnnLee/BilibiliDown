@@ -30,8 +30,9 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 ## :smile:关于下载速度     
 + 从服务端来看，FLV链接会比M4S链接要慢上很多  
 + 默认最大同时下载数为3，有需要可以在`config/app.config`更改(不推荐)  
-+ 关于下载速度，直接上截图  
++ 关于下载速度，和下载任务数、配置、网络条件等相关，直接上截图  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/download-speed.png)  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/download-speed2.png)  
    
 ## :smile:使用方法
 <details>

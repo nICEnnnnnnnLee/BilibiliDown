@@ -20,6 +20,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
 
 public abstract class AbstractBaseParser implements IInputParser {
@@ -208,6 +209,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 	public String getVideoLink(String bvId, String cid, int qn, int downFormat) {
 		if (qn == 800) {
 			return getVideoSubtitleLink(bvId, cid, qn);
+		}else if(qn == 801) {
+			paramSetter.setRealQN(qn);
+			return "https://api.bilibili.com/x/v1/dm/list.so?oid=" + cid;
 		}
 		return getVideoM4sLink(bvId, cid, qn);
 //		if (downFormat == 0) {

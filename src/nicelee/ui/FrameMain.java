@@ -118,7 +118,7 @@ public class FrameMain extends JFrame {
 //		qr.initUI();
 //		qr.dispose();
 		// 预扫描加载类
-		PackageScanLoader.class.toString();
+		PackageScanLoader.validParserClasses.isEmpty();
 
 		System.out.println("如果过度界面显示时间过长，可双击跳过");
 		try {

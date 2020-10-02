@@ -178,7 +178,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} else {
 			// 非普通类型
-			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
+			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=80&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, aid, cid, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
@@ -277,7 +277,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			jObj = new JSONObject(json).getJSONObject("data");
 		} else {
 			// 非普通类型
-			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=16&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
+			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=80&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, aid, cid, qn);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
 					HttpCookies.getGlobalCookies());

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.Executors;
@@ -25,7 +26,7 @@ public class TabDownload extends JPanel implements ActionListener {
 	 */
 	private static final long serialVersionUID = 8714599826187286737L;
 	private static boolean stopAll = false;
-	ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
+	ImageIcon backgroundIcon = Global.backgroundImg;
 
 	JPanel jpContent;
 	JScrollPane jpScorll;
@@ -100,7 +101,24 @@ public class TabDownload extends JPanel implements ActionListener {
 	@Override
 	public void paintComponent(Graphics g) {
 //		// super.paintComponent(g);
-		g.drawImage(backgroundIcon.getImage(), 0, 0, this.getSize().width, this.getSize().height, this.getParent());
+		Image img = backgroundIcon.getImage();
+		int width = img.getWidth(this.getParent());
+		int height = img.getHeight(this.getParent());
+		int xGap = 5;
+		int xCnt = this.getSize().width / (width + xGap) + 1;
+		int yGap = 5;
+		int yCnt = this.getSize().height / (height + yGap) + 1;
+		if( xCnt >= 3) {
+			for(int x = 0; x <= xCnt; x++) {
+				int xp = xGap + (width + xGap) * x;
+				for(int y = 0; y < yCnt; y++) {
+					int yp = yGap + (height + yGap) * y;
+					g.drawImage(backgroundIcon.getImage(), xp, yp, width, height, this.getParent());
+				}
+			}
+		}else {
+			g.drawImage(backgroundIcon.getImage(), 0, 0, this.getSize().width, this.getSize().height, this.getParent());
+		}
 		this.setOpaque(false);
 	}
 

@@ -11,6 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
+
 import nicelee.ui.Global;
 
 public class ConfigUtil {
@@ -138,6 +140,18 @@ public class ConfigUtil {
 		Global.pwdLogin = "pwd".equals(System.getProperty("bilibili.user.login"));
 		Global.pwdAutoLogin = "auto".equals(System.getProperty("bilibili.user.login.pwd"));
 		Global.pwdAutoCaptcha = "true".equals(System.getProperty("bilibili.user.login.pwd.autoCaptcha"));
+		
+		File backImgPNG = new File("config/background.png");
+		if(backImgPNG.exists()) {
+			Global.backgroundImg = new ImageIcon(backImgPNG.getPath());
+		}else {
+			File backImgJPG = new File("config/background.jpg");
+			if(backImgJPG.exists()) {
+				Global.backgroundImg = new ImageIcon(backImgJPG.getPath());
+			}else {
+				Global.backgroundImg = new ImageIcon(Global.class.getResource("/resources/background.png"));
+			}
+		}
 	}
 
 	private static void deleteUserConfig() {

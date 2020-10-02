@@ -40,7 +40,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 	 */
 	private static final long serialVersionUID = -5829023045158490349L;
 	public ImageIcon imgIconHeaderDefault = new ImageIcon(this.getClass().getResource("/resources/header.png"));
-	public ImageIcon backgroundIcon = new ImageIcon(this.getClass().getResource("/resources/background.jpg"));
+	public ImageIcon backgroundIcon = Global.backgroundImg;
 	public JLabel jlHeader;
 	public JComboBox<Object> cmbFavList=new JComboBox<>();
 	String placeHolder = "请在此输入B站 BV/av/ep/ss/md/ml号或地址";
@@ -145,7 +145,24 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 	@Override
 	public void paintComponent(Graphics g) {
 //		// super.paintComponent(g);
-		g.drawImage(backgroundIcon.getImage(), 0, 0, this.getSize().width, this.getSize().height, this.getParent());
+		Image img = backgroundIcon.getImage();
+		int width = img.getWidth(this.getParent());
+		int height = img.getHeight(this.getParent());
+		int xGap = 5;
+		int xCnt = this.getSize().width / (width + xGap) + 1;
+		int yGap = 5;
+		int yCnt = this.getSize().height / (height + yGap) + 1;
+		if( xCnt >= 3) {
+			for(int x = 0; x <= xCnt; x++) {
+				int xp = xGap + (width + xGap) * x;
+				for(int y = 0; y < yCnt; y++) {
+					int yp = yGap + (height + yGap) * y;
+					g.drawImage(backgroundIcon.getImage(), xp, yp, width, height, this.getParent());
+				}
+			}
+		}else {
+			g.drawImage(backgroundIcon.getImage(), 0, 0, this.getSize().width, this.getSize().height, this.getParent());
+		}
 		this.setOpaque(false);
 	}
 	

@@ -3,6 +3,7 @@ package nicelee.bilibili.downloaders.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.downloaders.IDownloader;
@@ -11,6 +12,9 @@ import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.danmuku.Danmuku;
+import nicelee.bilibili.util.danmuku.Xml2Ass;
+import nicelee.ui.Global;
 
 @Bilibili(name = "danmuku-downloader", type = "downloader", note = "弹幕下载")
 public class DanmuDownloader implements IDownloader {
@@ -42,17 +46,21 @@ public class DanmuDownloader implements IDownloader {
 	public boolean download(String url, String avId, int qn, int page) {
 		status = StatusEnum.DOWNLOADING;
 		String result = util.getContent(url, new HttpHeaders().getDanmuHeaders());
-		file = new File(avId + "-" + qn + "-p" + page + ".xml");
+		String dstName = String.format("%s-%d-p%d", avId, qn, page);
+		File xmlfile = new File(Global.savePath, dstName + ".xml");
+		if(file == null) {
+			file = new File(Global.savePath, dstName + ".ass");
+		}
 		if ("".equals(result)) {
 			status = StatusEnum.FAIL;
 			return false;
 		}
 		FileWriter out = null;
 		try {
-			out = new FileWriter(file);
+			out = new FileWriter(xmlfile);
 			out.write(result);
 			status = StatusEnum.SUCCESS;
-			Logger.println(result);
+			//Logger.println(result);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,6 +68,16 @@ public class DanmuDownloader implements IDownloader {
 			return false;
 		} finally {
 			ResourcesUtil.closeQuietly(out);
+			Xml2Ass xml2AssTool = new Xml2Ass();
+			try {
+				// 从xml读取弹幕
+				List<Danmuku> danmuList = xml2AssTool.readXml(xmlfile);
+				// 写入ass文件
+				xml2AssTool.writeAss(danmuList, file);
+				xmlfile.delete();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -77,7 +77,7 @@ public class RepoUtil {
 	 */
 	public static boolean isInRepo(String avRecord) {
 		System.out.println("查询记录" + avRecord);
-		if(avRecord.contains("-800-")) {
+		if(avRecord.contains("-800-") || avRecord.contains("-801-") ) {
 			return false;
 		}
 		if(definitionStrictMode) {

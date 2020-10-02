@@ -203,7 +203,7 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 				String captcha = inl.getCaptchaStr(bytes);
 				jtCaptcha.setText(captcha);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		isRefreshingCaptcha = false;

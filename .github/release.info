@@ -1,3 +1,14 @@
-* 新增b23.tv短链接解析(<https://b23.tv/U9SiGZ>)  
-* 多线程下载时去除Accept-Ranges头部判断
-* 新增内置hosts功能，防止github域名被污染导致版本查询失败。如不需要，请将`config/hosts.config`文件改名或删除。
+* 升级密码登录API为V3版本  
+* 升级弹幕下载保存格式为ass(测试,原来仅下载xml)  
+* 去除原背景图片[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)   
+* 新增自定义背景图片功能(将`background.jpg`或`background.png`放在`config`文件夹下)  
+* 新增自定义解析功能(将实现的`xxxParser.java`放在`parsers`文件夹下)  
+* 新增`真彩 HDR`画质支持(`BV1rp4y1e745`)  
+* ps0: 推荐背景图[唧唧看板娘——唧娜](https://blog.jixiaob.cn/?post=14)  
+* ps1: 紧跟潮流，考虑在以后的某个版本去除对番剧的支持  
+* ps2: 自定义解析功能如果需要指定加载顺序，请将`parsers.ini`放在`parsers`文件夹下，其内容举例：  
+  ```
+  AbstractBaseParser
+  BVParser
+  B23Parser
+  ```

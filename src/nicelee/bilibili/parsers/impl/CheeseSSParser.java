@@ -145,7 +145,7 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 	}
 
 	public int[] getVideoQNList(String avId, String cid, String epId) {
-		String urlFormat = "https://api.bilibili.com/pugv/player/web/playurl?avid=%s&cid=%s&bvid=&qn=%d&type=&otype=json&ep_id=%s&fourk=1&fnver=0&fnval=16";
+		String urlFormat = "https://api.bilibili.com/pugv/player/web/playurl?avid=%s&cid=%s&bvid=&qn=%d&type=&otype=json&ep_id=%s&fourk=1&fnver=0&fnval=80";
 		String url = String.format(urlFormat, avId, cid, 80, epId);
 		HashMap<String, String> headers = new HashMap<>();
 		headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
@@ -171,7 +171,7 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 		if(qn == 800) {
 			return getVideoSubtitleLink(ConvertUtil.Av2Bv(avID), cid, qn);
 		}
-		String urlFormat = "https://api.bilibili.com/pugv/player/web/playurl?avid=%s&cid=%s&bvid=&qn=%d&type=&otype=json&ep_id=%s&fourk=1&fnver=0&fnval=16";
+		String urlFormat = "https://api.bilibili.com/pugv/player/web/playurl?avid=%s&cid=%s&bvid=&qn=%d&type=&otype=json&ep_id=%s&fourk=1&fnver=0&fnval=80";
 		String url = String.format(urlFormat, avID, cid, qn, epID);
 		HashMap<String, String> headers = new HashMap<>();
 		headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");

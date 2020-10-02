@@ -368,6 +368,10 @@ public class CmdUtil {
 		if (fSrt.exists()) {
 			return fSrt;
 		}
+		File fAss = new File(Global.savePath, name + ".ass");
+		if (fAss.exists()) {
+			return fAss;
+		}
 		return null;
 	}
 

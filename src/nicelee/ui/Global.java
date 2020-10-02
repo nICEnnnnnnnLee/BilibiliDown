@@ -5,12 +5,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
+
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v5.7";
+	public static String version = "v5.8";
 	public static boolean themeDefault = true;
 	public static boolean btnStyle = true;
 	public static FrameWaiting frWaiting;
@@ -18,6 +20,8 @@ public class Global {
 	
 	public static boolean isAlertIfDownloded = true;
 	public static int maxAlertPrompt = 5;
+	
+	public static ImageIcon backgroundImg;
 	// 下载相关
 	public final static int MP4 = 0;
 	public final static int FLV = 1;

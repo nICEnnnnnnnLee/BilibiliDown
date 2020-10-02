@@ -16,6 +16,7 @@ Bilibili 视频下载器，用于下载B站视频/相册。
 + 支持UI界面(自认为是傻瓜式操作)  
 + 支持扫码/密码登录(能看=能下，反过来也一样)  
 + 支持各种链接解析(直接输入BVXXX/avXXX/epXXX/ssXXX/mdXXX，或者各种网页链接， V4.3 新增画廊/相簿解析)
++ 支持自定义各种链接解析(V5.8新增)
 + 支持多p下载!(看了看部分别人的作品, 听说有的只支持单p?)  
 + 支持收藏夹下载!!  
 + 支持稍后再看下载!!  
@@ -148,6 +149,7 @@ Bilibili 视频下载器，用于下载B站视频/相册。
   
 | 清晰度  | qn值 |
 | ------------- | ------------- |
+| HDR  | 125 |
 | 4K  | 120 |
 | 1080P60  | 116 |
 | 1080P+  | 112 |
@@ -216,6 +218,30 @@ bilibili.cc.lang = en-US
 + 关于语言的配置，详见[此处](/release/wiki/langs.txt)  
 </details>
 
+<details>
+<summary>关于自定义背景图片</summary>
+
++ 将`background.jpg`或`background.png`放在`config`文件夹下即可  
++ 推荐背景图[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
++ 推荐背景图[唧唧看板娘——唧娜](https://blog.jixiaob.cn/?post=14)  
+</details>
+
+<details>
+<summary>关于自定义各种链接解析</summary>
+
++ 一般来说，将各种实现的`xxxParser.java`放在`parsers`文件夹下即可  
++ 如果自定实现的类与已有的是相同名称，请确保它在已有的类之前加载。  
+而为了实现这个，需要指定加载顺序，需要在`parsers`文件夹下创建配置`parsers.ini`。举例：   
+```
+假设你自定义实现了BVParser 和 B23Parser，其中B23Parser继承BVParser。  
+如果先尝试加载B23Parser，那么它在加载时会搜寻其父类，于是会找到现有的BVParser。  
+其结果是你自定义的BVParser没用了，自定义的B23Parser也可能因此而存在逻辑问题。  
+解决方案是，在parsers文件夹下创建parsers.ini，将顺序指定，其内容为：
+BVParser
+B23Parser
+```
+</details>
+
 ## :smile:第三方库使用声明  
 * 账号密码登录实现参考了[Bilibili-Toolkit](https://github.com/Hsury/Bilibili-Toolkit)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/Hsury/Bilibili-Toolkit/blob/master/LICENSE)  
 * AV和BV转换参考了[AV-BV-Convert](https://github.com/CCRcmcpe/AV-BV-Convert)[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/CCRcmcpe/AV-BV-Convert/blob/master/LICENSE)  
@@ -224,10 +250,7 @@ bilibili.cc.lang = en-US
 * 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
 * 内置hosts文件使用了[GithubHost](https://github.com/ButterAndButterfly/GithubHost)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/ButterAndButterfly/GithubHost/blob/master/LICENSE.txt)  
 * ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)  
-* 图形验证码识别API调用了[https://bili.dev:2233/captcha](https://github.com/Hsury/Bilibili-Toolkit/#图形验证码识别api)
-
-## :smile:媒体素材使用声明             
-* [主页背景图](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/src/resources/background.jpg?raw=true)取自[b站壁纸娘 - 22&33](https://h.bilibili.com/597708)  
+* 图形验证码识别API调用了[https://bili.dev:2233/captcha](https://github.com/Hsury/Bilibili-Toolkit/#图形验证码识别api) 暂时失效，具体看情况  
 
 ## :smile:Linux/Mac用户请看过来  
 + Mac用户可参考[简单说下如何在mac下跑起来](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/32)  

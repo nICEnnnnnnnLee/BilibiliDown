@@ -1,4 +1,8 @@
 ## UPDATE  
+* V5.9
+	* 去除番剧支持  
+	* 优化 [issue#46](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/46) 自定义文件名提供数字av号选择  
+	* 修复 [issue#47](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/47) 修复标题中含有换行符、退格符时无法重命名的情况  
 * V5.8
     * 升级密码登录API为V3版本  
     * 升级弹幕下载保存格式为ass(测试,原来仅下载xml)  

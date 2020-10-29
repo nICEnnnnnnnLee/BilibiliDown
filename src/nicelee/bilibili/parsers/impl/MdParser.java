@@ -8,7 +8,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 
-@Bilibili(name = "MdParser")
+//@Bilibili(name = "MdParser")
 public class MdParser extends SSParser {
 
 	private final static Pattern pattern = Pattern.compile("md[0-9]+");

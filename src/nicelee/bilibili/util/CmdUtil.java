@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.check.FlvMerger;
+import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
 import nicelee.ui.thread.StreamManager;
 
@@ -375,7 +376,8 @@ public class CmdUtil {
 		return null;
 	}
 
-	// ## avId - av号 e.g. av1234567
+	// ## avId - bv号 e.g. BV1BJ411E7uM
+	// ## numAvId - 老的数字av号 e.g. av1234567 中的1234567
 	// ## pAv - av 的第几个视频 e.g. p1/p2
 	// ## pDisplay - 合集的第几个视频 e.g. pn1/pn2
 	// ## qn - 清晰度值 e.g. 32/64/80
@@ -388,7 +390,7 @@ public class CmdUtil {
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
 	static Pattern splitUnit = Pattern.compile(
-			"avId|pAv|pDisplay|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
+			"avId|numAvId|pAv|pDisplay|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
 			String clipTitle, String listName, String listOwnerName) {
@@ -447,8 +449,14 @@ public class CmdUtil {
 				}
 //				Logger.println();
 			} else {
-				// 加入匹配单位对应的值
-				sb.append(paramMap.get(matcher.group()));
+				if("numAvId".equals(matcher.group())) {
+					// 计算BVid对应的AVid，并加入
+					String bvId = paramMap.get("avId");
+					long numAvId = ConvertUtil.Bv2Av(bvId);
+					sb.append(numAvId);
+				}else
+					// 加入匹配单位对应的值
+					sb.append(paramMap.get(matcher.group()));
 			}
 			// 改变指针位置
 			pointer = matcher.end();
@@ -456,6 +464,6 @@ public class CmdUtil {
 		// 加入最后不匹配单位的部分
 		sb.append(formatStr.substring(pointer));
 		// 去掉文件名称的非法字符 |:*?<>"$
-		return sb.toString().replaceAll("[|:*?<>\"$]", "_");
+		return sb.toString().replaceAll("[\b\\r\\n|:*?<>\"$]", "_");
 	}
 }

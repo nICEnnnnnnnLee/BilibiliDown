@@ -12,7 +12,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
-@Bilibili(name = "ss")
+//@Bilibili(name = "ss")
 public class SSParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("(?!/cheese/play/ss[0-9]+)ss[0-9]+");

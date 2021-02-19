@@ -3,6 +3,7 @@ package nicelee.ui.item;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
@@ -14,8 +15,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
+import nicelee.bilibili.API;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.util.ConfigUtil;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.VersionManagerUtil;
@@ -89,6 +92,7 @@ public class MJMenuBar extends JMenuBar {
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
 		JMenuItem closeAllMenuItem = new JMenuItem("关闭全部Tab页");
 		JMenuItem doMultiDownMenuItem = new JMenuItem("批量下载Tab页");
+		JMenuItem logout = new JMenuItem("退出登录");
 		operMenu.add(convertRepo);
 		operMenu.add(convertRepoBreak);
 		operMenu.addSeparator();
@@ -97,7 +101,9 @@ public class MJMenuBar extends JMenuBar {
 		operMenu.addSeparator();
 		operMenu.add(closeAllMenuItem);
 		operMenu.add(doMultiDownMenuItem);
-
+		operMenu.addSeparator();
+		operMenu.add(logout);
+		
 		/**
 		 * 创建二级 配置 子菜单
 		 */
@@ -200,7 +206,34 @@ public class MJMenuBar extends JMenuBar {
 				}
 			}
 		});
-
+		
+		// 退出登录
+		logout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(Global.downloadTab.activeTask > 0) {
+					JOptionPane.showMessageDialog(null, "当前仍然存在下载任务！", "请注意!!",
+							JOptionPane.WARNING_MESSAGE);
+				}else if(!Global.isLogin){
+					JOptionPane.showMessageDialog(null, "当前没有登录！", "请注意!!",
+							JOptionPane.WARNING_MESSAGE);
+				}else {
+					API.logout();
+					new File("./config/cookies.config").delete();
+					// 置空全局cookie
+					HttpCookies.setGlobalCookies(null);
+					// 更改登录状态
+					Global.isLogin = false;
+					// 初始化登录图标
+					Global.index.jlHeader.setToolTipText("点击登录");
+					Global.index.jlHeader.setIcon(Global.index.imgIconHeaderDefault);
+					// 初始化收藏夹
+					Global.index.cmbFavList.removeAllItems();
+					Global.index.cmbFavList.addItem("---我的收藏夹---");
+				}
+			}
+		});
+		
 		// 作品信息
 		infoMenuItem.addActionListener(new ActionListener() {
 			@Override

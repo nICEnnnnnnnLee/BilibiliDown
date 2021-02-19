@@ -295,18 +295,20 @@ public class INeedLogin {
 	 */
 	public String login(String userName, String pwd, String captcha) {
 		try {
-			userName = URLEncoder.encode(userName, "UTF-8"); // 账号没有特殊字符，OK
-
+			if(!userName.contains("%40"))
+				userName = URLEncoder.encode(userName, "UTF-8"); // 账号没有特殊字符，OK
 			String url = "https://passport.bilibili.com/api/oauth2/getKey";
 			String param = String.format("appkey=%s", appKey);
 			String sign = MD5.encrypt(param + salt);
 			param += "&sign=" + sign;
 			HashMap<String, String> headers = new HashMap<String, String>();
+			headers.put("User-Agent", biliUserAgent);
+			headers.put("Content-type", "application/x-www-form-urlencoded");
 
 			String result = util.postContent(url, headers, param);
 			Logger.println(result);
 			JSONObject obj = new JSONObject(result).getJSONObject("data");
-			Logger.println(result);
+			//Logger.println(result);
 			String hash = obj.optString("hash", "");
 			if (hash.isEmpty()) {
 				return "服务器繁忙，登录失败";
@@ -316,19 +318,23 @@ public class INeedLogin {
 
 			String encryptPwd = encrypt(hash + pwd, pubKey);
 			encryptPwd = URLEncoder.encode(encryptPwd, "UTF-8");
-			url = "https://passport.bilibili.com/api/v3/oauth2/login";
-            param = String.format("access_key=&actionKey=appkey&appkey=%s&build=6040500" + 
-            		"&captcha=&challenge=&channel=bili&cookies=&device=phone&mobi_app=android" +
-            		"&password=%s&permission=ALL&platform=android&seccode=&subid=1&ts=%d&username=%s&validate=",
-                    appKey, encryptPwd, System.currentTimeMillis()/1000, userName);
-            param = param + "&sign=" + MD5.encrypt(param + salt);
-            result = util.postContent(url, headers, param);
+			//url = "https://passport.bilibili.com/api/v3/oauth2/login";
+			url = "https://passport.bilibili.com/x/passport-login/oauth2/login";
+			param = String.format("access_key=&actionKey=appkey&appkey=%s&build=6040500"
+					+ "&captcha=%s&challenge=&channel=bili&cookies=&device=phone&mobi_app=android"
+					+ "&password=%s&permission=ALL&platform=android&seccode=&subid=1&ts=%d&username=%s&validate=",
+					appKey, captcha, encryptPwd, System.currentTimeMillis() / 1000, userName);
+			param = param + "&sign=" + MD5.encrypt(param + salt);
+			result = util.postContent(url, headers, param);
 			Logger.println(result);
 			JSONObject response = new JSONObject(result);
 			if (response.optInt("code") == 0) {
+				JSONObject data = response.getJSONObject("data");
+				if (data.optInt("status") == 2) {
+					return data.optString("message", "未知错误，返回信息中没有错误描述");
+				}
 				iCookies = new ArrayList<HttpCookie>();
-				JSONArray cookieInfo = response.getJSONObject("data").getJSONObject("cookie_info")
-						.getJSONArray("cookies");
+				JSONArray cookieInfo = data.getJSONObject("cookie_info").getJSONArray("cookies");
 				for (int i = 0; i < cookieInfo.length(); i++) {
 					JSONObject cc = cookieInfo.getJSONObject(i);
 					HttpCookie cCookie = new HttpCookie(cc.getString("name"), cc.getString("value"));

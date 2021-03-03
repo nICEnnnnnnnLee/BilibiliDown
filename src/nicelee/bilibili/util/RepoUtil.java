@@ -34,7 +34,7 @@ public class RepoUtil {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
 		if(fRepo == null || refresh) {
 			fRepo = new File("config/repo.config");
-			standardAvPattern = Pattern.compile("^((?:av|h|BV|season)[0-9a-zA-Z_]+)-([0-9]+)(-p[0-9]+)$");
+			standardAvPattern = Pattern.compile("^((?:av|h|BV|season|edd_)[0-9a-zA-Z_]+)-([0-9]+)(-p[0-9]+)$");
 			downRepo = new CopyOnWriteArraySet<String>();
 		}
 		// 先初始化downRepo

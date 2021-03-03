@@ -29,6 +29,7 @@ import javax.swing.JTextField;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.model.FavList;
 import nicelee.ui.item.MJButton;
+import nicelee.ui.item.MJTabVideo;
 import nicelee.ui.item.MJTextField;
 import nicelee.ui.thread.GetVideoDetailThread;
 import nicelee.ui.thread.LoginThread;
@@ -224,32 +225,11 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 		}
 		// 作品页
 		JLabel label = new JLabel("正在加载中...");
-		final TabVideo tab = new TabVideo(label);
+//		final TabVideo tab = new TabVideo(label);
+		final TabVideo tab = new MJTabVideo(jTabbedpane, label);
 		jTabbedpane.addTab("作品页", tab);
 		jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
 		GetVideoDetailThread th = new GetVideoDetailThread(tab, avId);
-		label.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() >= 2) {
-					jTabbedpane.remove(tab);
-				} else {
-					jTabbedpane.setSelectedComponent(tab);
-				}
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-		});
 		th.start();
 	}
 

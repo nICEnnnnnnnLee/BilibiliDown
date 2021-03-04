@@ -1,4 +1,12 @@
 ## UPDATE  
+* V6.0
+	* 添加登出(即注销登录状态)功能  
+    * 添加下载完成后点赞功能(**【测试】**默认关闭，`bilibili.download.thumbUp = true`可打开)
+    * 修复 [issue#53](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/53) 修复用户名密码登录失败的问题  
+    * 增加`@Bilibili`注解的weight权重属性，使得解析器按权重顺序生效  
+    * 修复一个bug，该bug使得某些配置下视频id号不能转为数字时会出现错误
+    * 标签页增加了右键菜单，可实现批量关闭功能
+    * 标签页增加了右键菜单，可实现批量下载功能(优先清晰度跟随Tab默认值`bilibili.tab.download.qn`)
 * V5.9
 	* 去除番剧支持  
 	* 优化 [issue#46](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/46) 自定义文件名提供数字av号选择  

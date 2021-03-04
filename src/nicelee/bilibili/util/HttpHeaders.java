@@ -219,6 +219,34 @@ public class HttpHeaders {
 	}
 
 	/**
+	 * 该Header用于用户操作，如点赞
+	 */
+	public HashMap<String, String> getActionHeaders(String avId) {
+		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("Accept", "application/json, text/plain, */*");
+		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
+		headerMap.put("Accept-Encoding", "gzip, deflate, br");
+		headerMap.put("Content-Type", "application/x-www-form-urlencoded");
+		headerMap.put("Origin", "https://www.bilibili.com");
+		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);
+		return headerMap;
+	}
+	
+	/**
+	 * 该Header配置用于登出
+	 */
+	public HashMap<String, String> getLogoutHeaders() {
+		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("Accept", "application/json, text/plain, */*");
+		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
+		headerMap.put("Accept-Encoding", "gzip, deflate, br");
+		headerMap.put("Content-Type", "application/x-www-form-urlencoded");
+		headerMap.put("Origin", "https://www.bilibili.com");
+		headerMap.put("Referer", "https://www.bilibili.com/");
+		return headerMap;
+	}
+	
+	/**
 	 * 该Header配置用于通用弹幕
 	 */
 	public HashMap<String, String> getDanmuHeaders() {

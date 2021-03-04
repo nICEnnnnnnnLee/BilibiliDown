@@ -450,10 +450,16 @@ public class CmdUtil {
 //				Logger.println();
 			} else {
 				if("numAvId".equals(matcher.group())) {
-					// 计算BVid对应的AVid，并加入
-					String bvId = paramMap.get("avId");
-					long numAvId = ConvertUtil.Bv2Av(bvId);
-					sb.append(numAvId);
+					try {
+						// 计算BVid对应的AVid，并加入
+						String bvId = paramMap.get("avId");
+						long numAvId = ConvertUtil.Bv2Av(bvId);
+						sb.append(numAvId);
+					}catch (Exception e) {
+						Logger.println("您当前下载的并不能找到对应的数字av号，请正确设置");
+						sb.append(0);
+					}
+					
 				}else
 					// 加入匹配单位对应的值
 					sb.append(paramMap.get(matcher.group()));

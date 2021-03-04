@@ -2,6 +2,8 @@ package nicelee.bilibili.parsers;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +40,15 @@ public class InputParser implements IInputParser, IParamSetter {
 				}
 
 			}
+			// 按权重排序,越大越优先
+			Collections.sort(parsers, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					int bili1 = o1 == null? 0 : o1.getClass().getAnnotation(Bilibili.class).weight();
+					int bili2 = o2 == null? 0 : o2.getClass().getAnnotation(Bilibili.class).weight();
+					return bili2 - bili1;
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

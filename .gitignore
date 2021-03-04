@@ -20,5 +20,12 @@ simplelogger.properties
 /target
 /config
 /release/ffmpeg
+/release/config
 /release/zip
+/release/wiki
+/release/parsers1
+/release/parsers
 /.idea
+/parsers1
+/parsers
+/update

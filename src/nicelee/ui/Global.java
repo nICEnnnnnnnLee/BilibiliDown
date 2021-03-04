@@ -12,7 +12,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v5.9";
+	public static String version = "v6.0";
 	public static boolean themeDefault = true;
 	public static boolean btnStyle = true;
 	public static FrameWaiting frWaiting;
@@ -26,6 +26,8 @@ public class Global {
 	public final static int MP4 = 0;
 	public final static int FLV = 1;
 
+	public volatile static boolean thumbUpAfterDownloaded = false; // 下载完成后是否给作品点赞
+	
 	public static int maxFailRetry = 3; // 下载异常后重试次数
 	public static int downloadFormat = MP4; //优先下载格式，如不存在该类型的源，那么将默认转为下载另一种格式
 	public static String savePath = "./download/"; // 下载文件保存路径

@@ -16,6 +16,8 @@ public @interface Bilibili {
 	
 	String type() default "parser";
 	
+	int weight() default 66;
+	
 	String ifLoad() default "";
 	
 	String note() default "";

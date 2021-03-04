@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
+import nicelee.bilibili.API;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.model.ClipInfo;
@@ -124,6 +125,9 @@ public class DownloadRunnable implements Runnable {
 						// 下载成功后保存到仓库
 						if(Global.saveToRepo) {
 							RepoUtil.appendAndSave(record);
+						}
+						if(Global.thumbUpAfterDownloaded && Global.isLogin && avid.startsWith("BV")) {
+							API.like(avid);
 						}
 						CmdUtil.convertOrAppendCmdToRenameBat(avid_qn, formattedTitle, page);
 					}

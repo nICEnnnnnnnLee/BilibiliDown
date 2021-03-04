@@ -2,9 +2,12 @@ package nicelee.bilibili.downloaders;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import nicelee.bilibili.PackageScanLoader;
+import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
@@ -33,6 +36,15 @@ public class Downloader implements IDownloader {
 				downloader.init(util);
 				downloaders.add(downloader);
 			}
+			// 按权重排序,越大越优先
+			Collections.sort(downloaders, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					int bili1 = o1 == null? 0 : o1.getClass().getAnnotation(Bilibili.class).weight();
+					int bili2 = o2 == null? 0 : o2.getClass().getAnnotation(Bilibili.class).weight();
+					return bili2 - bili1;
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

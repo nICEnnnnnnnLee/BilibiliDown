@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.Logger;
+import nicelee.ui.Audio;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
 
@@ -21,6 +22,9 @@ public class MonitoringThread extends Thread {
 		Color lightRed = new Color(255, 71, 10);
 		Color lightPink = new Color(255, 122, 122);
 		Color lightOrange = new Color(255, 207, 61);
+		if(Global.playSoundAfterMissionComplete)
+			Audio.init();
+		int lastActiveTaskCount = 0;
 		while (true) {
 			int MAX_FAIL_CNT = Global.maxFailRetry;
 			//每一次while循环， 统计一次任务状态， 并在UI上更新
@@ -156,6 +160,11 @@ public class MonitoringThread extends Thread {
 			//System.out.println("当前计算总任务数： " + totalTask);
 			Global.downloadTab.refreshStatus(totalTask, activeTask, pauseTask, doneTask, queuingTask);
 			//Global.activeTask = activeTask;
+			//Logger.printf("lastActiveTaskCount: %d, activeTask: %d\n", lastActiveTaskCount, activeTask);
+			if(Global.playSoundAfterMissionComplete && lastActiveTaskCount > 0 && activeTask == 0) {
+				Audio.play();
+			}
+			lastActiveTaskCount = activeTask;
 			try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {

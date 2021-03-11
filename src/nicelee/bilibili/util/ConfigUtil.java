@@ -85,6 +85,7 @@ public class ConfigUtil {
 		Global.menu_qn = System.getProperty("bilibili.menu.download.qn");
 		Global.tab_qn = System.getProperty("bilibili.tab.download.qn");
 		//下载设置相关
+		Global.playSoundAfterMissionComplete = "true".equals(System.getProperty("bilibili.download.playSound"));
 		Global.thumbUpAfterDownloaded = "true".equals(System.getProperty("bilibili.download.thumbUp"));
 		int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
 		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);

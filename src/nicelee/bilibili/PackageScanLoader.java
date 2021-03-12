@@ -8,6 +8,8 @@ import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -74,6 +76,23 @@ public abstract class PackageScanLoader {
 			}
 		};
 		pLoader.scanRoot("nicelee.bilibili");
+		// 按权重排序,越大越优先
+		Collections.sort(validParserClasses, new Comparator<Class<?>>() {
+			@Override
+			public int compare(Class<?> o1, Class<?> o2) {
+				int bili1 = o1 == null? 0 : o1.getAnnotation(Bilibili.class).weight();
+				int bili2 = o2 == null? 0 : o2.getAnnotation(Bilibili.class).weight();
+				return bili2 - bili1;
+			}
+		});
+		Collections.sort(validDownloaderClasses, new Comparator<Class<?>>() {
+			@Override
+			public int compare(Class<?> o1, Class<?> o2) {
+				int bili1 = o1 == null? 0 : o1.getAnnotation(Bilibili.class).weight();
+				int bili2 = o2 == null? 0 : o2.getAnnotation(Bilibili.class).weight();
+				return bili2 - bili1;
+			}
+		});
 	}
 
 	/**

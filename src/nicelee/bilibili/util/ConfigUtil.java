@@ -143,19 +143,27 @@ public class ConfigUtil {
 		Global.pwdAutoLogin = "auto".equals(System.getProperty("bilibili.user.login.pwd"));
 		Global.pwdAutoCaptcha = "true".equals(System.getProperty("bilibili.user.login.pwd.autoCaptcha"));
 		
-		File backImgPNG = new File("config/background.png");
-		if(backImgPNG.exists()) {
+		File backImgPNG = search("config/background.png");
+		if(backImgPNG != null) {
 			Global.backgroundImg = new ImageIcon(backImgPNG.getPath());
 		}else {
-			File backImgJPG = new File("config/background.jpg");
-			if(backImgJPG.exists()) {
+			File backImgJPG = search("config/background.jpg");
+			if(backImgJPG != null) {
 				Global.backgroundImg = new ImageIcon(backImgJPG.getPath());
 			}else {
 				Global.backgroundImg = new ImageIcon(Global.class.getResource("/resources/background.png"));
 			}
 		}
 	}
-
+	public static File search(String path) {
+		File file = new File(path);
+		if(file.exists())
+			return file;
+		file = new File(baseDirectory(), path);
+		if(file.exists())
+			return file;
+		return null;
+	}
 	private static void deleteUserConfig() {
 		File user = new File("config/user.config");
 		if(user.exists()) {

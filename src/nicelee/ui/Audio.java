@@ -1,11 +1,14 @@
 package nicelee.ui;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
+import nicelee.bilibili.util.ConfigUtil;
 
 public class Audio {
 
@@ -17,12 +20,16 @@ public class Audio {
 
 	public static void init() {
 		try {
-			// 98KB 比较小可以放进内存常驻
-			AudioInputStream in = AudioSystem.getAudioInputStream(Audio.class.getResource("/resources/nice.wav"));
+			AudioInputStream in = null;
+			File wav = ConfigUtil.search("config/notice.wav");
+			if (wav != null)
+				in = AudioSystem.getAudioInputStream(wav.toURI().toURL());
+			else
+				in = AudioSystem.getAudioInputStream(Audio.class.getResource("/resources/notice.wav"));
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte[] buffer = new byte[1024*4];
+			byte[] buffer = new byte[1024 * 4];
 			int len = in.read(buffer);
-			while(len > -1) {
+			while (len > -1) {
 				out.write(buffer, 0, len);
 				len = in.read(buffer);
 			}

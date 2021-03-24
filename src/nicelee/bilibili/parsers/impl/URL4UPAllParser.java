@@ -1,5 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,9 +18,12 @@ import nicelee.bilibili.util.Logger;
 public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/? *$|\\?)");
-	private final static Pattern patternTid = Pattern.compile("tid=([0-9]+)");
+	private final static Pattern patternTid = Pattern.compile("(tid|order|keyword)=([^=&]+)");
 	private String spaceID;
-	private String tid = "0"; // 全部 0, 音乐 3...
+	private HashMap<String, String> params;
+//	private String tid = "0"; // 全部 0, 音乐 3...
+//	private String order = "pubdate"; // 最新发布 pubdate 最多点击click 最多收藏stow
+//	private String keyword = ""; // 
 	
 	public URL4UPAllParser(Object... obj) {
 		super(obj);
@@ -31,9 +35,13 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 		if (matcher.find()) {
 			System.out.println("匹配UP主主页全部视频,返回 av1 av2 av3 ...");
 			spaceID = matcher.group(1);
+			params = new HashMap<>();
+			params.put("tid", "0");
+			params.put("order", "pubdate");
+			params.put("keyword", "");
 			Matcher m = patternTid.matcher(input);
-			if(m.find())
-				tid =m.group(1);
+			while(m.find())
+				params.put(m.group(1), m.group(2).trim());
 			return true;
 		} else {
 			return false;
@@ -66,8 +74,8 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 		boolean getVideoLink = (boolean) obj[1];
 		try {
 			//String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
-			String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=pubdate&jsonp=jsonp";
-			String url = String.format(urlFormat, spaceID, API_PMAX, tid, page);
+			String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&jsonp=jsonp";
+			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, params.get("keyword"), params.get("order"));
 			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"));
 			System.out.println(url);
 			System.out.println(json);

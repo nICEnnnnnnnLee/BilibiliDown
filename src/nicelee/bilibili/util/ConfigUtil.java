@@ -85,6 +85,7 @@ public class ConfigUtil {
 		Global.menu_qn = System.getProperty("bilibili.menu.download.qn");
 		Global.tab_qn = System.getProperty("bilibili.tab.download.qn");
 		//下载设置相关
+		Global.playSoundAfterMissionComplete = "true".equals(System.getProperty("bilibili.download.playSound"));
 		Global.thumbUpAfterDownloaded = "true".equals(System.getProperty("bilibili.download.thumbUp"));
 		int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
 		Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
@@ -142,19 +143,27 @@ public class ConfigUtil {
 		Global.pwdAutoLogin = "auto".equals(System.getProperty("bilibili.user.login.pwd"));
 		Global.pwdAutoCaptcha = "true".equals(System.getProperty("bilibili.user.login.pwd.autoCaptcha"));
 		
-		File backImgPNG = new File("config/background.png");
-		if(backImgPNG.exists()) {
+		File backImgPNG = search("config/background.png");
+		if(backImgPNG != null) {
 			Global.backgroundImg = new ImageIcon(backImgPNG.getPath());
 		}else {
-			File backImgJPG = new File("config/background.jpg");
-			if(backImgJPG.exists()) {
+			File backImgJPG = search("config/background.jpg");
+			if(backImgJPG != null) {
 				Global.backgroundImg = new ImageIcon(backImgJPG.getPath());
 			}else {
 				Global.backgroundImg = new ImageIcon(Global.class.getResource("/resources/background.png"));
 			}
 		}
 	}
-
+	public static File search(String path) {
+		File file = new File(path);
+		if(file.exists())
+			return file;
+		file = new File(baseDirectory(), path);
+		if(file.exists())
+			return file;
+		return null;
+	}
 	private static void deleteUserConfig() {
 		File user = new File("config/user.config");
 		if(user.exists()) {

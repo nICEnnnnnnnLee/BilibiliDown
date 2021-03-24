@@ -1,8 +1,9 @@
-* 添加登出(即注销登录状态)功能  
-* 添加下载完成后点赞功能(**【测试】**默认关闭，`bilibili.download.thumbUp = true`可打开)
-* 修复 [issue#53](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/53) 修复用户名密码登录失败的问题  
-* 增加`@Bilibili`注解的weight权重属性，使得解析器按权重顺序生效  
-* 修复一个bug，该bug使得某些配置下视频id号不能转为数字时会出现错误
-* 标签页增加了右键菜单，可实现批量关闭功能
-* 标签页增加了右键菜单，可实现批量下载功能(优先清晰度跟随Tab默认值`bilibili.tab.download.qn`)
-* ps:每次都去右上角点菜单挺麻烦的:flushed:
+* 修复: 网络请求时去掉br支持，解决有概率返回乱码的问题[issue#58](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/58)   
+* 优化：`UP主所有视频`链接支持`分区`、`关键字搜索`、`按更新时间、播放次数、收藏量排序`。详见[issue#57](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/57)
+* 全部任务完成后可添加提示音，且支持自定义提示音  
+    + 打开该功能`bilibili.download.playSound = true`
+    + 将音频文件更名`notice.wav`并放入`config`文件夹即可  
+    + 注意：只支持wav格式  
+    + 注意：提示音播放在监视进程中进行，时间过长将阻塞进程，影响体验   
+* 优化: 将权重排序移至加载完毕后进行，而不必每次都要排序一遍  
+* 修复: 图片验证码接口增加`BiliDroid`字段  

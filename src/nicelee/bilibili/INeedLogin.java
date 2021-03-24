@@ -276,7 +276,9 @@ public class INeedLogin {
 		StringBuilder payload = new StringBuilder("{\"image\":\"").append(Base64.getEncoder().encodeToString(bytes))
 				.append("\"}");
 		Logger.println(payload);
-		String response = util.postContent(url, new HashMap<>(), payload.toString());
+		HashMap<String, String> headers = new HashMap<>();
+		headers.put("User-Agent", "BiliDroid");
+		String response = util.postContent(url, headers, payload.toString());
 		Logger.println(response);
 		JSONObject obj = new JSONObject(response);
 		if (obj.getBoolean("success")) {

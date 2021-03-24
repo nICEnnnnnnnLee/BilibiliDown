@@ -73,7 +73,7 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 			headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
 			headers.put("Accept", "application/json, text/plain, */*");
 			headers.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
-			headers.put("Accept-Encoding", "gzip, deflate, br");
+			headers.put("Accept-Encoding", "gzip, deflate");
 			headers.put("Origin", "https://www.bilibili.com");
 			headers.put("Referer", "https://www.bilibili.com/cheese/play/ss" + ssID);
 
@@ -151,7 +151,7 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 		headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
 		headers.put("Accept", "application/json, text/plain, */*");
 		headers.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
-		headers.put("Accept-Encoding", "gzip, deflate, br");
+		headers.put("Accept-Encoding", "gzip, deflate");
 		headers.put("Origin", "https://www.bilibili.com");
 		headers.put("Referer", "https://www.bilibili.com/cheese/play/ss" + ssID);
 		String json = util.getContent(url, headers, HttpCookies.getGlobalCookies());
@@ -177,7 +177,7 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 		headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
 		headers.put("Accept", "application/json, text/plain, */*");
 		headers.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
-		headers.put("Accept-Encoding", "gzip, deflate, br");
+		headers.put("Accept-Encoding", "gzip, deflate");
 		headers.put("Origin", "https://www.bilibili.com");
 		headers.put("Referer", "https://www.bilibili.com/cheese/play/ss" + ssID);
 		String json = util.getContent(url, headers, HttpCookies.getGlobalCookies());

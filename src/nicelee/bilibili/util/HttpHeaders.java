@@ -33,7 +33,7 @@ public class HttpHeaders {
 		if (userInfoHeaderMap == null) {
 			userInfoHeaderMap = new HashMap<String, String>();
 			userInfoHeaderMap.put("Accept", "application/json, text/plain, */*");
-			userInfoHeaderMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+			userInfoHeaderMap.put("Accept-Encoding", "gzip, deflate");
 			userInfoHeaderMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 			userInfoHeaderMap.put("Connection", "keep-alive");
 			userInfoHeaderMap.put("Origin", "https://message.bilibili.com");
@@ -52,7 +52,7 @@ public class HttpHeaders {
 		if (loginAuthHeaderMap == null) {
 			loginAuthHeaderMap = new HashMap<String, String>();
 			loginAuthHeaderMap.put("Accept", "application/json, text/javascript, */*; q=0.01");
-			loginAuthHeaderMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+			loginAuthHeaderMap.put("Accept-Encoding", "gzip, deflate");
 			loginAuthHeaderMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 			loginAuthHeaderMap.put("Connection", "keep-alive");
 			loginAuthHeaderMap.put("Host", "passport.bilibili.com");
@@ -70,7 +70,7 @@ public class HttpHeaders {
 		if (loginAuthVaHeaderMap == null) {
 			loginAuthVaHeaderMap = new HashMap<String, String>();
 			loginAuthVaHeaderMap.put("Accept", "application/json, text/javascript, */*; q=0.01");
-			loginAuthVaHeaderMap.put("Accept-Encoding", "gzip, deflate, br");
+			loginAuthVaHeaderMap.put("Accept-Encoding", "gzip, deflate");
 			loginAuthVaHeaderMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 			loginAuthVaHeaderMap.put("Connection", "keep-alive");
 			loginAuthVaHeaderMap.put("Host", "passport.bilibili.com");
@@ -122,7 +122,7 @@ public class HttpHeaders {
 	 */
 	public HashMap<String, String> getBiliJsonAPIHeaders(String avId) {
 		headerMap.put("Accept", "*/*");
-		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Connection", "keep-alive");
 		headerMap.put("Host", "api.bilibili.com");
@@ -137,7 +137,7 @@ public class HttpHeaders {
 	 */
 	public HashMap<String, String> getBiliAppJsonAPIHeaders() {
 		headerMap.put("Accept", "*/*");
-		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Connection", "keep-alive");
 		headerMap.put("Host", "app.bilibili.com");
@@ -155,7 +155,7 @@ public class HttpHeaders {
 		if (mobileHeaderMap == null) {
 			mobileHeaderMap = new HashMap<String, String>();
 			mobileHeaderMap.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-			mobileHeaderMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+			mobileHeaderMap.put("Accept-Encoding", "gzip, deflate");
 			mobileHeaderMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 			mobileHeaderMap.put("Connection", "keep-alive");
 			mobileHeaderMap.put("Cache-Control", "max-age=0");
@@ -171,7 +171,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getAllFavListHeaders(long personId) {
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Accept", "application/json, text/plain, */*");
-		headerMap.put("Accept-Encoding", "gzip, deflate, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Connection", "keep-alive");
 		headerMap.put("Host", "api.bilibili.com");
@@ -187,7 +187,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getFavListHeaders(String personId, String favID) {
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Accept", "application/json, text/plain, */*");
-		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Cache-Control", "no-cache");
 		headerMap.put("Pragma", "no-cache");
@@ -206,7 +206,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getFavListHeaders(String favID) {
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Accept", "application/json, text/plain, */*");
-		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Cache-Control", "no-cache");
 		headerMap.put("Pragma", "no-cache");
@@ -225,7 +225,7 @@ public class HttpHeaders {
 		headerMap.put("User-Agent", UA_PC_Sogo);
 		headerMap.put("Accept", "application/json, text/plain, */*");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
-		headerMap.put("Accept-Encoding", "gzip, deflate, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Content-Type", "application/x-www-form-urlencoded");
 		headerMap.put("Origin", "https://www.bilibili.com");
 		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);
@@ -239,7 +239,7 @@ public class HttpHeaders {
 		headerMap.put("User-Agent", UA_PC_Sogo);
 		headerMap.put("Accept", "application/json, text/plain, */*");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
-		headerMap.put("Accept-Encoding", "gzip, deflate, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Content-Type", "application/x-www-form-urlencoded");
 		headerMap.put("Origin", "https://www.bilibili.com");
 		headerMap.put("Referer", "https://www.bilibili.com/");
@@ -252,7 +252,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getDanmuHeaders() {
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Accept", "text/html,application/xhtml+xm…ml;q=0.9,image/webp,*/*;q=0.8");
-		headerMap.put("Accept-Encoding", "gzip, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Cache-Control", "no-cache");
 		headerMap.put("Connection", "keep-alive");
@@ -267,7 +267,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getCommonHeaders(String host) {
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Accept", "text/html,application/xhtml+xm…ml;q=0.9,image/webp,*/*;q=0.8");
-		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Cache-Control", "max-age=0");
 		headerMap.put("Connection", "keep-alive");
@@ -282,7 +282,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getCommonHeaders() {
 		headerMap = new HashMap<String, String>();
 		headerMap.put("Accept", "text/html,application/xhtml+xm…ml;q=0.9,image/webp,*/*;q=0.8");
-		headerMap.put("Accept-Encoding", "gzip, deflate, sdch, br");
+		headerMap.put("Accept-Encoding", "gzip, deflate");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Cache-Control", "max-age=0");
 		headerMap.put("Connection", "keep-alive");

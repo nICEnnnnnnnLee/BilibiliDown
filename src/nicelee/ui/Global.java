@@ -12,7 +12,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	public static String version = "v6.0";
+	public static String version = "v6.1";
 	public static boolean themeDefault = true;
 	public static boolean btnStyle = true;
 	public static FrameWaiting frWaiting;

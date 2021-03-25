@@ -15,9 +15,11 @@ public @interface Config {
 	
 	String defaultValue();			// 默认值
 	
+	String note() default "";		// 用于配置页的提示
+	
 	int multiply() default 1; 		// 类型为数值的时候，对其进行乘法操作
 	
-	String eq_true() default "true";	// 针对bool类型, 只有值与其相等(忽略大小写)时为true
+	String eq_true() default "true";// 针对bool类型, 只有值与其相等(忽略大小写)时为true
 	
 	String[] valids() default {};	// 值可能的取值范围(忽略大小写)，如果不为空会进行检查
 	

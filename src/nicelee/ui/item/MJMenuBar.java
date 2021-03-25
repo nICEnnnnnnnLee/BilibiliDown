@@ -24,6 +24,7 @@ import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
+import nicelee.ui.TabSettings;
 
 public class MJMenuBar extends JMenuBar {
 
@@ -109,9 +110,11 @@ public class MJMenuBar extends JMenuBar {
 		 */
 		JMenu dTypeMenuItem = new JMenu("下载策略");
 		JMenu dQNMenuItem = new JMenu("优先清晰度");
+		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
 		configMenu.add(dTypeMenuItem);
 		configMenu.add(dQNMenuItem);
-
+		configMenu.addSeparator();
+		configMenu.add(settingsMenuItem);
 		/**
 		 * 创建二级 关于 子菜单
 		 */
@@ -145,9 +148,13 @@ public class MJMenuBar extends JMenuBar {
 			}
 		}
 
-		/**
-		 * 添加动作
-		 */
+		// 打开设置面板
+		settingsMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TabSettings.openSettingTab();
+			}
+		});
 		// 将repo中avid转换为bvid
 		convertRepo.addActionListener(new ActionListener() {
 			@Override

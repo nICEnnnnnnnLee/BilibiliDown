@@ -42,8 +42,18 @@ public class FrameMain extends JFrame {
 
 	public static void main(String[] args) {
 		System.out.println();
+		// 显示过渡动画
+		Global.frWaiting = new FrameWaiting();
+		Global.frWaiting.start();
+
+		// System.getProperties().setProperty("file.encoding", "utf-8");
+		System.out.println(System.getProperty("os.name"));
+		System.out.println(ResourcesUtil.baseDirectory());
+		ConfigUtil.initConfigs();
+
 		if (Global.lockCheck) {
 			if (ConfigUtil.isRunning()) {
+				Global.frWaiting.stop();
 				JOptionPane.showMessageDialog(null, "程序已经在运行!", "请注意!!", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
@@ -53,17 +63,8 @@ public class FrameMain extends JFrame {
 			}));
 		}
 
-		// 显示过渡动画
-		Global.frWaiting = new FrameWaiting();
-		Global.frWaiting.start();
-
-		// System.getProperties().setProperty("file.encoding", "utf-8");
-		System.out.println(System.getProperty("os.name"));
-		System.out.println(ResourcesUtil.baseDirectory());
-		ConfigUtil.initConfigs();
-		
 		// 如果存在hosts文件，那么使之生效
-		if(HostSetUtil.readHostsFromFile("config/hosts.config")) {
+		if (HostSetUtil.readHostsFromFile("config/hosts.config")) {
 			HostSetUtil.injectHosts();
 		}
 		// 初始化主题
@@ -178,6 +179,7 @@ public class FrameMain extends JFrame {
 		pane.add(titleBar);
 
 		jTabbedpane = new JTabbedPane();
+		Global.tabs = jTabbedpane;
 		jTabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		jTabbedpane.setPreferredSize(new Dimension(1194, 706));
 		// Index Tab
@@ -191,7 +193,8 @@ public class FrameMain extends JFrame {
 //		TabVideo tab = new TabVideo(label);
 //		jTabbedpane.addTab("作品页", tab);
 //		jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
-
+//		jTabbedpane.addTab("设置页", new TabSettings(jTabbedpane));
+		
 		pane.add(jTabbedpane);
 		this.setContentPane(pane);
 		// 关闭窗口时

@@ -1,11 +1,75 @@
 package nicelee.bilibili.util;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ResourcesUtil {
+
+	public static void copy(File source, File dest) {
+		try {
+			RandomAccessFile rSource = new RandomAccessFile(source, "r");
+			RandomAccessFile rDest = new RandomAccessFile(dest, "rw");
+			
+			byte[] buffer = new byte[1024*1024];
+			int size = rSource.read(buffer);
+			while(size != -1) {
+				rDest.write(buffer, 0, size);
+				size = rSource.read(buffer);
+			}
+			rSource.close();
+			rDest.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static File search(String path) {
+		File file = new File(path);
+		if (file.exists())
+			return file;
+		System.out.printf("%s 路径不存在, 尝试以程序目录为基址进行查找\n", path);
+		file = new File(baseDirectory(), path);
+		if (file.exists())
+			return file;
+		return null;
+	}
+
+	public static String baseDirectory() {
+		try {
+			String path = ClassLoader.getSystemResource("").getPath();
+			if (path == null || "".equals(path))
+				return getProjectPath();
+			return path;
+		} catch (Exception ignored) {
+			return getProjectPath();
+		}
+	}
+
+	private static String getProjectPath() {
+		java.net.URL url = ConfigUtil.class.getProtectionDomain().getCodeSource().getLocation();
+		String filePath = null;
+		try {
+			filePath = java.net.URLDecoder.decode(url.getPath(), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (filePath.endsWith(".jar")) {
+			int lastIndex = filePath.lastIndexOf("/");
+			System.out.println(lastIndex);
+			if (lastIndex > -1) {
+				filePath = filePath.substring(0, lastIndex + 1);
+			} else {
+				filePath = filePath.substring(0, filePath.lastIndexOf("\\") + 1);
+			}
+		}
+		File file = new File(filePath);
+		filePath = file.getAbsolutePath();
+		return filePath;
+	}
 
 	public static void close(Object resource) throws IOException, NoSuchMethodException, SecurityException {
 		if (resource == null)

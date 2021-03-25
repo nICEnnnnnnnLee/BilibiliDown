@@ -24,6 +24,7 @@ import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
+import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.net.HostSetUtil;
 import nicelee.ui.item.MJTitleBar;
 import nicelee.ui.thread.DownloadRunnable;
@@ -58,7 +59,7 @@ public class FrameMain extends JFrame {
 
 		// System.getProperties().setProperty("file.encoding", "utf-8");
 		System.out.println(System.getProperty("os.name"));
-		System.out.println(ConfigUtil.baseDirectory());
+		System.out.println(ResourcesUtil.baseDirectory());
 		ConfigUtil.initConfigs();
 		
 		// 如果存在hosts文件，那么使之生效

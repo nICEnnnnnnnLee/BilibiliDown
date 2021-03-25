@@ -8,7 +8,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import nicelee.bilibili.util.ConfigUtil;
+import nicelee.bilibili.util.ResourcesUtil;
 
 public class Audio {
 
@@ -21,7 +21,7 @@ public class Audio {
 	public static void init() {
 		try {
 			AudioInputStream in = null;
-			File wav = ConfigUtil.search("config/notice.wav");
+			File wav = ResourcesUtil.search("config/notice.wav");
 			if (wav != null)
 				in = AudioSystem.getAudioInputStream(wav.toURI().toURL());
 			else

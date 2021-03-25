@@ -61,7 +61,7 @@ public class Global {
 
 	@Config(key = "bilibili.download.multiThread.count", note = "单个下载任务开启线程数(0,1为不开启多线程)", defaultValue = "0")
 	public static int multiThreadCnt; // 多线程下载开启的线程数 0为不开启多线程下载
-	@Config(key = "bilibili.download.multiThread.minFileSize", note = "文件大小小于阈值(整数, 单位MB)，则不开启开启多线程下载", defaultValue = "0", multiply = 1024 * 1024)
+	@Config(key = "bilibili.download.multiThread.minFileSize", note = "文件大小小于阈值(整数, 单位MB)，则不开启多线程下载", defaultValue = "0", multiply = 1024 * 1024)
 	public static long multiThreadMinFileSize; // 文件大小小于阈值(MB)，则不开启开启多线程下载
 	@Config(key = "bilibili.download.multiThread.singlePattern", note = "url匹配该正则，则不开启多线程下载", defaultValue = "github|ffmpeg|\\.jpg|\\.png|\\.webp|\\.xml")
 	public static Pattern singleThreadPattern; // url匹配该正则，则不开启开启多线程下载
@@ -127,12 +127,12 @@ public class Global {
 //	private static int httpsProxyPort;
 	@Config(key = "proxyHost", note = "HTTP/HTTPS代理Host", defaultValue = "", warning = false)
 	private static String proxyHost;
-	@Config(key = "proxyPort", note = "HTTP/HTTPS代理Port", defaultValue = "0", warning = false)
-	private static int proxyPort;
+	@Config(key = "proxyPort", note = "HTTP/HTTPS代理Port", defaultValue = "", warning = false)
+	private static String proxyPort;
 	@Config(key = "socksProxyHost", note = "SOCKS 代理Host", defaultValue = "", warning = false)
 	private static String socksProxyHost;
-	@Config(key = "socksProxyPort", note = "SOCKS 代理Port", defaultValue = "0", warning = false)
-	private static int socksProxyPort;
+	@Config(key = "socksProxyPort", note = "SOCKS 代理Port", defaultValue = "", warning = false)
+	private static String socksProxyPort;
 	
 	final public static HashMap<String, String> settings = new HashMap<>();
 	// 根据Global.settings 初始化配置到具体属性值
@@ -140,10 +140,6 @@ public class Global {
 		for (Field field : Global.class.getDeclaredFields()) {
 			Config config = field.getAnnotation(Config.class);
 			if (config != null) {
-//				if (!checkValid(config.defaultValue(), config.valids())) {
-//					System.err.printf("%s 值为 %s, 不在合法范围内 %s, 将使用默认值\n", config.key(), config.defaultValue(),
-//							Arrays.asList(config.valids()));
-//				}
 				// 先从设置取值
 				String valueFromSettings = Global.settings.get(config.key());
 				// 检查合法性, 合法则继续使用, 否则使用默认值
@@ -183,6 +179,14 @@ public class Global {
 		}
 		if (Global.backgroundImg == null)
 			Global.backgroundImg = new ImageIcon(Global.class.getResource("/resources/background.png"));
+		if(proxyHost != null && proxyPort != null) {
+			System.setProperty("proxyHost", proxyHost);
+			System.setProperty("proxyPort", proxyPort);
+		}
+		if(socksProxyHost != null && socksProxyPort != null) {
+			System.setProperty("socksProxyHost", socksProxyHost);
+			System.setProperty("socksProxyPort", socksProxyPort);
+		}
 	}
 
 	private static boolean checkValid(String value, String[] valids) {

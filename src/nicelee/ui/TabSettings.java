@@ -6,6 +6,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Field;
@@ -61,6 +65,7 @@ public class TabSettings extends JPanel {
 			text = " " + text;
 			label.setBorder(BorderFactory.createLineBorder(Color.RED));
 		}
+		label.setOpaque(true);
 		label.setText(text);
 		label.setPreferredSize(new Dimension(width, height));
 		label.setFont(label.getFont().deriveFont(Font.PLAIN));
@@ -102,7 +107,7 @@ public class TabSettings extends JPanel {
 					String value;
 					if (comps[i + 1] instanceof JComboBox) {
 						JComboBox<?> cm = (JComboBox<?>) comps[i + 1];
-						value = (String) cm.getSelectedItem();
+						value = cm.getSelectedItem().toString();
 					} else {
 						JTextField filed = (JTextField) comps[i + 1];
 						value = filed.getText().trim();
@@ -113,8 +118,9 @@ public class TabSettings extends JPanel {
 				// 根据Global.settings 写配置文件
 				if (ConfigUtil.saveConfig()) {
 					JOptionPane.showMessageDialog(null, "保存成功", "OK", JOptionPane.INFORMATION_MESSAGE);
+					resetJPanel();
 				} else {
-					JOptionPane.showMessageDialog(null, "保存成功", "!", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "保存失败", "!", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -127,15 +133,17 @@ public class TabSettings extends JPanel {
 		btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jpContent.removeAll();
-				updateSettingsUI();
-				jpContent.updateUI();
-				jpContent.repaint();
+				resetJPanel();
 			}
 		});
 		this.add(btn);
 	}
-
+	private void resetJPanel() {
+		jpContent.removeAll();
+		updateSettingsUI();
+		jpContent.updateUI();
+		jpContent.repaint();
+	}
 	private void initCloseButton(JPanel panel) {
 		JButton btn = new MJButton("关闭");
 		btn.setPreferredSize(new Dimension(60, LINE_HEIGHT));
@@ -148,6 +156,13 @@ public class TabSettings extends JPanel {
 		this.add(btn);
 	}
 
+	private void onContentChanged(JLabel label, String curValue, String sysValue) {
+		if (curValue.equals(sysValue) || (curValue.isEmpty() && sysValue == null)) {
+			label.setBackground(null);
+		} else {
+			label.setBackground(Color.PINK);
+		}
+	}
 	private void updateSettingsUI() {
 		int lineOunt = 0;
 		for (Field field : Global.class.getDeclaredFields()) {
@@ -165,6 +180,15 @@ public class TabSettings extends JPanel {
 						int totalWidth = 700, width = 80;
 						selectCBox.setSelectedItem(selected);
 						selectCBox.setPreferredSize(new Dimension(width, LINE_HEIGHT));
+						selectCBox.addItemListener(new ItemListener() {
+
+							@Override
+							public void itemStateChanged(ItemEvent e) {
+								if (e.getStateChange() == ItemEvent.SELECTED) {
+									onContentChanged(name, e.getItem().toString(), selected);
+								}
+							}
+						});
 						jpContent.add(name);
 						jpContent.add(selectCBox);
 						jpContent.add(this.createTextLabel(null, totalWidth - width, LINE_HEIGHT));
@@ -173,6 +197,14 @@ public class TabSettings extends JPanel {
 						JTextField value = new JTextField(selected);
 						int totalWidth = 700, width = 340;
 						value.setPreferredSize(new Dimension(width, LINE_HEIGHT));
+						new FocusAdapter() {
+						};
+						value.addFocusListener(new FocusAdapter() {
+							@Override
+							public void focusLost(FocusEvent e) {
+								onContentChanged(name, value.getText(), selected);
+							}
+						});
 						jpContent.add(name);
 						jpContent.add(value);
 						jpContent.add(this.createTextLabel(null, totalWidth - width, LINE_HEIGHT));

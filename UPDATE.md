@@ -1,12 +1,17 @@
 ## UPDATE  
-* V6.1
+* V6.2  
+    * 修复：B站API调整导致封面图获取失败的问题[issue#63](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/63)  
+    * 优化：增加设置页面
+    * 优化：将配置读取改为通过注解反射遍历完成；
+    * 优化：将部分功能函数移至其应有的模块
+* V6.1  `2021-03-25`
     * 修复: 网络请求时去掉br支持，解决有概率返回乱码的问题[issue#58](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/58)   
     * 优化：`UP主所有视频`链接支持`分区`、`关键字搜索`、`按更新时间、播放次数、收藏量排序`。详见[issue#57](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/57)
     * 全部任务完成后可添加提示音，且支持自定义提示音  
         + 打开该功能`bilibili.download.playSound = true`  
         + 将音频文件更名`notice.wav`并放入`config`文件夹即可  
         + 注意：只支持wav格式  
-        + 注意：提示音播放在监视进程中进行，时间过长将阻塞进程，影响体验   
+        + 注意：提示音播放在监视进程中进行，时间过长将阻塞线程，影响体验   
     * 优化: 将权重排序移至加载完毕后进行，而不必每次都要排序一遍  
     * 修复: 图片验证码接口增加`BiliDroid`字段  
 * 增加各版本release时间

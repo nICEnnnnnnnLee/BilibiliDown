@@ -95,7 +95,11 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 					pointer ++;
 				}
 				pageQueryResult.setVideoName(pageQueryResult.getAuthor() + "的视频列表");
-				pageQueryResult.setVideoPreview("http:" + arr.getJSONObject(0).getString("pic"));
+				String videoPreview = arr.getJSONObject(0).getString("pic");
+				if(videoPreview.startsWith("://")) {
+					videoPreview = "http:" + videoPreview;
+				}
+				pageQueryResult.setVideoPreview(videoPreview);
 				pageQueryResult.setAuthorId(spaceID);
 				pageQueryResult.setBrief("视频列表 - " + paramSetter.getPage());
 			}

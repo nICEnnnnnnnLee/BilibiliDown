@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nicelee.bilibili.util.ConfigUtil;
+import nicelee.bilibili.util.ResourcesUtil;
 
 public class HostSetUtil {
 
@@ -90,7 +90,7 @@ public class HostSetUtil {
 			configFile = new File(file);
 			if (!configFile.exists()) {
 				System.out.println("Hosts文件不存在： " + configFile.getCanonicalPath());
-				configFile = new File(ConfigUtil.baseDirectory(), file);
+				configFile = new File(ResourcesUtil.baseDirectory(), file);
 				System.out.println("尝试路径： " + configFile.getCanonicalPath());
 			}
 			buReader = new BufferedReader(new FileReader(configFile));

@@ -156,7 +156,7 @@ public class TabDownload extends JPanel implements ActionListener {
 					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
 						dp.stopTask();
 					}
-					int fixPool = Integer.parseInt(System.getProperty("bilibili.download.poolSize"));
+					int fixPool = Global.downloadPoolSize;
 					Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
 					btnContinue.setEnabled(true);
 					btnStop.setEnabled(true);

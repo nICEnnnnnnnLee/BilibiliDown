@@ -209,9 +209,9 @@ public class RepoUtil {
 			buWriter.close();
 			
 			File fRepoBackup = new File("config/repo.config.bk"+ System.currentTimeMillis()/1000);
-			FileUtil.copy(fRepo, fRepoBackup);
+			ResourcesUtil.copy(fRepo, fRepoBackup);
 			fRepo.delete();
-			FileUtil.copy(fRepoNew, fRepo);
+			ResourcesUtil.copy(fRepoNew, fRepo);
 			fRepoNew.delete();
 			JOptionPane.showMessageDialog(null, "转换完毕, 请重新加载");
 			

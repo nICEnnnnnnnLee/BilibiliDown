@@ -1,5 +1,7 @@
 ## UPDATE  
-* V6.2  
+* V6.3  `2021-05-02`  
+    * 优化：收藏夹解析增加对不同种类的`已失效视频`的兼容处理[issue#66](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/66)  
+* V6.2  `2021-04-21`
     * 修复：B站API调整导致封面图获取失败的问题[issue#63](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/63)  
     * 优化：增加设置页面
     * 优化：将配置读取改为通过注解反射遍历完成；

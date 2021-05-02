@@ -92,7 +92,10 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 				String avTitle =  jAV.getString("title");
 				String upName = jAV.getJSONObject("upper").getString("name");
 				String upId = "" + jAV.getJSONObject("upper").getLong("mid");
-				JSONArray jClips = jAV.getJSONArray("pages");
+				JSONArray jClips = jAV.optJSONArray("pages");
+				if(jClips == null) {
+					continue;
+				}
 				for(int pointer = 0; pointer < jClips.length(); pointer++) {
 					JSONObject jClip = jClips.getJSONObject(pointer);
 					ClipInfo clip = new ClipInfo();

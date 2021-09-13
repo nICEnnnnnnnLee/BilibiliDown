@@ -106,7 +106,9 @@ public class FlvMerger {
 				if (tagType == 8 || tagType == 9 || tagType == 18) {// 8/9 audio/video
 					// tag data size 3个字节。表示tag data的长度。从streamd id 后算起。
 					int dataSize = readBytesToInt(raf, 3);
-					// Logger.print(" ,当前tag data 长度为：" + dataSize);
+					// Logger.println(" ,当前tag data 长度为：" + dataSize);
+					if(dataSize == 0)
+						break;
 					rafNew.write(tagType);
 					rafNew.write(buffer, 0, 3);
 					// 时间戳 3

@@ -16,6 +16,11 @@ import java.util.regex.Pattern;
 
 import nicelee.bilibili.util.ResourcesUtil;
 
+/**
+ * 只适用于JDK 1.8, 而且GitHub在使用特定host后会阻断一定时间，需要不断改变host文件才能保证的连通性，该解决方案不具备普适性
+ *
+ */
+@Deprecated
 public class HostSetUtil {
 
 	private HostSetUtil() {

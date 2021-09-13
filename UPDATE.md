@@ -1,4 +1,7 @@
 ## UPDATE  
+* V6.4  `2021-09-13`  
+    * 修复：解决合并分段的flv文件时有可能陷入死循环的问题[issue#72](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/72)  
+    * 移除：自定义host功能  
 * V6.3  `2021-05-02`  
     * 优化：收藏夹解析增加对不同种类的`已失效视频`的兼容处理[issue#66](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/66)  
 * V6.2  `2021-04-21`

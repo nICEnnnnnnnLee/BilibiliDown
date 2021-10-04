@@ -1,10 +1,6 @@
 package nicelee.bilibili.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,17 +16,14 @@ import nicelee.ui.thread.StreamManager;
 
 public class CmdUtil {
 
-	public static String FFMPEG_PATH = "ffmpeg";
-
 	public static boolean run(String cmd[]) {
-		Process process = null;
+		Process process;
 		try {
 			process = Runtime.getRuntime().exec(cmd);
 			StreamManager errorStream = new StreamManager(process, process.getErrorStream());
 			StreamManager outputStream = new StreamManager(process, process.getInputStream());
 			errorStream.start();
 			outputStream.start();
-			// System.out.println("此处堵塞, 直至process 执行完毕");
 			process.waitFor();
 			System.out.println("process 执行完毕");
 			return true;
@@ -73,7 +66,7 @@ public class CmdUtil {
 	 * 音视频合并转码
 	 * 
 	 * @param videoName
-	 * @param audioName
+	 * @param dstName
 	 * @param dstName
 	 */
 	public static boolean convert(String videoName, String dstName) {
@@ -192,7 +185,7 @@ public class CmdUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String cmd[] = { FFMPEG_PATH, "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c",
+		String cmd[] = { Global.ffmpegPath, "-f", "concat", "-safe", "0", "-i", Global.savePath + dstName + ".txt", "-c",
 				"copy", Global.savePath + dstName };
 		return cmd;
 	}
@@ -275,15 +268,15 @@ public class CmdUtil {
 	 */
 	public static String[] createConvertCmd(String videoName, String audioName, String dstName) {
 		if (audioName == null) {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
+			String cmd[] = { Global.ffmpegPath, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
+			String str = String.format("ffmpeg命令为: \r\n%s -i %s -c copy %s", Global.ffmpegPath, Global.savePath + videoName,
 					Global.savePath + dstName);
 			Logger.println(str);
 			return cmd;
 		} else {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
+			String cmd[] = { Global.ffmpegPath, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
 					"copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", FFMPEG_PATH,
+			String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", Global.ffmpegPath,
 					Global.savePath + videoName, Global.savePath + audioName, Global.savePath + dstName);
 			Logger.println(str);
 			return cmd;
@@ -432,7 +425,7 @@ public class CmdUtil {
 
 	/**
 	 * @param paramMap
-	 * @param matcher
+	 * @param formatStr
 	 * @return
 	 */
 	private static String genFormatedName(HashMap<String, String> paramMap, String formatStr) {

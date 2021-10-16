@@ -92,6 +92,8 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 				String avTitle =  jAV.getString("title");
 				String upName = jAV.getJSONObject("upper").getString("name");
 				String upId = "" + jAV.getJSONObject("upper").getLong("mid");
+				long favTime = jAV.optLong("fav_time") * 1000;
+				long cTime = jAV.optLong("ctime") * 1000;
 				JSONArray jClips = jAV.optJSONArray("pages");
 				if(jClips == null) {
 					continue;
@@ -113,6 +115,8 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 					clip.setUpId(upId);
 					clip.setAvTitle(avTitle);
 					clip.setTitle(jClip.getString("title"));
+					clip.setFavTime(favTime);
+					clip.setcTime(cTime);
 					
 					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 					// TODO json这里的清晰度到底是什么鬼哦？？不知道怎么解析

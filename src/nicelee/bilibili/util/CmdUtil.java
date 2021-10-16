@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -368,7 +370,7 @@ public class CmdUtil {
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
 	static Pattern splitUnit = Pattern.compile(
-			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
+			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|favTime|cTime|\\(\\:([^ ]+) ([^\\)]*)\\)");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
 			String clipTitle, String listName, String listOwnerName) {
@@ -402,7 +404,16 @@ public class CmdUtil {
 		paramMap.put("listOwnerName", clip.getListOwnerName()); // 已确保没有路径分隔符
 		paramMap.put("UpName", clip.getUpName().replaceAll("[/\\\\]", "_"));
 		paramMap.put("UpId", clip.getUpId());
-
+		long favTime = clip.getFavTime();
+		if(favTime > 0) {
+			SimpleDateFormat ctf = new SimpleDateFormat(Global.favTimeFormat);
+			paramMap.put("favTime", ctf.format(new Date(favTime)));
+		}
+		long cTime = clip.getcTime();
+		if(cTime > 0) {
+			SimpleDateFormat ctf = new SimpleDateFormat(Global.cTimeFormat);
+			paramMap.put("cTime", ctf.format(new Date(cTime)));
+		}
 		// 匹配格式字符串
 		// avTitle-pDisplay-clipTitle-qn
 		return genFormatedName(paramMap, Global.formatStr);
@@ -445,7 +456,7 @@ public class CmdUtil {
 					
 				}else
 					// 加入匹配单位对应的值
-					sb.append(paramMap.get(matcher.group()));
+					sb.append(paramMap.getOrDefault(matcher.group(), "null"));
 			}
 			// 改变指针位置
 			pointer = matcher.end();

@@ -74,6 +74,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		Logger.println(detailJson);
 		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data");
 
+		long ctime = detailObj.optLong("ctime") * 1000;
 		viInfo.setVideoName(detailObj.getString("title"));
 		viInfo.setBrief(detailObj.getString("desc"));
 		viInfo.setAuthor(detailObj.getJSONObject("owner").getString("name"));
@@ -123,6 +124,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 				clip.setPicPreview(viInfo.getVideoPreview());
 				clip.setUpName(viInfo.getAuthor());
 				clip.setUpId(viInfo.getAuthorId());
+				clip.setcTime(ctime);
 				LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 				try {
 					int qnList[] = qnListDefault != null ? qnListDefault

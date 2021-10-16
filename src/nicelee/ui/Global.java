@@ -9,12 +9,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 
 import nicelee.bilibili.annotations.Config;
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.net.TrustAllCertSSLUtil;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
@@ -133,8 +135,12 @@ public class Global {
 	private static String socksProxyHost;
 	@Config(key = "socksProxyPort", note = "SOCKS 代理Port", defaultValue = "", warning = false)
 	private static String socksProxyPort;
-	
+	// https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/77
+	@Config(key = "bilibili.https.allowInsecure", note = "跳过证书验证", defaultValue = "false")
+	private static boolean allowInsecure;
+
 	final public static HashMap<String, String> settings = new HashMap<>();
+
 	// 根据Global.settings 初始化配置到具体属性值
 	public static void init() {
 		for (Field field : Global.class.getDeclaredFields()) {
@@ -186,6 +192,14 @@ public class Global {
 		if(socksProxyHost != null && socksProxyPort != null) {
 			System.setProperty("socksProxyHost", socksProxyHost);
 			System.setProperty("socksProxyPort", socksProxyPort);
+		}
+		// 跳过HTTPS证书验证
+		try {
+			System.out.println("allowInsecure:" + allowInsecure);
+			if (allowInsecure)
+				HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllCertSSLUtil.getFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -259,7 +259,7 @@ B23Parser
 + ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)  
 + 自带的```ffmpeg.exe```为`Win10+Msys+MingW+msvc`自行编译，其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  
-```javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
+```java -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
 + 对于非WIN用户，如需使用程序的一键更新功能，请在程序操作完毕并退出后，人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
 
 ## :smile:其它  

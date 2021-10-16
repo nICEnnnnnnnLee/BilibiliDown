@@ -11,6 +11,9 @@ public class ClipInfo {
 	String picPreview;
 	String listName; // 收藏夹名称 或其它集合名称（不一定存在）
 	String listOwnerName; // 收藏夹主人 或其它集合的拥有者（不一定存在）
+	// 解析器太多，不想一个一个再去改，只有收藏夹有下面俩
+	long favTime;	// 收藏时间
+	long cTime;		// 发布、更新时间
 	String upName;
 	String upId;
 	HashMap<Integer, String> links;
@@ -148,6 +151,22 @@ public class ClipInfo {
 
 	public void setUpId(String upId) {
 		this.upId = upId;
+	}
+
+	public long getFavTime() {
+		return favTime;
+	}
+
+	public void setFavTime(long favTime) {
+		this.favTime = favTime;
+	}
+
+	public long getcTime() {
+		return cTime;
+	}
+
+	public void setcTime(long cTime) {
+		this.cTime = cTime;
 	}
 
 }

@@ -5,13 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import javax.swing.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +37,7 @@ public class VersionManagerUtil {
 			//return versionTag.equals(Global.version);
 			return isLatestVer(versionTag, Global.version);
 		}
-		String json = util.getContent("https://api.github.com/repos/nICEnnnnnnnLee/BilibiliDown/releases",
+		String json = util.getContent("https://api.github.com/repos/nICEnnnnnnnLee/BilibiliDown/releases?per_page=1",
 				headers.getHeaders());
 		Logger.println(json);
 		JSONObject jObj = new JSONArray(json).getJSONObject(0);
@@ -164,51 +161,34 @@ public class VersionManagerUtil {
 	}
 	
 	/**
-	 * 以当前类为入口运行jar，并关闭当前程序
-	 * <p>
-	 * code : 0 更新后不再打开程序，1 更新后打开程序
-	 * </p>
-	 */
-	//TODO
-	private static void RunCmdAndCloseAppTODO(String code) {
-		//java -Dfile.encoding=utf-8 -cp update/INeedBiliAV.update.jar nicelee.bilibili.util.VersionManagerUtil 1
-		try {
-			String cmd[] = { "java", "-Dfile.encoding=utf-8", "-cp", "update/INeedBiliAV.update.jar", "nicelee.bilibili.util.VersionManagerUtil", code };
-			CmdUtil.run(cmd);
-			System.exit(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-	/**
-	 * 等待一段时间(5s)，然后复制文件，然后重启
-	 * @param args
+	 * 
+	 * 1. shell脚本以当前类为入口运行jar
+	 * **2. 下载最新的安装包update/BilibiliDown.vX.X.release.zip
+	 * **3. 解压update/INeedBiliAV.update.jar
+	 * 4. shell脚本将之复制并覆盖 update/INeedBiliAV.update.jar --> INeedBiliAV.jar
+	 * 5. shell脚本打开程序
 	 */
 	public static void main(String args[]) {
-		try {
-			Thread.sleep(5000);
-//			File origin = new File("update", "INeedBiliAV.update.jar");
-			File origin = new File("INeedBiliAV.update.jar");
-//			File dest = new File("INeedBiliAV.jar");
-			File dest = new File(origin.getParentFile().getParent(),"INeedBiliAV.jar");
-			if(origin.exists()) {
-				Logger.println("新文件存在");
-				Logger.println("旧版本删除成功： " + dest.delete());
-				Files.copy(origin.toPath(), dest.toPath());
-				//Logger.println("移动成功： " + origin.renameTo(dest));
+//		Global.init();
+		ConfigUtil.initConfigs();
+		if (!queryLatestVersion()) {
+			System.out.println("正在下载: " + downName);
+			try {
+				util.setSavePath("update/");
+				if (util.download(downUrl, downName, headers.getHeaders())) {
+					unzipTargetJar();
+					System.exit(1);
+				} else {
+					System.out.printf("下载 %s 失败\n", downName);
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+				System.out.printf("下载 %s 失败\n", downName);
 			}
-			// 重启程序
-			if(args != null && args[0] == "1") {
-				// javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar
-				String cmd[] = { "javaw", "-Dfile.encoding=utf-8", "-jar", "INeedBiliAV.jar" };
-				CmdUtil.run(cmd);
-				Logger.println("javaw -Dfile.encoding=utf-8 -jar INeedBiliAV.jar");
-				//System.exit(1);
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
+		}else {
+			System.out.printf("当前版本%s已是最新，无需更新", Global.version);
+			System.exit(0);
 		}
+		System.exit(-1);
 	}
 }

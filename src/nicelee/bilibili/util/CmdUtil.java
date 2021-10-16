@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -342,36 +344,14 @@ public class CmdUtil {
 	 * @param page
 	 * @return
 	 */
+	static String[] suffixs = {".mp4", ".flv", ".jpg", ".webp", ".png", ".srt", ".ass"};
 	public static File getFileByAvQnP(String avid_q, int page) {
 		String name = avid_q + "-p" + page;
 		Logger.println(name);
-		File fMp4 = new File(Global.savePath, name + ".mp4");
-		if (fMp4.exists()) {
-			return fMp4;
-		}
-		File fFlv = new File(Global.savePath, name + ".flv");
-		if (fFlv.exists()) {
-			return fFlv;
-		}
-		File fJpg = new File(Global.savePath, name + ".jpg");
-		if (fJpg.exists()) {
-			return fJpg;
-		}
-		File fWebp = new File(Global.savePath, name + ".webp");
-		if (fWebp.exists()) {
-			return fWebp;
-		}
-		File fPng = new File(Global.savePath, name + ".png");
-		if (fPng.exists()) {
-			return fPng;
-		}
-		File fSrt = new File(Global.savePath, name + ".srt");
-		if (fSrt.exists()) {
-			return fSrt;
-		}
-		File fAss = new File(Global.savePath, name + ".ass");
-		if (fAss.exists()) {
-			return fAss;
+		for(String suffix: suffixs) {
+			File f = new File(Global.savePath, name + suffix);
+			if (f.exists())
+				return f;
 		}
 		return null;
 	}
@@ -390,7 +370,7 @@ public class CmdUtil {
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
 	static Pattern splitUnit = Pattern.compile(
-			"avId|numAvId|pAv|pDisplay|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|\\(\\:([^ ]+) ([^\\)]*)\\)");
+			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|favTime|cTime|\\(\\:([^ ]+) ([^\\)]*)\\)");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
 			String clipTitle, String listName, String listOwnerName) {
@@ -415,8 +395,8 @@ public class CmdUtil {
 		// 生成KV表
 		HashMap<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("avId", clip.getAvId());
-		paramMap.put("pAv", "p" + clip.getPage());
-		paramMap.put("pDisplay", "pn" + clip.getRemark());
+		paramMap.put("pAv", "" + clip.getPage());
+		paramMap.put("pDisplay", "" + clip.getRemark());
 		paramMap.put("qn", "" + realQN);
 		paramMap.put("avTitle", clip.getAvTitle().replaceAll("[/\\\\]", "_"));
 		paramMap.put("clipTitle", clip.getTitle().replaceAll("[/\\\\]", "_"));
@@ -424,17 +404,21 @@ public class CmdUtil {
 		paramMap.put("listOwnerName", clip.getListOwnerName()); // 已确保没有路径分隔符
 		paramMap.put("UpName", clip.getUpName().replaceAll("[/\\\\]", "_"));
 		paramMap.put("UpId", clip.getUpId());
-
+		long favTime = clip.getFavTime();
+		if(favTime > 0) {
+			SimpleDateFormat ctf = new SimpleDateFormat(Global.favTimeFormat);
+			paramMap.put("favTime", ctf.format(new Date(favTime)));
+		}
+		long cTime = clip.getcTime();
+		if(cTime > 0) {
+			SimpleDateFormat ctf = new SimpleDateFormat(Global.cTimeFormat);
+			paramMap.put("cTime", ctf.format(new Date(cTime)));
+		}
 		// 匹配格式字符串
 		// avTitle-pDisplay-clipTitle-qn
 		return genFormatedName(paramMap, Global.formatStr);
 	}
 
-	/**
-	 * @param paramMap
-	 * @param matcher
-	 * @return
-	 */
 	private static String genFormatedName(HashMap<String, String> paramMap, String formatStr) {
 		StringBuilder sb = new StringBuilder();
 		Matcher matcher = splitUnit.matcher(formatStr);
@@ -449,7 +433,17 @@ public class CmdUtil {
 				}
 //				Logger.println();
 			} else {
-				if("numAvId".equals(matcher.group())) {
+				if(matcher.group().startsWith("pAv")) {
+					String expectLength = matcher.group().substring(3);
+					String rawNumber = paramMap.get("pAv");
+					String expectNumber = formatNumber(rawNumber, expectLength);
+					sb.append("p" + expectNumber);
+				}else if(matcher.group().startsWith("pDisplay")) {
+					String expectLength = matcher.group().substring(8);
+					String rawNumber = paramMap.get("pDisplay");
+					String expectNumber = formatNumber(rawNumber, expectLength);
+					sb.append("pn" + expectNumber);
+				}else if("numAvId".equals(matcher.group())) {
 					try {
 						// 计算BVid对应的AVid，并加入
 						String bvId = paramMap.get("avId");
@@ -462,7 +456,7 @@ public class CmdUtil {
 					
 				}else
 					// 加入匹配单位对应的值
-					sb.append(paramMap.get(matcher.group()));
+					sb.append(paramMap.getOrDefault(matcher.group(), "null"));
 			}
 			// 改变指针位置
 			pointer = matcher.end();
@@ -471,5 +465,18 @@ public class CmdUtil {
 		sb.append(formatStr.substring(pointer));
 		// 去掉文件名称的非法字符 |:*?<>"$
 		return sb.toString().replaceAll("[\b\\r\\n|:*?<>\"$]", "_");
+	}
+
+
+	private static String formatNumber(String rawNumber, String expectLength) {
+		if(!expectLength.isEmpty()) {
+			// 不足位补零
+			int zeroLen = Integer.parseInt(expectLength) - rawNumber.length();
+			if(zeroLen > 0) {
+				String pattern = new StringBuilder("%0").append(zeroLen).append("d%s").toString();
+				return String.format(pattern, 0, rawNumber);
+			}
+		}
+		return rawNumber;
 	}
 }

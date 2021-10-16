@@ -9,17 +9,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 
 import nicelee.bilibili.annotations.Config;
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.net.TrustAllCertSSLUtil;
 import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.4", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.5", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -71,6 +73,10 @@ public class Global {
 	public static boolean saveToRepo; // 使用仓库保存下载成功的记录
 	@Config(key = "bilibili.name.format", note = "自定义下载文件名称", defaultValue = "(:listName listName-)avTitle-pDisplay-clipTitle-qn")
 	public static String formatStr;
+	@Config(key = "bilibili.name.date.favTime.pattern", note = "收藏时间格式化", defaultValue = "yyMMdd")
+	public static String favTimeFormat;
+	@Config(key = "bilibili.name.date.cTime.pattern", note = "发布/更新时间格式化", defaultValue = "yyMMdd")
+	public static String cTimeFormat;
 	@Config(key = "bilibili.name.doAfterComplete", note = "下载完成后自动重命名", defaultValue = "true", valids = { "true", "false" })
 	public static boolean doRenameAfterComplete = true;
 	@Config(key = "bilibili.repo.definitionStrictMode", note = "是否将同一视频不同清晰度看作不同任务", defaultValue = "false", eq_true = "on", valids = { "on",
@@ -133,8 +139,12 @@ public class Global {
 	private static String socksProxyHost;
 	@Config(key = "socksProxyPort", note = "SOCKS 代理Port", defaultValue = "", warning = false)
 	private static String socksProxyPort;
-	
+	// https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/77
+	@Config(key = "bilibili.https.allowInsecure", note = "跳过证书验证", defaultValue = "false")
+	private static boolean allowInsecure;
+
 	final public static HashMap<String, String> settings = new HashMap<>();
+
 	// 根据Global.settings 初始化配置到具体属性值
 	public static void init() {
 		for (Field field : Global.class.getDeclaredFields()) {
@@ -186,6 +196,14 @@ public class Global {
 		if(socksProxyHost != null && socksProxyPort != null) {
 			System.setProperty("socksProxyHost", socksProxyHost);
 			System.setProperty("socksProxyPort", socksProxyPort);
+		}
+		// 跳过HTTPS证书验证
+		try {
+			System.out.println("allowInsecure:" + allowInsecure);
+			if (allowInsecure)
+				HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllCertSSLUtil.getFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

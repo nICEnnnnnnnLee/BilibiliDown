@@ -342,36 +342,14 @@ public class CmdUtil {
 	 * @param page
 	 * @return
 	 */
+	static String[] suffixs = {".mp4", ".flv", ".jpg", ".webp", ".png", ".srt", ".ass"};
 	public static File getFileByAvQnP(String avid_q, int page) {
 		String name = avid_q + "-p" + page;
 		Logger.println(name);
-		File fMp4 = new File(Global.savePath, name + ".mp4");
-		if (fMp4.exists()) {
-			return fMp4;
-		}
-		File fFlv = new File(Global.savePath, name + ".flv");
-		if (fFlv.exists()) {
-			return fFlv;
-		}
-		File fJpg = new File(Global.savePath, name + ".jpg");
-		if (fJpg.exists()) {
-			return fJpg;
-		}
-		File fWebp = new File(Global.savePath, name + ".webp");
-		if (fWebp.exists()) {
-			return fWebp;
-		}
-		File fPng = new File(Global.savePath, name + ".png");
-		if (fPng.exists()) {
-			return fPng;
-		}
-		File fSrt = new File(Global.savePath, name + ".srt");
-		if (fSrt.exists()) {
-			return fSrt;
-		}
-		File fAss = new File(Global.savePath, name + ".ass");
-		if (fAss.exists()) {
-			return fAss;
+		for(String suffix: suffixs) {
+			File f = new File(Global.savePath, name + suffix);
+			if (f.exists())
+				return f;
 		}
 		return null;
 	}

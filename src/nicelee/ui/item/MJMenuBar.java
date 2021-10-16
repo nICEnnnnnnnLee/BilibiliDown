@@ -1,5 +1,6 @@
 package nicelee.ui.item;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,10 +81,16 @@ public class MJMenuBar extends JMenuBar {
 		JMenu operMenu = new JMenu("操作");
 		JMenu configMenu = new JMenu("配置");
 		JMenu aboutMenu = new JMenu("关于");
+		Dimension dMenu = new Dimension(39, 21);
+		operMenu.setPreferredSize(dMenu);
+		configMenu.setPreferredSize(dMenu);
+		aboutMenu.setPreferredSize(dMenu);
 		this.add(operMenu);
 		this.add(configMenu);
 		this.add(aboutMenu);
-
+		Dimension dMenuBar = new Dimension(137, 23);
+		this.setPreferredSize(dMenuBar);
+		
 		/**
 		 * 创建二级 操作 子菜单
 		 */

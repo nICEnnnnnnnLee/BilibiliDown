@@ -1,11 +1,1 @@
-* 修复：添加跳过HTTPS证书认证选项[issue#76](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/76)  
-* 优化： 在自定义文件名配置项中，可以添加收藏时间和更新时间
-    + 例如，下面配置的可能的文件名称如右边：**标题-211016-pn1-小标题-80**
-    ```
-    bilibili.name.date.favTime.pattern = yyMMdd
-    bilibili.name.format = avTitle-(:favTime favTime-)pDisplay-clipTitle-qn
-    ```
-* 优化： 在自定义文件名配置项中，序号可以指定宽度，不足补零。原来的用法不受影响。
-    + 例如`pAv2-pDisplay3`, 对应名称可能为`p01-pn001`、`p02-pn002`...`p111-pn111`
-* 优化版本更新功能，使得windows下直接双击update.bat脚本也能更新
-* 给MenuBar设置PreferSize
+* 修复: 去除路径中可能存在的非法字符`\t`[issue#79](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/79)  

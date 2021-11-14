@@ -1,6 +1,8 @@
 ## UPDATE  
+* V6.6  `2021-11-14`  
+    * 修复: 去除路径中可能存在的非法字符`\t`[issue#79](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/79)  
 * V6.5  `2021-10-16`  
-    * 修复：添加跳过HTTPS证书认证选项[issue#76](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/76)  
+    * 修复：添加跳过HTTPS证书认证选项[issue#77](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/77)  
     * 优化： 在自定义文件名配置项中，可以添加收藏时间和更新时间
         + 例如，下面配置的可能的文件名称如右边：**标题-211016-pn1-小标题-80**
         ```

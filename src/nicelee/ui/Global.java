@@ -21,7 +21,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.5", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.6", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -140,7 +140,7 @@ public class Global {
 	@Config(key = "socksProxyPort", note = "SOCKS 代理Port", defaultValue = "", warning = false)
 	private static String socksProxyPort;
 	// https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/77
-	@Config(key = "bilibili.https.allowInsecure", note = "跳过证书验证", defaultValue = "false")
+	@Config(key = "bilibili.https.allowInsecure", note = "跳过证书验证", defaultValue = "false", valids = { "true", "false" })
 	private static boolean allowInsecure;
 
 	final public static HashMap<String, String> settings = new HashMap<>();

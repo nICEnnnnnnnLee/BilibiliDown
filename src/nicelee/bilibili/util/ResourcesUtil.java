@@ -59,7 +59,6 @@ public class ResourcesUtil {
 		}
 		if (filePath.endsWith(".jar")) {
 			int lastIndex = filePath.lastIndexOf("/");
-			System.out.println(lastIndex);
 			if (lastIndex > -1) {
 				filePath = filePath.substring(0, lastIndex + 1);
 			} else {

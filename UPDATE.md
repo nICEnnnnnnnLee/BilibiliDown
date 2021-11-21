@@ -1,4 +1,6 @@
 ## UPDATE  
+* V6.7  `2021-11-21`  
+    * 修复弹幕内容为空的问题(测试BV1o44y1e7oU)[issue#81](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/81)  
 * V6.6  `2021-11-14`  
     * 修复: 去除路径中可能存在的非法字符`\t`[issue#79](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/79)  
 * V6.5  `2021-10-16`  

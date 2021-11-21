@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nicelee.bilibili.util.Logger;
+
 public class Xml2Ass {
 
 	int width = 1920;
@@ -49,11 +51,12 @@ public class Xml2Ass {
 		
 		BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
 		List<Danmuku> danmuList = new ArrayList<Danmuku>();
-		Pattern danmukuPattern = Pattern.compile("<d p=\"([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([0-9]*)\">(.*?)</d>");
+		Pattern danmukuPattern = Pattern.compile("<d p=\"([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,[0-9]*)?\">(.*?)</d>");
 		String line = reader.readLine();
 		while(line != null) {
 			Matcher m = danmukuPattern.matcher(line);
 			while(m.find()) {
+//				Logger.println(m.group());
 				double time = Double.parseDouble(m.group(1));
 				int type = Integer.parseInt(m.group(2));
 				if(type >= 1 & type <=3)

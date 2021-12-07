@@ -1,4 +1,7 @@
 ## UPDATE  
+* V6.8  `2021-12-07`  
+    * 新增：普通视频新增8K清晰度(测试BV1KS4y197BN)  
+    * 修复：撤销对UI的改动[issue#84](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/84)  
 * V6.7  `2021-11-21`  
     * 修复弹幕内容为空的问题(测试BV1o44y1e7oU)[issue#81](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/81)  
 * V6.6  `2021-11-14`  

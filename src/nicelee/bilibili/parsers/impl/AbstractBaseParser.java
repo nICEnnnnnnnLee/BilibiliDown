@@ -172,7 +172,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=80&fourk=1";
+			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=2000&fourk=1";
 			url = String.format(url, cid, bvId, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());
@@ -271,7 +271,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=80&fourk=1";
+			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=2000&fourk=1";
 			url = String.format(url, cid, bvId, qn);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());

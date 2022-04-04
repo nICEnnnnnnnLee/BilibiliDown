@@ -30,6 +30,10 @@ public class ClipInfo {
 		sb.append("--title为 :").append(title).append(" \r\n");
 		if (avId != null)
 			sb.append("--avId为 :").append(avId).append(" \r\n");
+		if (listName != null)
+			sb.append("--listName为 :").append(listName).append(" \r\n");
+		if (listOwnerName != null)
+			sb.append("--listOwnerName为 :").append(listOwnerName).append(" \r\n");
 		
 		if (links != null) {
 			for (String link : links.values()) {

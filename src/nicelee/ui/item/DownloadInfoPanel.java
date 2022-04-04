@@ -17,6 +17,7 @@ import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.downloaders.Downloader;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
@@ -25,6 +26,7 @@ import nicelee.ui.TabDownload;
 
 public class DownloadInfoPanel extends JPanel implements ActionListener {
 
+	ClipInfo clipInfo;
 	String avTitle; // 原始av标题
 	String clipTitle; // 原始clip标题
 	String avid;
@@ -72,6 +74,7 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 	JLabel lbavName;
 
 	public DownloadInfoPanel(ClipInfo clip, int qn) {
+		this.clipInfo = clip;
 		this.avTitle = clip.getAvTitle();
 		this.clipTitle = clip.getAvTitle();
 		this.avid = clip.getAvId();
@@ -371,6 +374,14 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 
 	public void setAvid(String avid) {
 		this.avid = avid;
+	}
+
+	public ClipInfo getClipInfo() {
+		return clipInfo;
+	}
+
+	public int getQn() {
+		return qn;
 	}
 
 }

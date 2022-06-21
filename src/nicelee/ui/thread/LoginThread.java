@@ -74,15 +74,16 @@ public class LoginThread extends Thread {
 		}
 		System.out.println("没有检查到本地Cookies...");
 		Global.frWaiting.stop();
-		if(Global.pwdLogin) {
-			if(Global.pwdAutoLogin && Global.userName != null && Global.password != null) {
-				PwdAutoLogin(inl);
-			}else {
-				PwdLogin(inl);
-			}
-		}else {
-			QRLogin(inl);
-		}
+		QRLogin(inl);
+//		if(Global.pwdLogin) {
+//			if(Global.pwdAutoLogin && Global.userName != null && Global.password != null) {
+//				PwdAutoLogin(inl);
+//			}else {
+//				PwdLogin(inl);
+//			}
+//		}else {
+//			QRLogin(inl);
+//		}
 
 		Logger.println("线程即将结束，当前登录状态： " + Global.isLogin);
 		if (Global.isLogin) {

@@ -3,7 +3,11 @@ package nicelee.ui.item;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
@@ -17,14 +21,17 @@ import javax.swing.JRadioButtonMenuItem;
 
 import nicelee.bilibili.API;
 import nicelee.bilibili.enums.VideoQualityEnum;
+import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
+import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
 import nicelee.ui.TabSettings;
+import nicelee.ui.thread.DownloadRunnable;
 
 public class MJMenuBar extends JMenuBar {
 
@@ -97,6 +104,8 @@ public class MJMenuBar extends JMenuBar {
 		JMenuItem convertRepoBreak = new JMenuItem("停止转换仓库");
 		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
+		JMenuItem saveDownloading = new JMenuItem("保存下载任务");
+		JMenuItem loadDownloading = new JMenuItem("加载下载任务");
 		JMenuItem closeAllMenuItem = new JMenuItem("关闭全部Tab页");
 		JMenuItem doMultiDownMenuItem = new JMenuItem("批量下载Tab页");
 		JMenuItem logout = new JMenuItem("退出登录");
@@ -105,6 +114,9 @@ public class MJMenuBar extends JMenuBar {
 		operMenu.addSeparator();
 		operMenu.add(reloadConfig);
 		operMenu.add(reloadRepo);
+		operMenu.addSeparator();
+		operMenu.add(saveDownloading);
+		operMenu.add(loadDownloading);
 		operMenu.addSeparator();
 		operMenu.add(closeAllMenuItem);
 		operMenu.add(doMultiDownMenuItem);
@@ -189,6 +201,107 @@ public class MJMenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RepoUtil.init(true);
+			}
+		});
+		
+		// 保存下载页的所有任务
+		saveDownloading.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				File dir = ResourcesUtil.search("config");
+				if(dir == null) {
+					dir = new File("config");
+					dir.mkdirs();
+				}
+				File downloadingTasks = new File(dir, "tasks.config");
+				// \r\n##\r\n 分隔每个任务
+				// \r\n@@\r\n 分隔 ClipInfo属性和 Qn
+				final String taskSep = "\r\n##\r\n";
+				final String attrSep = "\r\n@@\r\n";
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(downloadingTasks))){
+					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
+						ClipInfo c = dp.getClipInfo();
+						writer.append(c.getAvTitle());
+						writer.append(attrSep);
+						writer.append(Long.toString(c.getcId()));
+						writer.append(attrSep);
+						writer.append(c.getAvId());
+						writer.append(attrSep);
+						writer.append(Integer.toString(c.getPage()));
+						writer.append(attrSep);
+						writer.append(c.getTitle());
+						writer.append(attrSep);
+						writer.append(c.getListName());
+						writer.append(attrSep);
+						writer.append(c.getListOwnerName());
+						writer.append(attrSep);
+						writer.append(Long.toString(c.getFavTime()));
+						writer.append(attrSep);
+						writer.append(Long.toString(c.getcTime()));
+						writer.append(attrSep);
+						writer.append(c.getUpName());
+						writer.append(attrSep);
+						writer.append(c.getUpId());
+						writer.append(attrSep);
+						writer.append(Integer.toString(c.getRemark()));
+						writer.append(attrSep);
+						writer.append(Integer.toString(dp.getQn()));
+						
+						writer.append(taskSep);
+						writer.flush();
+					}
+				}catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
+		// 加载保存的任务到下载页
+		loadDownloading.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				File downloadingTasks = ResourcesUtil.search("config/tasks.config");
+				// \r\n##\r\n 分隔每个任务
+				// \r\n@@\r\n 分隔 ClipInfo属性和 Qn
+				final String taskSep = "\r\n##\r\n";
+				final String attrSep = "\r\n@@\r\n";
+				try(BufferedReader reader = new BufferedReader(new FileReader(downloadingTasks))){
+					String line;
+					StringBuilder result = new StringBuilder();
+					while ((line = reader.readLine()) != null) {
+						result.append(line).append("\r\n");
+					}
+					String[] tasks = result.toString().split(taskSep);
+					for(String task : tasks) {
+						String[] attrs = task.split(attrSep);
+						ClipInfo c = new ClipInfo();
+						c.setAvTitle(attrs[0]);
+						c.setcId(Long.parseLong(attrs[1]));
+						c.setAvId(attrs[2]);
+						c.setPage(Integer.parseInt(attrs[3]));
+						c.setTitle(attrs[4]);
+						// null判断
+						if(!"null".equals(attrs[5]))
+							c.setListName(attrs[5]);
+						if(!"null".equals(attrs[6]))
+							c.setListOwnerName(attrs[6]);
+						c.setFavTime(Long.parseLong(attrs[7]));
+						c.setcTime(Long.parseLong(attrs[8]));
+						
+						c.setUpName(attrs[9]);
+						c.setUpId(attrs[10]);
+						c.setRemark(Integer.parseInt(attrs[11]));
+						
+						int qn = Integer.parseInt(attrs[12]);
+						Logger.println(c.toString());
+						Logger.println(qn);
+						DownloadRunnable downThread = new DownloadRunnable(null, c, qn);
+						Global.queryThreadPool.execute(downThread);
+					}
+				}catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		

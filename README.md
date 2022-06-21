@@ -41,21 +41,11 @@ Bilibili 视频下载器，用于下载B站视频。
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/install.gif)  
 </details>
 
-<details>
-<summary>密码登录(可选)</summary>
-
-
-+ 默认为扫码登录，使用该功能需要在`config/app.config`中更改配置项  
-`bilibili.user.login = pwd`  
-+ 程序打开后，点击主界面右上角登录按钮即可  
-</details>
 
 <details>
 <summary>扫码登录(可选)</summary>
 
 
-+ 如果当前为密码登录，可在`config/app.config`中更改配置项  
-`bilibili.user.login = qr`  
 + 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
 ![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/login.gif) 
 </details>
@@ -147,10 +137,11 @@ Bilibili 视频下载器，用于下载B站视频。
 <details>
 <summary>清晰度说明</summary>
 
-当因权限不足，或视频不存在该清晰度时，将返回不大于该qn值的合法最大qn值对应的清晰度。
+当因权限不足，或视频不存在该清晰度时，将返回不大于该qn值的合法最大qn值对应的清晰度。(FLV格式另有例外，请看下面的示例)
   
 | 清晰度  | qn值 |
 | ------------- | ------------- |
+| 8K  | 127 |
 | HDR  | 125 |
 | 4K  | 120 |
 | 1080P60  | 116 |
@@ -174,6 +165,12 @@ https://www.bilibili.com/bangumi/play/ep116157/
     * 无cookie 发起 ```1080P+``` 请求 =====>  得到```480P```链接  
     * 普通cookie 发起 ```1080P+``` 请求 =====>  得到```720P```链接  
     * 大会员cookie 发起 ```1080P+``` 请求 =====>  得到```1080P+```链接  
+    * 大会员cookie 发起 ```720P60``` 请求 =====>  得到```720P```链接  
+    
+* 举例，假设某av存在4K/1080P/720P/480P/360P    
+    * 大会员cookie 发起 ```8K``` 请求 =====>  得到```1080P```链接  
+    * 大会员cookie 发起 ```4K``` 请求 =====>  得到```4K```链接  
+    * 大会员cookie 发起 ```1080P``` 请求 =====>  得到```1080P```链接  
     * 大会员cookie 发起 ```720P60``` 请求 =====>  得到```720P```链接  
 </details>
 
@@ -245,14 +242,13 @@ B23Parser
 </details>
 
 ## :smile:第三方库使用声明  
-* 账号密码登录实现参考了[Bilibili-Toolkit](https://github.com/Hsury/Bilibili-Toolkit)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/Hsury/Bilibili-Toolkit/blob/master/LICENSE)  
+* ~~账号密码登录实现参考了[Bilibili-Toolkit](https://github.com/Hsury/Bilibili-Toolkit)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/Hsury/Bilibili-Toolkit/blob/master/LICENSE)~~ 代码保留，功能暂未使用  
 * AV和BV转换参考了[AV-BV-Convert](https://github.com/CCRcmcpe/AV-BV-Convert)[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/CCRcmcpe/AV-BV-Convert/blob/master/LICENSE)  
 * 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
 * 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
-* 内置hosts文件使用了[GithubHost](https://github.com/ButterAndButterfly/GithubHost)[![](https://img.shields.io/badge/license-SATA-green.svg)](https://github.com/ButterAndButterfly/GithubHost/blob/master/LICENSE.txt)  
 * ~~将要使用[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket)(先占坑，但不一定啥时候哦)~~`V4.2去除`实时弹幕相关可以参考[弹幕点歌姬](https://github.com/nICEnnnnnnnLee/DanmuMusicPlayer)  
-* 图形验证码识别API调用了[https://bili.dev:2233/captcha](https://github.com/Hsury/Bilibili-Toolkit/#图形验证码识别api) 暂时失效，具体看情况  
+* ~~图形验证码识别API调用了[https://bili.dev:2233/captcha](https://github.com/Hsury/Bilibili-Toolkit/#图形验证码识别api)~~ 代码保留，功能暂未使用  
 
 ## :smile:Linux/Mac用户请看过来  
 + Mac用户可参考[简单说下如何在mac下跑起来](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/32)  
@@ -282,7 +278,7 @@ make
 为了分发的便利，历史版本可能直接使用过其它编译版本ffmpeg.     
 当协议不兼容时，具体情况请以使用的ffmpeg版本为准（大概率是`GPL 3.0`）  
 ```
-Copyright (C) 2019 NiceLee. All Rights Reserved.
+Copyright (C) 2019-2022 NiceLee. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

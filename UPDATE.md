@@ -1,4 +1,9 @@
 ## UPDATE  
+* V6.9  `2022-06-27`  
+    * 新增：下载任务保存/加载功能
+    * 新增：恢复对MP4/FLV下载格式优先选择的支持
+    * 修复：将路径分隔符统一替换为当前系统分隔符，修复在非Windows平台可能存在的问题
+    * 删除：去除密码登录模式
 * V6.8  `2021-12-07`  
     * 新增：普通视频新增8K清晰度(测试BV1KS4y197BN)  
     * 修复：撤销对UI的改动[issue#84](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/84)  

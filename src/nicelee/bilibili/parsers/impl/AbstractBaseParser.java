@@ -172,7 +172,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=2000&fourk=1";
+			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=4048&fourk=1";
 			url = String.format(url, cid, bvId, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());
@@ -180,7 +180,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} else {
 			// 非普通类型
-			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=80&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
+			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=4048&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
 			url = String.format(url, aid, cid, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
@@ -215,7 +215,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			paramSetter.setRealQN(qn);
 			return "https://api.bilibili.com/x/v1/dm/list.so?oid=" + cid;
 		}
-		return getVideoM4sLink(bvId, cid, qn);
+		return getVideoLinkByFormat(bvId, cid, qn, downFormat);
 //		if (downFormat == 0) {
 //			return getVideoM4sLink(avId, cid, qn);
 //		} else {
@@ -253,13 +253,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 * @param bvId 视频的bvId
 	 * @param cid  av下面可能不只有一个视频, avId + cid才能确定一个真正的视频
 	 * @param qn   112: hdflv2;80: flv; 64: flv720; 32: flv480; 16: flv360
-	 * @return 视频url + "#" + 音频url
+	 * @param downloadFormat   0 MP4/ 1 FLV
+	 * @return 视频url + "#" + 音频url for mp4 / 视频url + "#" + 视频url + "#" + ... for flv
 	 */
-	String getVideoM4sLink(String bvId, String cid, int qn) {
-		System.out.println("正在查询MP4链接...");
+	String getVideoLinkByFormat(String bvId, String cid, int qn, int downloadFormat) {
+		System.out.println("正在查询MP4/FLV链接...");
 		HttpHeaders headers = new HttpHeaders();
 		JSONObject jObj = null;
-
+		// 根据downloadFormat确定fnval
+		String fnval = downloadFormat == Global.MP4? "4048" : "2";
 		// 先判断类型
 		String url = "https://api.bilibili.com/x/web-interface/view/detail?aid=&jsonp=jsonp&callback=__jp0&bvid="
 				+ bvId;
@@ -271,16 +273,16 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=2000&fourk=1";
-			url = String.format(url, cid, bvId, qn);
+			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
+			url = String.format(url, cid, bvId, qn, fnval);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());
 			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} else {
 			// 非普通类型
-			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=80&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
-			url = String.format(url, aid, cid, qn);
+			url = "https://api.bilibili.com/pgc/player/web/playurl?fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s&fnval=%s";
+			url = String.format(url, aid, cid, qn, fnval);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
 					HttpCookies.getGlobalCookies());
 			System.out.println(json);
@@ -290,9 +292,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		try {
-			StringBuilder link = new StringBuilder();
 			// 获取视频链接
 			JSONArray videos = jObj.getJSONObject("dash").getJSONArray("video");
+			StringBuilder link = new StringBuilder();
 			for (int i = 0; i < videos.length(); i++) {
 				JSONObject video = videos.getJSONObject(i);
 				if (video.getInt("id") == linkQN) {

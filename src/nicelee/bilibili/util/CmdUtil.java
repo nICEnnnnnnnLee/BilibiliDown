@@ -464,7 +464,10 @@ public class CmdUtil {
 		// 加入最后不匹配单位的部分
 		sb.append(formatStr.substring(pointer));
 		// 去掉文件名称的非法字符 |:*?<>"$
-		return sb.toString().replaceAll("[\t\b\\r\\n|:*?<>\"$]", "_");
+		// 将路径分隔符统一替换为当前系统分隔符
+		String result = sb.toString().replaceAll("[\t\b\\r\\n|:*?<>\"$]", "_")
+				.replaceAll("[/\\\\]", Matcher.quoteReplacement(File.separator));
+		return result;
 	}
 
 

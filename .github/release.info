@@ -1,9 +1,5 @@
-* V6.10 
 * 新增：Release打包增加了附带精简jre11的选项, 为没有Java环境的win64用户提供了另一种可能。    
-  不要再问我
-  [#99](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/99)
-  [#68](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/68)
-  [#12](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/12)
+  不要再问我[#99](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/99)[#68](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/68)[#12](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/12)
   为什么`win找不到javaw?`了，真的。
 * 新增：尝试外链MP4解析方式，该方法无法选择清晰度，一般返回1080P，不需要音视频分离再使用ffmpeg合并  
     `bilibili.format = 0 for MP4(音视频分离合并), 1 for FLV, 2 for MP4(无法选择清晰度)`

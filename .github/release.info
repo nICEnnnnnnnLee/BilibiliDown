@@ -1,4 +1,13 @@
-* 新增：下载任务保存/加载功能
-* 新增：恢复对MP4/FLV下载格式优先选择的支持
-* 修复：将路径分隔符统一替换为当前系统分隔符，修复在非Windows平台可能存在的问题
-* 删除：去除密码登录模式
+* V6.10 
+* 新增：Release打包增加了附带精简jre11的选项, 为没有Java环境的win64用户提供了另一种可能。    
+  不要再问我
+  [#99](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/99)
+  [#68](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/68)
+  [#12](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/12)
+  为什么`win找不到javaw?`了，真的。
+* 新增：尝试外链MP4解析方式，该方法无法选择清晰度，一般返回1080P，不需要音视频分离再使用ffmpeg合并  
+    `bilibili.format = 0 for MP4(音视频分离合并), 1 for FLV, 2 for MP4(无法选择清晰度)`
+
+<hr/>  
+
+如果你是Win64用户,且没有java环境，请下载附件`*.jre11_win_x64.zip`

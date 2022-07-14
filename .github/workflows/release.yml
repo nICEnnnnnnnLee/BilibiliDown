@@ -1,7 +1,7 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
 
-name: CI
+name: Build Release
 
 on:
   push:
@@ -106,6 +106,11 @@ jobs:
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./config/
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./LICENSE/
     
+        wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11_win_x64.zip
+        unzip minimal-bilibilidown-jre11_win_x64.zip
+        cp BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
+        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip ./minimal-bilibilidown-jre/
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -119,7 +124,7 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload Release Asset
+    - name: Upload Release Asset(no jre)
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
@@ -128,4 +133,15 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         asset_name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        asset_content_type: application/zip
+        
+    - name: Upload Release Asset(with jre11 win_64)
+      id: upload-release-asset-with-jre11-win_64
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
+        asset_name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
         asset_content_type: application/zip

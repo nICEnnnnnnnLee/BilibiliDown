@@ -21,7 +21,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.9", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.10", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -47,7 +47,7 @@ public class Global {
 	public static boolean playSoundAfterMissionComplete; // 全部任务完成后是否播放提示音
 	@Config(key = "bilibili.download.maxFailRetry", note = "下载失败后重试次数", defaultValue = "3")
 	public static int maxFailRetry;
-	@Config(key = "bilibili.format", defaultValue = "0", valids = { "0", "1" })
+	@Config(key = "bilibili.format", defaultValue = "0", valids = { "0", "1", "2" }, note = "优先下载格式, 0-m4s,1-flv,2-mp4")
 	public static int downloadFormat = MP4; // 优先下载格式，如不存在该类型的源，那么将默认转为下载另一种格式
 	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/")
 	public static String savePath = "./download/"; // 下载文件保存路径
@@ -90,11 +90,11 @@ public class Global {
 	public static String password;
 	@Config(key = "bilibili.user.delete", defaultValue = "true", valids = { "true", "false" })
 	public static boolean deleteUserFile;
-	@Config(key = "bilibili.user.login", note = "登录方式", defaultValue = "false", eq_true = "pwd", valids = { "pwd", "qr" })
+	@Config(key = "bilibili.user.login", defaultValue = "false", eq_true = "pwd", valids = { "pwd", "qr" }) // note = "登录方式", 
 	public static boolean pwdLogin; // 使用用户名密码登录方式
-	@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "pwd", valids = { "auto", "manual" })
+	@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
 	public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式
-	@Config(key = "bilibili.user.login.pwd.autoCaptcha", note = "用户名密码登录时是否自动尝试解析验证码", defaultValue = "false", valids = { "true", "false" })
+	@Config(key = "bilibili.user.login.pwd.autoCaptcha", defaultValue = "false", valids = { "true", "false" })// note = "用户名密码登录时是否自动尝试解析验证码", 
 	public static boolean pwdAutoCaptcha; // 自动提取验证码
 
 	public static boolean needToLogin = false;

@@ -261,7 +261,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		HttpHeaders headers = new HttpHeaders();
 		JSONObject jObj = null;
 		// 根据downloadFormat确定fnval
-		String fnval = downloadFormat == Global.MP4? "4048" : "2";
+		String fnval = (downloadFormat & 0x01) == Global.MP4? "4048" : "2";
 		// 先判断类型
 		String url = "https://api.bilibili.com/x/web-interface/view/detail?aid=&jsonp=jsonp&callback=__jp0&bvid="
 				+ bvId;
@@ -273,10 +273,14 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
 			// 普通类型
-			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
+			url = downloadFormat == 2 ? 
+					// 下面这个API清晰度没法选择，编码方式没法选择，固定返回1080P? mp4
+					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&platform=html5&high_quality=1":
+					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
 			url = String.format(url, cid, bvId, qn, fnval);
 			Logger.println(url);
-			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());
+			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), cookie);
 			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} else {
@@ -342,7 +346,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			return link.toString();
 		} catch (Exception e) {
 			// e.printStackTrace();
-			Logger.println("目标为FLV，切换解析方式");
+			Logger.println("切换解析方式");
 			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
 			return parseUrlJArray(jObj.getJSONArray("durl"));
 		}

@@ -205,6 +205,25 @@ public class Global {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		//  设置System Property
+		String sysPropJreTag = "bilibili.system.properties.jre" + System.getProperty("java.specification.version");
+		String sysProp = Global.settings.get(sysPropJreTag);
+		if(sysProp != null) {
+			String sysPropOverrideStr = Global.settings.getOrDefault(sysPropJreTag + ".override", "false");
+			boolean sysPropOverride = "true".equalsIgnoreCase(sysPropOverrideStr);
+			String[] keyValuePairs = sysProp.split("-D");
+			for(String keyValuePair: keyValuePairs) {
+				String[] params = keyValuePair.split("=", 2);
+				if(params.length == 2) {
+					if(sysPropOverride || System.getProperty(params[0]) == null) {
+						if("null".equalsIgnoreCase(params[1].trim()))
+							System.clearProperty(params[0]);
+						else
+							System.setProperty(params[0], params[1].trim());
+					}
+				}
+			}
+		}
 	}
 
 	private static boolean checkValid(String value, String[] valids) {

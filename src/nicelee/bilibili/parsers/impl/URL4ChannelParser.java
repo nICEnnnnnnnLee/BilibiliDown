@@ -11,7 +11,12 @@ import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
-
+/**
+ * 这是老版的channel解析，针对的是如下类型的url
+ * https://space.bilibili.com/378034/channel/detail?cid=189
+ *	还能生效，但是从web端已经无法找到这类url了
+ *
+ */
 @Bilibili(name = "URL4ChannelParser", ifLoad = "listAll", note = "UP 某主题频道文件夹的视频解析")
 public class URL4ChannelParser extends AbstractPageQueryParser<VideoInfo> {
 

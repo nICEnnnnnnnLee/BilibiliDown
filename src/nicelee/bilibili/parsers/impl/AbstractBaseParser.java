@@ -109,7 +109,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		} else {
 			LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 			int[] qnListDefault = null;
-			if (array.length() > 20) {
+			if (array.length() > 5) {
 				qnListDefault = new int[] { 120, 116, 112, 80, 74, 64, 32, 16 };
 			}
 			for (int i = 0; i < array.length(); i++) {

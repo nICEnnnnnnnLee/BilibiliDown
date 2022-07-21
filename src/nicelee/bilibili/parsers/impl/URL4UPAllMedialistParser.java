@@ -33,7 +33,7 @@ import nicelee.bilibili.util.Logger;
 public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo> {
 	// 针对 https://www.bilibili.com/medialist/play/378034?from=space&business=space&sort_field=play&tid=3
 	private final static Pattern pattern = Pattern
-			.compile("www\\.bilibili\\.com/medialist/play/([0-9]+)\\?.*&business=space");
+			.compile("www\\.bilibili\\.com/medialist/play/([0-9]+)\\?.*&business=space&");
 	private final static Pattern patternParams = Pattern.compile("(tid|sort_field)=([^=&]+)");
 
 	// 针对 https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
@@ -46,6 +46,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 	private final static String[][] paramDicts = new String[][] { { "pubtime", "pubdate" }, { "play", "click" },
 			{ "fav", "stow" } };
 	private String spaceID;
+	private String listName;
 	private HashMap<String, String> params;
 
 	public URL4UPAllMedialistParser(Object... obj) {
@@ -134,8 +135,9 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 				Logger.println(url);
 				String json = util.getContent(url, headers);
 				JSONObject jobj = new JSONObject(json).getJSONObject("data");
+				listName = jobj.getString("title") + "的视频列表";
 				pageQueryResult.setVideoId("space" + spaceID);
-				pageQueryResult.setVideoName(jobj.getString("title") + "的视频列表" + paramSetter.getPage());
+				pageQueryResult.setVideoName(listName + paramSetter.getPage());
 				pageQueryResult.setBrief(jobj.getString("intro"));
 				pageQueryResult.setAuthorId(spaceID);
 				pageQueryResult.setAuthor(jobj.getJSONObject("upper").getString("name"));
@@ -200,7 +202,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 					clip.setRemark((page - 1) * API_PMAX + i + 1);
 					clip.setPicPreview(jAV.getString("cover"));
 					// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
-					clip.setListName(pageQueryResult.getVideoName().replaceAll("[/\\\\]", "_"));
+					clip.setListName(listName.replaceAll("[/\\\\]", "_"));
 					clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
 					clip.setUpName(upName);
 					clip.setUpId(upId);

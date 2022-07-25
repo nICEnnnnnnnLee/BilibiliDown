@@ -94,10 +94,10 @@ public class Global {
 	public static boolean deleteUserFile;
 	@Config(key = "bilibili.user.login", note = "登录方式", defaultValue = "false", eq_true = "pwd", valids = { "pwd", "qr" }) // note = "登录方式", 
 	public static boolean pwdLogin; // 使用用户名密码登录方式
-	@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
-	public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式
-	@Config(key = "bilibili.user.login.pwd.autoCaptcha", defaultValue = "false", valids = { "true", "false" })// note = "用户名密码登录时是否自动尝试解析验证码", 
-	public static boolean pwdAutoCaptcha; // 自动提取验证码
+	//@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
+	//public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式
+	//@Config(key = "bilibili.user.login.pwd.autoCaptcha", defaultValue = "false", valids = { "true", "false" })// note = "用户名密码登录时是否自动尝试解析验证码", 
+	//public static boolean pwdAutoCaptcha; // 自动提取验证码
 
 	public static boolean needToLogin = false;
 	public static boolean isLogin = false;
@@ -145,6 +145,8 @@ public class Global {
 	@Config(key = "bilibili.https.allowInsecure", note = "跳过证书验证", defaultValue = "false", valids = { "true", "false" })
 	private static boolean allowInsecure;
 
+	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
+	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
 	final public static HashMap<String, String> settings = new HashMap<>();
 
 	// 根据Global.settings 初始化配置到具体属性值

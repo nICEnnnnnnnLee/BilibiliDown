@@ -19,6 +19,7 @@ import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.DialogLogin;
+import nicelee.ui.DialogSMSLogin;
 import nicelee.ui.FrameQRCode;
 import nicelee.ui.Global;
 
@@ -74,10 +75,20 @@ public class LoginThread extends Thread {
 		System.out.println("没有检查到本地Cookies...");
 		Global.frWaiting.stop();
 		//QRLogin(inl);
-		if(Global.pwdLogin) {
+		switch (Global.loginType) {
+		case "pwd":
 			PwdLogin(inl);
-		}else {
+			break;
+		case "qr":
 			QRLogin(inl);
+			break;
+		case "sms":
+			DialogSMSLogin dialog = new DialogSMSLogin(inl);
+			dialog.init();
+			break;
+		default:
+			QRLogin(inl);
+			break;
 		}
 
 		Logger.println("线程即将结束，当前登录状态： " + Global.isLogin);

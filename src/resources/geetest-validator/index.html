@@ -100,7 +100,9 @@ https://github.com/kuresaru/geetest-validator
 						console.log("seccode:", result.geetest_seccode);
 						console.log("challenge:", challenge);
 						console.log("token:", token);
-						$.post("/geetest/login", {
+						if(type == "sms")
+						var url = type == "sms"? "/geetest/sms": "/geetest/login";
+						$.post(url, {
 							token : token,
 							validate : validate,
 							seccode : seccode,
@@ -147,6 +149,7 @@ https://github.com/kuresaru/geetest-validator
 		if (challenge)
 			$('#challenge')[0].value = challenge;
 		var token = getQueryVariable("token");
+		var type = getQueryVariable("type");
 		if (gt && challenge)
 			$('#btn-gen').click();
 	</script>

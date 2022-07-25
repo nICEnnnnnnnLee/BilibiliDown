@@ -92,8 +92,8 @@ public class Global {
 	public static String password;
 	@Config(key = "bilibili.user.delete", defaultValue = "true", valids = { "true", "false" })
 	public static boolean deleteUserFile;
-	@Config(key = "bilibili.user.login", note = "登录方式", defaultValue = "false", eq_true = "pwd", valids = { "pwd", "qr" }) // note = "登录方式", 
-	public static boolean pwdLogin; // 使用用户名密码登录方式
+	@Config(key = "bilibili.user.login", note = "登录方式", defaultValue = "qr", valids = { "pwd", "qr", "sms" }) // note = "登录方式", 
+	public static String loginType; // 登录方式
 	//@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
 	//public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式
 	//@Config(key = "bilibili.user.login.pwd.autoCaptcha", defaultValue = "false", valids = { "true", "false" })// note = "用户名密码登录时是否自动尝试解析验证码", 

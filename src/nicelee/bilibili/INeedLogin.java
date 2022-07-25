@@ -242,7 +242,10 @@ public class INeedLogin {
 		return json;
 	}
 
+	HashMap<String, String> loginHeader = null;
 	HashMap<String, String> genLoginHeader(){
+		if(loginHeader != null)
+			return loginHeader;
 		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
 		StringBuilder sb = new StringBuilder();
 		
@@ -336,6 +339,48 @@ public class INeedLogin {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");
 			}
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "未知错误，可能由网络引起";
+		}
+	}
+	
+	public JSONObject sendSMS(String countryCode, String phoneNumber, String token, String challenge, String validate, String seccode) {
+		try {
+			String url = "https://passport.bilibili.com/x/passport-login/web/sms/send";
+			HashMap<String, String> headers = genLoginHeader();
+			String param = String.format(
+					"cid=%s&tel=%s&source=main_mini&token=%s&challenge=%s&validate=%s&seccode=%s",
+					countryCode, phoneNumber, token, challenge, validate, seccode);
+			String result = util.postContent(url, headers, param);
+			Logger.println(result);
+			return new JSONObject(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String loginSMS(String countryCode, String phoneNumber, String code, String captchaKey) {
+		try {
+			String url = "https://passport.bilibili.com/x/passport-login/web/login/sms";
+			HashMap<String, String> headers = genLoginHeader();
+			String param = String.format(
+					"cid=%s&tel=%s&code=%s&captcha_key=%s&source=main_mini&go_url=&keep=true",
+					countryCode, phoneNumber, code, captchaKey);
+			String result = util.postContent(url, headers, param);
+			Logger.println(result);
+			JSONObject response = new JSONObject(result);
+			if (response.optInt("code") == 0) {
+				JSONObject data = response.getJSONObject("data");
+				if (data.optInt("status") == 2) {
+					return data.optString("message", "未知错误，返回信息中没有错误描述");
+				}
+				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
+				return null;
+			} else {
+				return response.optString("message", "未知错误，返回信息中没有错误描述");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "未知错误，可能由网络引起";

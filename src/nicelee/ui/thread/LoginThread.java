@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -74,16 +73,12 @@ public class LoginThread extends Thread {
 		}
 		System.out.println("没有检查到本地Cookies...");
 		Global.frWaiting.stop();
-		QRLogin(inl);
-//		if(Global.pwdLogin) {
-//			if(Global.pwdAutoLogin && Global.userName != null && Global.password != null) {
-//				PwdAutoLogin(inl);
-//			}else {
-//				PwdLogin(inl);
-//			}
-//		}else {
-//			QRLogin(inl);
-//		}
+		//QRLogin(inl);
+		if(Global.pwdLogin) {
+			PwdLogin(inl);
+		}else {
+			QRLogin(inl);
+		}
 
 		Logger.println("线程即将结束，当前登录状态： " + Global.isLogin);
 		if (Global.isLogin) {
@@ -112,34 +107,6 @@ public class LoginThread extends Thread {
 		dialog.init();
 	}
 	
-	/**
-	 * 账户密码登录(自动)
-	 * 
-	 * @param inl
-	 */
-	private void PwdAutoLogin(INeedLogin inl) {
-		byte[] bytes = null;
-		try {
-			bytes = inl.getCaptcha();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "验证码获取失败，请再次点击登录按钮进行尝试", "请注意!!", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-		String captcha = null;
-		try {
-			captcha = inl.getCaptchaStr(bytes);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "验证码识图转换失败，请再次点击登录按钮进行尝试", "请注意!!", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-		String result = inl.login(Global.userName, Global.password, captcha);
-		if(result != null) {
-			JOptionPane.showMessageDialog(null, "登录失败，错误原因：" + result, "请注意!!", JOptionPane.WARNING_MESSAGE);
-		}else {
-			Global.isLogin = true;
-		}
-	}
-
 	/**
 	 * 二维码扫码登录
 	 * 

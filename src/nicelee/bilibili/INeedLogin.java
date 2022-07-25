@@ -3,30 +3,24 @@ package nicelee.bilibili;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.crypto.Cipher;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import nicelee.bilibili.model.UserInfo;
@@ -34,14 +28,10 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
-import nicelee.bilibili.util.MD5;
 import nicelee.bilibili.util.QrCodeUtil;
+import nicelee.bilibili.util.ResourcesUtil;
 
 public class INeedLogin {
-
-	final static String appKey = "bca7e84c2d947ac6";
-	final static String salt = "60698ba2f68e01ce44738920a0ffe768";  // 与 appKey 必须匹配
-	final static String biliUserAgent = "Mozilla/5.0 BiliDroid/6.4.0 (bbcallen@gmail.com) os/android model/M1903F11I mobi_app/android build/6040500 channel/bili innerVer/6040500 osVer/9.0.0 network/2";
 
 	HttpRequestUtil util = new HttpRequestUtil();
 	public List<HttpCookie> iCookies;
@@ -241,76 +231,84 @@ public class INeedLogin {
 	}
 
 	/**
-	 * 以下实现均参考： https://github.com/Hsury/Bilibili-Toolkit
-	 * <p>
-	 * Bilibili Toolkit is under The Star And Thank Author License (SATA)
-	 * </p>
+	 * 获取极验信息
 	 */
-
-	/**
-	 * 获取验证码图片
-	 */
-	public byte[] getCaptcha() throws IOException {
-		URL realUrl = new URL("https://passport.bilibili.com/captcha");
-		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-		conn.connect();
-		InputStream in = conn.getInputStream();
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024 * 1024];
-		for (int len = 0; (len = in.read(buffer)) != -1;) {
-			out.write(buffer, 0, len);
-		}
-		byte[] captcha = out.toByteArray();
-		return captcha;
+	public JSONObject getGeetest() throws IOException {
+		String url = "https://passport.bilibili.com/x/passport-login/captcha?source=main_mini";
+		HttpHeaders headers = new HttpHeaders();
+		//util.getContent("https://passport.bilibili.com/login", headers.getBiliLoginAuthHeaders());
+		String jsonStr = util.getContent(url, headers.getBiliLoginAuthHeaders());
+		JSONObject json = new JSONObject(jsonStr).getJSONObject("data");
+		return json;
 	}
 
-	/**
-	 * 使用识图接口获取验证码 https://github.com/kerlomz/captcha_trainer
-	 * 
-	 * @param bytes 验证码数据
-	 * @return
-	 * @throws IOException
-	 */
-	public String getCaptchaStr(byte[] bytes) throws IOException {
-		String url = "https://bili.dev:2233/captcha";
-		StringBuilder payload = new StringBuilder("{\"image\":\"").append(Base64.getEncoder().encodeToString(bytes))
-				.append("\"}");
-		Logger.println(payload);
-		HashMap<String, String> headers = new HashMap<>();
-		headers.put("User-Agent", "BiliDroid");
-		String response = util.postContent(url, headers, payload.toString());
-		Logger.println(response);
-		JSONObject obj = new JSONObject(response);
-		if (obj.getBoolean("success")) {
-			return obj.getString("message");
-		}
-		return null;
+	HashMap<String, String> genLoginHeader(){
+		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("_uuid=")
+			.append(ResourcesUtil.randomUpper(8)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(18)).append("infoc")
+			.append("; ");
+		sb.append("b_lsid=")
+			.append(ResourcesUtil.randomUpper(8)).append("_")
+			.append(ResourcesUtil.randomUpper(11))
+			.append("; ");
+		sb.append("b_nut=")
+			.append(System.currentTimeMillis()/1000)
+			.append("; ");
+		sb.append("b_timer=")
+			.append("%7B%22ffp%22%3A%7B%22333.130.fp.risk_")
+			.append(ResourcesUtil.randomUpper(8))
+			.append("%22%3A%22")
+			.append(ResourcesUtil.randomInt(10))
+			.append("A%22%7D%7D; ");
+		sb.append("buvid3=")
+			.append(ResourcesUtil.randomUpper(8)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(17)).append("infoc")
+			.append("; ");
+		sb.append("buvid4=")
+			.append(ResourcesUtil.randomInt(8)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(17)).append("-")
+			.append(ResourcesUtil.randomInt(9)).append("-")
+			.append(ResourcesUtil.randomLower(4)).append("/")
+			.append(ResourcesUtil.randomUpper(4)).append("+")
+			.append(ResourcesUtil.randomUpper(12)).append("%3D%3D")
+			.append("; ");
+		sb.append("buvid_fp=")
+			.append(ResourcesUtil.randomUpper(8)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(4)).append("-")
+			.append(ResourcesUtil.randomUpper(17)).append("infoc")
+			.append("; ");
+		sb.append("fingerprint=").append(ResourcesUtil.randomLower(32));
+		headers.put("Cookie", sb.toString());
+		return headers;
 	}
-
+	
 	/**
 	 * 登录
 	 * 
-	 * @param userName
-	 * @param pwd
-	 * @param captcha
-	 * @return 成功返回null，否则返回失败原因
 	 */
-	public String login(String userName, String pwd, String captcha) {
+	public String login(String userName, String pwd, String token, String challenge, String validate, String seccode) {
 		try {
-			if(!userName.contains("%40"))
+			if (!userName.contains("%40"))
 				userName = URLEncoder.encode(userName, "UTF-8"); // 账号没有特殊字符，OK
-			String url = "https://passport.bilibili.com/api/oauth2/getKey";
-			String param = String.format("appkey=%s", appKey);
-			String sign = MD5.encrypt(param + salt);
-			param += "&sign=" + sign;
-			HashMap<String, String> headers = new HashMap<String, String>();
-			headers.put("User-Agent", biliUserAgent);
-			headers.put("Content-type", "application/x-www-form-urlencoded");
-
-			String result = util.postContent(url, headers, param);
+			String url = "https://passport.bilibili.com/x/passport-login/web/key?_=" + System.currentTimeMillis();
+			HashMap<String, String> headers = genLoginHeader();
+			String result = util.getContent(url, headers);
 			Logger.println(result);
 			JSONObject obj = new JSONObject(result).getJSONObject("data");
-			//Logger.println(result);
 			String hash = obj.optString("hash", "");
 			if (hash.isEmpty()) {
 				return "服务器繁忙，登录失败";
@@ -320,13 +318,10 @@ public class INeedLogin {
 
 			String encryptPwd = encrypt(hash + pwd, pubKey);
 			encryptPwd = URLEncoder.encode(encryptPwd, "UTF-8");
-			//url = "https://passport.bilibili.com/api/v3/oauth2/login";
-			url = "https://passport.bilibili.com/x/passport-login/oauth2/login";
-			param = String.format("access_key=&actionKey=appkey&appkey=%s&build=6040500"
-					+ "&captcha=%s&challenge=&channel=bili&cookies=&device=phone&mobi_app=android"
-					+ "&password=%s&permission=ALL&platform=android&seccode=&subid=1&ts=%d&username=%s&validate=",
-					appKey, captcha, encryptPwd, System.currentTimeMillis() / 1000, userName);
-			param = param + "&sign=" + MD5.encrypt(param + salt);
+			url = "https://passport.bilibili.com/x/passport-login/web/login";
+			String param = String.format(
+					"username=%s&password=%s&keep=0&source=main_mini&token=%s&go_url=https://www.bilibili.com&challenge=%s&validate=%s&seccode=%s",
+					userName, encryptPwd, token, challenge, validate, seccode);
 			result = util.postContent(url, headers, param);
 			Logger.println(result);
 			JSONObject response = new JSONObject(result);
@@ -335,13 +330,7 @@ public class INeedLogin {
 				if (data.optInt("status") == 2) {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
-				iCookies = new ArrayList<HttpCookie>();
-				JSONArray cookieInfo = data.getJSONObject("cookie_info").getJSONArray("cookies");
-				for (int i = 0; i < cookieInfo.length(); i++) {
-					JSONObject cc = cookieInfo.getJSONObject(i);
-					HttpCookie cCookie = new HttpCookie(cc.getString("name"), cc.getString("value"));
-					iCookies.add(cCookie);
-				}
+				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");

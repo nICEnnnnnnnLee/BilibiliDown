@@ -9,6 +9,46 @@ import java.lang.reflect.Method;
 
 public class ResourcesUtil {
 
+	public static String randomInt(int i) {
+		StringBuilder sb = new StringBuilder(i);
+		String alphabet = "0123456789";
+		for (int j = 0; j < i; j++) {
+			int m = (int) (Math.random() * alphabet.length());
+			sb.append(alphabet.charAt(m));
+		}
+		return sb.toString();
+	}
+	
+	public static String randomLower(int i) {
+		StringBuilder sb = new StringBuilder(i);
+		String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+		for (int j = 0; j < i; j++) {
+			int m = (int) (Math.random() * alphabet.length());
+			sb.append(alphabet.charAt(m));
+		}
+		return sb.toString();
+	}
+	
+	public static String randomUpper(int i) {
+		StringBuilder sb = new StringBuilder(i);
+		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		for (int j = 0; j < i; j++) {
+			int m = (int) (Math.random() * alphabet.length());
+			sb.append(alphabet.charAt(m));
+		}
+		return sb.toString();
+	}
+	
+	public static String random(int i) {
+		StringBuilder sb = new StringBuilder(i);
+		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		for (int j = 0; j < i; j++) {
+			int m = (int) (Math.random() * alphabet.length());
+			sb.append(alphabet.charAt(m));
+		}
+		return sb.toString();
+	}
+	
 	public static void copy(File source, File dest) {
 		try {
 			RandomAccessFile rSource = new RandomAccessFile(source, "r");

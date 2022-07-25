@@ -57,7 +57,6 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 //			System.setProperty("proxyPort", "8888");
 //			HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllCertSSLUtil.getFactory());
 			DialogLogin dialog = new DialogLogin(new INeedLogin());
-			Global.pwdAutoCaptcha = false;
 			dialog.init();
 			Logger.println("-----------------");
 		} catch (Exception e) {

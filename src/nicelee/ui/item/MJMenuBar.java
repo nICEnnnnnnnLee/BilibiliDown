@@ -32,6 +32,7 @@ import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
 import nicelee.ui.TabSettings;
 import nicelee.ui.thread.DownloadRunnable;
+import nicelee.ui.thread.LoginThread;
 
 public class MJMenuBar extends JMenuBar {
 
@@ -108,7 +109,18 @@ public class MJMenuBar extends JMenuBar {
 		JMenuItem loadDownloading = new JMenuItem("加载下载任务");
 		JMenuItem closeAllMenuItem = new JMenuItem("关闭全部Tab页");
 		JMenuItem doMultiDownMenuItem = new JMenuItem("批量下载Tab页");
+		
+		JMenu loginRelated = new JMenu("登录相关");
 		JMenuItem logout = new JMenuItem("退出登录");
+		JMenuItem qrLogin = new JMenuItem("二维码登录");
+		JMenuItem pwdLogin = new JMenuItem("用户名密码登录");
+		JMenuItem smsLogin = new JMenuItem("短信验证登录");
+		loginRelated.add(qrLogin);
+		loginRelated.add(pwdLogin);
+		loginRelated.add(smsLogin);
+		loginRelated.addSeparator();
+		loginRelated.add(logout);
+		
 		operMenu.add(convertRepo);
 		operMenu.add(convertRepoBreak);
 		operMenu.addSeparator();
@@ -121,7 +133,7 @@ public class MJMenuBar extends JMenuBar {
 		operMenu.add(closeAllMenuItem);
 		operMenu.add(doMultiDownMenuItem);
 		operMenu.addSeparator();
-		operMenu.add(logout);
+		operMenu.add(loginRelated);
 		
 		/**
 		 * 创建二级 配置 子菜单
@@ -333,6 +345,28 @@ public class MJMenuBar extends JMenuBar {
 			}
 		});
 		
+		// 各种登录
+		qrLogin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Global.loginType = "qr";
+				new LoginThread().start();
+			}
+		});
+		pwdLogin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Global.loginType = "pwd";
+				new LoginThread().start();
+			}
+		});
+		smsLogin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Global.loginType = "sms";
+				new LoginThread().start();
+			}
+		});
 		// 退出登录
 		logout.addActionListener(new ActionListener() {
 			@Override

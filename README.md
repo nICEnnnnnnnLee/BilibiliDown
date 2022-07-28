@@ -43,11 +43,21 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 <details>
-<summary>扫码登录(可选)</summary>
+<summary>登录</summary>
 
 
-+ 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/login.gif) 
++ 扫码登录(默认)  
+点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
+![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/login.gif)   
+
++ 用户名密码登录
+    + 菜单`操作` -> `登录相关` -> `用户名密码登录`    
+    + 在`bilibili.user.login=pwd`的情况下，点击主界面右上角登录按钮  
+    
++ 短信认证登录
+    + 菜单`操作` -> `登录相关` -> `短信认证登录`    
+    + 在`bilibili.user.login=sms`的情况下，点击主界面右上角登录按钮  
+
 </details>
 
 <details>

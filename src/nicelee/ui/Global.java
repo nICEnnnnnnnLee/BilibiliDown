@@ -21,7 +21,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.12", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.13", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -92,7 +92,7 @@ public class Global {
 	public static String password;
 	@Config(key = "bilibili.user.delete", defaultValue = "true", valids = { "true", "false" })
 	public static boolean deleteUserFile;
-	@Config(key = "bilibili.user.login", note = "登录方式", defaultValue = "qr", valids = { "pwd", "qr", "sms" }) // note = "登录方式", 
+	@Config(key = "bilibili.user.login", note = "登录方式 qr/pwd/sms", defaultValue = "qr", valids = { "pwd", "qr", "sms" }) // note = "登录方式", 
 	public static String loginType; // 登录方式
 	//@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
 	//public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式

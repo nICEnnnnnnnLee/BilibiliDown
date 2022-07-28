@@ -2,7 +2,6 @@ package nicelee.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Image;
@@ -12,7 +11,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
@@ -21,8 +19,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,9 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import org.json.JSONObject;
@@ -43,20 +40,20 @@ import nicelee.bilibili.INeedLogin;
 import nicelee.bilibili.util.Logger;
 import nicelee.server.core.SocketServer;
 
-public class DialogLogin extends JDialog implements FocusListener, MouseListener, MouseMotionListener {
+public class DialogSMSLogin extends JDialog implements FocusListener, MouseListener, MouseMotionListener {
 
-	public static DialogLogin Instance;
+	public static DialogSMSLogin Instance;
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3741671572332334943L;
+	private static final long serialVersionUID = 3741671572332334944L;
 
 	public static void main(String[] args) {
 		try {
 //			System.setProperty("proxyHost", "127.0.0.1");
 //			System.setProperty("proxyPort", "8888");
 //			HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllCertSSLUtil.getFactory());
-			DialogLogin dialog = new DialogLogin(new INeedLogin());
+			DialogSMSLogin dialog = new DialogSMSLogin(new INeedLogin());
 			dialog.init();
 			Logger.println("-----------------");
 		} catch (Exception e) {
@@ -64,7 +61,7 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 		}
 	}
 
-	final static String tips = "请输入手机号/邮箱";
+	final static String tips = "请输入手机号(e.g. +86 18812344321)";
 	final static Color colorLostFocus = Color.getHSBColor(100, 100, 100);
 	final static Color colorGainFocus = Color.white;
 
@@ -73,15 +70,17 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 
 	INeedLogin inl;
 	JTextField jtUserName = new JTextField(tips);
-	JPasswordField jtPassword = new JPasswordField("123456");
-	JLabel lbLogin = new JLabel("点击过极验验证码");
+	JTextField jtSMSCode = new JTextField();
+	JLabel lbGetSMS = new JLabel("获取短信验证码");
+	JLabel lbLogin = new JLabel("登录");
 	JLabel lbTips = new JLabel("");
 	boolean isRefreshingCaptcha = false;
 	boolean isLogging = false;
 
 	SocketServer socketServer;
+	String countryCode, phoneNumber, captchaKey;
 
-	public DialogLogin(INeedLogin inl) {
+	public DialogSMSLogin(INeedLogin inl) {
 		this.inl = inl;
 	}
 
@@ -92,7 +91,7 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 				socketServer = new SocketServer(Global.serverPort);
 				socketServer.startServer();
 			}
-		}, "密码登录server").start();
+		}, "SMS登录server").start();
 		Instance = this;
 		setAlwaysOnTop(true);
 		setResizable(false);
@@ -108,23 +107,29 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 		panel.setBackground(Color.WHITE);
 
 		initSysButton(panel);
-		ImageIcon icon = new ImageIcon(DialogLogin.class.getResource("/resources/banner.jpg"));
+		ImageIcon icon = new ImageIcon(DialogSMSLogin.class.getResource("/resources/banner.jpg"));
 		icon = new ImageIcon(icon.getImage().getScaledInstance(520, 110, Image.SCALE_SMOOTH));
 		JLabel label = new JLabel(icon);
 		label.setIcon(icon);
 		label.setBounds(1, 1, 520, 90);
 		panel.add(label);
 
-		Font font = new Font(Font.SERIF, Font.PLAIN, 18); //"system"
+		Font font = new Font(Font.SERIF, Font.PLAIN, 18); // "system"
 		Insets insets = new Insets(2, 10, 2, 0);
 		jtUserName.setBounds(50, 80, 420, 40);
-		jtPassword.setBounds(50, 130, 420, 40);
+		jtSMSCode.setBounds(50, 130, 200, 40);
 		jtUserName.setBackground(colorLostFocus);
-		jtPassword.setBackground(colorLostFocus);
+		jtSMSCode.setBackground(colorLostFocus);
 		jtUserName.setMargin(insets);
-		jtPassword.setMargin(insets);
+		jtSMSCode.setMargin(insets);
 		jtUserName.setFont(font);
-		jtPassword.setFont(font);
+		jtSMSCode.setFont(font);
+
+		lbGetSMS.setBounds(270, 130, 200, 40);
+		lbGetSMS.setHorizontalAlignment(SwingConstants.CENTER);
+		lbGetSMS.setBackground(Color.LIGHT_GRAY);
+		lbGetSMS.setOpaque(true);
+		lbGetSMS.setFont(font);
 
 		lbLogin.setBounds(50, 200, 420, 40);
 		lbLogin.setHorizontalAlignment(SwingConstants.CENTER);
@@ -139,15 +144,13 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 		lbTips.setForeground(Color.RED);
 		// lbTips.setFont(font);
 		panel.add(jtUserName);
-		panel.add(jtPassword);
+		panel.add(jtSMSCode);
+		panel.add(lbGetSMS);
 		panel.add(lbLogin);
 		panel.add(lbTips);
-		for(Component com: panel.getComponents()) {
-			bindKeyEnterEvent((JComponent)com);
-		}
 
 		jtUserName.addFocusListener(this);
-		jtPassword.addFocusListener(this);
+		lbGetSMS.addMouseListener(this);
 		lbLogin.addMouseListener(this);
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
@@ -155,9 +158,6 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 		// 根据参数初始化
 		if (Global.userName != null) {
 			jtUserName.setText(Global.userName);
-		}
-		if (Global.password != null) {
-			jtPassword.setText(Global.password);
 		}
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -218,11 +218,8 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 		lbTips.setText("");
 		if (jtUserName.hasFocus()) {
 			Global.userName = jtUserName.getText();
-		} else if (jtPassword.hasFocus()) {
-			Global.password = String.valueOf(jtPassword.getPassword());
 		}
-		if (Global.userName == null || Global.password == null || Global.userName.isEmpty()
-				|| Global.password.isEmpty()) {
+		if (Global.userName == null || Global.userName.isEmpty()) {
 			lbTips.setText("输入不能为空！");
 		} else {
 			try {
@@ -230,17 +227,19 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 				String token = geetest.getString("token");
 				String gt = geetest.getJSONObject("geetest").getString("gt");
 				String challenge = geetest.getJSONObject("geetest").getString("challenge");
-				String url = String.format("http://localhost:%d/static/index.html?token=%s&gt=%s&challenge=%s", Global.serverPort,
-						token, gt, challenge);
+				String url = String.format("http://localhost:%d/static/index.html?token=%s&gt=%s&challenge=%s&type=sms",
+						Global.serverPort, token, gt, challenge);
 				final boolean browseSupported = Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
-				if(browseSupported)
+				if (browseSupported)
 					Desktop.getDesktop().browse(new URI(url));
 				else {
 					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 					Transferable trans = new StringSelection(url);
 					clipboard.setContents(trans, null);
-					JOptionPane.showMessageDialog(null, "请通过浏览器访问以下网址(已复制到剪贴板):\n" + url, "请注意", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "请通过浏览器访问以下网址(已复制到剪贴板):\n" + url, "请注意",
+							JOptionPane.WARNING_MESSAGE);
 				}
+				lbTips.setText("极验验证码验证中...");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -251,20 +250,36 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 	/**
 	 * 登录
 	 */
-	public String login(String token, String challenge, String validate, String seccode) {
+	public void login() {
 		lbTips.setText("");
-		isLogging = true;
-		String tips = inl.login(Global.userName, Global.password, token, challenge, validate, seccode);
-		if (tips == null) {
-			lbTips.setText("登录成功");
-			Global.isLogin = true;
-			WindowEvent event = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-			this.dispatchEvent(event);
-		} else {
-			lbTips.setText(tips);
+		String code = jtSMSCode.getText();
+		if (code.isEmpty())
+			lbTips.setText("短信验证码不能为空");
+		else {
+			String tips = inl.loginSMS(countryCode, phoneNumber, code, captchaKey);
+			if (tips == null) {
+				lbTips.setText("登录成功");
+				Global.isLogin = true;
+				WindowEvent event = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+				this.dispatchEvent(event);
+			} else {
+				lbTips.setText(tips);
+			}
 		}
-		isLogging = false;
-		return tips;
+	}
+
+	/**
+	 * 请求发送短信验证码
+	 */
+	public void sendSMS(String token, String challenge, String validate, String seccode) {
+		lbTips.setText("");
+		try {
+			JSONObject obj = inl.sendSMS(countryCode, phoneNumber, token, challenge, validate, seccode);
+			captchaKey = obj.getJSONObject("data").getString("captcha_key");
+			lbTips.setText("短信验证码已经发送");
+		} catch (Exception e) {
+			lbTips.setText("短信验证码请求发送失败，请重新尝试");
+		}
 	}
 
 	@Override
@@ -274,12 +289,6 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 				jtUserName.setText(Global.userName);
 			} else {
 				jtUserName.setText("");
-			}
-		} else if (e.getSource() == jtPassword) {
-			if (Global.password != null) {
-				jtPassword.setText(Global.password);
-			} else {
-				jtPassword.setText("");
 			}
 		}
 		JComponent target = (JComponent) e.getSource();
@@ -294,12 +303,6 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 				jtUserName.setText(tips);
 			else
 				Global.userName = content;
-		} else if (e.getSource() == jtPassword) {
-			String content = String.valueOf(jtPassword.getPassword());
-			if (content.isEmpty())
-				jtPassword.setText("123456");
-			else
-				Global.password = content;
 		}
 		JComponent target = (JComponent) e.getSource();
 		target.setBackground(colorLostFocus);
@@ -307,10 +310,20 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getSource() == lbLogin) {
-			if (!isLogging) {
-				// login();
+		if (e.getSource() == lbGetSMS) {
+			Pattern p = Pattern.compile("^\\+(\\d{1,3}) +(\\d+)$");
+			Matcher m = p.matcher(jtUserName.getText());
+			if (m.find()) {
+				countryCode = m.group(1);
+				phoneNumber = m.group(2);
 				queryCaptcha();
+			} else
+				lbTips.setText("手机号不符合+国际号 手机号码的格式(注意中间的空格)");
+		} else if (e.getSource() == lbLogin) {
+			if (captchaKey == null) {
+				lbTips.setText("请先获取短信验证码!!");
+			} else {
+				login();
 			}
 		} else if (e.getSource() == btnClose) {
 			Logger.println("closing...");
@@ -365,19 +378,4 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 	public void mouseMoved(MouseEvent e) {
 	}
 
-	void bindKeyEnterEvent(JComponent com) {
-		com.getInputMap().put(KeyStroke.getKeyStroke('\n'), "login");
-		com.getActionMap().put("login", new LoginAction());
-	}
-
-	class LoginAction extends AbstractAction {
-		private static final long serialVersionUID = 6932343950986413925L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (!isLogging) {
-				queryCaptcha();
-			}
-		}
-	}
 }

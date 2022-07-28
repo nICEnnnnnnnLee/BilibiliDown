@@ -1,0 +1,158 @@
+<!-- 
+极验验证器 调试工具 测试用 
+https://github.com/kuresaru/geetest-validator
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BilibiliDown 过极验</title>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div>
+		<label for="gt"> gt: </label> <input class="inp" id="gt" type="text"
+			readonly="readonly">
+	</div>
+	<br>
+
+	<div>
+		<label for="challenge"> challenge: </label> <input class="inp"
+			id="challenge" type="text" readonly="readonly">
+	</div>
+	<br>
+
+	<div id="btn-gen" class="btn">生成</div>
+	<br>
+	<br>
+
+	<div>
+		<label> 验证：</label>
+		<div id="captcha">
+			<div id="text">请先生成</div>
+			<div id="wait" class="show">
+				<div class="loading">
+					<div class="loading-dot"></div>
+					<div class="loading-dot"></div>
+					<div class="loading-dot"></div>
+					<div class="loading-dot"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+
+	<div id="btn-result" class="btn">登录</div>
+	<br>
+	<br>
+
+	<div>
+		<label for="validate">validate: </label> <input class="inp"
+			id="validate" type="text" readonly="readonly">
+	</div>
+	<br>
+
+	<div>
+		<label for="seccode">seccode: </label> <input class="inp" id="seccode"
+			type="text" readonly="readonly">
+	</div>
+	<br>
+
+
+	<script src="js/jquery.js"></script>
+	<script src="js/gt.js"></script>
+
+	<script>
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] == variable) {
+					return pair[1];
+				}
+			}
+			return (false);
+		}
+
+		var handler = function(captchaObj) {
+			captchaObj.appendTo('#captcha');
+			captchaObj.onReady(function() {
+				$("#wait").hide();
+			});
+			$('#btn-result').unbind();
+			$('#btn-result').click(
+					function() {
+						var result = captchaObj.getValidate();
+						if (!result) {
+							return alert('请完成验证');
+						}
+						var validate_dom = $('#validate')[0];
+						var seccode_dom = $('#seccode')[0];
+						validate_dom.value = result.geetest_validate;
+						seccode_dom.value = result.geetest_seccode;
+						validate = result.geetest_validate;
+						seccode = result.geetest_seccode;
+						console.log("validate:", result.geetest_validate);
+						console.log("seccode:", result.geetest_seccode);
+						console.log("challenge:", challenge);
+						console.log("token:", token);
+						if(type == "sms")
+						var url = type == "sms"? "/geetest/sms": "/geetest/login";
+						$.post(url, {
+							token : token,
+							validate : validate,
+							seccode : seccode,
+							challenge : challenge,
+						}, function(data, status) {
+
+							alert("Data: " + JSON.stringify(data)
+									+ "\nStatus: " + status);
+							window.location.href="about:blank";
+							window.close();
+						});
+					});
+			// 更多前端接口说明请参见：http://docs.geetest.com/install/client/web-front/
+		};
+
+		$('#btn-gen').click(function() {
+			$('#text').hide();
+			$('#wait').show();
+			var gt = $('#gt')[0].value;
+			var challenge = $('#challenge')[0].value;
+			// 调用 initGeetest 进行初始化
+			// 参数1：配置参数
+			// 参数2：回调，回调的第一个参数验证码对象，之后可以使用它调用相应的接口
+			initGeetest({
+				// 以下 4 个配置参数为必须，不能缺少
+				gt : gt,
+				challenge : challenge,
+				offline : false, // 表示用户后台检测极验服务器是否宕机
+				new_captcha : true, // 用于宕机时表示是新验证码的宕机
+
+				product : "popup", // 产品形式，包括：float，popup
+				width : "300px",
+				https : true
+
+			// 更多前端配置参数说明请参见：http://docs.geetest.com/install/client/web-front/
+			}, handler);
+		});
+		$('#btn-gen').hide();
+		// 获取
+		var gt = getQueryVariable("gt");
+		if (gt)
+			$('#gt')[0].value = gt;
+		var challenge = getQueryVariable("challenge");
+		if (challenge)
+			$('#challenge')[0].value = challenge;
+		var token = getQueryVariable("token");
+		var type = getQueryVariable("type");
+		if (gt && challenge)
+			$('#btn-gen').click();
+	</script>
+</body>
+
+</html>

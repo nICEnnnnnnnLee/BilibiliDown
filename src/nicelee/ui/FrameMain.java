@@ -41,14 +41,16 @@ public class FrameMain extends JFrame {
 
 	public static void main(String[] args) {
 		System.out.println();
+		// System.getProperties().setProperty("file.encoding", "utf-8");
+		System.out.println(System.getProperty("os.name"));
+		System.out.println("Java version:" + System.getProperty("java.specification.version"));
+		System.out.println(ResourcesUtil.baseDirectory());
+		// 读取配置文件
+		ConfigUtil.initConfigs();
+		
 		// 显示过渡动画
 		Global.frWaiting = new FrameWaiting();
 		Global.frWaiting.start();
-
-		// System.getProperties().setProperty("file.encoding", "utf-8");
-		System.out.println(System.getProperty("os.name"));
-		System.out.println(ResourcesUtil.baseDirectory());
-		ConfigUtil.initConfigs();
 
 		if (Global.lockCheck) {
 			if (ConfigUtil.isRunning()) {

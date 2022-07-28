@@ -1,0 +1,137 @@
+body {
+    margin: 50px 0;
+    text-align: center;
+    font-family: "PingFangSC-Regular", "Open Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
+}
+
+.inp {
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    padding: 0 10px;
+    width: 320px;
+    height: 40px;
+    font-size: 18px;
+}
+
+.btn {
+    display: inline-block;
+    box-sizing: border-box;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+    background: white linear-gradient(180deg, #ffffff 0%, #f3f3f3 100%);
+}
+
+.btn:hover {
+    background: white linear-gradient(0deg, #ffffff 0%, #f3f3f3 100%)
+}
+
+#captcha {
+    width: 300px;
+    display: inline-block;
+}
+
+label {
+    vertical-align: top;
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+}
+
+#text {
+    height: 42px;
+    width: 298px;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #F3F3F3;
+    color: #BBBBBB;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    line-height: 42px;
+}
+
+#wait {
+    display: none;
+    height: 42px;
+    width: 298px;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #F3F3F3;
+}
+
+.loading {
+    margin: auto;
+    width: 70px;
+    height: 20px;
+}
+
+.loading-dot {
+    float: left;
+    width: 8px;
+    height: 8px;
+    margin: 18px 4px;
+    background: #ccc;
+
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+
+    opacity: 0;
+
+    -webkit-box-shadow: 0 0 2px black;
+    -moz-box-shadow: 0 0 2px black;
+    -ms-box-shadow: 0 0 2px black;
+    -o-box-shadow: 0 0 2px black;
+    box-shadow: 0 0 2px black;
+
+    -webkit-animation: loadingFade 1s infinite;
+    -moz-animation: loadingFade 1s infinite;
+    animation: loadingFade 1s infinite;
+}
+
+.loading-dot:nth-child(1) {
+    -webkit-animation-delay: 0s;
+    -moz-animation-delay: 0s;
+    animation-delay: 0s;
+}
+
+.loading-dot:nth-child(2) {
+    -webkit-animation-delay: 0.1s;
+    -moz-animation-delay: 0.1s;
+    animation-delay: 0.1s;
+}
+
+.loading-dot:nth-child(3) {
+    -webkit-animation-delay: 0.2s;
+    -moz-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+
+.loading-dot:nth-child(4) {
+    -webkit-animation-delay: 0.3s;
+    -moz-animation-delay: 0.3s;
+    animation-delay: 0.3s;
+}
+
+@-webkit-keyframes loadingFade {
+    0% { opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+@-moz-keyframes loadingFade {
+    0% { opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+@keyframes loadingFade {
+    0% { opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0; }
+}

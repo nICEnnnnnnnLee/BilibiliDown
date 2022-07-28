@@ -21,7 +21,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.12", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.13", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -84,18 +84,20 @@ public class Global {
 	public static boolean repoInDefinitionStrictMode; //
 
 	// 登录相关
+	@Config(key = "bilibili.server.port", note = "http server监听端口，用于用户名密码登录", defaultValue = "8787")
+	public static int serverPort = 8787;
 	@Config(key = "bilibili.user.userName", defaultValue = "", warning = false)
 	public static String userName;
 	@Config(key = "bilibili.user.password", defaultValue = "", warning = false)
 	public static String password;
 	@Config(key = "bilibili.user.delete", defaultValue = "true", valids = { "true", "false" })
 	public static boolean deleteUserFile;
-	@Config(key = "bilibili.user.login", defaultValue = "false", eq_true = "pwd", valids = { "pwd", "qr" }) // note = "登录方式", 
-	public static boolean pwdLogin; // 使用用户名密码登录方式
-	@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
-	public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式
-	@Config(key = "bilibili.user.login.pwd.autoCaptcha", defaultValue = "false", valids = { "true", "false" })// note = "用户名密码登录时是否自动尝试解析验证码", 
-	public static boolean pwdAutoCaptcha; // 自动提取验证码
+	@Config(key = "bilibili.user.login", note = "登录方式 qr/pwd/sms", defaultValue = "qr", valids = { "pwd", "qr", "sms" }) // note = "登录方式", 
+	public static String loginType; // 登录方式
+	//@Config(key = "bilibili.user.login.pwd", defaultValue = "false", eq_true = "auto", valids = { "auto", "manual" })
+	//public static boolean pwdAutoLogin; // 使用用户名密码自动登录方式
+	//@Config(key = "bilibili.user.login.pwd.autoCaptcha", defaultValue = "false", valids = { "true", "false" })// note = "用户名密码登录时是否自动尝试解析验证码", 
+	//public static boolean pwdAutoCaptcha; // 自动提取验证码
 
 	public static boolean needToLogin = false;
 	public static boolean isLogin = false;
@@ -143,6 +145,8 @@ public class Global {
 	@Config(key = "bilibili.https.allowInsecure", note = "跳过证书验证", defaultValue = "false", valids = { "true", "false" })
 	private static boolean allowInsecure;
 
+	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
+	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
 	final public static HashMap<String, String> settings = new HashMap<>();
 
 	// 根据Global.settings 初始化配置到具体属性值
@@ -204,6 +208,25 @@ public class Global {
 				HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllCertSSLUtil.getFactory());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		//  设置System Property
+		String sysPropJreTag = "bilibili.system.properties.jre" + System.getProperty("java.specification.version");
+		String sysProp = Global.settings.get(sysPropJreTag);
+		if(sysProp != null) {
+			String sysPropOverrideStr = Global.settings.getOrDefault(sysPropJreTag + ".override", "false");
+			boolean sysPropOverride = "true".equalsIgnoreCase(sysPropOverrideStr);
+			String[] keyValuePairs = sysProp.split("-D");
+			for(String keyValuePair: keyValuePairs) {
+				String[] params = keyValuePair.split("=", 2);
+				if(params.length == 2) {
+					if(sysPropOverride || System.getProperty(params[0]) == null) {
+						if("null".equalsIgnoreCase(params[1].trim()))
+							System.clearProperty(params[0]);
+						else
+							System.setProperty(params[0], params[1].trim());
+					}
+				}
+			}
 		}
 	}
 

@@ -1,4 +1,31 @@
 ## UPDATE  
+* V6.13  `2022-07-28`  
+    * 优化：减少release构建的配置数量, 预防版本号与实际不相符的问题
+    * 优化：UP主所有视频解析
+        + 增加url类型`https://space.bilibili.com/378034/search/video?tid=3&keyword=歌曲&order=stow`
+        + 更换api，减少搜索url类型外的解析的网络请求次数
+    * 新增： 合集解析
+        + 针对url类型`https://space.bilibili.com/593987248/channel/collectiondetail?sid=508765`
+        + 该类型解析会针对合集的每一个BV进行查询，导致较多网络请求。  
+            请不要在短时间内打开过多该类型Tab页，以免被BAN
+    * 新增： 视频列表解析
+        + 老版本频道channel解析仍然生效，但在网页端已经找不到该类型的链接了  
+        `https://space.bilibili.com/378034/channel/detail?cid=189`
+        + 新版本针对的链接类型如下  
+        ```
+        https://space.bilibili.com/378034/channel/seriesdetail?sid=918669
+        https://www.bilibili.com/medialist/play/378034?from=space&business=space_series&business_id=918669&desc=1
+        ```
+        + 以上三种链接内容实质上是相同的  
+    * 新增： 可通过配置文件设置System Property
+    * 新增： 可通过配置文件设置HTTP请求的UserAgent
+    * 新增： 短信验证码登录方式  
+    * 新增： 用户名密码登录方式  
+        + 需要打开浏览器，人工通过极验验证码
+        + 如果提示风控，请更改密码之后再进行尝试
+    * 修复： java11 高分辨率时界面的缩放比不恰当的问题
+    * 修复： 运行时增加`-Dhttps.protocols=TLSv1.2`参数，防止tls handshake failure
+    
 * V6.10  `2022-07-24`  
     * 新增：Release打包增加了附带精简jre11的选项, 为没有Java环境的win64用户提供了另一种可能。    
       不要再问我

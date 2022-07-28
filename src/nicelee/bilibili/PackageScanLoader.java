@@ -16,6 +16,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import nicelee.bilibili.annotations.Bilibili;
+import nicelee.bilibili.annotations.Controller;
 import nicelee.bilibili.plugin.CustomClassLoader;
 import nicelee.bilibili.plugin.Plugin;
 
@@ -26,6 +27,7 @@ public abstract class PackageScanLoader {
 	
 	public static List<Class<?>> validParserClasses;
 	public static List<Class<?>> validDownloaderClasses;
+	public static List<java.lang.Class<?>> controllerClazzes;
 	static {
 		validParserClasses = new ArrayList<Class<?>>();
 		validDownloaderClasses = new ArrayList<Class<?>>();
@@ -93,6 +95,20 @@ public abstract class PackageScanLoader {
 				return bili2 - bili1;
 			}
 		});
+
+		// 扫描包，加载 controller 类
+		controllerClazzes = new ArrayList<java.lang.Class<?>>();
+		pLoader = new PackageScanLoader() {
+			@Override
+			public boolean isValid(java.lang.Class<?> clazz) {
+				if (clazz.getAnnotation(Controller.class) != null) {
+					// System.out.println(clazz.getName());
+					controllerClazzes.add(clazz);
+				}
+				return true;
+			}
+		};
+		pLoader.scanRoot("nicelee.server.controller");
 	}
 
 	/**

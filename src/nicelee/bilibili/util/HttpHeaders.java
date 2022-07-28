@@ -2,18 +2,20 @@ package nicelee.bilibili.util;
 
 import java.util.HashMap;
 
+import nicelee.ui.Global;
+
 public class HttpHeaders {
 	HashMap<String, String> headerMap = new HashMap<String, String>();
 	private static HashMap<String, String> userInfoHeaderMap = null;
 	private static HashMap<String, String> loginAuthHeaderMap = null;
 	private static HashMap<String, String> loginAuthVaHeaderMap = null;
-	private static HashMap<String, String> mobileHeaderMap = null;
 
-	final static String UA_PC_Sogo = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0";
-	final static String UA_PC_Firefox = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0";
-	final static String UA_Android = "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Mobile Safari/537.36";
-	final static String UA_ForAppOnly = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36";
+	String UA_PC;
 
+	public HttpHeaders() {
+		UA_PC = Global.userAgent;
+	}
+	
 	public void setHeader(String key, String value) {
 		headerMap.put(key, value);
 	}
@@ -39,7 +41,7 @@ public class HttpHeaders {
 			userInfoHeaderMap.put("Origin", "https://message.bilibili.com");
 			userInfoHeaderMap.put("Host", "api.bilibili.com");
 			userInfoHeaderMap.put("Referer", "https://message.bilibili.com/pages/nav/index_new_pc_sync");
-			userInfoHeaderMap.put("User-Agent", UA_PC_Sogo);
+			userInfoHeaderMap.put("User-Agent", UA_PC);
 		}
 		return userInfoHeaderMap;
 	}
@@ -58,7 +60,7 @@ public class HttpHeaders {
 			loginAuthHeaderMap.put("Host", "passport.bilibili.com");
 			loginAuthHeaderMap.put("Referer", "https://passport.bilibili.com/login");
 			loginAuthHeaderMap.put("X-Requested-With", "XMLHttpRequest");
-			loginAuthHeaderMap.put("User-Agent", UA_PC_Sogo);
+			loginAuthHeaderMap.put("User-Agent", UA_PC);
 		}
 		return loginAuthHeaderMap;
 	}
@@ -78,7 +80,7 @@ public class HttpHeaders {
 			loginAuthVaHeaderMap.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 			loginAuthVaHeaderMap.put("Referer", "https://passport.bilibili.com/login");
 			loginAuthVaHeaderMap.put("X-Requested-With", "XMLHttpRequest");
-			loginAuthVaHeaderMap.put("User-Agent", UA_PC_Sogo);
+			loginAuthVaHeaderMap.put("User-Agent", UA_PC);
 		}
 		return loginAuthVaHeaderMap;
 	}
@@ -102,7 +104,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getBiliWwwFLVHeaders(String avId) {
 		headerMap.put("X-Requested-With", "ShockwaveFlash/28.0.0.137");
 		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);// need addavId
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -112,7 +114,7 @@ public class HttpHeaders {
 	public HashMap<String, String> getBiliWwwM4sHeaders(String avId) {
 		headerMap.remove("X-Requested-With");
 		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);// need addavId
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -127,7 +129,7 @@ public class HttpHeaders {
 		headerMap.put("Connection", "keep-alive");
 		headerMap.put("Host", "api.bilibili.com");
 		headerMap.put("Referer", "https://www.bilibili.com/video/" + avId);// need addavId
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		headerMap.put("X-Requested-With", "ShockwaveFlash/28.0.0.137");
 		return headerMap;
 	}
@@ -149,23 +151,6 @@ public class HttpHeaders {
 	}
 
 	/**
-	 * 该Header配置用于移动端视频下载/网页访问
-	 */
-	public HashMap<String, String> getBiliMHeaders() {
-		if (mobileHeaderMap == null) {
-			mobileHeaderMap = new HashMap<String, String>();
-			mobileHeaderMap.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-			mobileHeaderMap.put("Accept-Encoding", "gzip, deflate");
-			mobileHeaderMap.put("Accept-Language", "zh-CN,zh;q=0.8");
-			mobileHeaderMap.put("Connection", "keep-alive");
-			mobileHeaderMap.put("Cache-Control", "max-age=0");
-			mobileHeaderMap.put("Host", "m.bilibili.com");
-			mobileHeaderMap.put("User-Agent", UA_ForAppOnly);
-		}
-		return mobileHeaderMap;
-	}
-
-	/**
 	 * 该Header配置用于获取个人的所有收藏夹
 	 */
 	public HashMap<String, String> getAllFavListHeaders(long personId) {
@@ -177,7 +162,7 @@ public class HttpHeaders {
 		headerMap.put("Host", "api.bilibili.com");
 		headerMap.put("Origin", "https://space.bilibili.com");
 		headerMap.put("Referer", String.format("https://space.bilibili.com/%d/favlist", personId));
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -196,7 +181,7 @@ public class HttpHeaders {
 		headerMap.put("Origin", "https://space.bilibili.com");
 		headerMap.put("Referer",
 				String.format("https://space.bilibili.com/%s/favlist?fid=%s&ftype=create", personId, favID));
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -214,7 +199,7 @@ public class HttpHeaders {
 		headerMap.put("Host", "api.bilibili.com");
 		headerMap.put("Origin", "https://www.bilibili.com");
 		headerMap.put("Referer", String.format("https://www.bilibili.com/medialist/detail/ml%s?type=2", favID));
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -222,7 +207,7 @@ public class HttpHeaders {
 	 * 该Header用于用户操作，如点赞
 	 */
 	public HashMap<String, String> getActionHeaders(String avId) {
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		headerMap.put("Accept", "application/json, text/plain, */*");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
 		headerMap.put("Accept-Encoding", "gzip, deflate");
@@ -236,7 +221,7 @@ public class HttpHeaders {
 	 * 该Header配置用于登出
 	 */
 	public HashMap<String, String> getLogoutHeaders() {
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		headerMap.put("Accept", "application/json, text/plain, */*");
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
 		headerMap.put("Accept-Encoding", "gzip, deflate");
@@ -257,7 +242,7 @@ public class HttpHeaders {
 		headerMap.put("Cache-Control", "no-cache");
 		headerMap.put("Connection", "keep-alive");
 		headerMap.put("Host", "api.bilibili.com");
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -272,7 +257,7 @@ public class HttpHeaders {
 		headerMap.put("Cache-Control", "max-age=0");
 		headerMap.put("Connection", "keep-alive");
 		headerMap.put("Host", host);
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 
@@ -286,7 +271,7 @@ public class HttpHeaders {
 		headerMap.put("Accept-Language", "zh-CN,zh;q=0.8");
 		headerMap.put("Cache-Control", "max-age=0");
 		headerMap.put("Connection", "keep-alive");
-		headerMap.put("User-Agent", UA_PC_Sogo);
+		headerMap.put("User-Agent", UA_PC);
 		return headerMap;
 	}
 

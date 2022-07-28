@@ -9,7 +9,7 @@ on:
       - master
     paths:
       # Trigger only when src/** changes
-      - ".github/release.json"
+      - ".github/release.info"
       
 #  push:
 #    paths:
@@ -33,11 +33,15 @@ jobs:
      
     - name: Read tag_latest
       id: tag_latest
-      uses:  ashley-taylor/read-json-property-action@v1.0
-      with:
-        path: ./.github/release.json
-        property: tag_latest
-        
+      shell: python
+      run: |
+        import re
+        with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
+            content = file.read()
+            pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'
+            searchObj = re.search(pattern, content)
+            print("::set-output name=value::" + searchObj.group(1))
+    
     - name: Read description
       id: description
       uses: juliangruber/read-file-action@v1

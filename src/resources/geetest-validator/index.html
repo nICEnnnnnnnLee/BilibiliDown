@@ -100,8 +100,8 @@ https://github.com/kuresaru/geetest-validator
 						console.log("seccode:", result.geetest_seccode);
 						console.log("challenge:", challenge);
 						console.log("token:", token);
-						if(type == "sms")
 						var url = type == "sms"? "/geetest/sms": "/geetest/login";
+						console.log(url);
 						$.post(url, {
 							token : token,
 							validate : validate,

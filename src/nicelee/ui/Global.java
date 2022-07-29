@@ -84,7 +84,7 @@ public class Global {
 	public static boolean repoInDefinitionStrictMode; //
 
 	// 登录相关
-	@Config(key = "bilibili.server.port", note = "http server监听端口，用于用户名密码登录", defaultValue = "8787")
+	@Config(key = "bilibili.server.port", note = "http server监听端口，用于极验校验", defaultValue = "8787")
 	public static int serverPort = 8787;
 	@Config(key = "bilibili.user.userName", defaultValue = "", warning = false)
 	public static String userName;

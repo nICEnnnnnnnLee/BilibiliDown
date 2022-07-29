@@ -236,7 +236,7 @@ public class DialogSMSLogin extends JDialog implements FocusListener, MouseListe
 					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 					Transferable trans = new StringSelection(url);
 					clipboard.setContents(trans, null);
-					JOptionPane.showMessageDialog(null, "请通过浏览器访问以下网址(已复制到剪贴板):\n" + url, "请注意",
+					JOptionPane.showMessageDialog(this, "请通过浏览器访问以下网址(已复制到剪贴板):\n" + url, "请注意",
 							JOptionPane.WARNING_MESSAGE);
 				}
 				lbTips.setText("极验验证码验证中...");

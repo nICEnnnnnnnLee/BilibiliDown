@@ -53,6 +53,10 @@ public class Global {
 	public static String savePath = "./download/"; // 下载文件保存路径
 	@Config(key = "bilibili.download.poolSize", note = "下载任务线程池大小", defaultValue = "1")
 	public static int downloadPoolSize;// 下载线程池
+	@Config(key = "bilibili.download.period.between.download", note = "每个下载任务完成后的等待时间(ms)", defaultValue = "0", multiply = 1)
+	public static long sleepAfterDownloadComplete;
+	@Config(key = "bilibili.download.period.between.query", note = "每个关于下载的查询任务完成后的等待时间(ms)", defaultValue = "0", multiply = 1)
+	public static long sleepAfterDownloadQuery;
 	public static ExecutorService downLoadThreadPool;// 下载线程池
 	// 查询线程池(同一时间并发不能太多,为了保证任务面板的顺序，采用fixed(1))
 	public static ExecutorService queryThreadPool = Executors.newFixedThreadPool(1);//

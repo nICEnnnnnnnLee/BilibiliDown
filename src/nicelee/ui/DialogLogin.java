@@ -239,7 +239,7 @@ public class DialogLogin extends JDialog implements FocusListener, MouseListener
 					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 					Transferable trans = new StringSelection(url);
 					clipboard.setContents(trans, null);
-					JOptionPane.showMessageDialog(null, "请通过浏览器访问以下网址(已复制到剪贴板):\n" + url, "请注意", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(this, "请通过浏览器访问以下网址(已复制到剪贴板):\n" + url, "请注意", JOptionPane.WARNING_MESSAGE);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

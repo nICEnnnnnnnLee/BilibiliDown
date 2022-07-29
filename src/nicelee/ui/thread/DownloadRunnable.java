@@ -134,9 +134,22 @@ public class DownloadRunnable implements Runnable {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				if(Global.sleepAfterDownloadComplete > 0) {
+					try {
+						Thread.sleep(Global.sleepAfterDownloadComplete);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
-
+		if(Global.sleepAfterDownloadQuery > 0) {
+			try {
+				Thread.sleep(Global.sleepAfterDownloadQuery);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

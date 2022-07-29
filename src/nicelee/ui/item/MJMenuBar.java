@@ -349,6 +349,7 @@ public class MJMenuBar extends JMenuBar {
 		qrLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Global.needToLogin = true;
 				Global.loginType = "qr";
 				new LoginThread().start();
 			}
@@ -356,6 +357,7 @@ public class MJMenuBar extends JMenuBar {
 		pwdLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Global.needToLogin = true;
 				Global.loginType = "pwd";
 				new LoginThread().start();
 			}
@@ -363,6 +365,7 @@ public class MJMenuBar extends JMenuBar {
 		smsLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Global.needToLogin = true;
 				Global.loginType = "sms";
 				new LoginThread().start();
 			}

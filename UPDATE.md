@@ -1,4 +1,15 @@
 ## UPDATE  
+* V6.14  `2022-07-28`  
+    * 优化: [issues 87](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/87) 可以通过配置`app.config`设置下载任务的相关间隔  
+    ```
+    #每个下载任务完成后的等待时间(ms)
+    bilibili.download.period.between.download = 0
+    #每个关于下载的查询任务完成后的等待时间(ms)
+    bilibili.download.period.between.query = 0
+    ```
+    * 优化： 检查更新时，将显示最新版本的CHANGE LOG
+    * 修复`V6.13`短信验证码登录引起的用户名密码登录失败的问题  
+    
 * V6.13  `2022-07-28`  
     * 优化：减少release构建的配置数量, 预防版本号与实际不相符的问题
     * 优化：UP主所有视频解析

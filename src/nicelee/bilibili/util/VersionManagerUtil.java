@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.swing.JOptionPane;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,6 +28,7 @@ public class VersionManagerUtil {
 	public static String downName;
 	public static String versionTag;
 	public static String versionName;
+	public static String changelogs;
 
 	/**
 	 * 获取当前最新版本, 并返回与当前版本是否匹配
@@ -43,7 +46,8 @@ public class VersionManagerUtil {
 		JSONObject jObj = new JSONArray(json).getJSONObject(0);
 		versionTag = jObj.getString("tag_name").trim().toLowerCase();
 		versionName = jObj.getString("name");
-
+		changelogs = jObj.getString("body");
+				
 		JSONArray assets = jObj.getJSONArray("assets");
 		for (int i = 0; i < assets.length(); i++) {
 			JSONObject asset = assets.getJSONObject(i);
@@ -86,6 +90,7 @@ public class VersionManagerUtil {
 	 */
 	public static void downloadLatestVersion() throws Exception {
 		if (!queryLatestVersion()) {
+			JOptionPane.showMessageDialog(null, changelogs, "更新日志", JOptionPane.INFORMATION_MESSAGE);
 			VideoInfo avInfo = new INeedAV().getVideoDetail(downName, 0, false);
 			DownloadRunnable downThread = new DownloadRunnable(avInfo, avInfo.getClips().get(1234L), 0);
 			Global.queryThreadPool.execute(downThread);

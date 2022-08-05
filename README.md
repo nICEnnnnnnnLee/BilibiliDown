@@ -33,7 +33,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 其实这是一款绿色软件，安装只是创建了一个快捷方式。。。  
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/install.gif)  
+![](release/preview/install.gif)  
 </details>
 
 
@@ -43,7 +43,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 + 扫码登录(默认)  
 点击主界面右上角登录按钮，在手机端使用哔哩哔哩app扫描弹出的二维码  
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/login.gif)   
+![](release/preview/login.gif)   
 
 + 用户名密码登录
     + 菜单`操作` -> `登录相关` -> `用户名密码登录`    
@@ -60,7 +60,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/download.gif)  
+![](release/preview/download.gif)  
 </details>
 
 <details>
@@ -92,7 +92,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 单击封面图片获取URL。  
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/ClickPicToGetUrl.gif)  
+![](release/preview/ClickPicToGetUrl.gif)  
 </details>
 
 <details>
@@ -100,7 +100,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 长按作品文字，然后对应预览图会更新(网络原因可能会有卡顿，正常)。  
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/LongClickToChangePreview.gif)  
+![](release/preview/LongClickToChangePreview.gif)  
 </details>
 
 <details>
@@ -108,7 +108,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 
 双击作品文字，然后文本 + `avId`将会复制到剪贴板。  
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/doubleClick2CopyClipInfo.gif)  
+![](release/preview/doubleClick2CopyClipInfo.gif)  
 </details>
 
 <details>
@@ -117,7 +117,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 `关于` -> `更新版本`。(最近版本比较多，省得麻烦😳 目前只是人工触发版本检查。  
 不是WINDOWS的话需要人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`( ╯□╰ )   
-![](https://cdn.jsdelivr.net/gh/nICEnnnnnnnLee/BilibiliDown@master/release/preview/AutoUpdate.gif)  
+![](release/preview/AutoUpdate.gif)  
 </details>
 <details>
 <summary>其它</summary>
@@ -260,7 +260,6 @@ B23Parser
 + 自带的```ffmpeg.exe```为`Win10+Msys+MingW+msvc`自行编译，其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
 + 对于非WIN用户，请直接使用命令行调用该程序  
 ```java -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
-+ 对于非WIN用户，如需使用程序的一键更新功能，请在程序操作完毕并退出后，人工`update/INeedBiliAV.update.jar`替换掉`INeedBiliAV.jar`
 
 ## :smile:其它  
 * **下载地址**: [https://github.com/nICEnnnnnnnLee/BilibiliDown/releases](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)
@@ -277,6 +276,7 @@ B23Parser
 ./configure --toolchain=msvc --arch=x86 --enable-yasm --enable-asm --disable-debug --disable-doc --disable-ffplay --disable-ffprobe --enable-static --disable-shared --disable-network --disable-autodetect --disable-decoders --disable-gpl --disable-version3 --enable-decoder='h264,aac*,mp3*,mp4' --disable-encoders --disable-demuxers --enable-demuxer='concat,mov,m4v,flv,mp3' --disable-muxers --enable-muxer='flv,mp4,mp3' --enable-encoder='libmp3lame,mp3' --disable-parsers --enable-parser=h264 --disable-protocols --enable-protocol='concat,file' --disable-bsfs --enable-bsf='h264_metadata,h264_mp4toannexb' --disable-filters --enable-filter='concat,aresample' --disable-iconv --enable-small
 make
 ```
++ 如果需要自定义configure，或者最新版本的编译，可参考[nICEnnnnnnnLee/FFmpeg-Builds](https://github.com/nICEnnnnnnnLee/FFmpeg-Builds)利用Github Actions得到交叉编译结果
 
 + 本项目遵守开源协议`Apache 2.0`。  
 为了分发的便利，历史版本可能直接使用过其它编译版本ffmpeg.     

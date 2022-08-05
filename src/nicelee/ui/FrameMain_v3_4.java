@@ -101,6 +101,7 @@ public class FrameMain_v3_4 extends JFrame {
 		this.setJMenuBar(menu);
 		
 		jTabbedpane = new JTabbedPane();
+		Global.tabs = jTabbedpane;
 		jTabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		// Index Tab
 		Global.index = new TabIndex(jTabbedpane);

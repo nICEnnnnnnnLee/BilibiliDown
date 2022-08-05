@@ -31,10 +31,15 @@ public class LoginThread extends Thread {
 			login();
 		} catch (Exception e) {
 			e.printStackTrace();
-			Global.frWaiting.stop();
+			stopFrameWaiting();
 		}
 	}
 
+	private void stopFrameWaiting() {
+		if(Global.frWaiting != null)
+			Global.frWaiting.stop();
+	}
+	
 	public void login() {
 		System.out.println("登录线程被调用...");
 //		System.out.println(Global.index.getParent().getParent().getParent().getParent().getParent().isVisible());
@@ -47,7 +52,7 @@ public class LoginThread extends Thread {
 		if (Global.isLogin || !Global.needToLogin) {
 			// Global.index.jlHeader.addMouseListener(Global.index);
 			System.out.println("已经登录,或没有发起登录请求");
-			Global.frWaiting.stop();
+			stopFrameWaiting();
 			return;
 		}
 		String cookiesStr = inl.readCookies();
@@ -64,7 +69,7 @@ public class LoginThread extends Thread {
 				initUserInfo(inl);
 				System.out.println("成功登录...");
 				Global.isLogin = true;
-				Global.frWaiting.stop();
+				stopFrameWaiting();
 				return;
 			} else {
 				System.out.println("本地Cookies验证无效...");
@@ -73,7 +78,7 @@ public class LoginThread extends Thread {
 			}
 		}
 		System.out.println("没有检查到本地Cookies...");
-		Global.frWaiting.stop();
+		stopFrameWaiting();
 		//QRLogin(inl);
 		switch (Global.loginType) {
 		case "pwd":

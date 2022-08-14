@@ -370,7 +370,9 @@ public class CmdUtil {
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
 	static Pattern splitUnit = Pattern.compile(
-			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|favTime|cTime|\\(\\:([^ ]+) ([^\\)]*)\\)");
+			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|favTime|cTime|" + 
+			"\\((?<ifOrUnless0>[\\:!])(?<condition0>[^ ]+) (?<format0>[^\\)]*)\\)|" + 
+			"\\[(?<ifOrUnless1>[\\:!])(?<condition1>[^ ]+) (?<format1>[^\\]]*)\\]");
 
 	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
 			String clipTitle, String listName, String listOwnerName) {
@@ -426,10 +428,16 @@ public class CmdUtil {
 		while (matcher.find()) {
 			// 加入匹配单位前的字符串
 			sb.append(formatStr.substring(pointer, matcher.start()));
-			String ifStr = matcher.group(1);// 条件语句
-			if (ifStr != null) {
-				if (paramMap.get(ifStr) != null) {
-					sb.append(genFormatedName(paramMap, matcher.group(2)));
+			int c = 0;
+			String ifOrUnless = matcher.group("ifOrUnless" + c);// 条件语句
+			ifOrUnless = ifOrUnless != null? ifOrUnless : matcher.group("ifOrUnless" + (++c));
+			if (ifOrUnless != null) {
+				String condition = matcher.group("condition" + c);
+				String format = matcher.group("format" + c);
+				if (":".equals(ifOrUnless) && paramMap.get(condition) != null) {
+					sb.append(genFormatedName(paramMap,format));
+				}else if("!".equals(ifOrUnless) && paramMap.get(condition) == null) {
+					sb.append(genFormatedName(paramMap,format));
 				}
 //				Logger.println();
 			} else {

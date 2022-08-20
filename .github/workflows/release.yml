@@ -93,18 +93,24 @@ jobs:
         rm -rf ./LICENSE
         mkdir ./config/
         mkdir ./LICENSE/
-        mv -f ./release/install.vbs .
-        mv -f ./release/run-UI.bat .
-        mv -f ./release/run-UI-debug.bat .
+        mv -f ./release/Create-Shortcut-on-Desktop-for-Linux.sh .
+        mv -f ./release/Create-Shortcut-on-Desktop-for-Mac.sh .
+        mv -f ./release/Create-Shortcut-on-Desktop-for-Win.vbs .
+        mv -f ./release/Double-Click-to-Run-for-Mac.command .
+        mv -f ./release/Double-Click-to-Run-for-Win.bat .
+        mv -f ./release/Double-Click-to-Run-for-Win-debug.bat .
         mv -f ./release/uninstall.bat .
         mv -f ./release/update.bat .
         mv -f ./release/config/* ./config/
         mv -f ./release/LICENSE/* ./LICENSE/        
         
         zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip INeedBiliAV.jar
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./install.vbs
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./run-UI.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./run-UI-debug.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Linux.sh
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Mac.sh
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Win.vbs
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Mac.command
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Win.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Win-debug.bat
         zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./uninstall.bat
         zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./update.bat
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./config/

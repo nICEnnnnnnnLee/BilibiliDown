@@ -162,10 +162,13 @@ public class VersionManagerUtil {
 				CmdUtil.run(cmd);
 			}else {
 				System.out.println(System.getProperty("os.name").toLowerCase());
-				copy(VersionManagerUtil.class.getResourceAsStream("/resources/update.sh"), new File("update.sh"));
+				copy(VersionManagerUtil.class.getResourceAsStream("/resources/update.sh"), new File("update.sh"), false);
 				CmdUtil.run(new String[]{"chmod", "+x", "./update.sh"});
 				String cmd[] = { "./update.sh", "@" + code, pid, "bilibili.log" }; // 最后一个为log，可以为/dev/null
-				CmdUtil.run(cmd);
+				if(!CmdUtil.run(cmd)) {
+					JOptionPane.showMessageDialog(null, "update.sh运行失败。你需要赋予其可执行权限。\n请关闭程序，然后执行命令行：\nsudo chmod +x ./update.sh && ./update.sh", "!", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
 			}
 			System.exit(1);
 		} catch (Exception e) {
@@ -173,9 +176,14 @@ public class VersionManagerUtil {
 		}
 	}
 	
-	public static void copy(InputStream rSource, File dest) {
+	public static void copy(InputStream rSource, File dest, boolean override) {
 		try {
-			dest.delete();
+			if(dest.exists()) {
+				if(override)
+					dest.delete();
+				else
+					return;
+			}
 			RandomAccessFile rDest = new RandomAccessFile(dest, "rw");
 			
 			byte[] buffer = new byte[1024*1024];

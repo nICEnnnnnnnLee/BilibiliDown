@@ -10,6 +10,8 @@
 
 Bilibili 视频下载器，用于下载B站视频。  
 ===============================
+登录后的凭证明文保存在`config`文件夹下的`cookies.config`。    
+如有需要请直接删除，或`操作->登录相关->退出登录`  
 **以下多图警告**
 
 ## :smile:特性  
@@ -255,11 +257,13 @@ B23Parser
 * geetest验证码实现参考了[geetest-validator](https://github.com/kuresaru/geetest-validator)[![](https://img.shields.io/badge/license-unknown-gray.svg)](https://github.com/kuresaru/geetest-validator)
 
 ## :smile:Linux/Mac用户请看过来  
++ 一般情况下，请直接使用命令行调用该程序  
+```java -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
++ 如果认为每次命令行调用比较麻烦，请使用脚本创建快捷方式
+    `Create-Shortcut-on-Desktop-for-xx.sh`
 + Mac用户可参考[简单说下如何在mac下跑起来](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/32)  
 + ffmpeg环境设置参考[issues #15](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/15#issuecomment-536194416)  
 + 自带的```ffmpeg.exe```为`Win10+Msys+MingW+msvc`自行编译，其它平台请自行[官网](http://www.ffmpeg.org/download.html)下载，替换源程序；  
-+ 对于非WIN用户，请直接使用命令行调用该程序  
-```java -Dfile.encoding=utf-8 -jar INeedBiliAV.jar```
 
 ## :smile:其它  
 * **下载地址**: [https://github.com/nICEnnnnnnnLee/BilibiliDown/releases](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)

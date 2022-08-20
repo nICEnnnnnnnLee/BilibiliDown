@@ -1,5 +1,12 @@
 ## UPDATE  
-* V6.14  `2022-07-28`  
+* V6.15  `2022-08-20`  
+    * 优化：补充实现在Windows平台外的一键更新功能
+    * 优化：自定义Button添加抗锯齿设置[issues 107](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/107) 
+    * 优化：自定义文件名的格式字符串新增否定类型的条件语句 
+    * 优化：`package.sh`换行符去掉 `\r`[issues 107](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/107)  
+    * 优化运行、更新的脚本逻辑[issues 110](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/110)  
+    
+* V6.14  `2022-07-28`
     * 优化: [issues 87](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/87) 可以通过配置`app.config`设置下载任务的相关间隔  
     ```
     #每个下载任务完成后的等待时间(ms)

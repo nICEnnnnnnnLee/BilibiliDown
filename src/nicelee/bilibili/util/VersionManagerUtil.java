@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.lang.management.ManagementFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,12 +156,19 @@ public class VersionManagerUtil {
 	 */
 	public static void RunCmdAndCloseApp(String code) {
 		try {
+			String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 			if(System.getProperty("os.name").toLowerCase().contains("windows")) {
-				String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 				String cmd[] = { "cmd", "/c", "start", "update.bat", code, pid };
 				CmdUtil.run(cmd);
 			}else {
-				//TODO
+				System.out.println(System.getProperty("os.name").toLowerCase());
+				copy(VersionManagerUtil.class.getResourceAsStream("/resources/update.sh"), new File("update.sh"), false);
+				CmdUtil.run(new String[]{"chmod", "+x", "./update.sh"});
+				String cmd[] = { "./update.sh", "@" + code, pid, "bilibili.log" }; // 最后一个为log，可以为/dev/null
+				if(!CmdUtil.run(cmd)) {
+					JOptionPane.showMessageDialog(null, "update.sh运行失败。你需要赋予其可执行权限。\n请关闭程序，然后执行命令行：\nsudo chmod +x ./update.sh && ./update.sh", "!", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
 			}
 			System.exit(1);
 		} catch (Exception e) {
@@ -167,6 +176,28 @@ public class VersionManagerUtil {
 		}
 	}
 	
+	public static void copy(InputStream rSource, File dest, boolean override) {
+		try {
+			if(dest.exists()) {
+				if(override)
+					dest.delete();
+				else
+					return;
+			}
+			RandomAccessFile rDest = new RandomAccessFile(dest, "rw");
+			
+			byte[] buffer = new byte[1024*1024];
+			int size = rSource.read(buffer);
+			while(size != -1) {
+				rDest.write(buffer, 0, size);
+				size = rSource.read(buffer);
+			}
+			rSource.close();
+			rDest.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 
 	 * 1. shell脚本以当前类为入口运行jar

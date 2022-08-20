@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Terminal=false
+Name=BilibiliDown
+Type=Application
+Exec=java -Dfile.encoding=utf-8 -Dhttps.protocols=TLSv1.2 -jar /mnt/hgfs/workspace-java/BilibiliDown/release/INeedBiliAV.jar
+Icon=/mnt/hgfs/workspace-java/BilibiliDown/release/config/favicon.ico
+Categories=Application;Network; 
+Comment=BilibiliDown from https://github.com/nICEnnnnnnnLee/BilibiliDown

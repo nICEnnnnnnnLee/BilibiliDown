@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -85,13 +87,15 @@ class MyButtonUI extends BasicButtonUI implements java.io.Serializable, MouseLis
 		c.removeKeyListener(this);
 	}
 
-	public void paint(Graphics g, JComponent c) {
+//	public void paint(Graphics g, JComponent c) {
+	public void paint(Graphics2D g, JComponent c) {
 		AbstractButton b = (AbstractButton) c;
 		Dimension d = b.getSize();
 
 		g.setFont(c.getFont());
 		FontMetrics fm = g.getFontMetrics();
-
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		
 		g.setColor(b.getForeground());
 		String caption = b.getText();
 		int x = (d.width - fm.stringWidth(caption)) / 2;

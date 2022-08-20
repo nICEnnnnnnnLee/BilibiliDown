@@ -139,6 +139,20 @@ public class UtilTest {
 		System.out.println(formatedName);
 		assertEquals("av的标题-pn02-片段的标题-80-我在前面-哈哈哈-我在后面-ddd", formatedName);
 	}
+	 
+	 /**
+	  * 测试 根据格式生成文件名
+	  */
+	 @Test
+	 public void testTitleUnderUnlessCondition() {
+		 Global.formatStr = "avTitle-pDisplay2-clipTitle-qn-(!listName 在没有l[!_ istName]时出现-)ddd";
+		 String formatedName = CmdUtil.genFormatedName("av12345", "1", "2", 80, "av的标题", "片段的标题", null, null);
+		 System.out.println(formatedName);
+		 assertEquals("av的标题-pn02-片段的标题-80-在没有listName时出现-ddd", formatedName);
+		 formatedName = CmdUtil.genFormatedName("av12345", "1", "2", 80, "av的标题", "片段的标题", "哈哈哈", null);
+		 System.out.println(formatedName);
+		 assertEquals("av的标题-pn02-片段的标题-80-ddd", formatedName);
+	 }
 
 	/**
 	 * 测试 根据格式生成文件名

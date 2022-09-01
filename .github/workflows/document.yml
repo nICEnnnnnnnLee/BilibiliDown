@@ -1,0 +1,35 @@
+name: Deploy Document
+
+on:
+  push:
+    branches:
+      - docs
+  workflow_dispatch:
+    inputs:
+      nothing:
+        description: 'This param do nothing'     
+        required: false
+        type: boolean
+        default: true
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: docs
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - run: npm ci
+
+      - name: Build
+        run: npm run docs:build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/.vitepress/dist

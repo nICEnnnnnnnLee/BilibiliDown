@@ -2,7 +2,6 @@
 /src/client/shared.ts
 /src/node/shared.ts
 mddir.js
-package-lock.json
 *.log
 .DS_Store
 .idea

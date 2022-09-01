@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - docs
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      nothing:
+        description: 'This param do nothing'     
+        required: false
+        type: boolean
+        default: true
   
 jobs:
   deploy:

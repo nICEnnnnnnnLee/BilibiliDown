@@ -1,0 +1,17 @@
+{
+  "name": "bilibilidowndoc",
+  "version": "6.16",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
+  },
+  "author": "nICEnnnnnnnLee",
+  "license": "MIT",
+  "dependencies": {
+    "vitepress": "^1.0.0-alpha.12",
+    "vue": "^3.2.37"
+  }
+}

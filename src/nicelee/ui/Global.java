@@ -86,7 +86,10 @@ public class Global {
 	@Config(key = "bilibili.repo.definitionStrictMode", note = "是否将同一视频不同清晰度看作不同任务", defaultValue = "false", eq_true = "on", valids = { "on",
 			"off" }) /* 存在某一清晰度后, 在下载另一种清晰度时是否判断已完成 */
 	public static boolean repoInDefinitionStrictMode; //
-
+	@Config(key = "bilibili.download.batch.config.name", note = "一键下载配置的默认名称", defaultValue = "batchDownload.config")
+	public static String batchDownloadConfigName;
+	@Config(key = "bilibili.download.batch.config.name.pattern", note = "一键下载配置名称的匹配正则表达式", defaultValue = "^batchDownload.*\\.config$")
+	public static Pattern batchDownloadConfigNamePattern;
 	// 登录相关
 	@Config(key = "bilibili.server.port", note = "http server监听端口，用于极验校验", defaultValue = "8787")
 	public static int serverPort = 8787;

@@ -35,6 +35,7 @@ public class INeedLogin {
 
 	HttpRequestUtil util = new HttpRequestUtil();
 	public List<HttpCookie> iCookies;
+	public String refreshToken;
 	public String qrCodeStr = "";
 	public UserInfo user;
 
@@ -83,7 +84,7 @@ public class INeedLogin {
 					} catch (Exception e) {
 					}
 				}
-				inl.saveCookies(inl.iCookies.toString());
+				inl.saveCookiesAndToken();
 				System.out.println("cookie已保存至当前目录! ");
 			}
 		}
@@ -136,11 +137,11 @@ public class INeedLogin {
 	 */
 	public String getAuthKey() {
 		HttpHeaders headers = new HttpHeaders();
-		String url = "https://passport.bilibili.com/qrcode/getLoginUrl";
+		String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-web";
 		String json = util.getContent(url, headers.getBiliLoginAuthHeaders());
 		JSONObject jObj = new JSONObject(json).getJSONObject("data");
 		qrCodeStr = jObj.getString("url");
-		return jObj.getString("oauthKey");
+		return jObj.getString("qrcode_key");
 	}
 
 	/**
@@ -153,26 +154,21 @@ public class INeedLogin {
 	 */
 	public boolean getAuthStatus(String authKey) throws UnsupportedEncodingException {
 		HttpHeaders headers = new HttpHeaders();
-		String url = "https://passport.bilibili.com/qrcode/getLoginInfo";
-		String param = "oauthKey=" + URLEncoder.encode(authKey, "UTF-8");
-		param += "&gourl=" + URLEncoder.encode("https://www.bilibili.com/", "UTF-8");
+		String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?source=main-web&qrcode_key=" + authKey;
 		try {
-			String json = util.postContent(url, headers.getBiliLoginAuthVaHeaders(), param);
+			String json = util.getContent(url, headers.getBiliLoginAuthHeaders());
 
-			// System.out.println(param);
 			System.out.println(json);
-			JSONObject jObj = new JSONObject(json);
+			JSONObject jObj = new JSONObject(json).getJSONObject("data");
 
-			boolean succ = jObj.getBoolean("status");
+			boolean succ = jObj.getInt("code") == 0;
 			if (succ) {
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
-				// saveCookies(iCookies.toString()); //这个交由外部判断
+				refreshToken = jObj.getString("refresh_token");
 			}
-//			System.out.println(jObj.getBoolean("status"));
-//			System.out.println(jObj.getInt("data"));
-//			System.out.println(jObj.getString("message"));
 			return succ;
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("验证Auth返回超时, 或json解析错误");
 			return false;
 		}
@@ -180,16 +176,20 @@ public class INeedLogin {
 	}
 
 	/**
-	 * 将Cookie 保存至本地
+	 * 将Cookie 和 token 保存至本地
 	 * 
-	 * @param iCookies
 	 */
-	public void saveCookies(String iCookies) {
+	public void saveCookiesAndToken() {
 		File file = new File("./config/cookies.config");
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 			BufferedWriter oos = new BufferedWriter(fileWriter);
-			oos.write(iCookies);
+			oos.write(iCookies.toString());
+			if(refreshToken != null) {
+				HttpCookies.setRefreshToken(refreshToken);
+				oos.newLine();
+				oos.write(refreshToken);
+			}
 			oos.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -205,21 +205,20 @@ public class INeedLogin {
 	 */
 	public String readCookies() {
 		File file = new File("./config/cookies.config");
-		String iCookie = null;
+		StringBuilder sb = new StringBuilder();
 		try {
 			FileReader fileReader = new FileReader(file);
 			BufferedReader ois = new BufferedReader(fileReader);
-			iCookie = ois.readLine();
-			while (ois.readLine() != null) {
-				iCookie += ois.readLine();
+			String line = ois.readLine();
+			while (line != null) {
+				sb.append(line).append("\n");
+				line = ois.readLine();
 			}
 			ois.close();
-		} catch (FileNotFoundException e) {
-			// e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return iCookie;
+		return sb.toString();
 	}
 
 	public HttpRequestUtil getUtil() {
@@ -334,6 +333,7 @@ public class INeedLogin {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
+				// TODO refreshToken = ? jObj.getString("refresh_token")
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");
@@ -377,6 +377,7 @@ public class INeedLogin {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
+				// TODO refreshToken = ? jObj.getString("refresh_token")
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");

@@ -31,8 +31,8 @@ public class INeedLoginTest {
 		List<HttpCookie> oringinSet = HttpCookies.convertCookies(origin);
 
 		System.out.println(oringinSet.toString());
-
-		inl.saveCookies(oringinSet.toString());
+		inl.iCookies = oringinSet;
+		//inl.saveCookies(oringinSet.toString());
 		String lastSet = (String) inl.readCookies();
 		System.out.println(lastSet.toString());
 

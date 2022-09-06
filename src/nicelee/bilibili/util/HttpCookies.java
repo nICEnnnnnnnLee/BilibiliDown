@@ -7,11 +7,15 @@ import java.util.List;
 public class HttpCookies {
 	static List<HttpCookie> globalCookies;
 	static String csrf;
-	
+	static String refreshToken;
 	
 	public static List<HttpCookie> convertCookies(String cookie) {
+		String lines[] = cookie.split("\n");
+		if(lines.length >= 2) {
+			refreshToken = lines[1].trim();
+		}
 		List<HttpCookie> iCookies = new ArrayList<HttpCookie>();
-		String[] cookieStrs = cookie.replaceAll("\\||\r|\n| |\\[|\\]|\"", "").split(",|;|&");
+		String[] cookieStrs = lines[0].replaceAll("\\||\r|\n| |\\[|\\]|\"", "").split(",|;|&");
 		for (String cookieStr : cookieStrs) {
 			String entry[] = cookieStr.split("=");
 			HttpCookie cCookie = new HttpCookie(entry[0], entry[1]);
@@ -38,6 +42,14 @@ public class HttpCookies {
 			}
 		}
 		return csrf;
+	}
+
+	public static String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public static void setRefreshToken(String refreshToken) {
+		HttpCookies.refreshToken = refreshToken;
 	}
 
 }

@@ -33,6 +33,7 @@ import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
 import nicelee.ui.TabSettings;
 import nicelee.ui.thread.BatchDownloadThread;
+import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
 
@@ -119,9 +120,12 @@ public class MJMenuBar extends JMenuBar {
 		JMenuItem qrLogin = new JMenuItem("二维码登录");
 		JMenuItem pwdLogin = new JMenuItem("用户名密码登录");
 		JMenuItem smsLogin = new JMenuItem("短信验证登录");
+		JMenuItem refreshCookie = new JMenuItem("刷新Cookie");
 		loginRelated.add(qrLogin);
 		loginRelated.add(pwdLogin);
 		loginRelated.add(smsLogin);
+		loginRelated.addSeparator();
+		loginRelated.add(refreshCookie);
 		loginRelated.addSeparator();
 		loginRelated.add(logout);
 		
@@ -411,6 +415,12 @@ public class MJMenuBar extends JMenuBar {
 				Global.needToLogin = true;
 				Global.loginType = "sms";
 				new LoginThread().start();
+			}
+		});
+		refreshCookie.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CookieRefreshThread.newInstance().start();
 			}
 		});
 		// 退出登录

@@ -1,13 +1,43 @@
 package nicelee.bilibili.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ResourcesUtil {
+
+	public static void write(File f, String content) {
+		try {
+			f.getParentFile().mkdirs();
+			FileOutputStream out = new FileOutputStream(f);
+			out.write(content.getBytes("utf-8"));
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String readAll(File f) {
+		try {
+			FileInputStream in = new FileInputStream(f);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			for (int len = 0; (len = in.read(buffer)) != -1;) {
+				out.write(buffer, 0, len);
+			}
+			in.close();
+			byte[] bytes = out.toByteArray();
+			return new String(bytes, "utf-8");
+		} catch (IOException e) {
+			return null;
+		}
+	}
 
 	public static String randomInt(int i) {
 		StringBuilder sb = new StringBuilder(i);
@@ -18,7 +48,7 @@ public class ResourcesUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String randomLower(int i) {
 		StringBuilder sb = new StringBuilder(i);
 		String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -28,7 +58,7 @@ public class ResourcesUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String randomUpper(int i) {
 		StringBuilder sb = new StringBuilder(i);
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -38,7 +68,7 @@ public class ResourcesUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String random(int i) {
 		StringBuilder sb = new StringBuilder(i);
 		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -48,15 +78,15 @@ public class ResourcesUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	public static void copy(File source, File dest) {
 		try {
 			RandomAccessFile rSource = new RandomAccessFile(source, "r");
 			RandomAccessFile rDest = new RandomAccessFile(dest, "rw");
-			
-			byte[] buffer = new byte[1024*1024];
+
+			byte[] buffer = new byte[1024 * 1024];
 			int size = rSource.read(buffer);
-			while(size != -1) {
+			while (size != -1) {
 				rDest.write(buffer, 0, size);
 				size = rSource.read(buffer);
 			}
@@ -66,7 +96,7 @@ public class ResourcesUtil {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static File search(String path) {
 		File file = new File(path);
 		if (file.exists())

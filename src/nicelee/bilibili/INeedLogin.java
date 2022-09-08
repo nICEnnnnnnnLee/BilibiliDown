@@ -1,10 +1,8 @@
 package nicelee.bilibili;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -81,9 +79,8 @@ public class INeedLogin {
 	 * @return
 	 */
 	public String getAuthKey() {
-		HttpHeaders headers = new HttpHeaders();
 		String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-web";
-		String json = util.getContent(url, headers.getBiliLoginAuthHeaders());
+		String json = util.getContent(url, genLoginHeader());
 		JSONObject jObj = new JSONObject(json).getJSONObject("data");
 		qrCodeStr = jObj.getString("url");
 		return jObj.getString("qrcode_key");
@@ -98,10 +95,9 @@ public class INeedLogin {
 	 * @throws UnsupportedEncodingException
 	 */
 	public boolean getAuthStatus(String authKey) throws UnsupportedEncodingException {
-		HttpHeaders headers = new HttpHeaders();
 		String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?source=main-web&qrcode_key=" + authKey;
 		try {
-			String json = util.getContent(url, headers.getBiliLoginAuthHeaders());
+			String json = util.getContent(url, genLoginHeader());
 
 			System.out.println(json);
 			JSONObject jObj = new JSONObject(json).getJSONObject("data");
@@ -150,20 +146,7 @@ public class INeedLogin {
 	 */
 	public String readCookies() {
 		File file = new File("./config/cookies.config");
-		try {
-			StringBuilder sb = new StringBuilder();
-			FileReader fileReader = new FileReader(file);
-			BufferedReader ois = new BufferedReader(fileReader);
-			String line = ois.readLine();
-			while (line != null) {
-				sb.append(line).append("\n");
-				line = ois.readLine();
-			}
-			ois.close();
-			return sb.toString();
-		} catch (IOException e) {
-			return null;
-		}
+		return ResourcesUtil.readAll(file);
 	}
 
 	public HttpRequestUtil getUtil() {
@@ -179,48 +162,50 @@ public class INeedLogin {
 	 */
 	public JSONObject getGeetest() throws IOException {
 		String url = "https://passport.bilibili.com/x/passport-login/captcha?source=main_mini";
-		HttpHeaders headers = new HttpHeaders();
-		//util.getContent("https://passport.bilibili.com/login", headers.getBiliLoginAuthHeaders());
-		String jsonStr = util.getContent(url, headers.getBiliLoginAuthHeaders());
+		String jsonStr = util.getContent(url, genLoginHeader());
 		JSONObject json = new JSONObject(jsonStr).getJSONObject("data");
 		return json;
 	}
 
 	HashMap<String, String> loginHeader = null;
-	HashMap<String, String> genLoginHeader(){
+	public HashMap<String, String> genLoginHeader(){
 		if(loginHeader != null)
 			return loginHeader;
 		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("_uuid=")
+		String cookie = null;
+		File fingerprint = new File("./config/fingerprint.config");
+		if(fingerprint.exists()) {
+			cookie = ResourcesUtil.readAll(fingerprint);
+		}else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("_uuid=")
 			.append(ResourcesUtil.randomUpper(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(18)).append("infoc")
 			.append("; ");
-		sb.append("b_lsid=")
+			sb.append("b_lsid=")
 			.append(ResourcesUtil.randomUpper(8)).append("_")
 			.append(ResourcesUtil.randomUpper(11))
 			.append("; ");
-		sb.append("b_nut=")
+			sb.append("b_nut=")
 			.append(System.currentTimeMillis()/1000)
 			.append("; ");
-		sb.append("b_timer=")
+			sb.append("b_timer=")
 			.append("%7B%22ffp%22%3A%7B%22333.130.fp.risk_")
 			.append(ResourcesUtil.randomUpper(8))
 			.append("%22%3A%22")
 			.append(ResourcesUtil.randomInt(10))
 			.append("A%22%7D%7D; ");
-		sb.append("buvid3=")
+			sb.append("buvid3=")
 			.append(ResourcesUtil.randomUpper(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(17)).append("infoc")
 			.append("; ");
-		sb.append("buvid4=")
+			sb.append("buvid4=")
 			.append(ResourcesUtil.randomInt(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
@@ -231,15 +216,20 @@ public class INeedLogin {
 			.append(ResourcesUtil.randomUpper(4)).append("+")
 			.append(ResourcesUtil.randomUpper(12)).append("%3D%3D")
 			.append("; ");
-		sb.append("buvid_fp=")
+			sb.append("buvid_fp=")
 			.append(ResourcesUtil.randomUpper(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(17)).append("infoc")
 			.append("; ");
-		sb.append("fingerprint=").append(ResourcesUtil.randomLower(32));
-		headers.put("Cookie", sb.toString());
+			sb.append("fingerprint=").append(ResourcesUtil.randomLower(32));
+			cookie = sb.toString();
+			ResourcesUtil.write(fingerprint, cookie);
+		}
+		cookie = cookie.replaceFirst("b_nut=[0-9]+", "b_nut=" + System.currentTimeMillis()/1000);
+		headers.put("Cookie", cookie);
+		loginHeader = headers;
 		return headers;
 	}
 	

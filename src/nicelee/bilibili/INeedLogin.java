@@ -150,8 +150,8 @@ public class INeedLogin {
 	 */
 	public String readCookies() {
 		File file = new File("./config/cookies.config");
-		StringBuilder sb = new StringBuilder();
 		try {
+			StringBuilder sb = new StringBuilder();
 			FileReader fileReader = new FileReader(file);
 			BufferedReader ois = new BufferedReader(fileReader);
 			String line = ois.readLine();
@@ -160,10 +160,10 @@ public class INeedLogin {
 				line = ois.readLine();
 			}
 			ois.close();
+			return sb.toString();
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return sb.toString();
 	}
 
 	public HttpRequestUtil getUtil() {
@@ -278,7 +278,7 @@ public class INeedLogin {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
-				// TODO refreshToken = ? jObj.getString("refresh_token")
+				refreshToken = response.getJSONObject("data").getString("refresh_token");
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");
@@ -322,7 +322,7 @@ public class INeedLogin {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
-				// TODO refreshToken = ? jObj.getString("refresh_token")
+				refreshToken = response.getJSONObject("data").getString("refresh_token");
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");

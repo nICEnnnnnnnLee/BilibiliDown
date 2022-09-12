@@ -23,12 +23,12 @@ import nicelee.bilibili.util.Logger;
  *
  *		- https://api.bilibili.com/x/space/fav/season/list?season_id=405855&pn=2&ps=20&jsonp=jsonp
  */
-@Bilibili(name = "URL4ChannelCollectionParserEx", ifLoad = "listAll", note = "UP 某合集的视频解析")
+@Bilibili(name = "URL4ChannelCollectionParserEx", weight = 77, ifLoad = "listAll", note = "UP 某合集的视频解析")
 public class URL4ChannelCollectionParserEx extends AbstractPageQueryParser<VideoInfo> {
 
 	private final static Pattern pattern = Pattern
 			.compile("space\\.bilibili\\.com/[0-9]+/channel/collectiondetail\\?sid=([0-9]+)");
-	private final static Pattern pattern2 = Pattern.compile("space\\.bilibili\\.com/[0-9]+/favlist\\?.*fid=([0-9]+)");
+	private final static Pattern pattern2 = Pattern.compile("space\\.bilibili\\.com/[0-9]+/favlist\\?.*fid=([0-9]+).*ftype=collect");
 	private String sid;
 
 	public URL4ChannelCollectionParserEx(Object... obj) {

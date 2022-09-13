@@ -1,4 +1,16 @@
 ## UPDATE  
+* V6.16  `2022-09-13`  
+	* 调整：各登录方式额外保存`refresh_token`信息，用于Cookie刷新
+    * 新增：支持Cookie刷新操作
+    * 新增：程序使用说明文档<https://nICEnnnnnnnLee.github.io/BilibiliDown>    
+    * 新增：新推出**一键下载功能**，点击一下，下载配置定义的所有。    
+		你只需要花3min写一个配置，以后会方便很多。详见[进阶使用-通过配置一键下载](https://nICEnnnnnnnLee.github.io/BilibiliDown/guide/advanced/quick-batch-download)  
+    * 优化：UP主合集链接解析现只需要发出两次查询的网络请求。  
+		现在大部分链接解析的网络请求次数并不与分页大小相关，您可以**尝试**将该配置由`5`改为`20`。  
+		即`bilibili.pageSize = 20`
+    * 优化：为了避免文件名过长而出现问题，现将字段`clipTitle`从**默认配置**的文件名中移除
+	* 优化：更新扫码登录API
+    * 修复：Linux快捷方式的运行方式没有指定正确的工作目录  
 * V6.15  `2022-08-20`  
     * 优化：补充实现在Windows平台外的一键更新功能
     * 优化：自定义Button添加抗锯齿设置[issues 107](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/107) 

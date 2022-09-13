@@ -11,6 +11,7 @@
   "author": "nICEnnnnnnnLee",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.27.2",
     "vitepress": "^1.0.0-alpha.12",
     "vue": "^3.2.37"
   }

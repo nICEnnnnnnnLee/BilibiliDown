@@ -247,3 +247,17 @@ bilibili.system.properties.jre11.override = false
 ``` 
 - 释义:   
     当值为`true`时, 上面的参数值会覆盖命令行传入的对应参数
+
+
+## bilibili.download.batch.config.name
+- 取值范围: 符合文件名命名规范
+- 默认值: `batchDownload.config`  
+- 释义: 
+    一键下载配置的默认名称
+
+## bilibili.download.batch.config.name.pattern
+- 取值范围: 正则匹配表达式
+- 默认值: `^batchDownload.*\.config$`  
+- 释义:   
+    一键下载配置名称的匹配正则表达式。   
+    程序会扫描config文件夹下文件名符合该正则的文件，在菜单`配置` -> `一键下载配置`中提供切换的选项  

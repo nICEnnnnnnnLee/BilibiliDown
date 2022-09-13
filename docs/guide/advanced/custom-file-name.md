@@ -4,7 +4,7 @@
 + 找到`bilibili.name.format`，修改它的值
 
 ## bilibili.name.format
-- 默认值: `(:listName 0_listName\)UpName\avTitle-(:favTime favTime-)pAv2-clipTitle-qn`
+- 默认值: `(:listName 0_listName\)UpName\avTitle-(:favTime favTime-)pAv2-qn`
 - 释义:  
     文件名可以分为4种组成部分： 内置的关键词、路径分隔符、条件语句、其它内容  
     + **内置的关键词**
@@ -43,7 +43,7 @@
 ## bilibili.name.date.cTime.pattern
 - 默认值: `yyMMdd`  
 - 释义:  
-    格式化发布时间  
+    格式化用户投稿时间  
     不会可以百度 `java 格式化时间 SimpleDateFormat`
 - 对应内容举例:  
     `220831`
@@ -139,7 +139,7 @@
 
 ## cTime
 - 释义:   
-    发布?更新?时间，需要与格式化日期配合
+    用户投稿时间，需要与格式化日期配合
 - 注意事项:  
     因为不是所有链接解析结果都存在该值，所以需要配合**条件语句**，以免产生未知错误
 - 对应内容举例:  

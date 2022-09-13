@@ -15,14 +15,18 @@
 在这里，我们的目标就是通过只点一下，模拟实现上述的场景。  
 
 ## 操作  
-目前`一键下载`在操作菜单里的位置是这样，不排除以后会有更改。  
++ 目前`一键下载`在操作菜单里的位置是这样，不排除以后会有更改。  
 ![](/img/batchDownload.png)
 
-重点是配置`config/batchDownload.config`
++ 程序会扫描`config`文件夹下`batchDownload`开头、`.config`结尾的文件，你可以在这些配置之间快速切换。  
+![](/img/batchDownload-select.png)  
+
++ 接下来的重点是配置`config/batchDownload.config`
 
 
 ## 配置  
-该功能目前还在试验阶段，目前先放出实用性的样本配置。  
+该功能目前还在试验阶段，目前先放出实用性的样本配置。   
+配置请以`utf-8`编码方式保存。  
 
 下面是下载`收藏夹1`、`收藏夹2`、`收藏夹3`，   
 从第`1`页开始，  
@@ -41,6 +45,8 @@ download.condition = _!downloaded
 #download.condition = _:_
 # 表示不包含边界（停止时的那个BV）
 stop.bv.bounds = exclude
+# 表示在每下完一个收藏夹，就弹出一次提示
+stop.alert = true
 
 
 # 一键下载该URL对应的合集
@@ -53,6 +59,9 @@ download.condition = _!downloaded
 ```
 
 ## 注意事项
++ `[favorite:收藏夹1,收藏夹2]`跟上`配置A`，相当于   
+    `[url:{收藏夹1链接}]`跟上`配置A`  +   
+    `[url:{收藏夹2链接}]`跟上`配置A`
 + `[favorite:收藏夹1,收藏夹2,收藏夹3,...]`中分隔符是英文`:`和`,`，不要与中文弄混
 + `[favorite:收藏夹1,收藏夹2,收藏夹3,...]`中收藏夹的名字不能有`,`  
 + `[favorite:收藏夹1,收藏夹2,收藏夹3,...]`中，如果你的收藏夹有多个名字为`收藏夹1`，那么这几个收藏夹都会下载  

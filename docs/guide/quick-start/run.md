@@ -25,6 +25,7 @@
 + 给予权限并执行脚本 `Create-Shortcut-on-Desktop-for-Linux.sh`
 + 在桌面上右键快捷方式赋予执行权限
 + 以后在桌面双击快捷方式即可
+![](/img/Ubuntu-run.png)
 
 ### 直接运行jar
 ```bash

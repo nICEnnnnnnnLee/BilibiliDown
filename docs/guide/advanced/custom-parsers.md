@@ -1,5 +1,8 @@
 
 # 自定义解析器
+## 前置条件
+请注意，将`.java`编译为`.class`需要JDK环境，目前Release提供的精简Win64 JRE11并不满足要求。  
+
 ## 简述
 在`parsers`文件夹下，放置的后缀为`.java`的文件，其功能和位于源码包`nicelee.bilibili.parsers.impl`等同。  
 

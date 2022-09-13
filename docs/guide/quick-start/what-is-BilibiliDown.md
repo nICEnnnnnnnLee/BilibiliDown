@@ -4,7 +4,7 @@
 BilibiliDown 是一款专注于下载[Bilibili](https://www.bilibili.com)上精彩视频的下载工具。  
 它具有以下丰富的特性：  
 -  支持跨平台(Windows/Linux/MacOS)  
--  支持GUI图形人机界面  
+-  支持GUI图形人机交互界面  
 -  支持扫码/密码/短信登录  
 -  支持各种链接解析
 -  支持自定义各种链接解析

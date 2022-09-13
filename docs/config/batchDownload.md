@@ -38,7 +38,7 @@ stop.condition = {c6}
     + `page` 表示查询页数
     + `bv` 表示BV号
     + `favTime` 表示收藏时间
-    + `cTime` 表示发布时间  
+    + `cTime` 表示用户投稿时间  
 + 合法的操作符有：    
     + `:` 表示等于
     + `!` 表示不等于
@@ -52,7 +52,7 @@ stop.condition = {c6}
     + `page:20`  表示页数为20时为真
     + `bv:BVxxx`  表示BV号为BVxxx时为真
     + `favTime>2022-08-31`  表示BV号收藏时间晚于`2022-08-31`为真
-    + `cTime<2022-08-31`  表示BV号发布时间早于`2022-08-31`为真
+    + `cTime<2022-08-31`  表示BV号投稿时间早于`2022-08-31`为真
 
 ### 关于其它配置(可以缺省，不是必要配置)  
 
@@ -68,6 +68,13 @@ stop.condition = {c6}
     - 释义:   
         `exclude` 表示不包含边界, 当遇到`stop.condition`中的bv而停止时，不会下载该BV  
         `include` 表示包含边界, 当遇到`stop.condition`中的bv而停止时，若`download.condition`为真则下载该BV  
+
+- `stop.alert`  
+    - 取值范围: `true | false`  
+    - 默认值:`true`  
+    - 释义:   
+        `true` 表示当合集下载完毕时，弹框提示  
+        `false` 表示当合集下载完毕时，不弹框提示  
 
 ## 模板实例解析
 ```

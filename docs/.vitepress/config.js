@@ -70,6 +70,7 @@ function sidebarGuide() {
             items: [
                 { text: 'BilibiliDown是什么?', link: '/guide/quick-start/what-is-BilibiliDown' },
                 { text: '下载程序', link: '/guide/quick-start/download' },
+                { text: '设置ffmpeg', link: '/guide/quick-start/ffmpeg' },
                 { text: '运行程序', link: '/guide/quick-start/run' },
                 { text: '更新程序', link: '/guide/quick-start/update' },
             ]
@@ -81,6 +82,7 @@ function sidebarGuide() {
             items: [
                 { text: '典型案例', link: '/guide/basic/examples' },
                 { text: '支持链接', link: '/guide/basic/surports' },
+                { text: '补充说明', link: '/guide/basic/additional-remarks' },
             ]
         },
         {

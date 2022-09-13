@@ -8,10 +8,10 @@
 |相簿收藏夹|`https://space.bilibili.com/{spaceID}/favlist?fid=albumfav`|-   |
 |~~番剧视频~~|`https://www.bilibili.com/bangumi/play/ss33378`<br/><br/>`https://www.bilibili.com/bangumi/media/md134912`<br/><br/>`https://www.bilibili.com/bangumi/play/ep250435`|**V5.9以后不再支持**  |
 |稍后再看|`https://www.bilibili.com/watchlater/#/list`|-   |
-|收藏夹|`mlxxxx`<br/><br/>`https://space.bilibili.com/492744983/favlist?fid=933034683`|-   |
-|UP主合集|`https://space.bilibili.com/{spaceID}/favlist?fid=405855&ftype=collect&ctype=21`<br/><br/>`https://space.bilibili.com/593987248/channel/collectiondetail?sid=508765`|合集的每个BV都会产生网络请求，网络请求数较多  |
+|收藏夹|`mlxxxx`<br/><br/>`https://www.bilibili.com/medialist/detail/ml761171511`<br/><br/>`https://space.bilibili.com/492744983/favlist?fid=933034683`|-   |
+|UP主合集|`https://space.bilibili.com/{spaceID}/favlist?fid=405855&ftype=collect&ctype=21`<br/><br/>`https://space.bilibili.com/593987248/channel/collectiondetail?sid=508765`|-  |
 |UP主视频列表|`https://space.bilibili.com/378034/channel/seriesdetail?sid=918669`<br/><br/>`https://www.bilibili.com/medialist/play/378034?from=space&business=space_series&business_id=918669&desc=1`|- |
-|UP主所有视频|`https://space.bilibili.com/378034/`<br/><br/>`https://space.bilibili.com/378034/video`<br/><br/>`https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow`<br/><br/>`https://space.bilibili.com/378034/search/video?tid=3&keyword=&order=pubdate`<br/><br/>`https://www.bilibili.com/medialist/play/378034?from=space&business=space&sort_field=play&tid=3`| 支持 最新发布、最多播放、最多收藏升逆序分页查询<br/><br/><br/><br/>支持关键词搜索,但此时网络请求数会增多  |
+|UP主所有视频|`https://space.bilibili.com/378034/`<br/><br/>`https://space.bilibili.com/378034/video`<br/><br/>`https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow`<br/><br/>`https://space.bilibili.com/378034/search/video?tid=3&keyword=&order=pubdate`<br/><br/>`https://www.bilibili.com/medialist/play/378034?from=space&business=space&sort_field=play&tid=3`| 支持 最新发布、最多播放、最多收藏分页查询<br/><br/><br/><br/>支持关键词搜索,但此时网络请求数会增多  |
 
 ## UP主所有视频的链接参数
 ```

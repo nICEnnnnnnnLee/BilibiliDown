@@ -9,6 +9,7 @@
 |-- Double-Click-to-Run-for-Mac.command      MacOS下双击即可运行
 |-- Double-Click-to-Run-for-Win-debug.bat    Windows下双击即可运行(带命令行输出)
 |-- Double-Click-to-Run-for-Win.bat          Windows下双击即可运行(纯视图)
+|-- Run-for-Linux.sh                         Linux下的运行脚本
 |-- ffmpeg.exe                               Windows下的ffmpeg
 |-- INeedBiliAV.jar                          主程序
 |-- uninstall.bat                            Windows下卸载脚本(其实就是删除所在文件夹)
@@ -20,6 +21,7 @@
 |   |-- batchDownload.config                 一键下载配置
 |   |-- cookies.config                       登录凭证(明文保存Cookies)
 |   |-- favicon.ico                          快捷方式显示的程序图标
+|   |-- fingerprint.config                   登录时随机生成的指纹
 |   |-- notice.wav                           自定义下载完成后的提示音
 |   |-- repo.config                          完成的下载任务记录(仅记录ID,一行一个)
 |   |-- tasks.config                         保存的正在下载中的任务

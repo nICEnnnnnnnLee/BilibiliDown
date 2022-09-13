@@ -18,7 +18,7 @@ import nicelee.bilibili.util.Logger;
  *
  *
  */
-@Bilibili(name = "URL4ChannelCollectionParser", ifLoad = "listAll", note = "UP 某合集的视频解析")
+//@Bilibili(name = "URL4ChannelCollectionParser", ifLoad = "listAll", note = "UP 某合集的视频解析")
 public class URL4ChannelCollectionParser extends AbstractPageQueryParser<VideoInfo> {
 
 	private final static Pattern pattern = Pattern

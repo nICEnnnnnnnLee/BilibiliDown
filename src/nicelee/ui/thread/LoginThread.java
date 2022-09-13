@@ -99,7 +99,7 @@ public class LoginThread extends Thread {
 		Logger.println("线程即将结束，当前登录状态： " + Global.isLogin);
 		if (Global.isLogin) {
 			// 保存cookie到本地
-			inl.saveCookies(inl.iCookies.toString());
+			inl.saveCookiesAndToken();
 			// 设置全局Cookie
 			HttpCookies.setGlobalCookies(inl.iCookies);
 			// 获取用户信息

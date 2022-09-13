@@ -14,12 +14,19 @@ if [ ! -d desktop_path ]; then
 fi
 echo "当前桌面为${desktop_path}"
 
+echo '创建运行脚本并添加可执行权限'
+echo "#!/bin/bash" > Run-for-Linux.sh
+echo "" >> Run-for-Linux.sh
+echo 'cd $(dirname $0)' >> Run-for-Linux.sh
+echo "java -Dfile.encoding=utf-8 -Dhttps.protocols=TLSv1.2 -jar INeedBiliAV.jar" >> Run-for-Linux.sh
+sudo chmod +x Run-for-Linux.sh
+
 echo "[Desktop Entry]" > BilibiliDown.desktop
 echo "Encoding=UTF-8" >> BilibiliDown.desktop
 echo "Terminal=false" >> BilibiliDown.desktop
 echo "Name=BilibiliDown" >> BilibiliDown.desktop
 echo "Type=Application" >> BilibiliDown.desktop
-echo "Exec=java -Dfile.encoding=utf-8 -Dhttps.protocols=TLSv1.2 -jar ${base_path}/INeedBiliAV.jar" >> BilibiliDown.desktop
+echo "Exec=bash ${base_path}/Run-for-Linux.sh" >> BilibiliDown.desktop
 echo "Icon=${base_path}/config/favicon.ico" >> BilibiliDown.desktop
 echo "Categories=Application;Network; " >> BilibiliDown.desktop
 echo "Comment=BilibiliDown from https://github.com/nICEnnnnnnnLee/BilibiliDown" >> BilibiliDown.desktop

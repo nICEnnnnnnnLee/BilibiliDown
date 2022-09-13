@@ -21,7 +21,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.15", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.16", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -86,7 +86,10 @@ public class Global {
 	@Config(key = "bilibili.repo.definitionStrictMode", note = "是否将同一视频不同清晰度看作不同任务", defaultValue = "false", eq_true = "on", valids = { "on",
 			"off" }) /* 存在某一清晰度后, 在下载另一种清晰度时是否判断已完成 */
 	public static boolean repoInDefinitionStrictMode; //
-
+	@Config(key = "bilibili.download.batch.config.name", note = "一键下载配置的默认名称", defaultValue = "batchDownload.config")
+	public static String batchDownloadConfigName;
+	@Config(key = "bilibili.download.batch.config.name.pattern", note = "一键下载配置名称的匹配正则表达式", defaultValue = "^batchDownload.*\\.config$")
+	public static Pattern batchDownloadConfigNamePattern;
 	// 登录相关
 	@Config(key = "bilibili.server.port", note = "http server监听端口，用于极验校验", defaultValue = "8787")
 	public static int serverPort = 8787;

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -31,6 +32,8 @@ import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
 import nicelee.ui.TabSettings;
+import nicelee.ui.thread.BatchDownloadThread;
+import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
 
@@ -44,6 +47,7 @@ public class MJMenuBar extends JMenuBar {
 	private JFrame frame;
 	ButtonGroup btnTypeGroup; // 从菜单栏批量下载的计划类型
 	ButtonGroup btnQnGroup;	// 从菜单栏批量下载的优先清晰度选项
+	ButtonGroup btnBatchDownGroup;	// 从菜单栏一键下载的配置文件选项
 	
 	public MJMenuBar(JFrame frame) {
 		super();
@@ -103,6 +107,7 @@ public class MJMenuBar extends JMenuBar {
 		 */
 		JMenuItem convertRepo = new JMenuItem("开始转换仓库(慎点)");
 		JMenuItem convertRepoBreak = new JMenuItem("停止转换仓库");
+		JMenuItem batchDownload = new JMenuItem("一键下载");
 		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
 		JMenuItem saveDownloading = new JMenuItem("保存下载任务");
@@ -115,14 +120,19 @@ public class MJMenuBar extends JMenuBar {
 		JMenuItem qrLogin = new JMenuItem("二维码登录");
 		JMenuItem pwdLogin = new JMenuItem("用户名密码登录");
 		JMenuItem smsLogin = new JMenuItem("短信验证登录");
+		JMenuItem refreshCookie = new JMenuItem("刷新Cookie");
 		loginRelated.add(qrLogin);
 		loginRelated.add(pwdLogin);
 		loginRelated.add(smsLogin);
+		loginRelated.addSeparator();
+		loginRelated.add(refreshCookie);
 		loginRelated.addSeparator();
 		loginRelated.add(logout);
 		
 		operMenu.add(convertRepo);
 		operMenu.add(convertRepoBreak);
+		operMenu.addSeparator();
+		operMenu.add(batchDownload);
 		operMenu.addSeparator();
 		operMenu.add(reloadConfig);
 		operMenu.add(reloadRepo);
@@ -140,9 +150,11 @@ public class MJMenuBar extends JMenuBar {
 		 */
 		JMenu dTypeMenuItem = new JMenu("下载策略");
 		JMenu dQNMenuItem = new JMenu("优先清晰度");
+		JMenu dBatchDownMenuItem = new JMenu("一键下载配置");
 		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
 		configMenu.add(dTypeMenuItem);
 		configMenu.add(dQNMenuItem);
+		configMenu.add(dBatchDownMenuItem);
 		configMenu.addSeparator();
 		configMenu.add(settingsMenuItem);
 		/**
@@ -177,7 +189,42 @@ public class MJMenuBar extends JMenuBar {
 				dQN.setSelected(true);
 			}
 		}
+		/**
+		 * 创建三级 配置-一键下载配置文件选择
+		 */
+		btnBatchDownGroup = new ButtonGroup();
+		JRadioButtonMenuItem radioBtn = new JRadioButtonMenuItem(Global.batchDownloadConfigName);
+		dBatchDownMenuItem.add(radioBtn);
+		btnBatchDownGroup.add(radioBtn);
+		radioBtn.setSelected(true);
+		File configDir = ResourcesUtil.search("config");
+		if(configDir != null) {
+			for(String fName: configDir.list()) {
+				Matcher m = Global.batchDownloadConfigNamePattern.matcher(fName);
+				if(m.find() && !fName.equals(Global.batchDownloadConfigName)) {
+					Logger.println(fName);
+					radioBtn = new JRadioButtonMenuItem(fName);
+					dBatchDownMenuItem.add(radioBtn);
+					btnBatchDownGroup.add(radioBtn);
+				}
+			}
+		}
 
+		// 一键下载
+		batchDownload.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Enumeration<AbstractButton> btns = btnBatchDownGroup.getElements();
+				while (btns.hasMoreElements()) {
+					JRadioButtonMenuItem item = (JRadioButtonMenuItem) btns.nextElement();
+					if(item.isSelected()) {
+						new BatchDownloadThread(item.getText()).start();
+						break;
+					}
+				}
+				
+			}
+		});
 		// 打开设置面板
 		settingsMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -368,6 +415,12 @@ public class MJMenuBar extends JMenuBar {
 				Global.needToLogin = true;
 				Global.loginType = "sms";
 				new LoginThread().start();
+			}
+		});
+		refreshCookie.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CookieRefreshThread.newInstance().start();
 			}
 		});
 		// 退出登录

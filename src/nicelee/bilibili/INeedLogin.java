@@ -1,12 +1,8 @@
 package nicelee.bilibili;
 
-import java.awt.Desktop;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -28,67 +24,15 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
-import nicelee.bilibili.util.QrCodeUtil;
 import nicelee.bilibili.util.ResourcesUtil;
 
 public class INeedLogin {
 
 	HttpRequestUtil util = new HttpRequestUtil();
 	public List<HttpCookie> iCookies;
+	public String refreshToken;
 	public String qrCodeStr = "";
 	public UserInfo user;
-
-	public static void main(String[] args) throws Exception {
-		System.out.println("-------------------------------");
-		System.out.println("测试cookie:");
-		System.out.println("输入参数 0");
-		System.out.println("利用二维码扫码登录, 获取cookie:");
-		System.out.println("输入参数 1");
-		System.out.println("-------------------------------");
-		if (args != null && args.length == 1) {
-			if (args[0].equals("0")) {
-				INeedLogin inl = new INeedLogin();
-				String cookieStr = inl.readCookies();
-				if (cookieStr == null) {
-					System.out.println("不存在Cookie");
-					return;
-				}
-				List<HttpCookie> cookies = HttpCookies.convertCookies(cookieStr);
-				if (inl.getLoginStatus(cookies)) {
-					System.out.println("该Cookie有效");
-					System.out.println("用户名称: " + inl.user.getName());
-					System.out.println("用户头像: " + inl.user.getPoster());
-				} else {
-					System.out.println("该Cookie无效");
-				}
-			} else if (args[0].equals("1")) {
-				INeedLogin inl = new INeedLogin();
-				String authKey = inl.getAuthKey();
-				// 保存二维码
-				File qrCode = new File("qrcode.jpg");
-				QrCodeUtil.createQrCode(new FileOutputStream(qrCode), inl.qrCodeStr, 900, "JPEG");
-				// 打开二维码文件
-				try {
-					Thread.sleep(3000);
-					Desktop.getDesktop().open(qrCode);
-				} catch (Exception e1) {
-					System.out.println("二维码已保存至当前目录, 请尽快扫描登录! ");
-				}
-				boolean isLogin = false;
-				while (!isLogin) {
-					try {
-						isLogin = inl.getAuthStatus(authKey);
-						System.out.println("请尽快扫描二维码!...");
-						Thread.sleep(3000);
-					} catch (Exception e) {
-					}
-				}
-				inl.saveCookies(inl.iCookies.toString());
-				System.out.println("cookie已保存至当前目录! ");
-			}
-		}
-
-	}
 
 	/**
 	 * 该方法返回用户登录状态 若已登录,将在当前实例更新用户信息
@@ -135,12 +79,11 @@ public class INeedLogin {
 	 * @return
 	 */
 	public String getAuthKey() {
-		HttpHeaders headers = new HttpHeaders();
-		String url = "https://passport.bilibili.com/qrcode/getLoginUrl";
-		String json = util.getContent(url, headers.getBiliLoginAuthHeaders());
+		String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-web";
+		String json = util.getContent(url, genLoginHeader());
 		JSONObject jObj = new JSONObject(json).getJSONObject("data");
 		qrCodeStr = jObj.getString("url");
-		return jObj.getString("oauthKey");
+		return jObj.getString("qrcode_key");
 	}
 
 	/**
@@ -152,27 +95,21 @@ public class INeedLogin {
 	 * @throws UnsupportedEncodingException
 	 */
 	public boolean getAuthStatus(String authKey) throws UnsupportedEncodingException {
-		HttpHeaders headers = new HttpHeaders();
-		String url = "https://passport.bilibili.com/qrcode/getLoginInfo";
-		String param = "oauthKey=" + URLEncoder.encode(authKey, "UTF-8");
-		param += "&gourl=" + URLEncoder.encode("https://www.bilibili.com/", "UTF-8");
+		String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?source=main-web&qrcode_key=" + authKey;
 		try {
-			String json = util.postContent(url, headers.getBiliLoginAuthVaHeaders(), param);
+			String json = util.getContent(url, genLoginHeader());
 
-			// System.out.println(param);
 			System.out.println(json);
-			JSONObject jObj = new JSONObject(json);
+			JSONObject jObj = new JSONObject(json).getJSONObject("data");
 
-			boolean succ = jObj.getBoolean("status");
+			boolean succ = jObj.getInt("code") == 0;
 			if (succ) {
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
-				// saveCookies(iCookies.toString()); //这个交由外部判断
+				refreshToken = jObj.getString("refresh_token");
 			}
-//			System.out.println(jObj.getBoolean("status"));
-//			System.out.println(jObj.getInt("data"));
-//			System.out.println(jObj.getString("message"));
 			return succ;
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("验证Auth返回超时, 或json解析错误");
 			return false;
 		}
@@ -180,16 +117,20 @@ public class INeedLogin {
 	}
 
 	/**
-	 * 将Cookie 保存至本地
+	 * 将Cookie 和 token 保存至本地
 	 * 
-	 * @param iCookies
 	 */
-	public void saveCookies(String iCookies) {
+	public void saveCookiesAndToken() {
 		File file = new File("./config/cookies.config");
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 			BufferedWriter oos = new BufferedWriter(fileWriter);
-			oos.write(iCookies);
+			oos.write(iCookies.toString());
+			if(refreshToken != null) {
+				HttpCookies.setRefreshToken(refreshToken);
+				oos.newLine();
+				oos.write(refreshToken);
+			}
 			oos.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -205,21 +146,7 @@ public class INeedLogin {
 	 */
 	public String readCookies() {
 		File file = new File("./config/cookies.config");
-		String iCookie = null;
-		try {
-			FileReader fileReader = new FileReader(file);
-			BufferedReader ois = new BufferedReader(fileReader);
-			iCookie = ois.readLine();
-			while (ois.readLine() != null) {
-				iCookie += ois.readLine();
-			}
-			ois.close();
-		} catch (FileNotFoundException e) {
-			// e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return iCookie;
+		return ResourcesUtil.readAll(file);
 	}
 
 	public HttpRequestUtil getUtil() {
@@ -235,48 +162,50 @@ public class INeedLogin {
 	 */
 	public JSONObject getGeetest() throws IOException {
 		String url = "https://passport.bilibili.com/x/passport-login/captcha?source=main_mini";
-		HttpHeaders headers = new HttpHeaders();
-		//util.getContent("https://passport.bilibili.com/login", headers.getBiliLoginAuthHeaders());
-		String jsonStr = util.getContent(url, headers.getBiliLoginAuthHeaders());
+		String jsonStr = util.getContent(url, genLoginHeader());
 		JSONObject json = new JSONObject(jsonStr).getJSONObject("data");
 		return json;
 	}
 
 	HashMap<String, String> loginHeader = null;
-	HashMap<String, String> genLoginHeader(){
+	public HashMap<String, String> genLoginHeader(){
 		if(loginHeader != null)
 			return loginHeader;
 		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("_uuid=")
+		String cookie = null;
+		File fingerprint = new File("./config/fingerprint.config");
+		if(fingerprint.exists()) {
+			cookie = ResourcesUtil.readAll(fingerprint);
+		}else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("_uuid=")
 			.append(ResourcesUtil.randomUpper(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(18)).append("infoc")
 			.append("; ");
-		sb.append("b_lsid=")
+			sb.append("b_lsid=")
 			.append(ResourcesUtil.randomUpper(8)).append("_")
 			.append(ResourcesUtil.randomUpper(11))
 			.append("; ");
-		sb.append("b_nut=")
+			sb.append("b_nut=")
 			.append(System.currentTimeMillis()/1000)
 			.append("; ");
-		sb.append("b_timer=")
+			sb.append("b_timer=")
 			.append("%7B%22ffp%22%3A%7B%22333.130.fp.risk_")
 			.append(ResourcesUtil.randomUpper(8))
 			.append("%22%3A%22")
 			.append(ResourcesUtil.randomInt(10))
 			.append("A%22%7D%7D; ");
-		sb.append("buvid3=")
+			sb.append("buvid3=")
 			.append(ResourcesUtil.randomUpper(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(17)).append("infoc")
 			.append("; ");
-		sb.append("buvid4=")
+			sb.append("buvid4=")
 			.append(ResourcesUtil.randomInt(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
@@ -287,15 +216,20 @@ public class INeedLogin {
 			.append(ResourcesUtil.randomUpper(4)).append("+")
 			.append(ResourcesUtil.randomUpper(12)).append("%3D%3D")
 			.append("; ");
-		sb.append("buvid_fp=")
+			sb.append("buvid_fp=")
 			.append(ResourcesUtil.randomUpper(8)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(4)).append("-")
 			.append(ResourcesUtil.randomUpper(17)).append("infoc")
 			.append("; ");
-		sb.append("fingerprint=").append(ResourcesUtil.randomLower(32));
-		headers.put("Cookie", sb.toString());
+			sb.append("fingerprint=").append(ResourcesUtil.randomLower(32));
+			cookie = sb.toString();
+			ResourcesUtil.write(fingerprint, cookie);
+		}
+		cookie = cookie.replaceFirst("b_nut=[0-9]+", "b_nut=" + System.currentTimeMillis()/1000);
+		headers.put("Cookie", cookie);
+		loginHeader = headers;
 		return headers;
 	}
 	
@@ -334,6 +268,7 @@ public class INeedLogin {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
+				refreshToken = response.getJSONObject("data").getString("refresh_token");
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");
@@ -377,6 +312,7 @@ public class INeedLogin {
 					return data.optString("message", "未知错误，返回信息中没有错误描述");
 				}
 				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
+				refreshToken = response.getJSONObject("data").getString("refresh_token");
 				return null;
 			} else {
 				return response.optString("message", "未知错误，返回信息中没有错误描述");
@@ -387,6 +323,32 @@ public class INeedLogin {
 		}
 	}
 
+	public String refreshCookie(String csrf, String refresh_csrf, String refresh_token) {
+		HttpHeaders header = new HttpHeaders();
+		String postUrl = "https://passport.bilibili.com/x/passport-login/web/cookie/refresh?csrf=%s&refresh_csrf=%s&source=main_web&refresh_token=%s";
+		postUrl = String.format(postUrl, csrf, refresh_csrf, refresh_token);
+		String result = util.postContent(postUrl, header.getCommonHeaders(), "", HttpCookies.getGlobalCookies());
+		Logger.println(result);
+		JSONObject json = new JSONObject(result);
+		if(json.getInt("code") == 0) {
+			JSONObject data = json.optJSONObject("data");
+			if(data != null) {
+				iCookies = HttpRequestUtil.DefaultCookieManager().getCookieStore().getCookies();
+				refreshToken = data.getString("refresh_token");
+				HttpCookies.setGlobalCookies(iCookies);
+				saveCookiesAndToken();
+				// 将原来的Cookie注销掉
+				postUrl = "https://passport.bilibili.com/x/passport-login/web/confirm/refresh?csrf=%s&refresh_token=%s";
+				postUrl = String.format(postUrl, HttpCookies.getCsrf(), refresh_token);
+				result = util.postContent(postUrl, header.getCommonHeaders(), "", HttpCookies.getGlobalCookies());
+				Logger.println("将原来的Cookie注销掉");
+				Logger.println(result);
+			}
+			return null;
+		}else {
+			return json.optString("message", "未知错误，返回信息中没有错误描述");
+		}
+	}
 	/**
 	 * RSA加密
 	 * 

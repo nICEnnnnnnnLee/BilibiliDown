@@ -12,6 +12,7 @@ Bilibili 视频下载器，用于下载B站视频。
 ===============================
 登录后的凭证明文保存在`config`文件夹下的`cookies.config`。    
 如有需要请直接删除，或`操作->登录相关->退出登录`  
+更多详情请参考[帮助文档](https://nICEnnnnnnnLee.github.io/BilibiliDown)   
 **以下多图警告**
 
 ## :smile:特性  

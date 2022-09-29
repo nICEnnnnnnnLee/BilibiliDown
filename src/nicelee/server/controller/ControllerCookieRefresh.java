@@ -65,7 +65,7 @@ public class ControllerCookieRefresh {
 	public void makeFileResponse(BufferedWriter out, OutputStream outRaw, String path, String contentType) {
 		try {
 			// System.out.println("请求的path: " + path);
-			URL url = this.getClass().getResource("/resources/geetest-validator" + path);
+			URL url = this.getClass().getResource("/resources/cookieRefresh" + path);
 			if (url != null) {
 				InputStream in = this.getClass().getResourceAsStream("/resources/cookieRefresh" + path);
 				ResponseUtil.response200OK(out);

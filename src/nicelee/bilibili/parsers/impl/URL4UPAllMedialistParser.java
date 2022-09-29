@@ -12,6 +12,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
@@ -155,7 +156,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 				int lastPageNumber = (page - 1) * API_PMAX + 1;
 				String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
 				String url = String.format(urlFormat, spaceID, 1, params.get("tid"), lastPageNumber, sortFieldParam);
-				String json = util.getContent(url, headers);
+				String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
 				Logger.println(url);
 				Logger.println(json);
 				oid = new JSONObject(json).getJSONObject("data").getJSONObject("list").getJSONArray("vlist")

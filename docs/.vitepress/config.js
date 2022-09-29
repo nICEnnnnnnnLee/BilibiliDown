@@ -127,6 +127,7 @@ function sidebarConfig() {
                 { text: 'app.config', link: '/config/app' },
                 { text: 'batchDownload.config', link: '/config/batchDownload' },
                 { text: 'cookies.config', link: '/config/cookies' },
+                { text: 'fingerprint.config', link: '/config/fingerprint' },
                 { text: 'repo.config', link: '/config/repo' },
                 { text: 'tasks.config', link: '/config/tasks' },
             ]

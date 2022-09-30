@@ -105,11 +105,11 @@ jobs:
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip ./minimal-bilibilidown-jre/
 
     - name: Upload artifacts(no jre)
-        uses: actions/upload-artifact@v3
-        with:
-          path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+      uses: actions/upload-artifact@v3
+      with:
+        path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
 
     - name: Upload artifacts(with jre11 win_64)
-        uses: actions/upload-artifact@v3
-        with:
-          path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
+      uses: actions/upload-artifact@v3
+      with:
+        path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip

@@ -1,4 +1,8 @@
 ## UPDATE  
+* V6.17  `2022-09-30`  
+    * 修复: [issues 114](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/114) 使用带指纹的cookies查询用户上传视频
+    * 优化: CI - 新增人工触发并生成程序到artifacts的工作流，目的是减少Release频率。
+    
 * V6.16  `2022-09-13`  
 	* 调整：各登录方式额外保存`refresh_token`信息，用于Cookie刷新
     * 新增：支持Cookie刷新操作

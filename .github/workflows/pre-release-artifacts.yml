@@ -87,25 +87,25 @@ jobs:
         mv -f ./release/config/* ./config/
         mv -f ./release/LICENSE/* ./LICENSE/        
         
-        zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip INeedBiliAV.jar
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Linux.sh
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Mac.sh
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Win.vbs
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Mac.command
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Win.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Win-debug.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./uninstall.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./update.bat
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./config/
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./LICENSE/
+        zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip INeedBiliAV.jar
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Create-Shortcut-on-Desktop-for-Linux.sh
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Create-Shortcut-on-Desktop-for-Mac.sh
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Create-Shortcut-on-Desktop-for-Win.vbs
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Double-Click-to-Run-for-Mac.command
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Double-Click-to-Run-for-Win.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Double-Click-to-Run-for-Win-debug.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./uninstall.bat
+        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./update.bat
+        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./config/
+        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./LICENSE/
     
-        wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11_win_x64.zip
-        unzip minimal-bilibilidown-jre11_win_x64.zip
-        cp BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip ./minimal-bilibilidown-jre/
+                  # wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11_win_x64.zip
+                  # unzip minimal-bilibilidown-jre11_win_x64.zip
+                  # cp BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.pre-release.zip
+                  # zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.pre-release.zip ./minimal-bilibilidown-jre/
 
     - name: Upload artifacts(no jre)
       uses: actions/upload-artifact@v3
       with:
-        name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release
-        path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release
+        path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip

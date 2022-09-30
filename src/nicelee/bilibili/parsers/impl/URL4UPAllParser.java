@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
@@ -85,9 +86,9 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			//String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
 			String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&jsonp=jsonp";
 			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, params.get("keyword"), params.get("order"));
-			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"));
-			System.out.println(url);
-			System.out.println(json);
+			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"), HttpCookies.globalCookiesWithFingerprint());
+			Logger.println(url);
+			Logger.println(json);
 			JSONObject jobj = new JSONObject(json);
 			JSONArray arr = jobj.getJSONObject("data").getJSONObject("list").getJSONArray("vlist");
 
@@ -121,7 +122,7 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			}
 			return true;
 		} catch (Exception e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 			return false;
 		}
 	}

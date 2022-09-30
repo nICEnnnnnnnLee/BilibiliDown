@@ -4,8 +4,11 @@ import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 
+import nicelee.bilibili.INeedLogin;
+
 public class HttpCookies {
 	static List<HttpCookie> globalCookies;
+	static List<HttpCookie> globalCookiesWithFingerprint;
 	static String csrf;
 	static String refreshToken;
 	
@@ -27,10 +30,23 @@ public class HttpCookies {
 	public static List<HttpCookie> getGlobalCookies() {
 		return globalCookies;
 	}
+	
+	public static List<HttpCookie> globalCookiesWithFingerprint() {
+		if(globalCookiesWithFingerprint == null) {
+			// String fingerprint = Files.readString(Paths.get("config/fingerprint.config"));
+			String fingerprint = new INeedLogin().genLoginHeader().get("Cookie");
+			globalCookiesWithFingerprint = new ArrayList<HttpCookie>();
+			globalCookiesWithFingerprint.addAll(convertCookies(fingerprint));
+			if(globalCookies != null)
+				globalCookiesWithFingerprint.addAll(globalCookies);
+		}
+		return globalCookiesWithFingerprint;
+	}
 
 	public static void setGlobalCookies(List<HttpCookie> globalCookies) {
 		HttpCookies.globalCookies = globalCookies;
 		csrf = null;
+		globalCookiesWithFingerprint = null;
 	}
 	
 	public static String getCsrf() {

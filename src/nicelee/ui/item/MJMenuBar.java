@@ -105,8 +105,6 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 创建二级 操作 子菜单
 		 */
-		JMenuItem convertRepo = new JMenuItem("开始转换仓库(慎点)");
-		JMenuItem convertRepoBreak = new JMenuItem("停止转换仓库");
 		JMenuItem batchDownload = new JMenuItem("一键下载");
 		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
@@ -129,9 +127,6 @@ public class MJMenuBar extends JMenuBar {
 		loginRelated.addSeparator();
 		loginRelated.add(logout);
 		
-		operMenu.add(convertRepo);
-		operMenu.add(convertRepoBreak);
-		operMenu.addSeparator();
 		operMenu.add(batchDownload);
 		operMenu.addSeparator();
 		operMenu.add(reloadConfig);
@@ -230,20 +225,6 @@ public class MJMenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TabSettings.openSettingTab();
-			}
-		});
-		// 将repo中avid转换为bvid
-		convertRepo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				RepoUtil.convert();
-			}
-		});
-		// 暂停将repo中avid转换为bvid
-		convertRepoBreak.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				RepoUtil.stopConvert();
 			}
 		});
 		

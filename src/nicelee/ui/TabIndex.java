@@ -226,7 +226,7 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 		// 作品页
 		JLabel label = new JLabel("正在加载中...");
 //		final TabVideo tab = new TabVideo(label);
-		final TabVideo tab = new MJTabVideo(jTabbedpane, label);
+		final TabVideo tab = new MJTabVideo(jTabbedpane, label, avId);
 		jTabbedpane.addTab("作品页", tab);
 		jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
 		GetVideoDetailThread th = new GetVideoDetailThread(tab, avId);

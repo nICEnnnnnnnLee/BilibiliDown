@@ -2,8 +2,6 @@ package nicelee.bilibili.parsers;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +43,7 @@ public class InputParser implements IInputParser, IParamSetter {
 		}
 	}
 
-	public void selectParser(String input) {
+	public IInputParser selectParser(String input) {
 		for (IInputParser parser : parsers) {
 			if (parser.matches(input)) {
 				//Logger.println(input);
@@ -53,6 +51,7 @@ public class InputParser implements IInputParser, IParamSetter {
 				break;
 			}
 		}
+		return this.parser;
 	}
 
 	@Override

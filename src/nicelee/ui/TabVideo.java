@@ -43,8 +43,12 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 	JScrollPane jpScorll;
 	JComboBox<String> cbQn; // 清晰度
 	JButton btnDownAll; // 批量下载
-	JButton btnDownCC; // 批量下载
+	JButton btnDownCC; // 批量下载CC字幕
 	String currentDisplayPic; // 当前预览图片路径
+	JPanel nextPagePanel;  // 下一页面板
+	JLabel jlNextPageTips; // 下一页文字提示
+	protected JButton btnNextPage; // 下一页
+	
 
 	public TabVideo(JLabel lbTabTitle) {
 		this.lbTabTitle = lbTabTitle;
@@ -127,10 +131,21 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		lbBreif.addMouseListener(this);
 		this.add(lbBreif);
 
+		// 下一页panel
+		nextPagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		nextPagePanel.setPreferredSize(new Dimension(350, 60));
+		nextPagePanel.setOpaque(false);
+		this.add(nextPagePanel);
 		// 空白模块- 占位
 		JLabel jlBLANK3 = new JLabel();
-		jlBLANK3.setPreferredSize(new Dimension(350, 60));
-		this.add(jlBLANK3);
+		jlBLANK3.setPreferredSize(new Dimension(50, 60));
+		nextPagePanel.add(jlBLANK3);
+		jlNextPageTips = new JLabel("视频数量不对?试试这个-->");
+		jlNextPageTips.setAlignmentX(50.0f);
+		jlNextPageTips.setPreferredSize(new Dimension(150, 60));
+		btnNextPage = new MJButton("下一页");
+		btnNextPage.setPreferredSize(size); // new Dimension(86, 26);
+		
 		// 空白模块- 占位
 		JLabel jlBLANK4 = new JLabel();
 		jlBLANK4.setPreferredSize(new Dimension(100, 460));
@@ -172,6 +187,11 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 
 	}
 
+	public void displayNextPagePanel() {
+		nextPagePanel.add(jlNextPageTips);
+		nextPagePanel.add(btnNextPage);
+	}
+	
 	/**
 	 * 用于批量下载视频
 	 * 

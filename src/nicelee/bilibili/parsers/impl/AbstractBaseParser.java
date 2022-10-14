@@ -20,7 +20,6 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
-import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
 
 public abstract class AbstractBaseParser implements IInputParser {
@@ -275,7 +274,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			// 普通类型
 			url = downloadFormat == 2 ? 
 					// 下面这个API清晰度没法选择，编码方式没法选择，固定返回1080P? mp4
-					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&platform=html5&high_quality=1":
+					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&platform=html5&high_quality=1":
 					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
 			url = String.format(url, cid, bvId, qn, fnval);
 			Logger.println(url);

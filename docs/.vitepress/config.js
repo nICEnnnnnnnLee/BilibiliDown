@@ -107,6 +107,7 @@ function sidebarGuide() {
             collapsed:true,
             items: [
                 { text: '怎么关闭打开的标签页？', link: '/guide/frequently-asked/how-to-close-tab' },
+                { text: '批量下载的清晰度不符合预期，如何解决？', link: '/guide/frequently-asked/how-to-redownload-videos' },
                 { text: '为什么只能下载5个视频？', link: '/guide/frequently-asked/why-only-5' },
                 { text: '为什么总是弹出已经下载？', link: '/guide/frequently-asked/why-always-prompt' },
                 { text: '为什么找不到javaw？', link: '/guide/frequently-asked/why-windows-no-javaw' },

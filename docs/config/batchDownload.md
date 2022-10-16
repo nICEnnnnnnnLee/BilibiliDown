@@ -14,7 +14,7 @@
     + `[favorite:{content}]`  
     content可以为`all`, 或者 若干个收藏夹名称的集合，以`,`隔开
     + `[url:{content}]`  
-    content可以视为主页面的输入链接，但必须是分页查询的类型
+    content可以视为主页面的输入链接，~~但必须是分页查询的类型~~ `V6.18开始可以不是了`
 
 + `合集配置`有三种类型：
     + `stop.condition = {condition1},{condition2},...`  

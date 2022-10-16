@@ -20,3 +20,15 @@
 ## 解压压缩包
 程序的目录结构大致如下：  
 ![](/img/project-snapshot.png)
+
+<hr/>
+
+## 下载预发布程序
+为了减少版本发布频率，并预留一定的测试缓冲时间，并不是每一次改动都会生成Release。  
+
+当出现某个问题并得以解决/开发出新特性时，代码会commit到dev分支，并生成预览版本到Github Workflow Artifact。  
+
+你可以[访问该页面](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/pre-release-artifacts.yml)查看最近的预发布版本情况，并选择恰当的版本(建议最新的)进行下载。  
+
+你可能需要登录Github账号，并在页面的最下方找到`Artifacts`并下载它。  
+![](/img/preRelease.png)

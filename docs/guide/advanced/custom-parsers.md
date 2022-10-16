@@ -47,9 +47,9 @@ public class CVParser extends BVParser { // 继承BVParser，接下来工作量�
 		super(obj);
 	}
 
-    private String cv2Bv(){
+    private String cv2Bv(String cvId){
         // ...
-        return "CVxxx";
+        return "BVxxx";
     }
 
 	@Override
@@ -57,7 +57,7 @@ public class CVParser extends BVParser { // 继承BVParser，接下来工作量�
 		matcher = pattern.matcher(input);
 		if (matcher.find()) {
 			String CV = matcher.group();
-			String BV = cv2Bv(input);
+			String BV = cv2Bv(CV);
 			System.out.println("匹配CVParser: " + CV);
 			return super.matches(BV);
 		}

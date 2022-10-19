@@ -54,7 +54,7 @@ const hero = reactive({
         {
             "theme": "alt",
             "text": "下载",
-            "link": "https://github.com/nICEnnnnnnnLee/BilibiliDown/releases",
+            "link": "/guide/quick-start/download",
         },
         {
             "theme": "alt",

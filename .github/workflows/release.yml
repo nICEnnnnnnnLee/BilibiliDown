@@ -22,70 +22,33 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.ref }}
         
     - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
-        java-version: 1.8
+        distribution: 'temurin'
+        java-version: '8'  
      
     - name: Read tag_latest
       id: tag_latest
       shell: python
       run: |
         import re
+        import os
         with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
             content = file.read()
             pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'
             searchObj = re.search(pattern, content)
-            print("::set-output name=value::" + searchObj.group(1))
+            with open(os.environ.get("GITHUB_OUTPUT"),'w', encoding='utf-8') as output:
+                output.write("value=" + searchObj.group(1))
     
-    - name: Read description
-      id: description
-      uses: juliangruber/read-file-action@v1
-      with:
-        path: ./.github/release.info
- 
     - name: Package Jar
       run: |
-        # 复制整个文件夹
-        mkdir target
-        cp -r src/. target
-
-        # 删除不需要的java文件
-        rm -rf ./target/nicelee/test
-
-        # 获取java文件列表
-        cd target
-        find `pwd` -name "*.java" > ../sources.txt
-        cd ..
-
-        # 获取环境变量,解压lib包
-        cd libs
-        find `pwd` -name "*.jar" > ../libs.txt
-        cat ../libs.txt
-        cd ../target
-        for jar in  `cat ../libs.txt`
-        do
-            jclasspath=$jar:$jclasspath
-            echo $jar
-            jar xvf $jar
-        done
-        cd ..
-        echo $jclasspath
-
-        # 编译java
-        javac -cp $jclasspath -encoding UTF-8 @sources.txt
-
-        # 删除所有.java文件
-        cd target
-        find . -name "*.java" |xargs rm -rf {}
-        cd ..
-
-        # 打包
-        jar cvfe INeedBiliAV.jar nicelee.ui.FrameMain -C ./target .
+        chmod +x package.sh
+        ./package.sh
 
     - name: ZIP files
       run: |
@@ -121,37 +84,20 @@ jobs:
         cp BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
         zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip ./minimal-bilibilidown-jre/
 
+        (sha1sum BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip| cut -d' ' -f1) > BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1
+        (sha1sum BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip| cut -d' ' -f1) > BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+        
+        
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: V${{steps.tag_latest.outputs.value}}
-        release_name: BilibiliDown - v${{steps.tag_latest.outputs.value}}
-        body: |
-          ${{steps.description.outputs.content}}
+        name: BilibiliDown - v${{steps.tag_latest.outputs.value}}
+        body_path: ./.github/release.info
         draft: false
         prerelease: false
-
-    - name: Upload Release Asset(no jre)
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        asset_name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        asset_content_type: application/zip
-        
-    - name: Upload Release Asset(with jre11 win_64)
-      id: upload-release-asset-with-jre11-win_64
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-        asset_name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-        asset_content_type: application/zip
+        files: |
+          BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+          BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+          BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
+          BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1

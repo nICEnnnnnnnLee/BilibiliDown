@@ -105,6 +105,7 @@ jobs:
     - name: Upload release to supabase
       env:
         SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      if: ${{ env.SUPABASE_ANON_KEY != ''}}
       run: |
         curl https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/bili/release/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip \
             -F "file=@BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip" \
@@ -124,6 +125,7 @@ jobs:
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
       run: |
         timeStamp=`date '+%s'`
         
@@ -145,4 +147,25 @@ jobs:
             -F "public_id=bili/$SHA1_FILE_NAME" \
             -F "timestamp=$timeStamp" \
             -F "upload_preset=usf6ttao" \
-            -F "signature=$sig"
+            -F "signature=$sig"            
+            
+    - name: Upload release to imagekit
+      env:
+        IMAGEKIT_PRIVATE_KEY: ${{ secrets.IMAGEKIT_PRIVATE_KEY }}
+        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+      if: ${{ env.IMAGEKIT_PRIVATE_KEY != ''}}
+      run: |
+        curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
+            -u $IMAGEKIT_PRIVATE_KEY: \
+            -F "file=@$ZIP_FILE_NAME;type=application/octet-stream" \
+            -F "useUniqueFileName=false" \
+            -F "folder=release" \
+            -F "fileName=$ZIP_FILE_NAME"
+            
+        curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
+            -u $IMAGEKIT_PRIVATE_KEY: \
+            -F "file=@$SHA1_FILE_NAME;type=application/octet-stream" \
+            -F "useUniqueFileName=false" \
+            -F "folder=release" \
+            -F "fileName=$SHA1_FILE_NAME"

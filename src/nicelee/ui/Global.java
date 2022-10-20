@@ -121,6 +121,11 @@ public class Global {
 	public static String updateSourceAvailable;
 	@Config(key = "bilibili.download.update.sources.active", note = "生效的更新源", defaultValue = "Github")
 	public static String updateSourceActive;
+	// FFMPEG 下载
+	@Config(key = "bilibili.download.ffmpeg.sources", note = "可用的ffmpeg源", defaultValue = "Github")
+	public static String ffmpegSourceAvailable;
+	@Config(key = "bilibili.download.ffmpeg.sources.active", note = "生效的ffmpeg源", defaultValue = "Github")
+	public static String ffmpegSourceActive;
 	// FFMPEG 路径
 	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
 	public static String ffmpegPath;

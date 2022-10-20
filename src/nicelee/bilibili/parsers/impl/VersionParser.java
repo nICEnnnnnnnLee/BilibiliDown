@@ -8,6 +8,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.Logger;
+import nicelee.ui.Global;
 
 @Bilibili(name = "Version", note = "用于最新的版本下载")
 public class VersionParser extends AbstractBaseParser {
@@ -30,13 +31,18 @@ public class VersionParser extends AbstractBaseParser {
 		if (matches) {
 			downName = matcher.group();
 			String tagName = matcher.group(1);
-			String url = "https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V%s/%s";
-			downUrl = String.format(url, tagName, downName);
+			downUrl = getDownUrl(tagName, downName);
 			System.out.println("匹配VersionParser: " + tagName);
 		}
 		return matches;
 	}
 
+	private String getDownUrl(String version, String file) {
+		Logger.println("当前使用的更新源为： " + Global.updateSourceActive);
+		String key = "bilibili.download.update.patterns." + Global.updateSourceActive;
+		String pattern = Global.settings.getOrDefault(key, "https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V{version}/{file}");
+		return pattern.replace("{version}", version).replace("{file}", file);
+	}
 	@Override
 	public String validStr(String input) {
 		return downName;

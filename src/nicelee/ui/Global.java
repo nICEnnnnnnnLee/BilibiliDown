@@ -116,6 +116,11 @@ public class Global {
 	// 临时文件相关
 	@Config(key = "bilibili.restrictTempMode", defaultValue = "true", eq_true = "on", valids = { "on", "off" })
 	public static boolean restrictTempMode;
+	// 更新源相关
+	@Config(key = "bilibili.download.update.sources", note = "可用的更新源", defaultValue = "Github")
+	public static String updateSourceAvailable;
+	@Config(key = "bilibili.download.update.sources.active", note = "生效的更新源", defaultValue = "Github")
+	public static String updateSourceActive;
 	// FFMPEG 路径
 	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
 	public static String ffmpegPath;

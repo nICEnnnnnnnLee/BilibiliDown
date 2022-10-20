@@ -3,6 +3,8 @@ package nicelee.ui.item;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -48,6 +50,7 @@ public class MJMenuBar extends JMenuBar {
 	ButtonGroup btnTypeGroup; // 从菜单栏批量下载的计划类型
 	ButtonGroup btnQnGroup;	// 从菜单栏批量下载的优先清晰度选项
 	ButtonGroup btnBatchDownGroup;	// 从菜单栏一键下载的配置文件选项
+	ButtonGroup btnUpdateSourceGroup;	// 更新源的选择
 	
 	public MJMenuBar(JFrame frame) {
 		super();
@@ -146,10 +149,12 @@ public class MJMenuBar extends JMenuBar {
 		JMenu dTypeMenuItem = new JMenu("下载策略");
 		JMenu dQNMenuItem = new JMenu("优先清晰度");
 		JMenu dBatchDownMenuItem = new JMenu("一键下载配置");
+		JMenu dUpdateMenuItem = new JMenu("更新源选择");
 		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
 		configMenu.add(dTypeMenuItem);
 		configMenu.add(dQNMenuItem);
 		configMenu.add(dBatchDownMenuItem);
+		configMenu.add(dUpdateMenuItem);
 		configMenu.addSeparator();
 		configMenu.add(settingsMenuItem);
 		/**
@@ -204,7 +209,30 @@ public class MJMenuBar extends JMenuBar {
 				}
 			}
 		}
-
+		/**
+		 * 创建三级 配置-更新源选择
+		 */
+		btnUpdateSourceGroup = new ButtonGroup();
+		String[] updateSources = Global.updateSourceAvailable.split("\\|");
+		for(String updateSource: updateSources) {
+			JRadioButtonMenuItem radioUpdateBtn = new JRadioButtonMenuItem(updateSource);
+			radioUpdateBtn.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+			        if (e.getStateChange() == ItemEvent.SELECTED) {
+			        	Global.updateSourceActive = radioUpdateBtn.getText();
+						Logger.println("当前使用的更新源切换为：" + Global.updateSourceActive);
+			        }
+					
+				}
+			});
+			dUpdateMenuItem.add(radioUpdateBtn);
+			btnUpdateSourceGroup.add(radioUpdateBtn);
+			if(updateSource.equals(Global.updateSourceActive)) {
+				radioUpdateBtn.setSelected(true);
+			}
+		}
+		
 		// 一键下载
 		batchDownload.addActionListener(new ActionListener() {
 			@Override

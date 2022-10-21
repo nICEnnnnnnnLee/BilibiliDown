@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -164,7 +166,8 @@ public class Global {
 
 	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
 	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
-	final public static HashMap<String, String> settings = new HashMap<>();
+	final public static HashMap<String, String> settings = new LinkedHashMap<>();
+	final public static HashSet<String> settingsMustCreateManualy = new HashSet<>();
 
 	// 根据Global.settings 初始化配置到具体属性值
 	public static void init() {
@@ -287,8 +290,18 @@ public class Global {
 		}
 	}
 
-//	static {
-//		init();
-//		System.exit(1);
-//	}
+	static {
+		settingsMustCreateManualy.add("bilibili.user.delete");
+		settingsMustCreateManualy.add("bilibili.menu.download.plan");
+		settingsMustCreateManualy.add("bilibili.system.properties.jre11.override");
+		settingsMustCreateManualy.add("bilibili.system.properties.jre11");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Cloudinary");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Supabase");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Github");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Imagekit");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Cloudinary");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Supabase");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Github");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Imagekit");
+	}
 }

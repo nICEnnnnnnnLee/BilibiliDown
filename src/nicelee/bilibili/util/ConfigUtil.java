@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 //import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -79,7 +80,7 @@ public class ConfigUtil {
 		File tmp = new File(source.getParentFile(), "app.config.new");
 		try (BufferedReader buReader = new BufferedReader(new FileReader(source));
 				BufferedWriter buWriter = new BufferedWriter(new FileWriter(tmp))) {
-			HashMap<String, String> copy = new HashMap<>(Global.settings);
+			HashMap<String, String> copy = new LinkedHashMap<>(Global.settings);
 			String line = buReader.readLine();
 			while (line != null) {
 				Matcher matcher = patternConfig.matcher(line);
@@ -97,7 +98,7 @@ public class ConfigUtil {
 			}
 			// 将copy 中剩下的值写入配置
 			for(Entry<String, String> entry: copy.entrySet()) {
-				if(!entry.getValue().isEmpty()) {
+				if(!entry.getValue().isEmpty() && !Global.settingsMustCreateManualy.contains(entry.getKey())) {
 					line = String.format("%s = %s", entry.getKey(), entry.getValue());
 					buWriter.write(line);
 					buWriter.newLine();

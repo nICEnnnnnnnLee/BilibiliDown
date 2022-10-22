@@ -119,12 +119,12 @@ public class Global {
 	@Config(key = "bilibili.restrictTempMode", defaultValue = "true", eq_true = "on", valids = { "on", "off" })
 	public static boolean restrictTempMode;
 	// 更新源相关
-	@Config(key = "bilibili.download.update.sources", note = "可用的更新源", defaultValue = "Github")
+	@Config(key = "bilibili.download.update.sources", defaultValue = "Github") // 可用的更新源
 	public static String updateSourceAvailable;
 	@Config(key = "bilibili.download.update.sources.active", note = "生效的更新源", defaultValue = "Github")
 	public static String updateSourceActive;
 	// FFMPEG 下载
-	@Config(key = "bilibili.download.ffmpeg.sources", note = "可用的ffmpeg源", defaultValue = "Github")
+	@Config(key = "bilibili.download.ffmpeg.sources", defaultValue = "Github") // 可用的ffmpeg源
 	public static String ffmpegSourceAvailable;
 	@Config(key = "bilibili.download.ffmpeg.sources.active", note = "生效的ffmpeg源", defaultValue = "Github")
 	public static String ffmpegSourceActive;
@@ -295,12 +295,16 @@ public class Global {
 		settingsMustCreateManualy.add("bilibili.menu.download.plan");
 		settingsMustCreateManualy.add("bilibili.system.properties.jre11.override");
 		settingsMustCreateManualy.add("bilibili.system.properties.jre11");
+		settingsMustCreateManualy.add("bilibili.download.update.sources");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Cloudinary");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Supabase");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Railway");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Github");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Imagekit");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.sources");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Cloudinary");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Supabase");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Railway");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Github");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Imagekit");
 	}

@@ -184,3 +184,15 @@ jobs:
         curl -X POST "https://bili.up.railway.app/upload" \
             --cookie "auth=$RAILWAY_AUTH" \
             -F "file=@$SHA1_FILE_NAME;type=application/octet-stream"  
+            
+    - name: Sync Push to Gitee
+      env:
+        GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
+      if: ${{ env.GITEE_AUTH != ''}}
+      run: |
+        echo "https://$GITEE_AUTH@gitee.com/" > .credential
+        git config --local credential.helper "store --file=.credential"
+        git remote add gitee https://gitee.com/NiceLeee/BilibiliDown.git
+        branch_name=`git rev-parse --abbrev-ref HEAD`
+        git push -f gitee "$branch_name"
+        rm -f .credential

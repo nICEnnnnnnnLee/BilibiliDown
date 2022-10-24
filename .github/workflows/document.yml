@@ -16,7 +16,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: docs
       - uses: actions/setup-node@v3
@@ -33,3 +33,14 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/.vitepress/dist
+      - name: Sync Push to Gitee
+        env:
+            GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
+        if: ${{ env.GITEE_AUTH != ''}}
+        run: |
+            echo "https://$GITEE_AUTH@gitee.com/" > .credential
+            git config --local credential.helper "store --file=.credential"
+            git remote add gitee https://gitee.com/NiceLeee/BilibiliDown.git
+            branch_name=`git rev-parse --abbrev-ref HEAD`
+            git push -f gitee "$branch_name"
+            rm -f .credential

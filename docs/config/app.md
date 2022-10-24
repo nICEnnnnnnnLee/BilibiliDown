@@ -261,3 +261,52 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     一键下载配置名称的匹配正则表达式。   
     程序会扫描config文件夹下文件名符合该正则的文件，在菜单`配置` -> `一键下载配置`中提供切换的选项  
+
+## bilibili.download.update.sources
+- 取值范围:   
+    单个源名称不包含`|`、空格等特殊字符，源与源之间以`|`隔开
+- 默认值:   
+    `Github|Supabase|Railway|Cloudinary|Imagekit`  
+- 释义:   
+    可用的更新源，与配置`bilibili.download.update.patterns.{源名称}`搭配。   
+    例如： `Github`更新源对应的配置是`bilibili.download.update.patterns.Github`  
+
+## bilibili.download.update.sources.active
+- 取值范围:   
+    局限于`bilibili.download.update.sources`
+- 默认值: `Github`  
+- 释义:   
+    正在使用的更新源
+
+## bilibili.download.update.patterns.\{源名称}
+- 取值范围: 用于描述更新压缩包及对应SHA1哈希值的下载地址
+- 释义:   
+    支持`{version}`、`{file}`两个变量。例如：
+    + Github源  
+        `https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V{version}/{file}`
+    + 对应ZIP下载链接  
+        `https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V6.18/BilibiliDown.v6.18.release.zip`
+    + 对应SHA1下载链接  
+        `https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V6.18/BilibiliDown.v6.18.release.zip.sha1`
+
+## bilibili.download.ffmpeg.sources
+- 取值范围:   
+    单个源名称不包含`|`、空格等特殊字符，源与源之间以`|`隔开
+- 默认值:   
+    `Github|Supabase|Railway|Cloudinary|Imagekit`  
+- 释义:   
+    可用的更新源，与配置`bilibili.download.ffmpeg.url.{源名称}`搭配。   
+    例如： `Github`更新源对应的配置是`bilibili.download.ffmpeg.url.Github`  
+
+## bilibili.download.ffmpeg.sources.active
+- 取值范围:   
+    局限于`bilibili.download.ffmpeg.sources`
+- 默认值: `Github`  
+- 释义:   
+    正在使用的ffmpeg源
+
+## bilibili.download.ffmpeg.url.\{源名称}
+- 取值范围:   
+    用于描述ffmpeg的下载地址
+- 释义:   
+    例如，Github源，`https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe`

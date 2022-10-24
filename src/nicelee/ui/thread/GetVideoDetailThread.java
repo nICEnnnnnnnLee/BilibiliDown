@@ -3,6 +3,7 @@ package nicelee.ui.thread;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.net.URL;
+import java.util.Collection;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -10,6 +11,8 @@ import javax.swing.JPanel;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.parsers.impl.AbstractPageQueryParser;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
 import nicelee.ui.item.ClipInfoPanel;
@@ -27,15 +30,23 @@ public class GetVideoDetailThread extends Thread{
 		try {
 			//获取当前av详细信息
 			INeedAV avs = new INeedAV();
+			if (avs.getInputParser(avId).selectParser(avId) instanceof AbstractPageQueryParser) {
+				Logger.println("当前为分页查询");
+				video.displayNextPagePanel();
+			}
 			//更新当前Tab页面
 			VideoInfo avInfo =avs.getVideoDetail(avId, Global.downloadFormat, false);
 			video.setAvInfo(avInfo);
 			video.getLbAvID().setText(avInfo.getVideoId());
-			video.setCurrentDisplayPic(avInfo.getVideoPreview());
+			Collection<ClipInfo> clips = avInfo.getClips().values();
+			if(clips.size() == 0)
+				video.setCurrentDisplayPic(avInfo.getVideoPreview());
+			else
+				video.setCurrentDisplayPic(clips.iterator().next().getPicPreview());
 			try {
-				URL fileURL = new URL(avInfo.getVideoPreview());
+				URL fileURL = new URL(video.getCurrentDisplayPic());
 				ImageIcon imag1 = new ImageIcon(fileURL);
-				imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_DEFAULT));
+				imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_SMOOTH));
 				video.getLbAvPrivew().setIcon(imag1);
 				video.getLbAvPrivew().setText("");
 			}catch (Exception e) {

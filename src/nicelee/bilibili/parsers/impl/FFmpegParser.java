@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.Logger;
+import nicelee.ui.Global;
 
 @Bilibili(name = "FFmpeg", note = "用于FFmpeg下载")
 public class FFmpegParser extends AbstractBaseParser {
@@ -29,9 +31,15 @@ public class FFmpegParser extends AbstractBaseParser {
 	@Override
 	public String getVideoLink(String avId, String cid, int qn, int downFormat) {
 		this.paramSetter.setRealQN(1000);
-		return "https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe";
+		return getDownUrl();
 	}
 	
+	private String getDownUrl() {
+		Logger.println("当前使用的更新源为： " + Global.ffmpegSourceActive);
+		String key = "bilibili.download.ffmpeg.url." + Global.ffmpegSourceActive;
+		String url = Global.settings.getOrDefault(key, "https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe");
+		return url;
+	}
 	
 	@Override
 	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {

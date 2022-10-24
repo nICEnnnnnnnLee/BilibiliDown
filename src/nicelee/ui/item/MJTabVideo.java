@@ -1,7 +1,10 @@
 package nicelee.ui.item;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -9,8 +12,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 
 import nicelee.bilibili.enums.VideoQualityEnum;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
+import nicelee.ui.thread.GetVideoDetailThread;
 
 // 关闭当前Tab
 // 关闭所有Tab
@@ -28,9 +33,11 @@ public class MJTabVideo extends TabVideo {// implements MouseListener, ActionLis
 	private JMenuItem downloadAll = null, downloadThis = null;// 功能菜单
 	private JLabel label = null;
 	private JTabbedPane jTabbedpane = null;
-
-	public MJTabVideo(JTabbedPane jTabbedpane, JLabel label) {
+	private String searchContent; // 用于保存当前页面的查询内容
+	
+	public MJTabVideo(JTabbedPane jTabbedpane, JLabel label, String searchContent) {
 		super(label);
+		this.searchContent = searchContent;
 		this.jTabbedpane = jTabbedpane;
 		this.label = label;
 		this.initial();
@@ -53,6 +60,30 @@ public class MJTabVideo extends TabVideo {// implements MouseListener, ActionLis
 		downloadAll.addActionListener(this);
 		label.add(pop);
 		label.addMouseListener(this);
+		
+		btnNextPage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Pattern paramPattern = Pattern.compile("(.*)p=([0-9]+)$");
+				int page = 1;
+				String modifiedSearchContent = null;
+				Matcher matcher = paramPattern.matcher(searchContent);
+				if(matcher.find()) {
+					page = Integer.parseInt(matcher.group(2));
+					modifiedSearchContent = matcher.group(1) + "p=" + (page+1);
+				}else {
+					modifiedSearchContent = searchContent + " p=" + (page+1);
+				}
+				Logger.println(modifiedSearchContent);
+				JLabel label = new JLabel("正在加载中...");
+				final TabVideo tab = new MJTabVideo(jTabbedpane, label, modifiedSearchContent);
+				jTabbedpane.addTab("作品页", tab);
+				jTabbedpane.setTabComponentAt(jTabbedpane.indexOfComponent(tab), label);
+				GetVideoDetailThread th = new GetVideoDetailThread(tab, modifiedSearchContent);
+				th.start();
+				jTabbedpane.setSelectedComponent(tab);
+			}
+		});
 	}
 
 	@Override

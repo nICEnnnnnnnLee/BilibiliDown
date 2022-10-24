@@ -169,9 +169,13 @@ public class HttpRequestUtil {
 //			for (String key : map.keySet()) {
 //				System.out.println(key + "--->" + map.get(key));
 //			}
-			System.out.printf("文件大小: %s 字节.\r\n", map.get("Content-Length"));
+			List<String> conLen = map.get("Content-Length");
+			if(conLen == null)
+				conLen = map.get("content-length");
+			System.out.printf("文件大小: %s 字节.\r\n", conLen);
 
-			totalFileSize = offset + Long.parseUnsignedLong(map.get("Content-Length").get(0));
+			
+			totalFileSize = offset + Long.parseUnsignedLong(conLen.get(0));
 			try {
 				inn = conn.getInputStream();
 			} catch (Exception e) {

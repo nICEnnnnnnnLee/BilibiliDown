@@ -3,6 +3,7 @@ package nicelee.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,9 +27,10 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.annotations.Config;
 import nicelee.bilibili.util.ConfigUtil;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.item.MJButton;
 
-public class TabSettings extends JPanel {
+public class TabSettings extends JPanel implements ActionListener {
 
 	/**
 	 * 
@@ -37,7 +39,10 @@ public class TabSettings extends JPanel {
 	final ImageIcon backgroundIcon = Global.backgroundImg;
 	final static int LINE_HEIGHT = 32;
 	JPanel jpContent;
-
+	String searchContent = "";
+	JTextField searchFiled;
+	JButton btnSearch, btnClear;
+	
 	private TabSettings() {
 		initUI();
 	}
@@ -75,16 +80,20 @@ public class TabSettings extends JPanel {
 	public void initUI() {
 		JLabel tips = new JLabel("该面板仅用于辅助生成配置文件，配置在重启后方能生效！！");
 		tips.setFont(this.getFont().deriveFont(30.0f));
+		this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		this.add(tips);
 		this.add(createTextLabel(null, 450, LINE_HEIGHT));
 		this.initSaveButton();
 		this.initResetButton();
 		this.initCloseButton(this);
 		this.add(createTextLabel(null, 470, LINE_HEIGHT));
+		
+		this.initSearchItems();
+		
 		jpContent = new JPanel();
 		jpContent.setOpaque(false);
 		JScrollPane jpScorll = new JScrollPane(jpContent);
-		jpScorll.setPreferredSize(new Dimension(1150, 580));
+		jpScorll.setPreferredSize(new Dimension(1150, 540));
 		jpScorll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		jpScorll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 //		jpScorll.setOpaque(false);
@@ -93,6 +102,31 @@ public class TabSettings extends JPanel {
 		updateSettingsUI();
 	}
 
+	private void initSearchItems() {
+		JPanel searchp = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		searchp.setPreferredSize(new Dimension(1150, LINE_HEIGHT + 2));
+		
+		searchFiled = new JTextField();
+		searchFiled.setPreferredSize(new Dimension(500, LINE_HEIGHT));
+		searchp.add(searchFiled);
+		searchFiled.addActionListener(this);
+		
+		btnSearch = new MJButton("筛选");
+		Dimension size = new Dimension(60, LINE_HEIGHT);
+		btnSearch.setPreferredSize(size);
+		btnSearch.addActionListener(this);
+		searchp.add(btnSearch);
+		
+		btnClear = new MJButton("清空");
+		btnClear.setPreferredSize(size);
+		btnClear.addActionListener(this);
+		searchp.add(btnClear);
+		
+		searchp.add(createTextLabel(null, 20, LINE_HEIGHT));
+		searchp.add(new JLabel("<-- 筛选/清空会恢复配置值，如有改动，请先保存修改再点击"));
+		
+		this.add(searchp);
+	}
 	private void initSaveButton() {
 		JButton btnSaveSettings = new MJButton("保存");
 		Dimension size = new Dimension(60, LINE_HEIGHT);
@@ -175,6 +209,8 @@ public class TabSettings extends JPanel {
 					String selected = Global.settings.get(key);
 					JLabel name = this.createTextLabel(note, 380, LINE_HEIGHT);
 					name.setToolTipText(key);
+					boolean visible = note.contains(searchContent) || key.toLowerCase().contains(searchContent) 
+							|| (selected != null && selected.toLowerCase().contains(searchContent));
 					if (selects.length > 0) {
 						JComboBox<String> selectCBox = new JComboBox<>(selects);
 						int totalWidth = 700, width = 80;
@@ -189,10 +225,13 @@ public class TabSettings extends JPanel {
 								}
 							}
 						});
+						JLabel blank = this.createTextLabel(null, totalWidth - width, LINE_HEIGHT);
+						name.setVisible(visible);
+						selectCBox.setVisible(visible);
+						blank.setVisible(visible);
 						jpContent.add(name);
 						jpContent.add(selectCBox);
-						jpContent.add(this.createTextLabel(null, totalWidth - width, LINE_HEIGHT));
-						lineOunt++;
+						jpContent.add(blank);
 					} else {
 						JTextField value = new JTextField(selected);
 						int totalWidth = 700, width = 340;
@@ -205,15 +244,30 @@ public class TabSettings extends JPanel {
 								onContentChanged(name, value.getText(), selected);
 							}
 						});
+						JLabel blank = this.createTextLabel(null, totalWidth - width, LINE_HEIGHT);
+						name.setVisible(visible);
+						value.setVisible(visible);
+						blank.setVisible(visible);
 						jpContent.add(name);
 						jpContent.add(value);
-						jpContent.add(this.createTextLabel(null, totalWidth - width, LINE_HEIGHT));
-						lineOunt++;
+						jpContent.add(blank);
 					}
+					if(visible)
+						lineOunt++;
 				}
 			}
 		}
-		jpContent.setPreferredSize(new Dimension(1100, (LINE_HEIGHT + 4) * (lineOunt + 1)));
+		jpContent.setPreferredSize(new Dimension(1100, (LINE_HEIGHT + 4) * (lineOunt + 1) + 10));
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btnClear) {
+			searchFiled.setText("");
+		}
+		searchContent = searchFiled.getText().toLowerCase();
+		resetJPanel();
+		
 	}
 
 }

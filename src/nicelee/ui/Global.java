@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +23,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.17", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.18", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -116,6 +118,16 @@ public class Global {
 	// 临时文件相关
 	@Config(key = "bilibili.restrictTempMode", defaultValue = "true", eq_true = "on", valids = { "on", "off" })
 	public static boolean restrictTempMode;
+	// 更新源相关
+	@Config(key = "bilibili.download.update.sources", defaultValue = "Github") // 可用的更新源
+	public static String updateSourceAvailable;
+	@Config(key = "bilibili.download.update.sources.active", note = "生效的更新源", defaultValue = "Github")
+	public static String updateSourceActive;
+	// FFMPEG 下载
+	@Config(key = "bilibili.download.ffmpeg.sources", defaultValue = "Github") // 可用的ffmpeg源
+	public static String ffmpegSourceAvailable;
+	@Config(key = "bilibili.download.ffmpeg.sources.active", note = "生效的ffmpeg源", defaultValue = "Github")
+	public static String ffmpegSourceActive;
 	// FFMPEG 路径
 	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
 	public static String ffmpegPath;
@@ -154,7 +166,8 @@ public class Global {
 
 	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
 	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
-	final public static HashMap<String, String> settings = new HashMap<>();
+	final public static HashMap<String, String> settings = new LinkedHashMap<>();
+	final public static HashSet<String> settingsMustCreateManualy = new HashSet<>();
 
 	// 根据Global.settings 初始化配置到具体属性值
 	public static void init() {
@@ -277,8 +290,22 @@ public class Global {
 		}
 	}
 
-//	static {
-//		init();
-//		System.exit(1);
-//	}
+	static {
+		settingsMustCreateManualy.add("bilibili.user.delete");
+		settingsMustCreateManualy.add("bilibili.menu.download.plan");
+		settingsMustCreateManualy.add("bilibili.system.properties.jre11.override");
+		settingsMustCreateManualy.add("bilibili.system.properties.jre11");
+		settingsMustCreateManualy.add("bilibili.download.update.sources");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Cloudinary");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Supabase");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Railway");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Github");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Imagekit");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.sources");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Cloudinary");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Supabase");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Railway");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Github");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Imagekit");
+	}
 }

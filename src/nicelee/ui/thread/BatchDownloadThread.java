@@ -55,19 +55,22 @@ public class BatchDownloadThread extends Thread {
 				String validStr = ina.getValidID(batch.getUrl());
 				Logger.println(validStr);
 				Matcher m = pagePattern.matcher(validStr);
+				boolean isPageable = true;
 				if (!m.find())
-					throw new RuntimeException("配置有误，只支持可以进行分页查询的url");
+					isPageable = false;
 				else
 					validStr = validStr.replaceFirst("p=[0-9]+$", "");
 				int page = batch.getStartPage();
 				boolean stopFlag = false;
 				while (!stopFlag) {
+					if(!isPageable && page >= 2)
+						break;
 					String sp = validStr + " p=" + page;
 					VideoInfo avInfo = ina.getVideoDetail(sp, Global.downloadFormat, false);
 					Collection<ClipInfo> clips = avInfo.getClips().values();
 					if (clips.size() == 0)
 						break;
-					Logger.printf("当前url: %s ,page: %d, 分页查询开始进行\n", batch.getUrl(), page);
+					Logger.printf("当前url: %s ,page: %d, 分页查询开始进行", batch.getUrl(), page);
 					for (ClipInfo clip : clips) {
 						// 判断是否要停止[url:{url}] 对应的任务
 						if (batch.matchStopCondition(clip, page)) {
@@ -87,7 +90,7 @@ public class BatchDownloadThread extends Thread {
 							Global.queryThreadPool.execute(downThread);
 						}
 					}
-					Logger.printf("当前url: %s ,page: %d, 分页查询完毕\n", batch.getUrl(), page);
+					Logger.printf("当前url: %s ,page: %d, 分页查询完毕", batch.getUrl(), page);
 					page++;
 					Thread.sleep(1500);
 				}

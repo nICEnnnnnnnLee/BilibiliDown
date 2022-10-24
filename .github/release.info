@@ -1,5 +1,13 @@
-* 修复: [issues 114](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/114) 使用带指纹的cookies查询用户上传视频
-* 优化: CI - 新增人工触发并生成程序到artifacts的工作流，目的是减少Release频率。
+* 修复: [issues 117](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/117)下载格式为单独MP4时，总是返回低画质的视频  
+* 优化: [issues 40](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/40)分页查询的Tab页面添加了`下一页`按钮  
+* 优化: `一键下载`功能添加对非`分页查询类型`的链接的支持  
+    + 这个功能优化是[针对下载视频清晰度模糊的补救措施](https://nicennnnnnnlee.github.io/BilibiliDown/guide/frequently-asked/how-to-redownload-videos)  
+    某种程度上可以做到根据提供的BV号列表进行批量下载(**不宜过多!不宜过多!不宜过多!**)
+* 优化: Tab页面预览图更改为显示当前页的第一个视频的预览图  
+* 优化: 辅助配置面板增加筛选功能  
+* 优化: 移除操作菜单中的`转换仓库`功能  
+* 优化: release添加附件SHA1校验值
+* 优化: 程序以及ffmpeg额外上传至多个渠道(白嫖不稳定，仅供备用) 
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`

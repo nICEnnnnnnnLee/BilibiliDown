@@ -10,3 +10,12 @@
 
 不要担心`app.config`无法对应新版本的问题，作者在开发时会考虑这点的。    
 所有新特性都有缺省默认设置，不会影响基础功能的使用。  
+
+可能影响使用的不兼容更新将会列在下方。  
+
+## 不兼容更新 Breaking Changes
++ v6.15
+    程序运行脚本的名称进行了更改。  
+    `run-UI.bat` 更名为 `Double-Click-to-Run-for-Win.bat`。  
+    `run-UI-debug.bat` 更名为 `Double-Click-to-Run-for-Win-debug.bat`。  
+    上述改动可能对用其它应用管理本程序更新的情况有所影响，但是程序内更新正常使用。  

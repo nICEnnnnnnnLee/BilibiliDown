@@ -244,7 +244,7 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 			// e.printStackTrace();
 			Logger.println("目标为FLV，切换解析方式");
 			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
-			return parseUrlJArray(jObj.getJSONArray("durl"));
+			return parseType2(jObj);
 		}
 	}
 }

@@ -51,6 +51,13 @@ public class Global {
 	public static int maxFailRetry;
 	@Config(key = "bilibili.format", defaultValue = "0", valids = { "0", "1", "2" }, note = "优先下载格式, 0-m4s,1-flv,2-mp4")
 	public static int downloadFormat = MP4; // 优先下载格式，如不存在该类型的源，那么将默认转为下载另一种格式
+	@Config(key = "bilibili.dash.video.codec.priority", defaultValue = "7, 12, 13", note = "视频编码优先级,AV1:13,HEVC:12,AVC:7,随意-1")
+	public static int[] videoCodecPriority = {7, 12, 13};
+	@Config(key = "bilibili.dash.audio.quality.priority", defaultValue = "30280, 30232, 30216, -1, 30251, 30250", 
+			note = "音频编码优先级,30216:64K, 30232:132K, 30280:192K, 随意-1")
+	public static int[] audioQualityPriority = {30280, 30232, 30216, -1};
+	@Config(key = "bilibili.dash.checkUrl", note = "查询DASH方式的下载链接时，检查链接有效性", defaultValue = "false", valids = { "true", "false" })
+	public static boolean checkDashUrl = false;
 	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/")
 	public static String savePath = "./download/"; // 下载文件保存路径
 	@Config(key = "bilibili.download.poolSize", note = "下载任务线程池大小", defaultValue = "1")
@@ -270,7 +277,14 @@ public class Global {
 					field.set(null, null);
 				else
 					field.set(null, value);
-			} else if (field.getType().equals(int.class) || field.getType().equals(long.class)) {
+			} else if (field.getType().equals(int[].class)) {
+				String[] valueStrs = value.split(",");
+				int[] values = new int[valueStrs.length];
+				for(int i=0; i<values.length; i++) {
+					values[i] = Integer.parseInt(valueStrs[i].trim());
+				}
+				field.set(null, values);
+			}else if (field.getType().equals(int.class) || field.getType().equals(long.class)) {
 				if (isDefaultValue)
 					field.set(null, Integer.parseInt(value));
 				else

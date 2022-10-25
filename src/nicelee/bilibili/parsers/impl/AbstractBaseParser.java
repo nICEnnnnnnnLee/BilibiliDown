@@ -224,6 +224,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
 		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
+		Logger.println(url);
 		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
 		String xml = util.getContent(url, headers_json, HttpCookies.getGlobalCookies());
 		Pattern p = Pattern.compile("<subtitle>(.*?)</subtitle>");
@@ -288,14 +289,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = String.format(url, aid, cid, qn, fnval);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
 					HttpCookies.getGlobalCookies());
-			System.out.println(json);
+			Logger.println(url);
+			Logger.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		try {
-			return parseType1(bvId, headers, jObj, linkQN);
+			return parseType1(jObj, linkQN, headers.getBiliWwwM4sHeaders(bvId));
 		} catch (Exception e) {
 			// e.printStackTrace();
 			Logger.println("切换解析方式");
@@ -402,7 +404,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		}
 		return null;
 	}
-	protected String parseType1(String bvId, HttpHeaders headers, JSONObject jObj, int linkQN) {
+	protected String parseType1(JSONObject jObj, int linkQN, HashMap<String, String> headerForValidCheck) {
 		JSONObject dash = jObj.getJSONObject("dash");
 		StringBuilder link = new StringBuilder();
 		// 获取视频链接
@@ -418,7 +420,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		// 根据需求选择编码合适的视频
 		JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);
 		// 选择可以连通的链接
-		String videoLink = getUrlOfMedia(video, Global.checkDashUrl, headers.getBiliWwwM4sHeaders(bvId));
+		String videoLink = getUrlOfMedia(video, Global.checkDashUrl, headerForValidCheck);
 		link.append(videoLink).append("#");
 		
 		// 获取音频链接
@@ -443,7 +445,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		}
 		if(listAudios.size() > 0) { // 存在没有音频的投稿
 			JSONObject audio = findMediaByPriList(listAudios, Global.audioQualityPriority, 1);
-			String audioLink = getUrlOfMedia(audio, Global.checkDashUrl, headers.getBiliWwwM4sHeaders(bvId));
+			String audioLink = getUrlOfMedia(audio, Global.checkDashUrl, headerForValidCheck);
 			link.append(audioLink);
 		}
 //		Logger.println(link);

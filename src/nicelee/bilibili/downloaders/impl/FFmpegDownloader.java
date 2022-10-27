@@ -43,7 +43,7 @@ public class FFmpegDownloader extends FLVDownloader {
 			String sha1 = Encrypt.SHA1(util.getFileDownload());
 			Logger.println("url:" + url);
 			Logger.println("文件sha1:" + sha1);
-			if(!"2d2be5dcf0d2c89499a4761d7e16de1757de4bd2".equalsIgnoreCase(sha1)) {
+			if(!"8e633e3cedcc0ddd4c83509d959b70932400b591".equalsIgnoreCase(sha1)) {
 				JOptionPane.showMessageDialog(null, "ffmpeg.exe已经下载完成, 但SHA1不匹配！！", "警告!!",
 						JOptionPane.WARNING_MESSAGE);
 				throw new RuntimeException("ffmpeg.exe SHA1不匹配");

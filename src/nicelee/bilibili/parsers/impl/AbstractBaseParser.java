@@ -440,8 +440,9 @@ public abstract class AbstractBaseParser implements IInputParser {
 			}
 		}
 		JSONObject flac = dash.optJSONObject("flac");// flac
-		if (flac != null) {
-			listAudios.add(flac.getJSONObject("audio"));
+		JSONObject flacAudio = flac == null? null: flac.optJSONObject("audio");// audio
+		if (flacAudio != null) {
+			listAudios.add(flacAudio);
 		}
 		if(listAudios.size() > 0) { // 存在没有音频的投稿
 			JSONObject audio = findMediaByPriList(listAudios, Global.audioQualityPriority, 1);

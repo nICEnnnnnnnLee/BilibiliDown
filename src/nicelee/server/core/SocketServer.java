@@ -1,6 +1,7 @@
 package nicelee.server.core;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -51,7 +52,7 @@ public class SocketServer {
 		Socket socket = null;
 		System.out.println("SocketServer: 服务器监听开始... ");
 		try {
-			serverSocket = new ServerSocket(portServerListening);
+			serverSocket = new ServerSocket(portServerListening, 30, Inet4Address.getLoopbackAddress());
 			// serverSocket.setSoTimeout(300000);
 
 			while (isRun) {

@@ -49,6 +49,8 @@ public class Global {
 	public static boolean playSoundAfterMissionComplete; // 全部任务完成后是否播放提示音
 	@Config(key = "bilibili.download.maxFailRetry", note = "下载失败后重试次数", defaultValue = "3")
 	public static int maxFailRetry;
+	@Config(key = "bilibili.download.retry.reloadDownloadUrl", note = "重试时，重新查询下载链接", defaultValue = "false", valids = { "true", "false" })
+	public static boolean reloadDownloadUrl;
 	@Config(key = "bilibili.format", defaultValue = "0", valids = { "0", "1", "2" }, note = "优先下载格式, 0-m4s,1-flv,2-mp4")
 	public static int downloadFormat = MP4; // 优先下载格式，如不存在该类型的源，那么将默认转为下载另一种格式
 	@Config(key = "bilibili.dash.video.codec.priority", defaultValue = "7, 12, 13", note = "视频编码优先级,AV1:13,HEVC:12,AVC:7,随意-1")

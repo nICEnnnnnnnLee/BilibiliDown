@@ -148,12 +148,14 @@ public class MJMenuBar extends JMenuBar {
 		 * 创建二级 配置 子菜单
 		 */
 		JMenu dTypeMenuItem = new JMenu("下载策略");
+		JMenu dTypeReDownloadMenuItem = new JMenu("下载重试策略");
 		JMenu dQNMenuItem = new JMenu("优先清晰度");
 		JMenu dBatchDownMenuItem = new JMenu("一键下载配置");
 		JMenu dUpdateMenuItem = new JMenu("更新源选择");
 		JMenu dFFmpegMenuItem = new JMenu("FFMPEG源选择");
 		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
 		configMenu.add(dTypeMenuItem);
+		configMenu.add(dTypeReDownloadMenuItem);
 		configMenu.add(dQNMenuItem);
 		configMenu.add(dBatchDownMenuItem);
 		configMenu.add(dUpdateMenuItem);
@@ -179,6 +181,39 @@ public class MJMenuBar extends JMenuBar {
 		dTypeMenuItem.add(dType01);
 		dTypeMenuItem.add(dType02);
 		dType01.setSelected(true);
+		
+		/**
+		 * 创建三级 配置-重新下载策略
+		 */
+		final JRadioButtonMenuItem dTypeReDownload01 = new JRadioButtonMenuItem("使用之前的url");
+		dTypeReDownload01.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					Logger.println("重试下载时使用之前的url");
+					Global.reloadDownloadUrl = false;
+				}
+			}
+		});
+		final JRadioButtonMenuItem dTypeReDownload02 = new JRadioButtonMenuItem("重新查询url");
+		dTypeReDownload02.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					Logger.println("重试下载时重新查询url");
+					Global.reloadDownloadUrl = true;
+				}
+			}
+		});
+		ButtonGroup g = new ButtonGroup();
+		g.add(dTypeReDownload01);
+		g.add(dTypeReDownload02);
+		dTypeReDownloadMenuItem.add(dTypeReDownload01);
+		dTypeReDownloadMenuItem.add(dTypeReDownload02);
+		if(Global.reloadDownloadUrl)
+			dTypeReDownload02.setSelected(true);
+		else
+			dTypeReDownload01.setSelected(true);
 
 		/**
 		 * 创建三级 配置-优先清晰度

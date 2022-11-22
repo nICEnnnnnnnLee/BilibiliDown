@@ -1,0 +1,157 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: Build Release
+
+on:
+  workflow_dispatch:
+    inputs:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+   
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.ref }}
+        
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '8'  
+     
+    - name: Read tag_latest and Save build info
+      id: tag_latest
+      shell: python
+      run: |
+        import re, os, datetime
+        from time import strftime
+
+        version, about, buildType = None, None, 'Release'
+        with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
+            content = file.read()
+            pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'
+            searchObj = re.search(pattern, content)
+            version = searchObj.group(1)
+            with open(os.environ.get("GITHUB_OUTPUT"),'w', encoding='utf-8') as output:
+                output.write("value=" + version)
+                
+        with open('src/resources/about.html', 'r', encoding='utf-8') as file:
+            about = file.read()
+            
+        with open('src/resources/about.html', 'w', encoding='utf-8') as file:
+            now=datetime.datetime.now()
+            buildInfo = '''<div id="versionInfo" >
+                            <p>版本信息: v{version} {buildType}</p>
+                            <p>编译信息: Build by Github Actions at {dateTime}</p>
+                        </div>'''.format(
+                            version = version,
+                            buildType = buildType,
+                            dateTime = now.strftime("%Y-%m-%d %H:%M:%S")
+                        )
+            txtToSave = about.replace('<div id="versionInfo" ></div>', buildInfo)
+            file.write(txtToSave)
+    
+    - name: Download files
+      run: |
+        wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V${{steps.tag_latest.outputs.value}}/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V${{steps.tag_latest.outputs.value}}/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+        
+    - name: Upload release to supabase
+      env:
+        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      if: ${{ always() && env.SUPABASE_ANON_KEY != ''}}
+      run: |
+        curl https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/bili/release/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip \
+            -F "file=@BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip" \
+            -F "cacheControl=3600" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "authorization: Bearer $SUPABASE_ANON_KEY"
+            
+        curl https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/bili/release/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1 \
+            -F "file=@BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1" \
+            -F "cacheControl=3600" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "authorization: Bearer $SUPABASE_ANON_KEY"          
+            
+    - name: Upload release to cloudinary
+      env:
+        CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+        CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+      if: ${{ always() && env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
+      run: |
+        timeStamp=`date '+%s'`
+        
+        param2sign="public_id=bili/$ZIP_FILE_NAME&timestamp=$timeStamp&upload_preset=usf6ttao$CLOUDINARY_API_SECRET"
+        sig=$(echo -n $param2sign|sha1sum| cut -d' ' -f1)
+        curl https://api.cloudinary.com/v1_1/dcrcvyjzu/raw/upload \
+            -F "file=@$ZIP_FILE_NAME" \
+            -F "api_key=$CLOUDINARY_API_KEY" \
+            -F "public_id=bili/$ZIP_FILE_NAME" \
+            -F "timestamp=$timeStamp" \
+            -F "upload_preset=usf6ttao" \
+            -F "signature=$sig"
+            
+        param2sign="public_id=bili/$SHA1_FILE_NAME&timestamp=$timeStamp&upload_preset=usf6ttao$CLOUDINARY_API_SECRET"
+        sig=$(echo -n $param2sign|sha1sum| cut -d' ' -f1)
+        curl https://api.cloudinary.com/v1_1/dcrcvyjzu/raw/upload \
+            -F "file=@$SHA1_FILE_NAME" \
+            -F "api_key=$CLOUDINARY_API_KEY" \
+            -F "public_id=bili/$SHA1_FILE_NAME" \
+            -F "timestamp=$timeStamp" \
+            -F "upload_preset=usf6ttao" \
+            -F "signature=$sig"            
+            
+    - name: Upload release to imagekit
+      env:
+        IMAGEKIT_PRIVATE_KEY: ${{ secrets.IMAGEKIT_PRIVATE_KEY }}
+        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+      if: ${{ always() && env.IMAGEKIT_PRIVATE_KEY != ''}}
+      run: |
+        curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
+            -u $IMAGEKIT_PRIVATE_KEY: \
+            -F "file=@$ZIP_FILE_NAME;type=application/octet-stream" \
+            -F "useUniqueFileName=false" \
+            -F "folder=release" \
+            -F "fileName=$ZIP_FILE_NAME"
+            
+        curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
+            -u $IMAGEKIT_PRIVATE_KEY: \
+            -F "file=@$SHA1_FILE_NAME;type=application/octet-stream" \
+            -F "useUniqueFileName=false" \
+            -F "folder=release" \
+            -F "fileName=$SHA1_FILE_NAME"            
+            
+    - name: Upload release to railway
+      env:
+        RAILWAY_AUTH: ${{ secrets.RAILWAY_AUTH }}
+        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+      if: ${{ always() && env.RAILWAY_AUTH != ''}}
+      run: |
+        curl -X POST "https://bili.up.railway.app/upload" \
+            --cookie "auth=$RAILWAY_AUTH" \
+            -F "file=@$ZIP_FILE_NAME;type=application/octet-stream"  
+            
+        curl -X POST "https://bili.up.railway.app/upload" \
+            --cookie "auth=$RAILWAY_AUTH" \
+            -F "file=@$SHA1_FILE_NAME;type=application/octet-stream"  
+            
+    - name: Sync Push to Gitee
+      env:
+        GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
+      if: ${{ always() && env.GITEE_AUTH != ''}}
+      run: |
+        echo "https://$GITEE_AUTH@gitee.com/" > .credential
+        git config --local credential.helper "store --file=.credential"
+        git remote add gitee https://gitee.com/NiceLeee/BilibiliDown.git
+        branch_name=`git rev-parse --abbrev-ref HEAD`
+        git fetch --unshallow origin "$branch_name"
+        git push -f gitee "$branch_name"
+        rm -f .credential

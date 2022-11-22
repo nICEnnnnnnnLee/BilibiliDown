@@ -30,13 +30,12 @@ Bilibili 视频下载器，用于下载B站视频。
 
 ## :smile:LICENSE  
 + [第三方LICENSE](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release/LICENSE/third-party)  
-+ 本项目提供的`ffmpeg.exe`源码[在此](https://gitee.com/NiceLeee/FFmpeg/)，编译命令如下：  
++ 本项目提供的`ffmpeg.exe`基于[nICEnnnnnnnLee/FFmpeg-Builds](https://github.com/nICEnnnnnnnLee/FFmpeg-Builds/blob/master/SPECIFIC_CHANGES.md)进行编译。  
+    设置Github secret `FF_SPECIFIC_CONFIGURE`如下：  
 ```
-// 为了能够编译成功，注释掉了cmdutils.c中CC_IDENT所在的第1156行
-./configure --toolchain=msvc --arch=x86 --enable-yasm --enable-asm --disable-debug --disable-doc --disable-ffplay --disable-ffprobe --enable-static --disable-shared --disable-network --disable-autodetect --disable-decoders --disable-gpl --disable-version3 --enable-decoder='h264,aac*,mp3*,mp4' --disable-encoders --disable-demuxers --enable-demuxer='concat,mov,m4v,flv,mp3' --disable-muxers --enable-muxer='flv,mp4,mp3' --enable-encoder='libmp3lame,mp3' --disable-parsers --enable-parser=h264 --disable-protocols --enable-protocol='concat,file' --disable-bsfs --enable-bsf='h264_metadata,h264_mp4toannexb' --disable-filters --enable-filter='concat,aresample' --disable-iconv --enable-small
-make
+--disable-debug --disable-doc --disable-ffplay --disable-ffprobe --enable-static --disable-shared --disable-network --disable-autodetect --disable-decoders --disable-gpl --disable-version3 --enable-decoder='h264,aac*,mp3*,mp4' --disable-encoders --disable-demuxers --enable-demuxer='concat,mov,m4v,flv,mp3' --disable-muxers --enable-muxer='flv,mp4,mp3' --enable-encoder='libmp3lame,mp3' --disable-parsers --enable-parser=h264 --disable-protocols --enable-protocol='concat,file' --disable-bsfs --enable-bsf='h264_metadata,h264_mp4toannexb' --disable-filters --enable-filter='concat,aresample' --disable-iconv --enable-small
 ```
-+ 如果需要自定义configure，或者最新版本的编译，可参考[nICEnnnnnnnLee/FFmpeg-Builds](https://github.com/nICEnnnnnnnLee/FFmpeg-Builds)利用Github Actions得到交叉编译结果
++ 如果需要自定义configure，或者最新版本的编译，可参考利用Github Actions得到交叉编译结果
 
 + 本项目遵守开源协议`Apache 2.0`。  
 为了分发的便利，历史版本可能直接使用过其它编译版本ffmpeg.     

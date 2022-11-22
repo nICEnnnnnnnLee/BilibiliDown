@@ -72,6 +72,11 @@ public class HttpRequestUtil {
 		bDown = false;
 		status = StatusEnum.STOP;
 	}
+	
+	public void stopDownloadAsFail() {
+		bDown = false;
+		status = StatusEnum.FAIL;
+	}
 
 	/**
 	 * 重置统计参数

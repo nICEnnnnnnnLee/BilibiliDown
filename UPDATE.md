@@ -1,4 +1,12 @@
 ## UPDATE  
+* V6.19  `2022-11-22`  
+    * 新增: [issues 120](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/120)通过配置或菜单，在尝试重新下载时，能够选择是否重新查询下载链接。  
+    * 新增: 通过配置，DASH方式视频可以选择编码优先级；音频可以选择码率优先级。  
+        另外，音频可以选择`杜比`或者`Hi-Res无损`，但是需要`ffmpeg`的配合(Win64用户可以删除原来的ffmpeg.exe再重启程序)。  
+    * 优化: 默认的`ffmpeg.exe`使用了ffmpeg master分支的较新的编译
+    * 优化: Actions自动编译打包时写入相关信息，你可以`关于` -> `作品信息`，在界面左上角进行查看
+    * 优化：在需要创建socketServer时仅监听本地，避免弹出防火墙提示
+
 * V6.18  `2022-10-24`  
     * 修复: [issues 117](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/117)下载格式为单独MP4时，总是返回低画质的视频  
     * 优化: [issues 40](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/40)分页查询的Tab页面添加了`下一页`按钮  

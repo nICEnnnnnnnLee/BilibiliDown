@@ -42,5 +42,6 @@ jobs:
             git config --local credential.helper "store --file=.credential"
             git remote add gitee https://gitee.com/NiceLeee/BilibiliDown.git
             branch_name=`git rev-parse --abbrev-ref HEAD`
+            git fetch --unshallow origin "$branch_name"
             git push -f gitee "$branch_name"
             rm -f .credential

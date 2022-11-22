@@ -1,6 +1,7 @@
 package nicelee.server.core;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -51,7 +52,7 @@ public class SocketServer {
 		Socket socket = null;
 		System.out.println("SocketServer: 服务器监听开始... ");
 		try {
-			serverSocket = new ServerSocket(portServerListening);
+			serverSocket = new ServerSocket(portServerListening, 30, Inet4Address.getLoopbackAddress());
 			// serverSocket.setSoTimeout(300000);
 
 			while (isRun) {
@@ -62,13 +63,15 @@ public class SocketServer {
 				} catch (SocketException e) {
 					break;
 				}
+				SocketDealer dealer = new SocketDealer(socket);
+				httpThreadPool.execute(dealer);
 				// 只接受本地或局域网请求
-				String addr = socket.getInetAddress().getHostAddress();
-				if (addr.equals("127.0.0.1") || addr.startsWith("192.168.")) {
-					SocketDealer dealer = new SocketDealer(socket);
-					httpThreadPool.execute(dealer);
-				} else
-					socket.close();
+//				String addr = socket.getInetAddress().getHostAddress();
+//				if (addr.equals("127.0.0.1") || addr.startsWith("192.168.")) {
+//					SocketDealer dealer = new SocketDealer(socket);
+//					httpThreadPool.execute(dealer);
+//				} else
+//					socket.close();
 
 			}
 			httpThreadPool.shutdownNow();

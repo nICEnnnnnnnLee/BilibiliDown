@@ -14,6 +14,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.convert.ConvertUtil;
+import nicelee.ui.Global;
 
 @Bilibili(name = "CheeseSSParser", note = "课程集合")
 public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
@@ -170,11 +171,14 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 	public String getVideoLink(String ssId, String cid, int qn, int downFormat) {
 		if(qn == 800) {
 			return getVideoSubtitleLink(ConvertUtil.Av2Bv(avID), cid, qn);
+		}else if(qn == 801) {
+			paramSetter.setRealQN(qn);
+			return "https://api.bilibili.com/x/v1/dm/list.so?oid=" + cid;
 		}
 		String urlFormat = "https://api.bilibili.com/pugv/player/web/playurl?avid=%s&cid=%s&bvid=&qn=%d&type=&otype=json&ep_id=%s&fourk=1&fnver=0&fnval=80";
 		String url = String.format(urlFormat, avID, cid, qn, epID);
 		HashMap<String, String> headers = new HashMap<>();
-		headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
+		headers.put("User-Agent", Global.userAgent);
 		headers.put("Accept", "application/json, text/plain, */*");
 		headers.put("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
 		headers.put("Accept-Encoding", "gzip, deflate");
@@ -191,60 +195,12 @@ public class CheeseSSParser extends AbstractPageQueryParser<VideoInfo> {
 		try {
 			HashMap<String, String> headerDownload = new HttpHeaders().getBiliWwwM4sHeaders("av" + avID);
 			headerDownload.put("Referer", "https://www.bilibili.com/cheese/play/ss" + ssID);
-
-			StringBuilder link = new StringBuilder();
-			// 获取视频链接
-			JSONArray videos = jObj.getJSONObject("dash").getJSONArray("video");
-			for (int i = 0; i < videos.length(); i++) {
-				JSONObject video = videos.getJSONObject(i);
-				if (video.getInt("id") == linkQN) {
-					// 测试base_url有效性，如果无效404，使用backup_url
-					String video_url = video.getString("base_url");
-					if (util.checkValid(video_url, headerDownload, null)) {
-						link.append(video_url).append("#");
-						break;
-					} else {
-						JSONArray backup_urls = video.getJSONArray("backup_url");
-						boolean findValidUrl = false;
-						for (int j = 0; j < backup_urls.length(); j++) {
-							video_url = backup_urls.getString(j);
-							if (util.checkValid(video_url, headerDownload, null)) {
-								findValidUrl = true;
-								break;
-							}
-						}
-						if (findValidUrl) {
-							link.append(video_url).append("#");
-							break;
-						}
-					}
-
-				}
-			}
-			// 获取音频链接(默认第一个)
-			JSONArray audios = jObj.getJSONObject("dash").optJSONArray("audio");
-			if (audios != null) {
-				JSONObject audio = audios.getJSONObject(0);
-				String audio_url = audio.getString("base_url");
-				if (util.checkValid(audio_url, headerDownload, null)) {
-					link.append(audio_url);
-				} else {
-					JSONArray backup_urls = audio.getJSONArray("backup_url");
-					for (int j = 0; j < backup_urls.length(); j++) {
-						audio_url = backup_urls.getString(j);
-						if (util.checkValid(audio_url, headerDownload, null)) {
-							link.append(audio_url);
-							break;
-						}
-					}
-				}
-			}
-			return link.toString();
+			return parseType1(jObj, linkQN, headerDownload);
 		} catch (Exception e) {
 			// e.printStackTrace();
-			Logger.println("目标为FLV，切换解析方式");
+			Logger.println("切换解析方式");
 			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
-			return parseUrlJArray(jObj.getJSONArray("durl"));
+			return parseType2(jObj);
 		}
 	}
 }

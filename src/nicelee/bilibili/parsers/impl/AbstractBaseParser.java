@@ -224,6 +224,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 
 	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
 		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
+		Logger.println(url);
 		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
 		String xml = util.getContent(url, headers_json, HttpCookies.getGlobalCookies());
 		Pattern p = Pattern.compile("<subtitle>(.*?)</subtitle>");
@@ -288,68 +289,23 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = String.format(url, aid, cid, qn, fnval);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
 					HttpCookies.getGlobalCookies());
-			System.out.println(json);
+			Logger.println(url);
+			Logger.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		try {
-			// 获取视频链接
-			JSONArray videos = jObj.getJSONObject("dash").getJSONArray("video");
-			StringBuilder link = new StringBuilder();
-			for (int i = 0; i < videos.length(); i++) {
-				JSONObject video = videos.getJSONObject(i);
-				if (video.getInt("id") == linkQN) {
-					// 测试baseUrl有效性，如果无效404，使用backupUrl
-					String video_url = video.getString("baseUrl");
-					if (util.checkValid(video_url, headers.getBiliWwwM4sHeaders(bvId), null)) {
-						link.append(video_url).append("#");
-						break;
-					} else {
-						JSONArray backup_urls = video.getJSONArray("backupUrl");
-						boolean findValidUrl = false;
-						for (int j = 0; j < backup_urls.length(); j++) {
-							video_url = backup_urls.getString(j);
-							if (util.checkValid(video_url, headers.getBiliWwwM4sHeaders(bvId), null)) {
-								findValidUrl = true;
-								break;
-							}
-						}
-						if (findValidUrl) {
-							link.append(video_url).append("#");
-							break;
-						}
-					}
-
-				}
-			}
-			// 获取音频链接(默认第一个)
-			JSONArray audios = jObj.getJSONObject("dash").optJSONArray("audio");
-			if (audios != null) {
-				JSONObject audio = audios.getJSONObject(0);
-				String audio_url = audio.getString("baseUrl");
-				if (util.checkValid(audio_url, headers.getBiliWwwM4sHeaders(bvId), null)) {
-					link.append(audio_url);
-				} else {
-					JSONArray backup_urls = audio.getJSONArray("backupUrl");
-					for (int j = 0; j < backup_urls.length(); j++) {
-						audio_url = backup_urls.getString(j);
-						if (util.checkValid(audio_url, headers.getBiliWwwM4sHeaders(bvId), null)) {
-							link.append(audio_url);
-							break;
-						}
-					}
-				}
-			}
-			return link.toString();
+			return parseType1(jObj, linkQN, headers.getBiliWwwM4sHeaders(bvId));
 		} catch (Exception e) {
 			// e.printStackTrace();
 			Logger.println("切换解析方式");
 			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
-			return parseUrlJArray(jObj.getJSONArray("durl"));
+			return parseType2(jObj);
 		}
 	}
+
 
 	/**
 	 * 将avId currentStory故事线的所有子结局全部放入List
@@ -413,7 +369,92 @@ public abstract class AbstractBaseParser implements IInputParser {
 		}
 	}
 
-	protected String parseUrlJArray(JSONArray urlList) {
+	String getUrlOfMedia(JSONObject media, boolean checkValid, HashMap<String, String> headerForValidCheck) {
+		String baseUrl = media.getString("base_url");
+		if(!checkValid) {
+			return baseUrl;
+		}else {
+			if (util.checkValid(baseUrl, headerForValidCheck, null)) {
+				return baseUrl;
+			} else {
+				JSONArray backup_urls = media.getJSONArray("backup_url");
+				for (int j = 0; j < backup_urls.length(); j++) {
+					String backup_url = backup_urls.getString(j);
+					if (util.checkValid(backup_url, headerForValidCheck, null)) {
+						return backup_url;
+					}
+				}
+				return null;
+			}
+		}
+	}
+	JSONObject findMediaByPriList(List<JSONObject> medias, int[] priorities, int mediaType) {
+		for(int priority: priorities) {
+			JSONObject media = findMediaByPri(medias, priority, mediaType);
+			if(media != null)
+				return media;
+		}
+		return medias.get(0);
+	}
+	JSONObject findMediaByPri(List<JSONObject> medias, int priority, int mediaType) {
+		for(JSONObject media: medias) {
+			if(-1 == priority || (mediaType == 0 &&media.getInt("codecid") == priority)
+					|| (mediaType == 1 &&media.getInt("id") == priority))
+				return media;
+		}
+		return null;
+	}
+	protected String parseType1(JSONObject jObj, int linkQN, HashMap<String, String> headerForValidCheck) {
+		JSONObject dash = jObj.getJSONObject("dash");
+		StringBuilder link = new StringBuilder();
+		// 获取视频链接
+		JSONArray videos = dash.getJSONArray("video");
+		// 获取所有符合清晰度要求的视频
+		List<JSONObject> qnVideos = new ArrayList<>(3);
+		for (int i = 0; i < videos.length(); i++) {
+			JSONObject video = videos.getJSONObject(i);
+			if (video.getInt("id") == linkQN) {
+				qnVideos.add(video);
+			}
+		}
+		// 根据需求选择编码合适的视频
+		JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);
+		// 选择可以连通的链接
+		String videoLink = getUrlOfMedia(video, Global.checkDashUrl, headerForValidCheck);
+		link.append(videoLink).append("#");
+		
+		// 获取音频链接
+		// 获取所有音频
+		List<JSONObject> listAudios = new ArrayList<>(5);
+		JSONArray audios = dash.optJSONArray("audio");// 普通
+		if (audios != null) {
+			for (int i = 0; i < audios.length(); i++) {
+				listAudios.add(audios.getJSONObject(i));
+			}
+		}
+		JSONObject dolby = dash.optJSONObject("dolby");// 杜比
+		if (dolby != null && linkQN == 126) {
+			audios = dolby.getJSONArray("audio");
+			for (int i = 0; i < audios.length(); i++) {
+				listAudios.add(audios.getJSONObject(i));
+			}
+		}
+		JSONObject flac = dash.optJSONObject("flac");// flac
+		JSONObject flacAudio = flac == null? null: flac.optJSONObject("audio");// audio
+		if (flacAudio != null) {
+			listAudios.add(flacAudio);
+		}
+		if(listAudios.size() > 0) { // 存在没有音频的投稿
+			JSONObject audio = findMediaByPriList(listAudios, Global.audioQualityPriority, 1);
+			String audioLink = getUrlOfMedia(audio, Global.checkDashUrl, headerForValidCheck);
+			link.append(audioLink);
+		}
+//		Logger.println(link);
+		return link.toString();
+	}
+	
+	protected String parseType2(JSONObject jObj) {
+		JSONArray urlList = jObj.getJSONArray("durl");
 		if (urlList.length() == 1) {
 			return urlList.getJSONObject(0).getString("url");
 

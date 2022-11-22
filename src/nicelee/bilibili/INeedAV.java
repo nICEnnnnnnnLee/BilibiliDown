@@ -116,4 +116,8 @@ public class INeedAV {
 	public Downloader getDownloader() {
 		return downloader;
 	}
+
+	public HttpRequestUtil getUtil() {
+		return util;
+	}
 }

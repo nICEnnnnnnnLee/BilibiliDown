@@ -1,13 +1,9 @@
-* 修复: [issues 117](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/117)下载格式为单独MP4时，总是返回低画质的视频  
-* 优化: [issues 40](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/40)分页查询的Tab页面添加了`下一页`按钮  
-* 优化: `一键下载`功能添加对非`分页查询类型`的链接的支持  
-    + 这个功能优化是[针对下载视频清晰度模糊的补救措施](https://nicennnnnnnlee.github.io/BilibiliDown/guide/frequently-asked/how-to-redownload-videos)  
-    某种程度上可以做到根据提供的BV号列表进行批量下载(**不宜过多!不宜过多!不宜过多!**)
-* 优化: Tab页面预览图更改为显示当前页的第一个视频的预览图  
-* 优化: 辅助配置面板增加筛选功能  
-* 优化: 移除操作菜单中的`转换仓库`功能  
-* 优化: release添加附件SHA1校验值
-* 优化: 程序以及ffmpeg额外上传至多个渠道(白嫖不稳定，仅供备用) 
+* 新增: [issues 120](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/120)通过配置或菜单，在尝试重新下载时，能够选择是否重新查询下载链接。  
+* 新增: 通过配置，DASH方式视频可以选择编码优先级；音频可以选择码率优先级。  
+    另外，音频可以选择`杜比`或者`Hi-Res无损`，但是需要`ffmpeg`的配合(Win64用户可以删除原来的ffmpeg.exe再重启程序)。  
+* 优化: 默认的`ffmpeg.exe`使用了ffmpeg master分支的较新的编译
+* 优化: Actions自动编译打包时写入相关信息，你可以`关于` -> `作品信息`，在界面左上角进行查看
+* 优化：在需要创建socketServer时仅监听本地，避免弹出防火墙提示
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`

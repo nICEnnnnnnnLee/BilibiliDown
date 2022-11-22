@@ -309,4 +309,50 @@ bilibili.system.properties.jre11.override = false
 - 取值范围:   
     用于描述ffmpeg的下载地址
 - 释义:   
-    例如，Github源，`https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe`
+    例如，Github源，`https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe`
+
+## bilibili.dash.video.codec.priority
+- 默认值:   
+    `12, 7, 13`(如果存在app.config)  
+    `7, 12, 13`(如果不存在app.config)
+- 释义:   
+    DASH视频的优先编码方式, 越往前优先级越高, 用`,`分开，接受空格
+    ```
+    # -1	表示随意，会选取API回复内容里面的第一个选项
+    # 7 	AVC编码 
+    # 12 	HEVC编码 	
+    # 13 	AV1编码 
+    ```
+## bilibili.dash.audio.quality.priority 
+- 默认值: `30280, 30232, 30216, -1, 30251, 30250`  
+- 释义:   
+    DASH音频的优先质量, 越往前优先级越高, 用`,`分开，接受空格
+    ```
+    ### 启用 杜比全景声 和 Hi-Res无损 的时候，需要注意ffmpeg的版本是否支持
+    ###		对于Windows用户，程序`V6.19`程序版本及之后理论上可行
+    ###		对于Windows用户，程序`V6.18`及以前的版本，请先删除原有ffmpeg.exe，再重新打开程序即可
+    ### 	对于其他平台的，建议访问ffmpeg官网: https://ffmpeg.org/download.html
+    ###		建议ffmpeg替换后进行测试
+    ## 测试Hi-Res无损 BV1tB4y1E7oT
+    ## 测试杜比视界 BV13L4y1K7th
+    # -1	表示随意，会选取API回复内容里面的第一个选项
+    # 30216 	64K             (实际大小不一定匹配，但码率只有这三档，大小的相对关系是正确的)
+    # 30232 	132K
+    # 30280 	192K
+    # 30250 	杜比全景声
+    # 30251 	Hi-Res无损
+    ```
+
+## bilibili.dash.checkUrl
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    查询DASH方式的下载链接时，每个选择的可用链接一般有两个，即`base_url`和`backup_url`。  
+
+    值为`false`时，直接返回`base_url`。  
+    值为`true`时，检查链接`base_url`有效性。有效返回`base_url`，否则返回`backup_url`。  
+
+    检查链接有效性会发送一个`Range: byte=0-100`网络请求。  
+    建议遇到下载失败的情况再尝试开启，尽量避免不必要的请求交互。  

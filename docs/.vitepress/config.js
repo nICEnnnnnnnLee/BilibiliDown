@@ -92,6 +92,7 @@ function sidebarGuide() {
             items: [
                 { text: '文件结构说明', link: '/guide/advanced/dir-list' },
                 { text: '设置视频格式(MP4/FLV)', link: '/guide/advanced/media-type-format' },
+                { text: '设置视频编码优先级', link: '/guide/advanced/custom-media-codecs' },
                 { text: '保存当前下载中的任务', link: '/guide/advanced/save-downloading-tasks' },
                 { text: '自定义下载保存路径', link: '/guide/advanced/custom-file-path' },
                 { text: '自定义文件名', link: '/guide/advanced/custom-file-name' },
@@ -108,6 +109,7 @@ function sidebarGuide() {
             items: [
                 { text: '怎么关闭打开的标签页？', link: '/guide/frequently-asked/how-to-close-tab' },
                 { text: '批量下载的清晰度不符合预期，如何解决？', link: '/guide/frequently-asked/how-to-redownload-videos' },
+                { text: '视频一直下载失败，如何解决？', link: '/guide/frequently-asked/what-to-do-if-download-fail' },
                 { text: '为什么只能下载5个视频？', link: '/guide/frequently-asked/why-only-5' },
                 { text: '为什么总是弹出已经下载？', link: '/guide/frequently-asked/why-always-prompt' },
                 { text: '为什么找不到javaw？', link: '/guide/frequently-asked/why-windows-no-javaw' },

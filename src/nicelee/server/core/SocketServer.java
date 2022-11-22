@@ -63,13 +63,15 @@ public class SocketServer {
 				} catch (SocketException e) {
 					break;
 				}
+				SocketDealer dealer = new SocketDealer(socket);
+				httpThreadPool.execute(dealer);
 				// 只接受本地或局域网请求
-				String addr = socket.getInetAddress().getHostAddress();
-				if (addr.equals("127.0.0.1") || addr.startsWith("192.168.")) {
-					SocketDealer dealer = new SocketDealer(socket);
-					httpThreadPool.execute(dealer);
-				} else
-					socket.close();
+//				String addr = socket.getInetAddress().getHostAddress();
+//				if (addr.equals("127.0.0.1") || addr.startsWith("192.168.")) {
+//					SocketDealer dealer = new SocketDealer(socket);
+//					httpThreadPool.execute(dealer);
+//				} else
+//					socket.close();
 
 			}
 			httpThreadPool.shutdownNow();

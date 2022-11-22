@@ -13,7 +13,11 @@
 
 可能影响使用的不兼容更新将会列在下方。  
 
-## 不兼容更新 Breaking Changes
+## 不兼容更新 / Breaking Changes
++ V6.19
+    默认分发的`ffmpeg.exe`进行了新版本编译的替换，主要是支持杜比视界和Hi-Res无损。  
+    + [旧版本下载链接](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe)
+    + [新版本下载链接](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe)
 + v6.15
     程序运行脚本的名称进行了更改。  
     `run-UI.bat` 更名为 `Double-Click-to-Run-for-Win.bat`。  

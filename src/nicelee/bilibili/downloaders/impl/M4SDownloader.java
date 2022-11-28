@@ -36,15 +36,28 @@ public class M4SDownloader extends FLVDownloader{
 	public boolean download(String url, String avId, int qn, int page) {
 		convertingStatus = StatusEnum.NONE;
 		HttpHeaders header = new HttpHeaders();
+		boolean audioOnly = url.startsWith("#");
 		String links[] = url.split("#");
 		String fName = avId + "-" + qn + "-p" + page;
-		String suffix = ".mp4";
+		String suffix = ".mp4"; // TODO audioOnly? ".aac": ".mp4";  // mp4 / aac / flac
 		String videoName = fName + "_video.m4s";
 		String audioName = fName + "_audio.m4s";
 		String dstName = fName + suffix;
 		if(file == null) {
 			file = new File(Global.savePath, dstName);
 		}
+		if(audioOnly) {
+			if (util.download(links[1], audioName, header.getBiliWwwM4sHeaders(avId))) {
+				convertingStatus = StatusEnum.PROCESSING;
+				boolean result = CmdUtil.convert(null, audioName, dstName);
+				if (result)
+					convertingStatus = StatusEnum.SUCCESS;
+				else
+					convertingStatus = StatusEnum.FAIL;
+				return result;
+			}
+			return false;
+		} 
 		totalTaskCnt = 2;
 		if (util.download(links[0], videoName, header.getBiliWwwM4sHeaders(avId))) {
 			// 如下载成功，统计数据后重置

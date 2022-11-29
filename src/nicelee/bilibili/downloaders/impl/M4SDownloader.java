@@ -68,6 +68,7 @@ public class M4SDownloader extends FLVDownloader{
 				return false;
 			util.init();
 			if(links.length == 1 || links[1].isEmpty()) {
+				totalTaskCnt = currentTask = 1;
 				convertingStatus = StatusEnum.PROCESSING;
 				boolean result = CmdUtil.convert(videoName, null, dstName);
 				if (result)

@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 import nicelee.bilibili.API;
+import nicelee.bilibili.enums.DownloadModeEnum;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.util.ConfigUtil;
@@ -125,6 +126,17 @@ public class MJMenuBar extends JMenuBar {
 			}
 		}.build();
 		
+		JMenu dDashDownTypeMenuItem = new MJMenuWithRadioGroupBuilder("下载模式(DASH)", "全部", "仅视频","仅音频") {
+			@Override
+			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
+				Global.downloadMode = DownloadModeEnum.getModeEnum(itemIndex);
+			}
+			
+			@Override
+			public void init(JRadioButtonMenuItem[] menuItems) {
+				menuItems[Global.downloadMode.getMode()].setSelected(true);
+			}
+		}.build();
 		JMenu dTypeReDownloadMenuItem = new MJMenuWithRadioGroupBuilder("下载重试策略", "使用之前的url", "重新查询url") {
 			@Override
 			public void init(JRadioButtonMenuItem[] menuItems) {
@@ -225,6 +237,7 @@ public class MJMenuBar extends JMenuBar {
 		}.build();
 		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
 		configMenu.add(dTypeMenuItem);
+		configMenu.add(dDashDownTypeMenuItem);
 		configMenu.add(dTypeReDownloadMenuItem);
 		configMenu.add(dQNMenuItem);
 		configMenu.add(dBatchDownMenuItem);

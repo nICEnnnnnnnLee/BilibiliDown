@@ -1,3 +1,4 @@
+* 该版本功能上与**V6.20**没有不同，前一版本不知为何编译的时候缺少了部分文件。  
 * 新增: [issues 124](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/124) 添加只下载音频/视频功能(考虑到ffmpeg的兼容性问题，容器的格式仍然为`mp4`)。  
 * 优化: [issues 128](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/128) 当点击`加载下载任务`且`task.config`不存在或为空时，log不再显示异常。  
 * 修复: [issues 129](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/129) 当`bilibili.format=2`且**登录**时，可以下载单独的`1080P`MP4文件(该功能随时有可能失效，不建议使用该设置)。

@@ -354,6 +354,8 @@ public class MJMenuBar extends JMenuBar {
 					}
 					String[] tasks = result.toString().split(taskSep);
 					for(String task : tasks) {
+						if(task.isBlank())
+							continue;
 						String[] attrs = task.split(attrSep);
 						ClipInfo c = new ClipInfo();
 						c.setAvTitle(attrs[0]);
@@ -379,7 +381,8 @@ public class MJMenuBar extends JMenuBar {
 						DownloadRunnable downThread = new DownloadRunnable(null, c, qn);
 						Global.queryThreadPool.execute(downThread);
 					}
-				}catch (Exception e1) {
+				} catch (NullPointerException e0) {
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}

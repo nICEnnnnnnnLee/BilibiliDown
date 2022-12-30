@@ -1,5 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
+import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -280,7 +281,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
 			url = String.format(url, cid, bvId, qn, fnval);
 			Logger.println(url);
-			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
+//			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
+			List<HttpCookie> cookie = HttpCookies.getGlobalCookies();
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), cookie);
 			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");

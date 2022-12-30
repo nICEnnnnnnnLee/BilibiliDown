@@ -35,13 +35,12 @@ Bilibili 视频下载器，用于下载B站视频。
 ```
 --disable-debug --disable-doc --disable-ffplay --disable-ffprobe --enable-static --disable-shared --disable-network --disable-autodetect --disable-decoders --disable-gpl --disable-version3 --enable-decoder='h264,aac*,mp3*,mp4' --disable-encoders --disable-demuxers --enable-demuxer='concat,mov,m4v,flv,mp3' --disable-muxers --enable-muxer='flv,mp4,mp3' --enable-encoder='libmp3lame,mp3' --disable-parsers --enable-parser=h264 --disable-protocols --enable-protocol='concat,file' --disable-bsfs --enable-bsf='h264_metadata,h264_mp4toannexb' --disable-filters --enable-filter='concat,aresample' --disable-iconv --enable-small
 ```
-+ 如果需要自定义configure，或者最新版本的编译，可参考利用Github Actions得到交叉编译结果
 
 + 本项目遵守开源协议`Apache 2.0`。  
 为了分发的便利，历史版本可能直接使用过其它编译版本ffmpeg.     
 当协议不兼容时，具体情况请以使用的ffmpeg版本为准（大概率是`GPL 3.0`）  
 ```
-Copyright (C) 2019-2022 NiceLee. All Rights Reserved.
+Copyright (C) 2019-2023 NiceLee. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

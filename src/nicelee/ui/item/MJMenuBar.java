@@ -354,7 +354,7 @@ public class MJMenuBar extends JMenuBar {
 					}
 					String[] tasks = result.toString().split(taskSep);
 					for(String task : tasks) {
-						if(task.isBlank())
+						if(task.isEmpty())
 							continue;
 						String[] attrs = task.split(attrSep);
 						ClipInfo c = new ClipInfo();

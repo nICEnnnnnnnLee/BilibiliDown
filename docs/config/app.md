@@ -356,3 +356,15 @@ bilibili.system.properties.jre11.override = false
 
     检查链接有效性会发送一个`Range: byte=0-100`网络请求。  
     建议遇到下载失败的情况再尝试开启，尽量避免不必要的请求交互。  
+
+## bilibili.dash.download.mode
+- 取值范围:   
+    `0 | 1 | 2`
+- 默认值:   
+    `0`  
+- 释义:   
+    值为`0`时，下载音视频并转码为mp4。  
+    值为`1`时，仅下载视频并转码为mp4。  
+    值为`2`时，仅下载音频并转码为mp4。  
+    以上仅针对DASH模式(即`bilibili.format=0`)有效
+    

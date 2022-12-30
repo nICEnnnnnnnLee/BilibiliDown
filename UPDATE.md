@@ -1,4 +1,8 @@
 ## UPDATE  
+* V6.20  `2022-12-30`  
+    * 新增: [issues 124](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/124) 添加只下载音频/视频功能(考虑到ffmpeg的兼容性问题，容器的格式仍然为`mp4`)。  
+    * 优化: [issues 128](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/128) 当点击`加载下载任务`且`task.config`不存在或为空时，log不再显示异常。  
+    * 修复: [issues 129](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/129) 当`bilibili.format=2`且**登录**时，可以下载单独的`1080P`MP4文件(该功能随时有可能失效，不建议使用该设置)。  
 * V6.19  `2022-11-22`  
     * 新增: [issues 120](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/120)通过配置或菜单，在尝试重新下载时，能够选择是否重新查询下载链接。  
     * 新增: 通过配置，DASH方式视频可以选择编码优先级；音频可以选择码率优先级。  

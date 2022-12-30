@@ -72,32 +72,6 @@ public class CmdUtil {
 	}
 	
 	/**
-	 * 音视频合并转码
-	 * 
-	 * @param videoName
-	 * @param audioName
-	 * @param dstName
-	 */
-	public static boolean convert(String videoName, String dstName) {
-		String cmd[] = createConvertCmd(videoName, null, dstName);
-		File mp4File = new File(Global.savePath + dstName);
-		File video = new File(Global.savePath + videoName);
-		if (!mp4File.exists()) {
-			Logger.println("下载完毕, 正在运行转码程序...");
-			run(cmd);
-			if (mp4File.exists() && mp4File.length() > video.length() * 0.8) {
-				video.delete();
-				return true;
-			}
-			Logger.println("转码完毕");
-		} else {
-			Logger.println("下载完毕");
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * 片段合并转码
 	 * 
 	 * @param dstName
@@ -279,6 +253,12 @@ public class CmdUtil {
 		if (audioName == null) {
 			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
 			String str = String.format("ffmpeg命令为: \r\n%s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
+					Global.savePath + dstName);
+			Logger.println(str);
+			return cmd;
+		} else if (videoName == null) {
+			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
+			String str = String.format("ffmpeg命令为: \r\n%s -i %s -vn -c:a copy %s", FFMPEG_PATH, Global.savePath + audioName,
 					Global.savePath + dstName);
 			Logger.println(str);
 			return cmd;

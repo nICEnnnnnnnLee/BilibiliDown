@@ -1,5 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
+import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nicelee.bilibili.enums.DownloadModeEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.StoryClipInfo;
 import nicelee.bilibili.model.VideoInfo;
@@ -279,7 +281,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
 			url = String.format(url, cid, bvId, qn, fnval);
 			Logger.println(url);
-			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
+//			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
+			List<HttpCookie> cookie = HttpCookies.getGlobalCookies();
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), cookie);
 			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
@@ -404,50 +407,59 @@ public abstract class AbstractBaseParser implements IInputParser {
 		}
 		return null;
 	}
+	// All 			视频链接#音频链接
+	// VideoOnly 	视频链接#
+	// AudioOnly	#音频链接
 	protected String parseType1(JSONObject jObj, int linkQN, HashMap<String, String> headerForValidCheck) {
 		JSONObject dash = jObj.getJSONObject("dash");
 		StringBuilder link = new StringBuilder();
 		// 获取视频链接
-		JSONArray videos = dash.getJSONArray("video");
-		// 获取所有符合清晰度要求的视频
-		List<JSONObject> qnVideos = new ArrayList<>(3);
-		for (int i = 0; i < videos.length(); i++) {
-			JSONObject video = videos.getJSONObject(i);
-			if (video.getInt("id") == linkQN) {
-				qnVideos.add(video);
+		if(Global.downloadMode == DownloadModeEnum.AudioOnly) {
+			link.append("#");
+		}else {
+			JSONArray videos = dash.getJSONArray("video");
+			// 获取所有符合清晰度要求的视频
+			List<JSONObject> qnVideos = new ArrayList<>(3);
+			for (int i = 0; i < videos.length(); i++) {
+				JSONObject video = videos.getJSONObject(i);
+				if (video.getInt("id") == linkQN) {
+					qnVideos.add(video);
+				}
 			}
+			// 根据需求选择编码合适的视频
+			JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);
+			// 选择可以连通的链接
+			String videoLink = getUrlOfMedia(video, Global.checkDashUrl, headerForValidCheck);
+			link.append(videoLink).append("#");
 		}
-		// 根据需求选择编码合适的视频
-		JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);
-		// 选择可以连通的链接
-		String videoLink = getUrlOfMedia(video, Global.checkDashUrl, headerForValidCheck);
-		link.append(videoLink).append("#");
 		
 		// 获取音频链接
-		// 获取所有音频
-		List<JSONObject> listAudios = new ArrayList<>(5);
-		JSONArray audios = dash.optJSONArray("audio");// 普通
-		if (audios != null) {
-			for (int i = 0; i < audios.length(); i++) {
-				listAudios.add(audios.getJSONObject(i));
+		if(Global.downloadMode != DownloadModeEnum.VideoOnly) {
+			// 获取所有音频
+			List<JSONObject> listAudios = new ArrayList<>(5);
+			JSONArray audios = dash.optJSONArray("audio");// 普通
+			if (audios != null) {
+				for (int i = 0; i < audios.length(); i++) {
+					listAudios.add(audios.getJSONObject(i));
+				}
 			}
-		}
-		JSONObject dolby = dash.optJSONObject("dolby");// 杜比
-		if (dolby != null && linkQN == 126) {
-			audios = dolby.getJSONArray("audio");
-			for (int i = 0; i < audios.length(); i++) {
-				listAudios.add(audios.getJSONObject(i));
+			JSONObject dolby = dash.optJSONObject("dolby");// 杜比
+			if (dolby != null && linkQN == 126) {
+				audios = dolby.getJSONArray("audio");
+				for (int i = 0; i < audios.length(); i++) {
+					listAudios.add(audios.getJSONObject(i));
+				}
 			}
-		}
-		JSONObject flac = dash.optJSONObject("flac");// flac
-		JSONObject flacAudio = flac == null? null: flac.optJSONObject("audio");// audio
-		if (flacAudio != null) {
-			listAudios.add(flacAudio);
-		}
-		if(listAudios.size() > 0) { // 存在没有音频的投稿
-			JSONObject audio = findMediaByPriList(listAudios, Global.audioQualityPriority, 1);
-			String audioLink = getUrlOfMedia(audio, Global.checkDashUrl, headerForValidCheck);
-			link.append(audioLink);
+			JSONObject flac = dash.optJSONObject("flac");// flac
+			JSONObject flacAudio = flac == null? null: flac.optJSONObject("audio");// audio
+			if (flacAudio != null) {
+				listAudios.add(flacAudio);
+			}
+			if(listAudios.size() > 0) { // 存在没有音频的投稿
+				JSONObject audio = findMediaByPriList(listAudios, Global.audioQualityPriority, 1);
+				String audioLink = getUrlOfMedia(audio, Global.checkDashUrl, headerForValidCheck);
+				link.append(audioLink);
+			}
 		}
 //		Logger.println(link);
 		return link.toString();

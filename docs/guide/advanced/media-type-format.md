@@ -1,4 +1,6 @@
 # 设置视频格式
++ **不建议修改该值，因为相关API随时都有可能失效**
+
 + 使用文本编辑器打开`config/app.config`
 
 + 找到`bilibili.format`，修改它的值

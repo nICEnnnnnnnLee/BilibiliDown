@@ -69,6 +69,16 @@ jobs:
         chmod +x package.sh
         ./package.sh
 
+    - name: Test Jar
+      run: |
+        version=`java -Dfile.encoding=utf-8 -jar INeedBiliAV.jar -v 2>&1 | tail -n 1`
+        if [ "$version" != "v${{steps.tag_latest.outputs.value}}" ]  ; then
+          echo $version
+          echo "v${{steps.tag_latest.outputs.value}}"
+          echo '::warning:: Query version of INeedBiliAV.jar failed...'
+          exit 1
+        fi
+
     - name: ZIP files
       run: |
         rm -rf ./config

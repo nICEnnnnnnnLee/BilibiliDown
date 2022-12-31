@@ -47,7 +47,11 @@ public class FrameMain extends JFrame {
 		System.out.println(ResourcesUtil.baseDirectory());
 		// 读取配置文件
 		ConfigUtil.initConfigs();
-		
+		// -v 打印版本，然后退出
+		if(args.length == 1 && "-v".equalsIgnoreCase(args[0])) {
+			System.out.println(Global.version);
+			System.exit(0);
+		}
 		// 显示过渡动画
 		Global.frWaiting = new FrameWaiting();
 		Global.frWaiting.start();

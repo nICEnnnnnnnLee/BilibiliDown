@@ -6,6 +6,36 @@ name: Upload Zips
 on:
   workflow_dispatch:
     inputs:
+      supabase:
+        description: 'Upload to supabase?'
+        type: boolean
+        default: true
+        required: false
+      cloudinary:
+        description: 'Upload to cloudinary?'
+        type: boolean
+        default: true
+        required: false
+      imagekit:
+        description: 'Upload to imagekit?'
+        type: boolean
+        default: true
+        required: false
+      railway:
+        description: 'Upload to railway?'
+        type: boolean
+        default: true
+        required: false
+      railwayFFmpeg:
+        description: 'Upload FFmpeg to railway?'
+        type: boolean
+        default: false
+        required: false
+      giteePush:
+        description: 'Push to gitee?'
+        type: boolean
+        default: true
+        required: false
 
 jobs:
   build:
@@ -63,7 +93,7 @@ jobs:
     - name: Upload release to supabase
       env:
         SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      if: ${{ always() && env.SUPABASE_ANON_KEY != ''}}
+      if: ${{ always() && env.SUPABASE_ANON_KEY != '' && github.event.inputs.supabase == 'true'}}
       run: |
         curl https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/bili/release/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip \
             -F "file=@BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip" \
@@ -83,7 +113,7 @@ jobs:
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ always() && env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
+      if: ${{ always() && env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != '' && github.event.inputs.cloudinary == 'true'}}
       run: |
         timeStamp=`date '+%s'`
         
@@ -112,7 +142,7 @@ jobs:
         IMAGEKIT_PRIVATE_KEY: ${{ secrets.IMAGEKIT_PRIVATE_KEY }}
         ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ always() && env.IMAGEKIT_PRIVATE_KEY != ''}}
+      if: ${{ always() && env.IMAGEKIT_PRIVATE_KEY != '' && github.event.inputs.imagekit == 'true'}}
       run: |
         curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
             -u $IMAGEKIT_PRIVATE_KEY: \
@@ -133,7 +163,7 @@ jobs:
         RAILWAY_AUTH: ${{ secrets.RAILWAY_AUTH }}
         ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ always() && env.RAILWAY_AUTH != ''}}
+      if: ${{ always() && env.RAILWAY_AUTH != '' && github.event.inputs.railway == 'true'}}
       run: |
         curl -X POST "https://bili.up.railway.app/upload" \
             --cookie "auth=$RAILWAY_AUTH" \
@@ -143,10 +173,20 @@ jobs:
             --cookie "auth=$RAILWAY_AUTH" \
             -F "file=@$SHA1_FILE_NAME;type=application/octet-stream"  
             
+    - name: Upload ffmpeg to railway
+      env:
+        RAILWAY_AUTH: ${{ secrets.RAILWAY_AUTH }}
+      if: ${{ always() && env.RAILWAY_AUTH != '' && github.event.inputs.railwayFFmpeg == 'true'}}
+      run: |
+        wget https://git.nicelee.top/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe
+        curl -X POST "https://bili.up.railway.app/upload" \
+            --cookie "auth=$RAILWAY_AUTH" \
+            -F "file=@ffmpeg_N-108857-g00b03331a0-20221027.exe;type=application/octet-stream"  
+            
     - name: Sync Push to Gitee
       env:
         GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
-      if: ${{ always() && env.GITEE_AUTH != ''}}
+      if: ${{ always() && env.GITEE_AUTH != '' && github.event.inputs.giteePush == 'true'}}
       run: |
         echo "https://$GITEE_AUTH@gitee.com/" > .credential
         git config --local credential.helper "store --file=.credential"

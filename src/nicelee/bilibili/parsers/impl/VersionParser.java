@@ -16,7 +16,7 @@ public class VersionParser extends AbstractBaseParser {
 	//BilibiliDown.v5.3.release.zip
 	//https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V5.3/BilibiliDown.v5.3.release.zip
 	private static final Pattern pattern = Pattern.compile("BilibiliDown\\.v([0-9]+\\.[0-9]+).*\\.zip");
-
+	private static final String PRE_RELEASE_FLAG = "BilibiliDown.PreRelease";
 	String downName;
 	String downUrl;
 	
@@ -26,6 +26,10 @@ public class VersionParser extends AbstractBaseParser {
 	
 	@Override
 	public boolean matches(String input) {
+		if(PRE_RELEASE_FLAG.equals(input)) {
+			downName = downUrl = PRE_RELEASE_FLAG;
+			return true;
+		}
 		matcher = pattern.matcher(input);
 		boolean matches = matcher.find();
 		if (matches) {

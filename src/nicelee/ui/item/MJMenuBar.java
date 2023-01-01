@@ -20,9 +20,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 import nicelee.bilibili.API;
+import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.DownloadModeEnum;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.Logger;
@@ -252,7 +254,18 @@ public class MJMenuBar extends JMenuBar {
 		JMenuItem updateMenuItem = new JMenuItem("检查更新");
 		aboutMenu.add(infoMenuItem);
 		aboutMenu.add(updateMenuItem);
-
+		if(Global.githubToken != null && !Global.githubToken.isEmpty()) {
+			JMenuItem updateBetaMenuItem = new JMenuItem("更新Beta版本");
+			aboutMenu.add(updateBetaMenuItem);
+			updateBetaMenuItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					VideoInfo avInfo = new INeedAV().getVideoDetail("BilibiliDown.PreRelease", 0, false);
+					DownloadRunnable downThread = new DownloadRunnable(avInfo, avInfo.getClips().get(1234L), 0);
+					Global.queryThreadPool.execute(downThread);
+				}
+			});
+		}
 		// 一键下载
 		batchDownload.addActionListener(new ActionListener() {
 			@Override

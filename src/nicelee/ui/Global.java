@@ -178,6 +178,8 @@ public class Global {
 
 	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
 	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
+	@Config(key = "bilibili.github.token", note = "Github API鉴权token", defaultValue = "", warning = false)
+	public static String githubToken; // 一般情况下，用于Github API鉴权, 暂只用于更新Beta版本
 	final public static HashMap<String, String> settings = new LinkedHashMap<>();
 	final public static HashSet<String> settingsMustCreateManualy = new HashSet<>();
 

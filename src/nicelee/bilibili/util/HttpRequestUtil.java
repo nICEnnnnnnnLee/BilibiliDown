@@ -179,8 +179,8 @@ public class HttpRequestUtil {
 				conLen = map.get("content-length");
 			System.out.printf("文件大小: %s 字节.\r\n", conLen);
 
-			
-			totalFileSize = offset + Long.parseUnsignedLong(conLen.get(0));
+			if(conLen != null)
+				totalFileSize = offset + Long.parseUnsignedLong(conLen.get(0));
 			try {
 				inn = conn.getInputStream();
 			} catch (Exception e) {

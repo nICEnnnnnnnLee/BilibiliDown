@@ -448,6 +448,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 					qnVideos.add(video);
 				}
 			}
+			// 如果没有找到对应的清晰度 eg. BV1K14y1g7iU 无cookie
+			//（API 返回的链接里并没有对应实际清晰度的链接）
+			// 那么只能随便加一个了
+			if(qnVideos.size() == 0) {
+				JSONObject v = videos.getJSONObject(0);
+				paramSetter.setRealQN(v.getInt("id"));
+				System.out.println("API返回质量为:" + linkQN + "的链接, 实际上只有质量为:" + paramSetter.getRealQN() + "的链接");
+				qnVideos.add(v);
+			}
 			// 根据需求选择编码合适的视频
 			JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);
 			// 选择可以连通的链接

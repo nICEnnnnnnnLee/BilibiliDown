@@ -19,7 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
+import nicelee.bilibili.enums.AudioQualityEnum;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
@@ -83,6 +83,8 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		for (final int qn : clip.getLinks().keySet()) {
 			// JButton btn = new JButton("清晰度: " + qn);
 			String qnName = VideoQualityEnum.getQualityDescript(qn);
+			if (qnName == null)
+				qnName = AudioQualityEnum.getQualityDescript(qn);
 			JButton btn = null;
 			if (qnName != null) {
 				btn = new MJButton(qnName);

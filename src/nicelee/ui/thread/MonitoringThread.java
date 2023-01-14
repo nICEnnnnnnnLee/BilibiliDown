@@ -36,7 +36,7 @@ public class MonitoringThread extends Thread {
 				try {
 					String path = downloader.file().getAbsolutePath();
 					if(Global.doRenameAfterComplete && downloader.currentStatus() == StatusEnum.SUCCESS) {
-						path = path.replaceFirst("(?:av|h|BV|season|edd_)[0-9a-zA-Z_]+-[0-9]+-p[0-9]+", formattedTitle);
+						path = path.replaceFirst("(?:av|h|BV|season|au|edd_)[0-9a-zA-Z_]+-[0-9]+-p[0-9]+", formattedTitle);
 					}
 					dp.getLbFileName().setText(path);
 					dp.getLbFileName().setToolTipText(path);

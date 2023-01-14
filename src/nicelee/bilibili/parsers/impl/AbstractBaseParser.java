@@ -210,20 +210,42 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 */
 	@Override
 	public String getVideoLink(String bvId, String cid, int qn, int downFormat) {
-		if (qn == 800) {
+		if (!bvId.startsWith("au")) {
+			qn = 3;
+		}
+		switch (qn) {
+		case 800:
 			return getVideoSubtitleLink(bvId, cid, qn);
-		}else if(qn == 801) {
+		case 801:
 			paramSetter.setRealQN(qn);
 			return "https://api.bilibili.com/x/v1/dm/list.so?oid=" + cid;
+		case 3:
+		case 2:
+		case 1:
+		case 0:
+			return getAudioLink(bvId, cid, qn);
+		default:
+			return getVideoLinkByFormat(bvId, cid, qn, downFormat);
 		}
-		return getVideoLinkByFormat(bvId, cid, qn, downFormat);
-//		if (downFormat == 0) {
-//			return getVideoM4sLink(avId, cid, qn);
-//		} else {
-//			return getVideoFLVLink(avId, cid, qn);
-//		}
 	}
 
+	protected String getAudioLink(String auId, String _auId, int qn) {
+		String auIdNum = auId.substring(2);
+//		String url = String.format("https://www.bilibili.com/audio/music-service-c/web/url?sid=%s&privilege=2&quality=2", auIdNum);
+		String url = String.format("https://www.bilibili.com/audio/music-service-c/url?songid=%s&privilege=2&quality=%d&mid=&platform=web", auIdNum, qn);
+		Logger.println(url);
+		HashMap<String, String> headers = new HttpHeaders().getCommonHeaders();
+		String r = util.getContent(url, headers, HttpCookies.getGlobalCookies());
+		Logger.println(r);
+		JSONObject data = new JSONObject(r).getJSONObject("data");
+		int realQn = data.optInt("type");
+		Logger.printf("预期下载清晰度：%d, 实际清晰度：%d", qn, realQn);
+		paramSetter.setRealQN(realQn);
+		String link = data.getJSONArray("cdns").getString(0);
+		Logger.println(link);
+		return link;
+	}
+	
 	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
 		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
 		Logger.println(url);

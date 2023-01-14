@@ -210,7 +210,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 */
 	@Override
 	public String getVideoLink(String bvId, String cid, int qn, int downFormat) {
-		if (!bvId.startsWith("au")) {
+		if (bvId.startsWith("au") && (qn > 3 || qn < 0)) {
 			qn = 3;
 		}
 		switch (qn) {

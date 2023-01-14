@@ -2,7 +2,7 @@
 import re, os, datetime
 from time import strftime
 
-version, about, buildType = None, None, 'Release'
+version, about, buildType = None, None, os.environ.get("BUILD_TYPE", 'Release')
 with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
     content = file.read()
     pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'

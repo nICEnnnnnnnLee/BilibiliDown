@@ -22,6 +22,8 @@ jobs:
      
     - name: Read tag_latest and Save build info
       id: tag_latest
+      env:
+        BUILD_TYPE: Beta
       run: |
         python ./.github/scripts/read_version_and_save_build_info.py
  

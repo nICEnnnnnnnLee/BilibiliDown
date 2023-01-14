@@ -121,7 +121,7 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 						}
 						clip.setLinks(links);
 						map.put(clip.getcId(), clip);
-						return true;
+						continue;
 					}
 					continue;
 				}

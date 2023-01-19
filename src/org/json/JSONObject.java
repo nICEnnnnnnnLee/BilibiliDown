@@ -47,6 +47,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import nicelee.bilibili.exceptions.Status412Exception;
+
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external
  * form is a string wrapped in curly braces with colons between the names and
@@ -404,6 +406,11 @@ public class JSONObject {
      */
     public JSONObject(String source) throws JSONException {
         this(new JSONTokener(source));
+        // 为了不改动太多代码，先放在这里
+        int code = this.optInt("code");
+        if(code == -412 || code == 412) {
+        	throw new Status412Exception("API code 412");
+        }
     }
 
     /**

@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import nicelee.bilibili.API;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.exceptions.BilibiliError;
+import nicelee.bilibili.exceptions.Status412Exception;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
@@ -53,6 +55,14 @@ public class DownloadRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		try {
+			download();
+		} catch (BilibiliError e) {
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", e.getMessage());
+		}
+	}
+
+	public void download() {
 		System.out.println("你点击了一次下载按钮...");
 		// 如果点击了全部暂停按钮，而此时在队列中
 		if(TabDownload.isStopAll()) {

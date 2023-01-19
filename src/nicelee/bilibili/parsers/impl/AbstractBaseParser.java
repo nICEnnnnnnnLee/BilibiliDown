@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import nicelee.bilibili.enums.DownloadModeEnum;
+import nicelee.bilibili.exceptions.ApiLinkQueryParseError;
+import nicelee.bilibili.exceptions.QualityTooLowException;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.StoryClipInfo;
 import nicelee.bilibili.model.VideoInfo;
@@ -321,13 +323,22 @@ public abstract class AbstractBaseParser implements IInputParser {
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+		if(linkQN < 64 && qn > linkQN && Global.isLogin) {
+			throw new QualityTooLowException(bvId + " : " + cid + " - 查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+		}
 		try {
 			return parseType1(jObj, linkQN, headers.getBiliWwwM4sHeaders(bvId));
 		} catch (Exception e) {
 			// e.printStackTrace();
 			Logger.println("切换解析方式");
-			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
-			return parseType2(jObj);
+			try {
+				// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
+				return parseType2(jObj);
+			}catch (Exception e1) {
+				e.printStackTrace();
+				e1.printStackTrace();
+				throw new ApiLinkQueryParseError("查询下载链接时api解析失败", e);
+			}
 		}
 	}
 

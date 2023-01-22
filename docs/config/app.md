@@ -368,3 +368,36 @@ bilibili.system.properties.jre11.override = false
     值为`2`时，仅下载音频并转码为mp4。  
     以上仅针对DASH模式(即`bilibili.format=0`)有效
     
+## bilibili.github.token
+- 取值范围:   
+    [Github token](https://github.com/settings/tokens)
+- 释义:   
+    暂只用于下载最新的Beta版本，即Github Action生成的artifact。  
+    目前已知的问题是： 下载链接会重定向到域名`pipelines.actions.githubusercontent.com`。  
+    使用项目精简的JRE 11访问它会被GFW重置连接，但JDK 11不会。  
+
+## bilibili.sysTray.enable
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `true`  
+- 释义:   
+    是否开启系统托盘功能
+
+## bilibili.sysTray.minimizeToSystray
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `true`  
+- 释义:   
+    值为`true`时，开启系统托盘功能后，点击最小化按钮到托盘（从任务栏隐藏）
+    值为`false`时，开启系统托盘功能后，点击最小化按钮到任务栏
+
+## bilibili.sysTray.closeToSystray
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    值为`true`时，开启系统托盘功能后，点击关闭按钮到托盘（从任务栏隐藏）
+    值为`false`时，开启系统托盘功能后，点击关闭按钮退出程序

@@ -1,11 +1,15 @@
 # 更新程序
 
-在程序右上角点击菜单`关于` -> `检查更新`，根据提示操作即可。  
++ 在程序右上角点击菜单`关于` -> `检查更新`，根据提示操作即可。  
 ![](/img/update.png)  
 
 需要注意的是，Linux、Mac的首次更新可能需要赋予`update.sh`执行权限。  
 
++ 如果需要更新Beta版本，可以设置`bilibili.github.token`，`关于` -> `更新Beta版本`，根据提示操作即可。  
+此时下载的Github Actions最新编译的artifact。  
+
 如果因为未知原因无法更新，可以在`update`目录下找到`INeedBiliAV.update.jar`，手动替换掉原来的`INeedBiliAV.jar`  
+
 
 
 不要担心`app.config`无法对应新版本的问题，作者在开发时会考虑这点的。    
@@ -16,8 +20,8 @@
 ## 不兼容更新 / Breaking Changes
 + V6.19
     默认分发的`ffmpeg.exe`进行了新版本编译的替换，主要是支持杜比视界和Hi-Res无损。  
-    + [旧版本下载链接](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe)
-    + [新版本下载链接](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe)
+    + [旧版本下载链接（32位）](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg.exe)
+    + [新版本下载链接（64位）](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe)
 + v6.15
     程序运行脚本的名称进行了更改。  
     `run-UI.bat` 更名为 `Double-Click-to-Run-for-Win.bat`。  

@@ -5,7 +5,7 @@
 
 + 建议更改完毕后先下载一个视频进行测试，因为部分功能需要更加强大的`ffmpeg`版本进行配合。    
 
-`杜比全景声`和`Hi-Res无损`经过测试，配合ffmpeg主干分支License`gpl`版的编译，  
+`杜比全景声`和`Hi-Res无损`经过测试，配合新版本编译的ffmpeg，
 得到的mp4是能看能听的，但是硬件有点挫，声音效果我就感觉不出来了。  
 
 ## bilibili.dash.video.codec.priority

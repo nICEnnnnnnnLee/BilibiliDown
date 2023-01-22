@@ -16,4 +16,5 @@ BilibiliDown 是一款专注于下载[Bilibili](https://www.bilibili.com)上精�
 -  支持弹幕下载  
 -  支持互动视频下载  
 -  支持课程视频下载  
+-  支持音频下载  
 -  支持相簿图片下载

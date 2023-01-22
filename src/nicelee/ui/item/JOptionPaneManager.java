@@ -1,7 +1,6 @@
 package nicelee.ui.item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JOptionPane;
 
@@ -9,27 +8,42 @@ import nicelee.ui.Global;
 
 public class JOptionPaneManager {
 
-	private static List<Thread> promptThreads = new ArrayList<Thread>();
-
-	public static void showMsg(String title, String msg) {
-		if(Global.isAlertIfDownloded && promptThreads.size() < Global.maxAlertPrompt) {
-			promptThreads.add(Thread.currentThread());
-			
-			Object[] options = { "关闭", "关闭所有" };
-			int m = JOptionPane.showOptionDialog(null, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-					null, options, options[0]);
-			synchronized (promptThreads) {
-				if (m == 1) {
-					interruptAllThread();
-				} else {
-					promptThreads.remove(Thread.currentThread());
-				}
-			}
-		}
-	}
+	static JOptionPaneManager instance4CommonMsg = new JOptionPaneManager();
+	static JOptionPaneManager instance4ErrMsg = new JOptionPaneManager();
 
 	public static void showMsgWithNewThread(String title, String msg) {
-		if(Global.isAlertIfDownloded && promptThreads.size() < Global.maxAlertPrompt) {
+		instance4CommonMsg.showMsgWithNewThread0(title, msg, false);
+	}
+
+	public static void alertErrMsgWithNewThread(String title, String msg) {
+		instance4ErrMsg.showMsgWithNewThread0(title, msg, true);
+	}
+
+//	public static void alertErrMsg(String title, String msg) {
+//		instance4ErrMsg.showMsg0(title, msg, true);
+//	}
+
+	private ConcurrentLinkedQueue<Thread> promptThreads = new ConcurrentLinkedQueue<Thread>();
+
+//	private void showMsg0(String title, String msg, boolean isErrMsg) {
+//		if ((Global.isAlertIfDownloded || isErrMsg) && promptThreads.size() < Global.maxAlertPrompt) {
+//			promptThreads.add(Thread.currentThread());
+//
+//			Object[] options = { "关闭", "关闭所有" };
+//			int m = JOptionPane.showOptionDialog(null, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+//					null, options, options[0]);
+//			synchronized (promptThreads) {
+//				if (m == 1) {
+//					interruptAllThread();
+//				} else {
+//					promptThreads.remove(Thread.currentThread());
+//				}
+//			}
+//		}
+//	}
+
+	private void showMsgWithNewThread0(String title, String msg, boolean isErrMsg) {
+		if ((Global.isAlertIfDownloded || isErrMsg) && promptThreads.size() < Global.maxAlertPrompt) {
 			Thread t = new Thread(new Runnable() {
 				public void run() {
 					Object[] options = { "关闭", "关闭所有" };
@@ -51,7 +65,7 @@ public class JOptionPaneManager {
 		}
 	}
 
-	private static void interruptAllThread() {
+	private void interruptAllThread() {
 		// 不管怎样，先移除当前线程
 		promptThreads.remove(Thread.currentThread());
 		for (Thread t : promptThreads) {

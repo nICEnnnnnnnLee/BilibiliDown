@@ -1,5 +1,7 @@
 package nicelee.bilibili.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -133,6 +135,17 @@ public class VersionManagerUtil {
 		File dstFile = new File(targetfolder, "INeedBiliAV.update.jar");
 		if (dstFile.exists()) {
 			dstFile.delete();
+		}
+		// 如果为pre release, 那么先解压缩, 得到新的 ZipInputStream
+		if(downName.contains("pre-release")) {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ze = zi.getNextEntry();
+			while ((len = zi.read(buff)) > 0)
+				out.write(buff, 0, len);
+			out.close();
+			zi.closeEntry();
+			zi.close();
+			zi = new ZipInputStream(new ByteArrayInputStream(out.toByteArray()));
 		}
 		while ((ze = zi.getNextEntry()) != null) {
 			if ("INeedBiliAV.jar".equals(ze.getName())) {

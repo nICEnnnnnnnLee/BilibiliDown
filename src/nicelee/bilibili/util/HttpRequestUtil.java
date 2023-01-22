@@ -24,6 +24,7 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.exceptions.Status412Exception;
 import nicelee.ui.Global;
 
 public class HttpRequestUtil {
@@ -179,8 +180,8 @@ public class HttpRequestUtil {
 				conLen = map.get("content-length");
 			System.out.printf("文件大小: %s 字节.\r\n", conLen);
 
-			
-			totalFileSize = offset + Long.parseUnsignedLong(conLen.get(0));
+			if(conLen != null)
+				totalFileSize = offset + Long.parseUnsignedLong(conLen.get(0));
 			try {
 				inn = conn.getInputStream();
 			} catch (Exception e) {
@@ -306,7 +307,8 @@ public class HttpRequestUtil {
 		try {
 			HttpURLConnection conn = connect(headers, url, listCookie);
 			conn.connect();
-
+			if(conn.getResponseCode() == 412)
+				throw new Status412Exception("HTTP返回状态码为412");
 			String encoding = conn.getContentEncoding();
 			InputStream ism = conn.getInputStream();
 			if (encoding != null && encoding.contains("gzip")) {// 首先判断服务器返回的数据是否支持gzip压缩，
@@ -322,6 +324,8 @@ public class HttpRequestUtil {
 			while ((line = in.readLine()) != null) {
 				result.append(line).append("\r\n");
 			}
+		} catch (Status412Exception e) {
+			throw e;
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
 			e.printStackTrace();
@@ -361,6 +365,9 @@ public class HttpRequestUtil {
 			dos.writeBytes(param);
 			dos.flush();
 			dos.close();
+			
+			if(conn.getResponseCode() == 412)
+				throw new Status412Exception("HTTP返回状态码为412");
 
 			String encoding = conn.getContentEncoding();
 			InputStream ism = conn.getInputStream();
@@ -374,6 +381,8 @@ public class HttpRequestUtil {
 				line = new String(line.getBytes(), "UTF-8");
 				result.append(line);
 			}
+		} catch (Status412Exception e) {
+			throw e;
 		} catch (Exception e) {
 			System.out.println("发送GET请求出现异常！" + e);
 		} finally {

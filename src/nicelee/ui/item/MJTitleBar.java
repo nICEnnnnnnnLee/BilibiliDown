@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.FrameMain;
 import nicelee.ui.Global;
+import nicelee.ui.SysTray;
 
 
 public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionListener{
@@ -158,21 +159,31 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getSource() == btnClose) {
-			// 如果是用户想要关闭程序，先判断是否仍然有活动的任务
-			if(frame instanceof FrameMain && Global.downloadTab.activeTask > 0) {
-				Object[] options = { "我要退出", "我再想想" };
-				String msg = String.format("当前仍有 %d 个任务在下载/转码，正在转码的文件退出后可能丢失或异常，确定要退出吗？", Global.downloadTab.activeTask);
-				int m = JOptionPane.showOptionDialog(null, msg, "警告", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-						null, options, options[0]);
-				Logger.println(m);
-				if(m != 0) 	return;
+			if(frame instanceof FrameMain && SysTray.isSysTrayInitiated() && Global.closeToSystray) {
+				Logger.println("最小化到系统托盘");
+				frame.setExtendedState(JFrame.ICONIFIED);
+				frame.setVisible(false);
+			}else {
+				// 如果是用户想要关闭程序，先判断是否仍然有活动的任务
+				if(frame instanceof FrameMain && Global.downloadTab.activeTask > 0) {
+					Object[] options = { "我要退出", "我再想想" };
+					String msg = String.format("当前仍有 %d 个任务在下载/转码，正在转码的文件退出后可能丢失或异常，确定要退出吗？", Global.downloadTab.activeTask);
+					int m = JOptionPane.showOptionDialog(null, msg, "警告", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null, options, options[0]);
+					Logger.println(m);
+					if(m != 0) 	return;
+				}
+				Logger.println("closing...");
+				WindowEvent event=new WindowEvent(frame,WindowEvent.WINDOW_CLOSING);
+				frame.dispatchEvent(event);
 			}
-			Logger.println("closing...");
-			WindowEvent event=new WindowEvent(frame,WindowEvent.WINDOW_CLOSING);
-			frame.dispatchEvent(event);
 			
 		}else if(e.getSource() == btnMin){
 			frame.setExtendedState(JFrame.ICONIFIED);
+			if (frame instanceof FrameMain && SysTray.isSysTrayInitiated() && Global.minimizeToSystray) {
+				Logger.println("最小化到系统托盘");
+				frame.setVisible(false);
+			}
 		}
 	}
 

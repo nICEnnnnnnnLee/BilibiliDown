@@ -1,7 +1,21 @@
-* 修复: `V6.20`使用了JDK8不支持的函数导致编译失败  
-* 新增: [issues 124](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/124) 添加只下载音频/视频功能(考虑到ffmpeg的兼容性问题，容器的格式仍然为`mp4`)。  
-* 优化: [issues 128](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/128) 当点击`加载下载任务`且`task.config`不存在或为空时，log不再显示异常。  
-* 修复: [issues 129](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/129) 当`bilibili.format=2`且**登录**时，可以下载单独的`1080P`MP4文件(该功能随时有可能失效，不建议使用该设置)。
+* 新增: 在设置Github token后，可以在菜单栏选择更新Beta版本，省去使用浏览器打开Github Action的步骤
+    + `bilibili.github.token = [github token]`  
+    + 似乎JRE下重定向的域名`pipelines.actions.githubusercontent.com`会被连接重置，但JDK不受影响。  
+* 新增: 实现最小化到系统托盘功能
+    + `bilibili.sysTray.enable = true/false` 是否开启系统托盘功能
+    + `bilibili.sysTray.minimizeToSystray = true/false` 是否点击最小化按钮到托盘
+    + `bilibili.sysTray.closeToSystray = true/false` 是否点击关闭按钮到托盘
+* 新增: 音频基础解析`e.g. https://www.bilibili.com/audio/au3688627`
+* 新增: 音频歌单解析`e.g. https://www.bilibili.com/audio/am33012874`
+* 新增: 自己创建的默认歌单解析`e.g. https://www.bilibili.com/audio/mycollection/[0-9]+`
+* 优化: 现在可以从收藏夹中解析到音频了`e.g. https://space.bilibili.com/35849261/favlist?fid=1509975661&ftype=create`
+* 优化: 现在，API返回412会弹框提示 [issues 90](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/90)
+* 优化: 现在，查询下载链接解析出错会弹框提示
+* 优化: 现在，在登录后，查询高质量链接却返回360P清晰度会弹框提示
+* 修复：API返回实际清晰度不对劲导致的解析错误 `eg. BV1K14y1g7iU 无cookie`
+* ci: 增加编译后的jar包有效性测试，预防编译失败的低级问题  
+* ci: 人工触发上传时，可选择目标站点
+* ci: 将运行的脚本内容从逐渐臃肿的yaml文件中抽离
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`

@@ -96,6 +96,33 @@ public class MLParser extends AbstractPageQueryParser<VideoInfo> {
 				long cTime = jAV.optLong("ctime") * 1000;
 				JSONArray jClips = jAV.optJSONArray("pages");
 				if(jClips == null) {
+					String link = jAV.optString("link", "");
+					// 添加针对音频的特殊情况
+					if(link.startsWith("bilibili://music")) {
+						long auIdNum = jAV.optLong("id");
+						ClipInfo clip = new ClipInfo();
+						clip.setAvTitle(avTitle);
+						clip.setAvId("au" + auIdNum);
+						clip.setcId(auIdNum);
+						clip.setPage(1);
+						clip.setTitle(avTitle);
+						clip.setPicPreview(jAV.getString("cover"));
+						clip.setRemark((page - 1) * API_PMAX + i + 1);
+						clip.setListName(jInfo.getString("title").replaceAll("[/\\\\]", "_"));
+						clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
+						clip.setUpName(upName);
+						clip.setUpId(upId);
+						clip.setFavTime(favTime);
+						clip.setcTime(cTime);
+						LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
+						int[] qnList = { 3, 2, 1, 0 };
+						for (int qn : qnList) {
+							links.put(qn, "");
+						}
+						clip.setLinks(links);
+						map.put(clip.getcId(), clip);
+						continue;
+					}
 					continue;
 				}
 				for(int pointer = 0; pointer < jClips.length(); pointer++) {

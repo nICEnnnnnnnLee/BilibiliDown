@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import nicelee.bilibili.enums.DownloadModeEnum;
+import nicelee.bilibili.exceptions.ApiLinkQueryParseError;
+import nicelee.bilibili.exceptions.QualityTooLowException;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.StoryClipInfo;
 import nicelee.bilibili.model.VideoInfo;
@@ -210,20 +212,42 @@ public abstract class AbstractBaseParser implements IInputParser {
 	 */
 	@Override
 	public String getVideoLink(String bvId, String cid, int qn, int downFormat) {
-		if (qn == 800) {
+		if (bvId.startsWith("au") && (qn > 3 || qn < 0)) {
+			qn = 3;
+		}
+		switch (qn) {
+		case 800:
 			return getVideoSubtitleLink(bvId, cid, qn);
-		}else if(qn == 801) {
+		case 801:
 			paramSetter.setRealQN(qn);
 			return "https://api.bilibili.com/x/v1/dm/list.so?oid=" + cid;
+		case 3:
+		case 2:
+		case 1:
+		case 0:
+			return getAudioLink(bvId, cid, qn);
+		default:
+			return getVideoLinkByFormat(bvId, cid, qn, downFormat);
 		}
-		return getVideoLinkByFormat(bvId, cid, qn, downFormat);
-//		if (downFormat == 0) {
-//			return getVideoM4sLink(avId, cid, qn);
-//		} else {
-//			return getVideoFLVLink(avId, cid, qn);
-//		}
 	}
 
+	protected String getAudioLink(String auId, String _auId, int qn) {
+		String auIdNum = auId.substring(2);
+//		String url = String.format("https://www.bilibili.com/audio/music-service-c/web/url?sid=%s&privilege=2&quality=2", auIdNum);
+		String url = String.format("https://www.bilibili.com/audio/music-service-c/url?songid=%s&privilege=2&quality=%d&mid=&platform=web", auIdNum, qn);
+		Logger.println(url);
+		HashMap<String, String> headers = new HttpHeaders().getCommonHeaders();
+		String r = util.getContent(url, headers, HttpCookies.getGlobalCookies());
+		Logger.println(r);
+		JSONObject data = new JSONObject(r).getJSONObject("data");
+		int realQn = data.optInt("type");
+		Logger.printf("预期下载清晰度：%d, 实际清晰度：%d", qn, realQn);
+		paramSetter.setRealQN(realQn);
+		String link = data.getJSONArray("cdns").getString(0);
+		Logger.println(link);
+		return link;
+	}
+	
 	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
 		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
 		Logger.println(url);
@@ -299,13 +323,22 @@ public abstract class AbstractBaseParser implements IInputParser {
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+		if(linkQN < 64 && qn > linkQN && Global.isLogin) {
+			throw new QualityTooLowException(bvId + " : " + cid + " - 查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+		}
 		try {
 			return parseType1(jObj, linkQN, headers.getBiliWwwM4sHeaders(bvId));
 		} catch (Exception e) {
 			// e.printStackTrace();
 			Logger.println("切换解析方式");
-			// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
-			return parseType2(jObj);
+			try {
+				// 鉴于部分视频如 https://www.bilibili.com/video/av24145318 H5仍然是用的是Flash源,此处切为FLV
+				return parseType2(jObj);
+			}catch (Exception e1) {
+				e.printStackTrace();
+				e1.printStackTrace();
+				throw new ApiLinkQueryParseError("查询下载链接时api解析失败", e);
+			}
 		}
 	}
 
@@ -425,6 +458,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 				if (video.getInt("id") == linkQN) {
 					qnVideos.add(video);
 				}
+			}
+			// 如果没有找到对应的清晰度 eg. BV1K14y1g7iU 无cookie
+			//（API 返回的链接里并没有对应实际清晰度的链接）
+			// 那么只能随便加一个了
+			if(qnVideos.size() == 0) {
+				JSONObject v = videos.getJSONObject(0);
+				paramSetter.setRealQN(v.getInt("id"));
+				System.out.println("API返回质量为:" + linkQN + "的链接, 实际上只有质量为:" + paramSetter.getRealQN() + "的链接");
+				qnVideos.add(v);
 			}
 			// 根据需求选择编码合适的视频
 			JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);

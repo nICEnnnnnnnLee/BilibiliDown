@@ -324,7 +324,7 @@ public class CmdUtil {
 	 * @param page
 	 * @return
 	 */
-	static String[] suffixs = {".mp4", ".flv", ".jpg", ".webp", ".png", ".srt", ".ass"};
+	static String[] suffixs = {".mp4", ".flv", ".jpg", ".webp", ".png", ".srt", ".ass", ".m4a", ".flac"};
 	public static File getFileByAvQnP(String avid_q, int page) {
 		String name = avid_q + "-p" + page;
 		Logger.println(name);

@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.VideoQualityEnum;
+import nicelee.bilibili.exceptions.BilibiliError;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.Logger;
@@ -26,6 +27,7 @@ import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.batchdownload.BatchDownload;
 import nicelee.bilibili.util.batchdownload.BatchDownload.BatchDownloadsBuilder;
 import nicelee.ui.Global;
+import nicelee.ui.item.JOptionPaneManager;
 
 public class BatchDownloadThread extends Thread {
 
@@ -102,6 +104,8 @@ public class BatchDownloadThread extends Thread {
 				}
 			}
 			JOptionPane.showMessageDialog(null, "一键下载完毕", "OK", JOptionPane.PLAIN_MESSAGE);
+		} catch (BilibiliError e) {
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

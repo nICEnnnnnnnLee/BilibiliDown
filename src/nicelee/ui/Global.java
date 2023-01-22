@@ -24,7 +24,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.22", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.23", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -36,7 +36,13 @@ public class Global {
 	public static boolean isAlertIfDownloded;
 	@Config(key = "bilibili.alert.maxAlertPrompt", note = "提交已完成的视频时弹出提示框的最大数量", defaultValue = "5")
 	public static int maxAlertPrompt = 5;
-
+	@Config(key = "bilibili.sysTray.enable", note = "开启系统托盘功能", defaultValue = "true", valids = { "true", "false" })
+	public static boolean isSysTrayEnabled;
+	@Config(key = "bilibili.sysTray.minimizeToSystray", note = "点击最小化按钮到托盘", defaultValue = "true", valids = { "true", "false" })
+	public static boolean minimizeToSystray;
+	@Config(key = "bilibili.sysTray.closeToSystray", note = "点击关闭按钮到托盘", defaultValue = "false", valids = { "true", "false" })
+	public static boolean closeToSystray;
+	
 	public static ImageIcon backgroundImg;
 	public static FrameWaiting frWaiting;
 	public static FrameQRCode qr; // 二维码图片显示界面
@@ -178,6 +184,8 @@ public class Global {
 
 	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
 	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
+	@Config(key = "bilibili.github.token", note = "Github API鉴权token", defaultValue = "", warning = false)
+	public static String githubToken; // 一般情况下，用于Github API鉴权, 暂只用于更新Beta版本
 	final public static HashMap<String, String> settings = new LinkedHashMap<>();
 	final public static HashSet<String> settingsMustCreateManualy = new HashSet<>();
 

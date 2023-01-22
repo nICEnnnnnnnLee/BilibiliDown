@@ -34,78 +34,27 @@ jobs:
      
     - name: Read tag_latest and Save build info
       id: tag_latest
-      shell: python
       run: |
-        import re, os, datetime
-        from time import strftime
-
-        version, about, buildType = None, None, 'Release'
-        with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
-            content = file.read()
-            pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'
-            searchObj = re.search(pattern, content)
-            version = searchObj.group(1)
-            with open(os.environ.get("GITHUB_OUTPUT"),'w', encoding='utf-8') as output:
-                output.write("value=" + version)
-                
-        with open('src/resources/about.html', 'r', encoding='utf-8') as file:
-            about = file.read()
-            
-        with open('src/resources/about.html', 'w', encoding='utf-8') as file:
-            now=datetime.datetime.now()
-            buildInfo = '''<div id="versionInfo" >
-                            <p>版本信息: v{version} {buildType}</p>
-                            <p>编译信息: Build by Github Actions at {dateTime}</p>
-                        </div>'''.format(
-                            version = version,
-                            buildType = buildType,
-                            dateTime = now.strftime("%Y-%m-%d %H:%M:%S")
-                        )
-            txtToSave = about.replace('<div id="versionInfo" ></div>', buildInfo)
-            file.write(txtToSave)
+        python ./.github/scripts/read_version_and_save_build_info.py
     
     - name: Package Jar
       run: |
         chmod +x package.sh
         ./package.sh
 
-    - name: ZIP files
+    - name: Test Jar
+      env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
       run: |
-        rm -rf ./config
-        rm -rf ./LICENSE
-        mkdir ./config/
-        mkdir ./LICENSE/
-        mv -f ./release/Create-Shortcut-on-Desktop-for-Linux.sh .
-        mv -f ./release/Create-Shortcut-on-Desktop-for-Mac.sh .
-        mv -f ./release/Create-Shortcut-on-Desktop-for-Win.vbs .
-        mv -f ./release/Double-Click-to-Run-for-Mac.command .
-        mv -f ./release/Double-Click-to-Run-for-Win.bat .
-        mv -f ./release/Double-Click-to-Run-for-Win-debug.bat .
-        mv -f ./release/uninstall.bat .
-        mv -f ./release/update.bat .
-        mv -f ./release/config/* ./config/
-        mv -f ./release/LICENSE/* ./LICENSE/        
-        
-        zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip INeedBiliAV.jar
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Linux.sh
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Mac.sh
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Create-Shortcut-on-Desktop-for-Win.vbs
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Mac.command
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Win.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./Double-Click-to-Run-for-Win-debug.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./uninstall.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./update.bat
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./config/
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip ./LICENSE/
-    
-        wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11_win_x64.zip
-        unzip minimal-bilibilidown-jre11_win_x64.zip
-        cp BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip ./minimal-bilibilidown-jre/
+        chmod +x .github/scripts/test_jar.sh
+        ./.github/scripts/test_jar.sh
 
-        (sha1sum BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip| cut -d' ' -f1) > BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1
-        (sha1sum BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip| cut -d' ' -f1) > BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-        
+    - name: ZIP files
+      env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
+      run: |
+        chmod +x .github/scripts/gen_zip_sha1_for_release.sh
+        ./.github/scripts/gen_zip_sha1_for_release.sh
         
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -123,20 +72,12 @@ jobs:
           
     - name: Upload release to supabase
       env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       if: ${{ env.SUPABASE_ANON_KEY != ''}}
       run: |
-        curl https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/bili/release/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip \
-            -F "file=@BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip" \
-            -F "cacheControl=3600" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "authorization: Bearer $SUPABASE_ANON_KEY"
-            
-        curl https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/bili/release/BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1 \
-            -F "file=@BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1" \
-            -F "cacheControl=3600" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "authorization: Bearer $SUPABASE_ANON_KEY"          
+        chmod +x .github/scripts/upload_supabase.sh
+        ./.github/scripts/upload_supabase.sh     
             
     - name: Upload release to cloudinary
       env:
@@ -146,27 +87,8 @@ jobs:
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
       if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
       run: |
-        timeStamp=`date '+%s'`
-        
-        param2sign="public_id=bili/$ZIP_FILE_NAME&timestamp=$timeStamp&upload_preset=usf6ttao$CLOUDINARY_API_SECRET"
-        sig=$(echo -n $param2sign|sha1sum| cut -d' ' -f1)
-        curl https://api.cloudinary.com/v1_1/dcrcvyjzu/raw/upload \
-            -F "file=@$ZIP_FILE_NAME" \
-            -F "api_key=$CLOUDINARY_API_KEY" \
-            -F "public_id=bili/$ZIP_FILE_NAME" \
-            -F "timestamp=$timeStamp" \
-            -F "upload_preset=usf6ttao" \
-            -F "signature=$sig"
-            
-        param2sign="public_id=bili/$SHA1_FILE_NAME&timestamp=$timeStamp&upload_preset=usf6ttao$CLOUDINARY_API_SECRET"
-        sig=$(echo -n $param2sign|sha1sum| cut -d' ' -f1)
-        curl https://api.cloudinary.com/v1_1/dcrcvyjzu/raw/upload \
-            -F "file=@$SHA1_FILE_NAME" \
-            -F "api_key=$CLOUDINARY_API_KEY" \
-            -F "public_id=bili/$SHA1_FILE_NAME" \
-            -F "timestamp=$timeStamp" \
-            -F "upload_preset=usf6ttao" \
-            -F "signature=$sig"            
+        chmod +x .github/scripts/upload_cloudinary.sh
+        ./.github/scripts/upload_cloudinary.sh              
             
     - name: Upload release to imagekit
       env:
@@ -175,19 +97,8 @@ jobs:
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
       if: ${{ env.IMAGEKIT_PRIVATE_KEY != ''}}
       run: |
-        curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
-            -u $IMAGEKIT_PRIVATE_KEY: \
-            -F "file=@$ZIP_FILE_NAME;type=application/octet-stream" \
-            -F "useUniqueFileName=false" \
-            -F "folder=release" \
-            -F "fileName=$ZIP_FILE_NAME"
-            
-        curl -X POST "https://upload.imagekit.io/api/v1/files/upload" \
-            -u $IMAGEKIT_PRIVATE_KEY: \
-            -F "file=@$SHA1_FILE_NAME;type=application/octet-stream" \
-            -F "useUniqueFileName=false" \
-            -F "folder=release" \
-            -F "fileName=$SHA1_FILE_NAME"            
+        chmod +x .github/scripts/upload_imagekit.sh
+        ./.github/scripts/upload_imagekit.sh          
             
     - name: Upload release to railway
       env:
@@ -196,23 +107,13 @@ jobs:
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
       if: ${{ env.RAILWAY_AUTH != ''}}
       run: |
-        curl -X POST "https://bili.up.railway.app/upload" \
-            --cookie "auth=$RAILWAY_AUTH" \
-            -F "file=@$ZIP_FILE_NAME;type=application/octet-stream"  
-            
-        curl -X POST "https://bili.up.railway.app/upload" \
-            --cookie "auth=$RAILWAY_AUTH" \
-            -F "file=@$SHA1_FILE_NAME;type=application/octet-stream"  
+        chmod +x .github/scripts/upload_railway.sh
+        ./.github/scripts/upload_railway.sh
             
     - name: Sync Push to Gitee
       env:
         GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
       if: ${{ env.GITEE_AUTH != ''}}
       run: |
-        echo "https://$GITEE_AUTH@gitee.com/" > .credential
-        git config --local credential.helper "store --file=.credential"
-        git remote add gitee https://gitee.com/NiceLeee/BilibiliDown.git
-        branch_name=`git rev-parse --abbrev-ref HEAD`
-        git fetch --unshallow origin "$branch_name"
-        git push -f gitee "$branch_name"
-        rm -f .credential
+        chmod +x .github/scripts/sync_push_to_gitee.sh
+        ./.github/scripts/sync_push_to_gitee.sh

@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import nicelee.bilibili.INeedAV;
+import nicelee.bilibili.exceptions.BilibiliError;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.parsers.impl.AbstractPageQueryParser;
@@ -16,6 +17,7 @@ import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
 import nicelee.ui.item.ClipInfoPanel;
+import nicelee.ui.item.JOptionPaneManager;
 
 public class GetVideoDetailThread extends Thread{
 	
@@ -70,6 +72,9 @@ public class GetVideoDetailThread extends Thread{
 			}
 			jpContent.updateUI();
 			jpContent.repaint();
+		} catch (BilibiliError e) {
+			e.printStackTrace();
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

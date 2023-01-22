@@ -22,36 +22,10 @@ jobs:
      
     - name: Read tag_latest and Save build info
       id: tag_latest
-      shell: python
+      env:
+        BUILD_TYPE: Beta
       run: |
-        import re, os, datetime
-        from time import strftime
-
-        version, about, buildType = None, None, 'Beta'
-        with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
-            content = file.read()
-            pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'
-            searchObj = re.search(pattern, content)
-            version = searchObj.group(1)
-            with open(os.environ.get("GITHUB_OUTPUT"),'w', encoding='utf-8') as output:
-                output.write("value=" + version)
-                
-        with open('src/resources/about.html', 'r', encoding='utf-8') as file:
-            about = file.read()
-            
-        with open('src/resources/about.html', 'w', encoding='utf-8') as file:
-            now=datetime.datetime.now()
-            buildInfo = '''<div id="versionInfo" >
-                            <p>版本信息: v{version} {buildType}</p>
-                            <p>编译信息: Build by Github Actions at {dateTime}</p>
-                        </div>'''.format(
-                            version = version,
-                            buildType = buildType,
-                            dateTime = now.strftime("%Y-%m-%d %H:%M:%S")
-                        )
-            txtToSave = about.replace('<div id="versionInfo" ></div>', buildInfo)
-            file.write(txtToSave)
-    
+        python ./.github/scripts/read_version_and_save_build_info.py
  
     - name: Package Jar
       run: |
@@ -59,39 +33,12 @@ jobs:
         ./package.sh
 
     - name: ZIP files
+      env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
       run: |
-        rm -rf ./config
-        rm -rf ./LICENSE
-        mkdir ./config/
-        mkdir ./LICENSE/
-        mv -f ./release/Create-Shortcut-on-Desktop-for-Linux.sh .
-        mv -f ./release/Create-Shortcut-on-Desktop-for-Mac.sh .
-        mv -f ./release/Create-Shortcut-on-Desktop-for-Win.vbs .
-        mv -f ./release/Double-Click-to-Run-for-Mac.command .
-        mv -f ./release/Double-Click-to-Run-for-Win.bat .
-        mv -f ./release/Double-Click-to-Run-for-Win-debug.bat .
-        mv -f ./release/uninstall.bat .
-        mv -f ./release/update.bat .
-        mv -f ./release/config/* ./config/
-        mv -f ./release/LICENSE/* ./LICENSE/        
+        chmod +x .github/scripts/gen_zip_for_pre_release.sh
+        ./.github/scripts/gen_zip_for_pre_release.sh
         
-        zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip INeedBiliAV.jar
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Create-Shortcut-on-Desktop-for-Linux.sh
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Create-Shortcut-on-Desktop-for-Mac.sh
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Create-Shortcut-on-Desktop-for-Win.vbs
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Double-Click-to-Run-for-Mac.command
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Double-Click-to-Run-for-Win.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./Double-Click-to-Run-for-Win-debug.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./uninstall.bat
-        zip -m BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./update.bat
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./config/
-        zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip ./LICENSE/
-    
-                  # wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11_win_x64.zip
-                  # unzip minimal-bilibilidown-jre11_win_x64.zip
-                  # cp BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.pre-release.zip
-                  # zip -rm BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.pre-release.zip ./minimal-bilibilidown-jre/
-
     - name: Upload artifacts(no jre)
       uses: actions/upload-artifact@v3
       with:

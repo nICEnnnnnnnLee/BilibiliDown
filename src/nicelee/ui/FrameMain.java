@@ -136,6 +136,7 @@ public class FrameMain extends JFrame {
 			Global.frWaiting.stop();
 		}
 		main.setVisible(true);
+		main.setExtendedState(JFrame.NORMAL);
 		main.toFront();
 	}
 
@@ -210,6 +211,7 @@ public class FrameMain extends JFrame {
 			}
 		});
 //		this.setVisible(true);
+		SysTray.buildSysTray(this, icon.getImage());
 	}
 
 	@Override

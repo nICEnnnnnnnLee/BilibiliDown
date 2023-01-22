@@ -36,7 +36,13 @@ public class Global {
 	public static boolean isAlertIfDownloded;
 	@Config(key = "bilibili.alert.maxAlertPrompt", note = "提交已完成的视频时弹出提示框的最大数量", defaultValue = "5")
 	public static int maxAlertPrompt = 5;
-
+	@Config(key = "bilibili.sysTray.enable", note = "开启系统托盘功能", defaultValue = "true", valids = { "true", "false" })
+	public static boolean isSysTrayEnabled;
+	@Config(key = "bilibili.sysTray.minimizeToSystray", note = "点击最小化按钮到托盘", defaultValue = "true", valids = { "true", "false" })
+	public static boolean minimizeToSystray;
+	@Config(key = "bilibili.sysTray.closeToSystray", note = "点击关闭按钮到托盘", defaultValue = "false", valids = { "true", "false" })
+	public static boolean closeToSystray;
+	
 	public static ImageIcon backgroundImg;
 	public static FrameWaiting frWaiting;
 	public static FrameQRCode qr; // 二维码图片显示界面

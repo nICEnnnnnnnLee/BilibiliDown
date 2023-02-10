@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import nicelee.ui.Global;
+
 public class StreamManager extends Thread{
 	Process process;
     InputStream inputStream;
@@ -19,7 +21,8 @@ public class StreamManager extends Thread{
         String line = null;
         try {
             while((line = bufferedReader.readLine()) !=null ) {
-            	System.out.println(line);
+            	if(Global.debugCmd)
+            		System.out.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -154,6 +154,8 @@ public class Global {
 	public static String[] ffmpegCmd4Merge;
 	@Config(key = "bilibili.flv.ffmpeg", note = "FLV合并时是否调用ffmpeg", defaultValue = "false", valids = { "true", "false" })
 	public static boolean flvUseFFmpeg = false;
+	@Config(key = "bilibili.cmd.debug", note = "调用外部命令时是否显示输出", defaultValue = "false", valids = { "true", "false" })
+	public static boolean debugCmd;
 	// 批量下载设置相关
 	@Config(key = "bilibili.menu.download.plan", defaultValue = "1")
 	public static int menu_plan; // 0 下载每个tab页的第一个视频； 1 下载每个Tab页的全部视频

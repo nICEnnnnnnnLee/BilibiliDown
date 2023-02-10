@@ -169,6 +169,7 @@ public class MJMenuBar extends JMenuBar {
 			@Override
 			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
 				qnQualityPri = item.getText();
+				Global.menu_qn = qnQualityPri;
 				Logger.println("优先清晰度(菜单)为: " + qnQualityPri);
 			}
 			

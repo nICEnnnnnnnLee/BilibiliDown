@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;

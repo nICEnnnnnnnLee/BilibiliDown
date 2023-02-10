@@ -3,7 +3,7 @@ package nicelee.bilibili.downloaders.impl;
 import java.io.File;
 import java.util.HashMap;
 
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;

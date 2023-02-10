@@ -2,7 +2,7 @@ package nicelee.ui.item;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import nicelee.ui.Global;
 

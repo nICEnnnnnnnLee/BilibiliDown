@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 import nicelee.bilibili.API;

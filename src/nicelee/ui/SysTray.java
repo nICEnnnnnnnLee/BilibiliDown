@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import nicelee.bilibili.util.Logger;
 

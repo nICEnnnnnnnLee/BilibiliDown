@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

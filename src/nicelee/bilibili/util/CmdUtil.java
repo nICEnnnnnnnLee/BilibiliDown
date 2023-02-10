@@ -7,6 +7,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -250,26 +251,24 @@ public class CmdUtil {
 	 * @return
 	 */
 	public static String[] createConvertCmd(String videoName, String audioName, String dstName) {
+		String cmd[] = null;
 		if (audioName == null) {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
-					Global.savePath + dstName);
-			Logger.println(str);
-			return cmd;
+			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
 		} else if (videoName == null) {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -vn -c:a copy %s", FFMPEG_PATH, Global.savePath + audioName,
-					Global.savePath + dstName);
-			Logger.println(str);
-			return cmd;
+			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
 		} else {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
-					"copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", FFMPEG_PATH,
-					Global.savePath + videoName, Global.savePath + audioName, Global.savePath + dstName);
-			Logger.println(str);
-			return cmd;
+//			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
+//					"copy", Global.savePath + dstName };
+			cmd = Global.ffmpegCmd4Merge.clone();
+			for(int i = 0; i < cmd.length; i++) {
+				cmd[i] = cmd[i].replace("{FFmpeg}", FFMPEG_PATH).replace("{SavePath}", Global.savePath)
+						.replace("{VideoName}", videoName).replace("{AudioName}", audioName)
+						.replace("{DstName}", dstName);
+			}
 		}
+		String str = String.format("ffmpeg命令为: %s", Arrays.toString(cmd));
+		Logger.println(str);
+		return cmd;
 	}
 
 	/**

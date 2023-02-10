@@ -149,6 +149,9 @@ public class Global {
 	// FFMPEG 路径
 	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
 	public static String ffmpegPath;
+	@Config(key = "bilibili.dash.ffmpeg.command.merge", note = "ffmpeg音视频合并命令", 
+			defaultValue = "{FFmpeg}, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}")
+	public static String[] ffmpegCmd4Merge;
 	@Config(key = "bilibili.flv.ffmpeg", note = "FLV合并时是否调用ffmpeg", defaultValue = "false", valids = { "true", "false" })
 	public static boolean flvUseFFmpeg = false;
 	// 批量下载设置相关
@@ -290,7 +293,13 @@ public class Global {
 					field.set(null, null);
 				else
 					field.set(null, value);
-			} else if (field.getType().equals(int[].class)) {
+			}else if (field.getType().equals(String[].class)) {
+				String[] valueStrs = value.split(",");
+				for(int i=0; i<valueStrs.length; i++) {
+					valueStrs[i] = valueStrs[i].trim();
+				}
+				field.set(null, valueStrs);
+			}else if (field.getType().equals(int[].class)) {
 				String[] valueStrs = value.split(",");
 				int[] values = new int[valueStrs.length];
 				for(int i=0; i<values.length; i++) {

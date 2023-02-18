@@ -1,6 +1,5 @@
 package nicelee.bilibili.downloaders.impl;
 
-import java.io.File;
 import java.util.HashMap;
 
 import nicelee.ui.item.JOptionPane;

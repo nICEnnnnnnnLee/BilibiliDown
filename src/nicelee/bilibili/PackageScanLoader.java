@@ -2,8 +2,9 @@ package nicelee.bilibili;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -42,7 +43,7 @@ public abstract class PackageScanLoader {
 		File parserInit = new File(parserFolder, "parsers.ini");
 		if(parserInit.exists()) {
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(parserInit));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(parserInit), "utf-8"));
 				String clazzName = reader.readLine();
 				while(clazzName != null) {
 					compileAndLoad(parserPlg, ccloader, clazzName);

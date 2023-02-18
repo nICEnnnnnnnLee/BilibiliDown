@@ -3,9 +3,10 @@ package nicelee.bilibili.util.danmuku;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -13,8 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import nicelee.bilibili.util.Logger;
 
 public class Xml2Ass {
 
@@ -49,7 +48,7 @@ public class Xml2Ass {
 	
 	public List<Danmuku> readXml(File xmlFile) throws IOException{
 		
-		BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), "utf-8"));
 		List<Danmuku> danmuList = new ArrayList<Danmuku>();
 		Pattern danmukuPattern = Pattern.compile("<d p=\"([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,[0-9]*)?\">(.*?)</d>");
 		String line = reader.readLine();

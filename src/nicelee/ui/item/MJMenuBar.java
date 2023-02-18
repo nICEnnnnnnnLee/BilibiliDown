@@ -6,8 +6,10 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -312,7 +314,7 @@ public class MJMenuBar extends JMenuBar {
 				// \r\n@@\r\n 分隔 ClipInfo属性和 Qn
 				final String taskSep = "\r\n##\r\n";
 				final String attrSep = "\r\n@@\r\n";
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(downloadingTasks))){
+				try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(downloadingTasks), "utf-8"))){
 					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
 						ClipInfo c = dp.getClipInfo();
 						writer.append(c.getAvTitle());
@@ -360,7 +362,7 @@ public class MJMenuBar extends JMenuBar {
 				// \r\n@@\r\n 分隔 ClipInfo属性和 Qn
 				final String taskSep = "\r\n##\r\n";
 				final String attrSep = "\r\n@@\r\n";
-				try(BufferedReader reader = new BufferedReader(new FileReader(downloadingTasks))){
+				try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(downloadingTasks), "utf-8"))){
 					String line;
 					StringBuilder result = new StringBuilder();
 					while ((line = reader.readLine()) != null) {

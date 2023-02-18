@@ -2,9 +2,11 @@ package nicelee.bilibili.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,7 +159,7 @@ public class CmdUtil {
 			File folderDown = new File(Global.savePath);
 			folderDown.mkdirs();
 			File file = new File(folderDown, dstName + ".txt");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
 			for (int i = 1; i <= part; i++) {
 				// Windows下
 				// 当-i的Global.savePath路径以/结尾时，会寻找路径Global.savePath + %file

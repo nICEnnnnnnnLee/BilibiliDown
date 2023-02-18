@@ -32,9 +32,9 @@ public class SocketDealer extends PathDealer implements Runnable {
 		HashMap<String, String> headersMap = new HashMap<>(16, 0.999f);
 		int dataLen = -1;
 		try {
-			in = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(socketClient.getInputStream(), "utf-8"));
 			outRaw = socketClient.getOutputStream();
-			out = new BufferedWriter(new OutputStreamWriter(outRaw));
+			out = new BufferedWriter(new OutputStreamWriter(outRaw, "utf-8"));
 			
 			// 读取url请求
 			String line = null;

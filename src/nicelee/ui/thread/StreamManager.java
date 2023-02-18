@@ -16,10 +16,10 @@ public class StreamManager extends Thread{
     }
     
     public void run () {
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        String line = null;
         try {
+        	InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+        	BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        	String line = null;
             while((line = bufferedReader.readLine()) !=null ) {
             	if(Global.debugCmd)
             		System.out.println(line);

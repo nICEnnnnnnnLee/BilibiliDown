@@ -3,9 +3,12 @@ package nicelee.bilibili.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
@@ -47,7 +50,7 @@ public class RepoUtil {
 		// 先初始化downRepo
 		BufferedReader buReader = null;
 		try {
-			buReader = new BufferedReader(new FileReader(fRepo));
+			buReader = new BufferedReader(new InputStreamReader(new FileInputStream(fRepo), "utf-8"));
 			String avRecord;
 			while ((avRecord = buReader.readLine()) != null) {
 				Matcher matcher = standardAvPattern.matcher(avRecord);
@@ -161,15 +164,15 @@ public class RepoUtil {
 
 		int count = 0;
 		try {
-			buReader = new BufferedReader(new FileReader(fRepoNew));
+			buReader = new BufferedReader(new InputStreamReader(new FileInputStream(fRepoNew), "utf-8"));
 			while (buReader.readLine() != null) {
 				count++;
 			}
 		} catch (Exception e) {
 		}
 		try {
-			buReader = new BufferedReader(new FileReader(fRepo));
-			buWriter = new BufferedWriter(new FileWriter(fRepoNew, true));
+			buReader = new BufferedReader(new InputStreamReader(new FileInputStream(fRepo), "utf-8"));
+			buWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fRepoNew, true), "utf-8"));
 			String avRecord;
 			int lineCnt = 0;
 			while ((avRecord = buReader.readLine()) != null) {

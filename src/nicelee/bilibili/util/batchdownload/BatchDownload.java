@@ -132,7 +132,7 @@ public class BatchDownload implements Cloneable {
 
 		public List<BatchDownload> Build() {
 			List<BatchDownload> list = new ArrayList<BatchDownload>();
-			try (BufferedReader r = new BufferedReader(new InputStreamReader(in));) {
+			try (BufferedReader r = new BufferedReader(new InputStreamReader(in, "utf-8"));) {
 				String line = r.readLine();
 				BatchDownload current = null;
 				HashMap<String, String> settings = new HashMap<>();

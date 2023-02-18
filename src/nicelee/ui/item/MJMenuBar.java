@@ -184,10 +184,10 @@ public class MJMenuBar extends JMenuBar {
 				}
 			}
 		}.build();
-		File configDir = ResourcesUtil.search("config");
+		File configDir = new File(ResourcesUtil.baseDirectory(), "config");
 		List<String> configFiles = new ArrayList<>();
 		configFiles.add(Global.batchDownloadConfigName);
-		if(configDir != null) {
+		if(configDir.exists()) {
 			for(String fName: configDir.list()) {
 				Matcher m = Global.batchDownloadConfigNamePattern.matcher(fName);
 				if(m.find() && !fName.equals(Global.batchDownloadConfigName)) {
@@ -304,9 +304,8 @@ public class MJMenuBar extends JMenuBar {
 		saveDownloading.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File dir = ResourcesUtil.search("config");
-				if(dir == null) {
-					dir = new File(ResourcesUtil.baseDirectory(), "config");
+				File dir = new File(ResourcesUtil.baseDirectory(), "config");
+				if(!dir.exists()) {
 					dir.mkdirs();
 				}
 				File downloadingTasks = new File(dir, "tasks.config");

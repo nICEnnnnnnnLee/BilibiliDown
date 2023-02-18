@@ -19,6 +19,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.annotations.Controller;
 import nicelee.bilibili.plugin.CustomClassLoader;
 import nicelee.bilibili.plugin.Plugin;
+import nicelee.bilibili.util.ResourcesUtil;
 
 public abstract class PackageScanLoader {
 
@@ -34,7 +35,7 @@ public abstract class PackageScanLoader {
 		// 扫描parsers文件夹，加载自定义类名
 		Plugin parserPlg = new Plugin("parsers", "nicelee.bilibili.parsers.impl");
 		CustomClassLoader ccloader = new CustomClassLoader();
-		File parserFolder = new File("parsers");
+		File parserFolder = new File(ResourcesUtil.baseDirectory(), "parsers");
 		// 如果parsers.ini存在, 逐行读取类名, 按照顺序进行扫描
 		// 这是为了在jar包里的类加载生效之前使用, 替换原来的功能
 		// 大多数情况下不需要用到

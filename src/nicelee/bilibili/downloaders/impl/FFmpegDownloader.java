@@ -9,6 +9,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.Encrypt;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.ResourcesUtil;
 
 @Bilibili(name = "ffmpeg-downloader", weight = 22, type = "downloader", note = "ffmpeg下载")
 public class FFmpegDownloader extends FLVDownloader {
@@ -35,7 +36,7 @@ public class FFmpegDownloader extends FLVDownloader {
 		convertingStatus = StatusEnum.NONE;
 		currentTask = 1;
 		if(file == null) {
-			file = new File("ffmpeg.exe");
+			file = ResourcesUtil.sourceOf("ffmpeg.exe");
 		}
 		util.setSavePath(".");
 		boolean succ = util.download(url, "ffmpeg.exe", new HashMap<>());

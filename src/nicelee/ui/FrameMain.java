@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
 
@@ -94,9 +95,11 @@ public class FrameMain extends JFrame {
 		// 初始化 - ffmpeg环境判断
 		String[] cmd = { "ffmpeg", "-version" };
 		if (!CmdUtil.run(cmd)) {
-			System.out.println(Global.ffmpegPath);
+			File ffmpeg = ResourcesUtil.search("ffmpeg.exe");
 			cmd = new String[] { Global.ffmpegPath, "-version" };
-			if (!CmdUtil.run(cmd)) {
+			if (ffmpeg != null) {
+				CmdUtil.FFMPEG_PATH = ResourcesUtil.canonicalPath(ffmpeg.getAbsolutePath());
+			} else if (!CmdUtil.run(cmd)) {
 				if (System.getProperty("os.name").toLowerCase().contains("win")) {
 					Object[] options = { "是", "否" };
 					int m = JOptionPane.showOptionDialog(null,

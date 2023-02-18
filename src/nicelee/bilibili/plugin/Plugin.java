@@ -6,13 +6,15 @@ import java.io.IOException;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import nicelee.bilibili.util.ResourcesUtil;
+
 public class Plugin {
 
 	File workingDir;
 	String packageName;
 	
 	public Plugin() {
-		workingDir = new File("./parsers");
+		workingDir = new File(ResourcesUtil.baseDirectory(), "./parsers");
 		packageName = "nicelee.bilibili.parsers.impl";
 	}
 
@@ -22,7 +24,7 @@ public class Plugin {
 	}
 
 	private void setEnv(String workingDirectory) {
-		workingDir = new File(workingDirectory);
+		workingDir = new File(ResourcesUtil.baseDirectory(), workingDirectory);
 	}
 
 	/**

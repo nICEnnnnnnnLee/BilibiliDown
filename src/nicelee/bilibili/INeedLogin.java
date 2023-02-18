@@ -121,7 +121,7 @@ public class INeedLogin {
 	 * 
 	 */
 	public void saveCookiesAndToken() {
-		File file = new File("./config/cookies.config");
+		File file = ResourcesUtil.sourceOf("./config/cookies.config");
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 			BufferedWriter oos = new BufferedWriter(fileWriter);
@@ -145,7 +145,7 @@ public class INeedLogin {
 	 * @return
 	 */
 	public String readCookies() {
-		File file = new File("./config/cookies.config");
+		File file = ResourcesUtil.sourceOf("./config/cookies.config");
 		return ResourcesUtil.readAll(file);
 	}
 
@@ -173,7 +173,7 @@ public class INeedLogin {
 			return loginHeader;
 		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
 		String cookie = null;
-		File fingerprint = new File("./config/fingerprint.config");
+		File fingerprint = ResourcesUtil.sourceOf("./config/fingerprint.config");
 		if(fingerprint.exists()) {
 			cookie = ResourcesUtil.readAll(fingerprint);
 		}else {

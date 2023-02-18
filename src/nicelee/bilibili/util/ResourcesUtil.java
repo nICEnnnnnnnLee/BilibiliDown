@@ -107,15 +107,38 @@ public class ResourcesUtil {
 			return file;
 		return null;
 	}
+	
+	public static File sourceOf(String path) {
+		File file = new File(path);
+		if (file.exists())
+			return file;
+		file = new File(baseDirectory(), path);
+		if (!file.exists())
+			file.getParentFile().mkdir();
+		return file;
+	}
 
+	static String cacheBaseDir;
 	public static String baseDirectory() {
+		if(cacheBaseDir == null) {
+			try {
+				String path = ClassLoader.getSystemResource("").getPath();
+				if (path == null || "".equals(path))
+					cacheBaseDir = getProjectPath();
+				else
+					cacheBaseDir = path;
+			} catch (Exception ignored) {
+				cacheBaseDir = getProjectPath();
+			}
+		}
+		return cacheBaseDir;
+	}
+	
+	public static String canonicalPath(String path) {
 		try {
-			String path = ClassLoader.getSystemResource("").getPath();
-			if (path == null || "".equals(path))
-				return getProjectPath();
+			return new File(path).getCanonicalPath();
+		} catch (IOException e) {
 			return path;
-		} catch (Exception ignored) {
-			return getProjectPath();
 		}
 	}
 

@@ -33,7 +33,7 @@ public class RepoUtil {
 	public static void init(boolean refresh) {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
 		if (fRepo == null || refresh) {
-			fRepo = new File("config/repo.config");
+			fRepo = ResourcesUtil.sourceOf("config/repo.config");
 			standardAvPattern = Pattern.compile("^((?:av|h|BV|season|au|edd_)[0-9a-zA-Z_]+)-([0-9]+)(-p[0-9]+)$");
 			int initialSize = (int) (233 / 0.75f);
 			try {
@@ -149,8 +149,8 @@ public class RepoUtil {
 
 	static void convertSync() {
 		Pattern avPattern = Pattern.compile("^av([0-9a-zA-Z]+)(-[0-9]+-p[0-9]+)$");
-		File fRepo = new File("config/repo.config");
-		File fRepoNew = new File("config/repo.new.config");
+		File fRepo = ResourcesUtil.sourceOf("config/repo.config");
+		File fRepoNew = ResourcesUtil.sourceOf("config/repo.new.config");
 
 		HashMap<String, String> avBvMap = new HashMap<>();
 		// 先初始化downRepo
@@ -216,7 +216,7 @@ public class RepoUtil {
 			buReader.close();
 			buWriter.close();
 
-			File fRepoBackup = new File("config/repo.config.bk" + System.currentTimeMillis() / 1000);
+			File fRepoBackup = ResourcesUtil.sourceOf("config/repo.config.bk" + System.currentTimeMillis() / 1000);
 			ResourcesUtil.copy(fRepo, fRepoBackup);
 			fRepo.delete();
 			ResourcesUtil.copy(fRepoNew, fRepo);

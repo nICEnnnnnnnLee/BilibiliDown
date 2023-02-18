@@ -304,7 +304,7 @@ public class MJMenuBar extends JMenuBar {
 			public void actionPerformed(ActionEvent e) {
 				File dir = ResourcesUtil.search("config");
 				if(dir == null) {
-					dir = new File("config");
+					dir = new File(ResourcesUtil.baseDirectory(), "config");
 					dir.mkdirs();
 				}
 				File downloadingTasks = new File(dir, "tasks.config");
@@ -464,7 +464,7 @@ public class MJMenuBar extends JMenuBar {
 							JOptionPane.WARNING_MESSAGE);
 				}else {
 					API.logout();
-					new File("./config/cookies.config").delete();
+					ResourcesUtil.sourceOf("./config/cookies.config").delete();
 					// 置空全局cookie
 					HttpCookies.setGlobalCookies(null);
 					// 更改登录状态

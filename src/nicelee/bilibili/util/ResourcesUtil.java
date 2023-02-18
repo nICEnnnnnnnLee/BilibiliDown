@@ -119,6 +119,14 @@ public class ResourcesUtil {
 	}
 
 	static String cacheBaseDir;
+	static File cacheBaseDirFile;
+	
+	public static File baseDirFile() {
+		if(cacheBaseDirFile == null)
+			cacheBaseDirFile = new File(baseDirectory());
+		return cacheBaseDirFile;
+	}
+	
 	public static String baseDirectory() {
 		if(cacheBaseDir == null) {
 			try {

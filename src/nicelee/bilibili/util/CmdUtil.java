@@ -26,9 +26,12 @@ public class CmdUtil {
 	public static String FFMPEG_PATH = "ffmpeg";
 
 	public static boolean run(String cmd[]) {
+		return run(cmd, null);
+	}
+	public static boolean run(String cmd[], File workingDir) {
 		Process process = null;
 		try {
-			process = Runtime.getRuntime().exec(cmd);
+			process = Runtime.getRuntime().exec(cmd, null, workingDir);
 			StreamManager errorStream = new StreamManager(process, process.getErrorStream());
 			StreamManager outputStream = new StreamManager(process, process.getInputStream());
 			errorStream.start();

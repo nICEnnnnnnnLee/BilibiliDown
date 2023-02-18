@@ -12,6 +12,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.Encrypt;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.Global;
 
@@ -19,6 +20,7 @@ import nicelee.ui.Global;
 public class VersionDownloader extends FLVDownloader {
 
 	private static final Pattern pattern = Pattern.compile("BilibiliDown\\.v([0-9]+\\.[0-9]+).*\\.zip");
+	protected static final File updateDir = new File(ResourcesUtil.baseDirectory(), "update");
 	String downName;
 	String version;
 	
@@ -46,10 +48,13 @@ public class VersionDownloader extends FLVDownloader {
 	public boolean download(String url, String avId, int qn, int page) {
 		convertingStatus = StatusEnum.NONE;
 		currentTask = 1;
-		if(file == null) {
-			file = new File("update/" + downName);
+		if (file == null) {
+			file = new File(updateDir, downName);
 		}
-		util.setSavePath("./update");
+		try {
+			util.setSavePath(updateDir.getCanonicalPath());
+		} catch (IOException e1) {
+		}
 		boolean succ = util.download(url, downName, new HashMap<>());
 		if (succ) {
 			sumSuccessDownloaded += util.getTotalFileSize();

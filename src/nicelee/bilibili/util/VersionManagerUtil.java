@@ -124,8 +124,9 @@ public class VersionManagerUtil {
 	 * 解压出包中的"INeedBiliAV.jar"
 	 */
 	public static void unzipTargetJar(String downName) throws IOException {
-		File targetfolder = new File("update/");
-		ZipInputStream zi = new ZipInputStream(new FileInputStream("update/" + downName));
+		File targetfolder = new File(ResourcesUtil.baseDirectory(), "update");
+		File zipFile = new File(targetfolder, downName);
+		ZipInputStream zi = new ZipInputStream(new FileInputStream(zipFile));
 		ZipEntry ze = null;
 		FileOutputStream fo = null;
 		byte[] buff = new byte[1024];
@@ -170,15 +171,16 @@ public class VersionManagerUtil {
 	public static void RunCmdAndCloseApp(String code) {
 		try {
 			String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+			File dir = ResourcesUtil.baseDirFile();
 			if(System.getProperty("os.name").toLowerCase().contains("windows")) {
 				String cmd[] = { "cmd", "/c", "start", "update.bat", code, pid };
-				CmdUtil.run(cmd);
+				CmdUtil.run(cmd, dir);
 			}else {
 				System.out.println(System.getProperty("os.name").toLowerCase());
-				copy(VersionManagerUtil.class.getResourceAsStream("/resources/update.sh"), new File("update.sh"), false);
-				CmdUtil.run(new String[]{"chmod", "+x", "./update.sh"});
+				copy(VersionManagerUtil.class.getResourceAsStream("/resources/update.sh"), new File(ResourcesUtil.baseDirectory(), "update.sh"), false);
+				CmdUtil.run(new String[]{"chmod", "+x", "./update.sh"}, dir);
 				String cmd[] = { "./update.sh", "@" + code, pid, "bilibili.log" }; // 最后一个为log，可以为/dev/null
-				if(!CmdUtil.run(cmd)) {
+				if(!CmdUtil.run(cmd, dir)) {
 					JOptionPane.showMessageDialog(null, "update.sh运行失败。你需要赋予其可执行权限。\n请关闭程序，然后执行命令行：\nsudo chmod +x ./update.sh && ./update.sh", "!", JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}

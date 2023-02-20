@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.annotations.Controller;
@@ -149,7 +150,7 @@ public abstract class PackageScanLoader {
 
 	public List<Class<?>> scanRoot(String packNameWithDot) {
 		validClazzList = new ArrayList<Class<?>>();
-		classLoader = Thread.currentThread().getContextClassLoader();
+		classLoader = this.getClass().getClassLoader();
 		String packNameWithFileSep = packNameWithDot.replace("\\", "/").replace(".", "/");
 		packNameWithDot = packNameWithDot.replace("/", ".");
 
@@ -167,6 +168,8 @@ public abstract class PackageScanLoader {
 					} else if (file.getName().endsWith(".class")) {
 						deaWithJavaClazzFile(packNameWithDot, file);
 					}
+				} else if (type.equals("mem")) {
+					dealWithMemoryJar(currentUrl, packNameWithFileSep);
 				}
 			}
 		} catch (IOException e) {
@@ -247,5 +250,34 @@ public abstract class PackageScanLoader {
 			e.printStackTrace();
 		}
 
+	}
+	
+	// 处理自定义内存加载类型
+	private void dealWithMemoryJar(URL url, String packNameWithFileSep) {
+		try {
+			JarInputStream jin = (JarInputStream) url.openStream();
+			JarEntry entry = jin.getNextJarEntry();
+			while (entry != null) {
+				if (entry.isDirectory() || !entry.getName().endsWith(".class") || !entry.getName().startsWith(packNameWithFileSep)) {
+					entry = jin.getNextJarEntry();
+					continue;
+				}
+				// 处理class类型
+				String jarName = entry.getName();
+				int dotIndex = jarName.indexOf(".class");
+				String className = jarName.substring(0, dotIndex).replace("/", ".");
+				Class<?> klass = Class.forName(className, true, classLoader);
+				if (isValid(klass)) {
+					validClazzList.add(klass);
+				}
+				entry = jin.getNextJarEntry();
+			}
+			jin.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

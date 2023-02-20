@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.ProcessBuilder.Redirect;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,25 +22,32 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.check.FlvMerger;
 import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
-import nicelee.ui.thread.StreamManager;
 
 public class CmdUtil {
 
 	public static String FFMPEG_PATH = "ffmpeg";
 	public static File DEFAULT_WORKING_DIR = null;
-
+	private static final File NULL_FILE = new File(
+            (System.getProperty("os.name")
+                    .startsWith("Windows") ? "NUL" : "/dev/null")
+    );
+	private static final Redirect DISCARD = Redirect.to(NULL_FILE); // 为了兼容 java8
+	
 	public static boolean run(String cmd[]) {
 		return run(cmd, DEFAULT_WORKING_DIR);
 	}
 	public static boolean run(String cmd[], File workingDir) {
 		Process process = null;
 		try {
-			process = Runtime.getRuntime().exec(cmd, null, workingDir);
-			StreamManager errorStream = new StreamManager(process, process.getErrorStream());
-			StreamManager outputStream = new StreamManager(process, process.getInputStream());
-			errorStream.start();
-			outputStream.start();
-			// System.out.println("此处堵塞, 直至process 执行完毕");
+			ProcessBuilder pb = new ProcessBuilder(cmd).directory(workingDir);
+            if(Global.debugCmd) {
+            	pb.redirectOutput(Redirect.INHERIT);
+            	pb.redirectError(Redirect.INHERIT);
+            }else {
+            	pb.redirectOutput(DISCARD);
+            	pb.redirectError(DISCARD);
+            }
+			process = pb.start();
 			process.waitFor();
 			System.out.println("process 执行完毕");
 			return true;

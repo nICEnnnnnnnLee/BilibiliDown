@@ -26,9 +26,10 @@ import nicelee.ui.thread.StreamManager;
 public class CmdUtil {
 
 	public static String FFMPEG_PATH = "ffmpeg";
+	public static File DEFAULT_WORKING_DIR = null;
 
 	public static boolean run(String cmd[]) {
-		return run(cmd, null);
+		return run(cmd, DEFAULT_WORKING_DIR);
 	}
 	public static boolean run(String cmd[], File workingDir) {
 		Process process = null;

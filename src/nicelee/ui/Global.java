@@ -214,7 +214,7 @@ public class Global {
 		}
 		// 特殊处理
 		downLoadThreadPool = Executors.newFixedThreadPool(downloadPoolSize);
-		String savePath = Global.savePath;
+		String savePath = ResourcesUtil.resolve(Global.savePath);
 		if (savePath.endsWith("\\")) {
 			savePath = savePath.substring(0, savePath.length() - 1) + "/";
 		} else if (!savePath.endsWith("/")) {

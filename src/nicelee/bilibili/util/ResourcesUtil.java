@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 
 public class ResourcesUtil {
 	
@@ -120,6 +121,18 @@ public class ResourcesUtil {
 
 	static String cacheBaseDir;
 	static File cacheBaseDirFile;
+	
+	public static String resolve(String path) {
+		if(!Paths.get(path).isAbsolute()) {
+			try {
+				File f = new File(baseDirectory(), path);
+				return f.getCanonicalPath();
+			} catch (IOException e) {
+				return path;
+			}
+		}
+		return path;
+	}
 	
 	public static File baseDirFile() {
 		if(cacheBaseDirFile == null)

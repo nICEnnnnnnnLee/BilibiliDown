@@ -15,6 +15,7 @@ public class MonitoringThread extends Thread {
 	
 	public MonitoringThread() {
 		this.setName("Thread - Monitoring Download");
+		this.setDaemon(true);
 	}
 	public void run() {
 		ConcurrentHashMap<DownloadInfoPanel, IDownloader> map = Global.downloadTaskList;

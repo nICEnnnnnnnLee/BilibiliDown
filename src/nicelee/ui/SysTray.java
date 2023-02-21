@@ -1,6 +1,7 @@
 package nicelee.ui;
 
 import java.awt.AWTException;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -18,7 +19,7 @@ import nicelee.ui.item.JOptionPane;
 import nicelee.bilibili.util.Logger;
 
 public class SysTray {
-	final private Image systemTrayImg;
+	private Image systemTrayImg;
 	final private JFrame frame;
 
 	private SystemTray systemTray;
@@ -52,9 +53,14 @@ public class SysTray {
 		}
 		Logger.println("托盘功能开始启用");
 		systemTray = SystemTray.getSystemTray();
+		Dimension dim = systemTray.getTrayIconSize();
+		double factor = System.getProperty("os.name").startsWith("Windows")? 1.0: 0.8;
+		int width = (int) (dim.width * factor);
+		Logger.println("Systray width: " + width);
+		systemTrayImg = systemTrayImg.getScaledInstance(width, -1, Image.SCALE_SMOOTH);
 		PopupMenu popup = createPopupMenu();
 		trayIcon = new TrayIcon(systemTrayImg, "BilibiliDown", popup);
-		trayIcon.setImageAutoSize(true);
+		// trayIcon.setImageAutoSize(true);
 
 		// 鼠标事件
 		trayIcon.addMouseListener(new MouseAdapter() {
@@ -62,7 +68,7 @@ public class SysTray {
 			public void mouseClicked(MouseEvent e) {
 				// 双击鼠标左键托盘窗口再现
 				if ((e.getButton() == 1) && (e.getClickCount() == 2)) {
-					System.out.println("双击左键！");
+					Logger.println("双击左键！");
 					frame.setVisible(true);
 					frame.setExtendedState(JFrame.NORMAL);
 				}

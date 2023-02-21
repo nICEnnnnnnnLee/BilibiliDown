@@ -1,6 +1,7 @@
 package nicelee.bilibili.parsers;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,42 +13,63 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 
+// 糟糕的设计，改都不好改
 public class InputParser implements IInputParser, IParamSetter {
 
 	protected final static Pattern paramPattern = Pattern.compile("^(.*)p=([0-9]+)$");// 自定义参数, 目前只匹配个人主页视频的页码
-	private List<IInputParser> parsers = null;
+	private static List<IInputParser> parsers = null;
 	private IInputParser parser = null;
 	private int page = 1;
 	private int realQN = 1;
+	private HttpRequestUtil util;
+	private int pageSize;
 
+	@SuppressWarnings("unchecked")
 	public InputParser(HttpRequestUtil util, int pageSize, String loadContition) {
-		parsers = new ArrayList<>();
-		try {
-			for (Class<?> clazz : PackageScanLoader.validParserClasses) {
-				// 判断是否需要载入
-				Bilibili bili = clazz.getAnnotation(Bilibili.class);
-				if (bili.ifLoad().isEmpty() || bili.ifLoad().equals(loadContition)) {
-					// 实例化并加入parser列表
-					// IInputParser inputParser = (IInputParser) clazz.newInstance();
-					// 获取构造函数
-					// Constructor<IInputParser> con = (Constructor<IInputParser>)
-					// clazz.getConstructor(Object[].class);
-					Constructor<IInputParser> con = (Constructor<IInputParser>) clazz.getConstructors()[0];
-					IInputParser inputParser = con.newInstance(new Object[] { new Object[] { util, this, pageSize } });
-					parsers.add(inputParser);
+		this.util = util;
+		this.pageSize = pageSize;
+		if(parsers == null) {
+			synchronized (InputParser.class) {
+				if(parsers == null) {
+					parsers = new ArrayList<>();
+					try {
+						for (Class<?> clazz : PackageScanLoader.validParserClasses) {
+							// 判断是否需要载入
+							Bilibili bili = clazz.getAnnotation(Bilibili.class);
+							if (bili.ifLoad().isEmpty() || bili.ifLoad().equals(loadContition)) {
+								// 实例化并加入parser列表
+								// IInputParser inputParser = (IInputParser) clazz.newInstance();
+								// 获取构造函数
+								// Constructor<IInputParser> con = (Constructor<IInputParser>)
+								// clazz.getConstructor(Object[].class);
+								Constructor<IInputParser> con = (Constructor<IInputParser>) clazz.getConstructors()[0];
+								IInputParser inputParser = con.newInstance(new Object[] { new Object[] { null, null, 0 } });
+								parsers.add(inputParser);
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
 	public IInputParser selectParser(String input) {
+		if(parser != null && parser.matches(input)) {
+			return parser;
+		}
+		parser = null;
 		for (IInputParser parser : parsers) {
 			if (parser.matches(input)) {
-				//Logger.println(input);
-				this.parser = parser;
+				try {
+					Logger.println(input);
+					Object[] param = new Object[] { new Object[] { util, this, pageSize } };
+					this.parser = (IInputParser) parser.getClass().getConstructors()[0].newInstance(param);
+					this.parser.matches(input);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | SecurityException e) {
+				}
 				break;
 			}
 		}

@@ -2,19 +2,16 @@ package nicelee.bilibili.downloaders;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import nicelee.bilibili.PackageScanLoader;
-import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 
 public class Downloader implements IDownloader {
 
-	private List<IDownloader> downloaders = null;
+	private static List<IDownloader> downloaders = null;
 	private IDownloader downloader = null;
 	private HttpRequestUtil util;
 	private StatusEnum status;
@@ -26,35 +23,48 @@ public class Downloader implements IDownloader {
 
 	@Override
 	public void init(HttpRequestUtil util) {
-		downloaders = new ArrayList<>();
 		status = StatusEnum.NONE;
 		this.util = util;
-
-		try {
-			for (Class<?> clazz : PackageScanLoader.validDownloaderClasses) {
-				IDownloader downloader = (IDownloader) clazz.newInstance();
-				downloader.init(util);
-				downloaders.add(downloader);
+		
+		if(downloaders == null) {
+			synchronized (Downloader.class) {
+				if(downloaders == null) {
+					downloaders = new ArrayList<>();
+					try {
+						for (Class<?> clazz : PackageScanLoader.validDownloaderClasses) {
+							IDownloader downloader = (IDownloader) clazz.newInstance();
+							downloaders.add(downloader);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public boolean download(String url, String avId, int qn, int page) {
-		for (IDownloader downloader : downloaders) {
-			if (downloader.matches(url)) {
-				this.downloader = downloader;
-				status = StatusEnum.DOWNLOADING;
-				downloader.init(util);
-				return downloader.download(url, avId, qn, page);
+		if(downloader == null) {
+			for (IDownloader downloader : downloaders) {
+				if (downloader.matches(url)) {
+					try {
+						this.downloader = downloader.getClass().newInstance();
+					} catch (InstantiationException | IllegalAccessException e) {
+					}
+				}
 			}
 		}
-		System.out.print("未找到匹配当前url的下载器:");
-		System.out.println(url);
-		status = StatusEnum.FAIL;
-		return false;
+		if(downloader != null) {
+			status = StatusEnum.DOWNLOADING;
+			downloader.init(util);
+			return downloader.download(url, avId, qn, page);
+		} else {
+			System.out.print("未找到匹配当前url的下载器:");
+			System.out.println(url);
+			status = StatusEnum.FAIL;
+			return false;
+		}
 	}
 
 	@Override

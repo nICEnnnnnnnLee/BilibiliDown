@@ -59,7 +59,8 @@ public class Plugin {
 			String classpath = System.getProperty("java.class.path", "");
 			classpath = ResourcesUtil.sourceOf("INeedBiliAV.jar").getCanonicalPath() 
 					+ File.pathSeparatorChar + classpath;
-			int result = compiler.run(null, null, null, "-cp", classpath, file.getCanonicalPath());
+			int result = compiler.run(null, null, null, "-cp", classpath, 
+					"-encoding", "UTF-8", file.getCanonicalPath());
 			return result == 0;
 		} catch (Exception e) {
 			return false;

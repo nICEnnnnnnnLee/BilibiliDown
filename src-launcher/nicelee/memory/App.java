@@ -62,7 +62,7 @@ public class App {
 	public static void restartApplication() throws IOException {
 		try {
 			// java binary
-			String java = System.getProperty("java.home") + "/bin/java";
+			String java = null;
 			try {
 				// java 8 没有这个实现
 				// Optional<String> command = ProcessHandle.current().info().command();
@@ -72,10 +72,10 @@ public class App {
 				Object phCommand = phInfo.getClass().getInterfaces()[0].getDeclaredMethod("command").invoke(phInfo);
 				@SuppressWarnings("unchecked")
 				Optional<String> command = (Optional<String>) phCommand;
-				if (command.isPresent()) {
-					java = command.get();
-				}
+				java = command.get();
 			} catch (Throwable e) {
+				String javaHome = System.getProperty("java.home");
+				java = javaHome != null ? javaHome + "/bin/java" : "java";
 			}
 			// vm arguments
 			List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();

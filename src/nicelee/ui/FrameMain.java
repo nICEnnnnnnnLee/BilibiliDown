@@ -135,6 +135,7 @@ public class FrameMain extends JFrame {
 		} catch (InterruptedException e) {
 			Global.frWaiting.stop();
 		}
+		Global.frWaiting = null;
 		main.setVisible(true);
 		main.setExtendedState(JFrame.NORMAL);
 		main.toFront();

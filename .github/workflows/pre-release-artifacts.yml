@@ -31,7 +31,9 @@ jobs:
       run: |
         chmod +x package.sh
         ./package.sh
-
+        chmod +x .github/scripts/package_launcher.sh
+        ./.github/scripts/package_launcher.sh
+        
     - name: ZIP files
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}

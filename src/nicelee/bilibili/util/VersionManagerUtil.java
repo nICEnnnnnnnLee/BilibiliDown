@@ -162,6 +162,24 @@ public class VersionManagerUtil {
 		zi.close();
 	}
 
+	public static void trySelfUpdate(String code) {
+		try {
+			Class<?> cls = Class.forName("nicelee.memory.App", true, 
+					VersionManagerUtil.class.getClassLoader());
+			// 如果是由launch.jar加载，此时可以直接删除
+			File updateJar = ResourcesUtil.search("update/INeedBiliAV.update.jar");
+			File coreJar = ResourcesUtil.search("INeedBiliAV.jar");
+			if(coreJar.delete() && updateJar.renameTo(coreJar)) {
+				if("1".equals(code)) {
+					cls.getDeclaredMethod("restartApplication").invoke(null);
+				}
+				System.exit(1);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * 运行bat文件，并关闭当前程序 (bat文件删除旧的jar文件, 替换新的jar文件，替换完成后重新打开程序)
 	 * <p>
@@ -169,6 +187,7 @@ public class VersionManagerUtil {
 	 * </p>
 	 */
 	public static void RunCmdAndCloseApp(String code) {
+		trySelfUpdate(code);
 		try {
 			String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 			File dir = ResourcesUtil.baseDirFile();

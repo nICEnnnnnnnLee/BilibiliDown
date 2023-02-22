@@ -1,14 +1,16 @@
 package nicelee.memory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
+import java.util.List;
+import java.util.Optional;
 
 import nicelee.memory.classloader.MemoryClassLoader;
 import nicelee.memory.url.MemoryURLHandler;
@@ -40,15 +42,82 @@ public class App {
 
 	private static byte[] readAllBytes(File f) throws IOException {
 		InputStream in = new FileInputStream(f);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
+		long fileSize = f.length();
+		byte[] buf = new byte[(int) fileSize];
 		int len = in.read(buf);
-		while (len > 0) {
-			out.write(buf, 0, len);
-			len = in.read(buf);
-		}
 		in.close();
-		return out.toByteArray();
+		if (len != fileSize) {
+			throw new IOException("File length is not correct! fileSize:" + fileSize);
+		}
+		return buf;
 	}
 
+	public static final String SUN_JAVA_COMMAND = "sun.java.command";
+
+	/**
+	 * Restart the current Java application
+	 * See https://dzone.com/articles/programmatically-restart-java
+	 * @throws IOException
+	 */
+	public static void restartApplication() throws IOException {
+		try {
+			// java binary
+			String java = System.getProperty("java.home") + "/bin/java";
+			try {
+				// java 8 没有这个实现
+				Optional<String> command = ProcessHandle.current().info().command();
+				if (command.isPresent()) {
+					java = command.get();
+				}
+			} catch (Throwable e) {
+			}
+			// vm arguments
+			List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+			StringBuilder vmArgsOneLine = new StringBuilder();
+			for (String arg : vmArguments) {
+				// if it's the agent argument : we ignore it otherwise the
+				// address of the old application and the new one will be in conflict
+				if (!arg.contains("-agentlib")) {
+					vmArgsOneLine.append(arg);
+					vmArgsOneLine.append(" ");
+				}
+			}
+			// init the command to execute, add the vm args
+			final StringBuilder cmd = new StringBuilder("\"" + java + "\" " + vmArgsOneLine);
+
+			// program main and program arguments
+			String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
+			// program main is a jar
+			if (mainCommand[0].endsWith(".jar")) {
+				// if it's a jar, add -jar mainJar
+				cmd.append("-jar \"" + new File(mainCommand[0]).getPath() + "\"");
+			} else {
+				// else it's a .class, add the classpath and mainClass
+				cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
+			}
+			// finally add program arguments
+			for (int i = 1; i < mainCommand.length; i++) {
+				cmd.append(" ");
+				cmd.append(mainCommand[i]);
+			}
+			// execute the command in a shutdown hook, to be sure that all the
+			// resources have been disposed before restarting the application
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					System.out.println(cmd.toString());
+					try {
+						Runtime.getRuntime().exec(cmd.toString());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			// exit
+			System.exit(0);
+		} catch (Exception e) {
+			// something went wrong
+			throw new IOException("Error while trying to restart the application", e);
+		}
+	}
 }

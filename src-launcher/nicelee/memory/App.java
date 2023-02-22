@@ -65,7 +65,13 @@ public class App {
 			String java = System.getProperty("java.home") + "/bin/java";
 			try {
 				// java 8 没有这个实现
-				Optional<String> command = ProcessHandle.current().info().command();
+				// Optional<String> command = ProcessHandle.current().info().command();
+				Class<?> phCls = Class.forName("java.lang.ProcessHandle");
+				Object phInstance = phCls.getDeclaredMethod("current").invoke(null);
+				Object phInfo = phInstance.getClass().getInterfaces()[0].getDeclaredMethod("info").invoke(phInstance);
+				Object phCommand = phInfo.getClass().getInterfaces()[0].getDeclaredMethod("command").invoke(phInfo);
+				@SuppressWarnings("unchecked")
+				Optional<String> command = (Optional<String>) phCommand;
 				if (command.isPresent()) {
 					java = command.get();
 				}

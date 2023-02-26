@@ -12,6 +12,7 @@
 |-- Run-for-Linux.sh                         Linux下的运行脚本
 |-- ffmpeg.exe                               Windows下的ffmpeg
 |-- INeedBiliAV.jar                          主程序
+|-- launch.jar                               启动程序, 目的是能够不借助脚本实现jar包自升级
 |-- uninstall.bat                            Windows下卸载脚本(其实就是删除所在文件夹)
 |-- update.bat                               Windows下更新脚本(程序调用+双击皆可)
 |-- update.sh                                Linux/Mac下的更新脚本(不存在的话会由程序创建)

@@ -46,12 +46,12 @@ let urlFromImagekit = (version, fileName)=>{
 
 ### 关于如何选择下载附件
 + 如果有java 8及以上的环境  
--> `BilibiliDown.v{{ version }}.release.zip`  
+-> BilibiliDown.v{{ version }}.release.zip  
 + 如果没有java 8及以上的环境  
     + Windows  
-        -> `BilibiliDown.v{{ version }}.win_x64_jre11.release.zip`  
+        -> BilibiliDown.v{{ version }}.win_x64_jre11.release.zip  
     + 其它系统  
-        -> `BilibiliDown.v{{ version }}.release.zip`并安装配置Java环境
+        -> BilibiliDown.v{{ version }}.release.zip 并安装配置Java环境
 
 ### 关于如何安装Java环境  
 可以自行百度，或者选择以下任意Java发行版下载安装，Java版本>=8即可。  

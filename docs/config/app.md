@@ -369,6 +369,7 @@ bilibili.system.properties.jre11.override = false
     以上仅针对DASH模式(即`bilibili.format=0`)有效
     
 ## bilibili.github.token
+- 引入版本: V6.23
 - 取值范围:   
     [Github token](https://github.com/settings/tokens)
 - 释义:   
@@ -377,6 +378,7 @@ bilibili.system.properties.jre11.override = false
     使用项目精简的JRE 11访问它会被GFW重置连接，但JDK 11不会。  
 
 ## bilibili.sysTray.enable
+- 引入版本: V6.23
 - 取值范围:   
     `true | false`
 - 默认值:   
@@ -385,6 +387,7 @@ bilibili.system.properties.jre11.override = false
     是否开启系统托盘功能
 
 ## bilibili.sysTray.minimizeToSystray
+- 引入版本: V6.23
 - 取值范围:   
     `true | false`
 - 默认值:   
@@ -394,6 +397,7 @@ bilibili.system.properties.jre11.override = false
     值为`false`时，开启系统托盘功能后，点击最小化按钮到任务栏
 
 ## bilibili.sysTray.closeToSystray
+- 引入版本: V6.23
 - 取值范围:   
     `true | false`
 - 默认值:   
@@ -401,3 +405,28 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     值为`true`时，开启系统托盘功能后，点击关闭按钮到托盘（从任务栏隐藏）
     值为`false`时，开启系统托盘功能后，点击关闭按钮退出程序
+
+## bilibili.dash.ffmpeg.command.merge
+- 引入版本: V6.24
+- 取值范围:   
+    FFmpeg命令行调用, 中间`,`是将其分割成`String[]`
+- 默认值:   
+    ```
+    {FFmpeg}, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}
+    ```  
+- 释义:   
+    音视频都存在时的ffmpeg调用命令行。  
+    如果自行改动的话，请注意ffmpeg编译的版本，以及硬件上是否支持你改的内容。  
+    一个使用英伟达硬解的参考例子：  
+    ```
+    {FFmpeg}, -hwaccel, cuda, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}
+    ```
+## bilibili.cmd.debug
+- 引入版本: V6.24
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    值为`true`时，外部命令行调用会显示输出
+    值为`false`时，外部命令行调用不会显示输出

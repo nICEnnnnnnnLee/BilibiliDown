@@ -1,5 +1,20 @@
 ## UPDATE  
-* V6.21  `2023-01-22`  
+* V6.24  `2023-02-22`  
+	* 新增: 现在可以通过双击/命令行调用`launch.jar`启动程序。  
+		* `launch.jar`会先将`INeedBiliAV.jar`加载到内存，然后再调用。这样原来的jar包就可以被删除，便于程序自更新。    
+		* 当然，如果不考虑更新的问题，通过双击/命令行调用`INeedBiliAV.jar`启动程序也是可以的。    
+		* 如果你是通过旧版本的自更新升级上来的，照旧使用不会有任何问题。
+	* 修复: 一键下载的优先清晰度现在不仅受配置文件控制，还受菜单栏控制
+	* 优化: 可以通过配置`bilibili.dash.ffmpeg.command.merge`调整DASH类型的音视频FFMPEG合并命令
+		*  经测试，配合全功能编译的FFMPEG，指令`-hwaccel cuda`似乎有点效果，详见[FFmpegTest](/src/nicelee/test/junit/FFmpegTest.java)。   
+			该指令理论上可以借助NVIDIA硬解，但是，监控显示GPU的调用率一直是0%，就很费解。  
+	* 优化: 现在，所有的提示框文本都能够被选择并复制(javax.swing.JOptionPane -> nicelee.ui.item.JOptionPane)
+	* 优化: 现在，可以通过配置选择是否输出ffmpeg的处理过程
+	* 优化: 历史记录缓存使用`ConcurrentHashMap`,而不是`CopyOnWriteArraySet`
+	* 优化: 现在，程序理论上总是会使用`utf-8`编码而不是默认编码(不再需要设置`file.encoding=utf-8`)
+	* 优化: 现在，程序理论上可以在任意工作目录正常运行(不再需要cd到jar包所在目录)
+	
+* V6.23  `2023-01-22`  
     * 新增: 在设置Github token后，可以在菜单栏选择更新Beta版本，省去使用浏览器打开Github Action的步骤
         + `bilibili.github.token = [github token]`  
         + 似乎JRE下重定向的域名`pipelines.actions.githubusercontent.com`会被连接重置，但JDK不受影响。  

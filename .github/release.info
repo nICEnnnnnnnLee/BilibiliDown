@@ -1,21 +1,16 @@
-* 新增: 在设置Github token后，可以在菜单栏选择更新Beta版本，省去使用浏览器打开Github Action的步骤
-    + `bilibili.github.token = [github token]`  
-    + 似乎JRE下重定向的域名`pipelines.actions.githubusercontent.com`会被连接重置，但JDK不受影响。  
-* 新增: 实现最小化到系统托盘功能
-    + `bilibili.sysTray.enable = true/false` 是否开启系统托盘功能
-    + `bilibili.sysTray.minimizeToSystray = true/false` 是否点击最小化按钮到托盘
-    + `bilibili.sysTray.closeToSystray = true/false` 是否点击关闭按钮到托盘
-* 新增: 音频基础解析`e.g. https://www.bilibili.com/audio/au3688627`
-* 新增: 音频歌单解析`e.g. https://www.bilibili.com/audio/am33012874`
-* 新增: 自己创建的默认歌单解析`e.g. https://www.bilibili.com/audio/mycollection/[0-9]+`
-* 优化: 现在可以从收藏夹中解析到音频了`e.g. https://space.bilibili.com/35849261/favlist?fid=1509975661&ftype=create`
-* 优化: 现在，API返回412会弹框提示 [issues 90](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/90)
-* 优化: 现在，查询下载链接解析出错会弹框提示
-* 优化: 现在，在登录后，查询高质量链接却返回360P清晰度会弹框提示
-* 修复：API返回实际清晰度不对劲导致的解析错误 `eg. BV1K14y1g7iU 无cookie`
-* ci: 增加编译后的jar包有效性测试，预防编译失败的低级问题  
-* ci: 人工触发上传时，可选择目标站点
-* ci: 将运行的脚本内容从逐渐臃肿的yaml文件中抽离
+* 新增: 现在可以通过双击/命令行调用`launch.jar`启动程序。  
+    * `launch.jar`会先将`INeedBiliAV.jar`加载到内存，然后再调用。这样原来的jar包就可以被删除，便于程序自更新。    
+    * 当然，如果不考虑更新的问题，通过双击/命令行调用`INeedBiliAV.jar`启动程序也是可以的。    
+    * 如果你是通过旧版本的自更新升级上来的，照旧使用不会有任何问题。
+* 修复: 一键下载的优先清晰度现在不仅受配置文件控制，还受菜单栏控制
+* 优化: 可以通过配置`bilibili.dash.ffmpeg.command.merge`调整DASH类型的音视频FFMPEG合并命令
+    *  经测试，配合全功能编译的FFMPEG，指令`-hwaccel cuda`似乎有点效果，详见[FFmpegTest](/src/nicelee/test/junit/FFmpegTest.java)。   
+        该指令理论上可以借助NVIDIA硬解，但是，监控显示GPU的调用率一直是0%，就很费解。  
+* 优化: 现在，所有的提示框文本都能够被选择并复制(javax.swing.JOptionPane -> nicelee.ui.item.JOptionPane)
+* 优化: 现在，可以通过配置选择是否输出ffmpeg的处理过程
+* 优化: 历史记录缓存使用`ConcurrentHashMap`,而不是`CopyOnWriteArraySet`
+* 优化: 现在，程序理论上总是会使用`utf-8`编码而不是默认编码(不再需要设置`file.encoding=utf-8`)
+* 优化: 现在，程序理论上可以在任意工作目录正常运行(不再需要cd到jar包所在目录)
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`

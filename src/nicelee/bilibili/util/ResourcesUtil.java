@@ -9,8 +9,16 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 
 public class ResourcesUtil {
+	
+	final static boolean isJarLaunch;
+	static {
+		String[] mainCommand = System.getProperty("sun.java.command", "").split(" ");
+		isJarLaunch = mainCommand[0].endsWith(".jar");
+		// isJarLaunch = System.getProperty("java.class.path").startsWith("INeedBiliAV.jar");
+	}
 
 	public static void write(File f, String content) {
 		try {
@@ -97,25 +105,65 @@ public class ResourcesUtil {
 		}
 	}
 
-	public static File search(String path) {
-		File file = new File(path);
-		if (file.exists())
-			return file;
-		System.out.printf("%s 路径不存在, 尝试以程序目录为基址进行查找\n", path);
-		file = new File(baseDirectory(), path);
+	public static File search(String relativePath) {
+		File file = new File(baseDirectory(), relativePath);
 		if (file.exists())
 			return file;
 		return null;
 	}
+	
+	public static File sourceOf(String relativePath) {
+		File file = new File(baseDirectory(), relativePath);
+		if (!file.exists())
+			file.getParentFile().mkdir();
+		return file;
+	}
 
+	static String cacheBaseDir;
+	static File cacheBaseDirFile;
+	
+	public static String resolve(String path) {
+		if(!Paths.get(path).isAbsolute()) {
+			try {
+				File f = new File(baseDirectory(), path);
+				return f.getCanonicalPath();
+			} catch (IOException e) {
+				return path;
+			}
+		}
+		return path;
+	}
+	
+	public static File baseDirFile() {
+		if(cacheBaseDirFile == null)
+			cacheBaseDirFile = new File(baseDirectory());
+		return cacheBaseDirFile;
+	}
+	
 	public static String baseDirectory() {
+		if(cacheBaseDir == null) {
+			if(isJarLaunch) {
+				try {
+					String path = ClassLoader.getSystemResource("").getPath();
+					if (path == null || "".equals(path))
+						cacheBaseDir = getProjectPath();
+					else
+						cacheBaseDir = path;
+				} catch (Exception ignored) {
+					cacheBaseDir = getProjectPath();
+				}
+			} else {
+				cacheBaseDir = System.getProperty("user.dir", "");
+			}
+		}
+		return cacheBaseDir;
+	}
+	
+	public static String canonicalPath(String path) {
 		try {
-			String path = ClassLoader.getSystemResource("").getPath();
-			if (path == null || "".equals(path))
-				return getProjectPath();
+			return new File(path).getCanonicalPath();
+		} catch (IOException e) {
 			return path;
-		} catch (Exception ignored) {
-			return getProjectPath();
 		}
 	}
 

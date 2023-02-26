@@ -2,11 +2,15 @@ package nicelee.bilibili.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.lang.ProcessBuilder.Redirect;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,21 +22,32 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.check.FlvMerger;
 import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
-import nicelee.ui.thread.StreamManager;
 
 public class CmdUtil {
 
 	public static String FFMPEG_PATH = "ffmpeg";
-
+	public static File DEFAULT_WORKING_DIR = null;
+	private static final File NULL_FILE = new File(
+            (System.getProperty("os.name")
+                    .startsWith("Windows") ? "NUL" : "/dev/null")
+    );
+	private static final Redirect DISCARD = Redirect.to(NULL_FILE); // 为了兼容 java8
+	
 	public static boolean run(String cmd[]) {
+		return run(cmd, DEFAULT_WORKING_DIR);
+	}
+	public static boolean run(String cmd[], File workingDir) {
 		Process process = null;
 		try {
-			process = Runtime.getRuntime().exec(cmd);
-			StreamManager errorStream = new StreamManager(process, process.getErrorStream());
-			StreamManager outputStream = new StreamManager(process, process.getInputStream());
-			errorStream.start();
-			outputStream.start();
-			// System.out.println("此处堵塞, 直至process 执行完毕");
+			ProcessBuilder pb = new ProcessBuilder(cmd).directory(workingDir);
+            if(Global.debugCmd) {
+            	pb.redirectOutput(Redirect.INHERIT);
+            	pb.redirectError(Redirect.INHERIT);
+            }else {
+            	pb.redirectOutput(DISCARD);
+            	pb.redirectError(DISCARD);
+            }
+			process = pb.start();
 			process.waitFor();
 			System.out.println("process 执行完毕");
 			return true;
@@ -153,7 +168,7 @@ public class CmdUtil {
 			File folderDown = new File(Global.savePath);
 			folderDown.mkdirs();
 			File file = new File(folderDown, dstName + ".txt");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
 			for (int i = 1; i <= part; i++) {
 				// Windows下
 				// 当-i的Global.savePath路径以/结尾时，会寻找路径Global.savePath + %file
@@ -250,26 +265,24 @@ public class CmdUtil {
 	 * @return
 	 */
 	public static String[] createConvertCmd(String videoName, String audioName, String dstName) {
+		String cmd[] = null;
 		if (audioName == null) {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -c copy %s", FFMPEG_PATH, Global.savePath + videoName,
-					Global.savePath + dstName);
-			Logger.println(str);
-			return cmd;
+			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
 		} else if (videoName == null) {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -vn -c:a copy %s", FFMPEG_PATH, Global.savePath + audioName,
-					Global.savePath + dstName);
-			Logger.println(str);
-			return cmd;
+			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
 		} else {
-			String cmd[] = { FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
-					"copy", Global.savePath + dstName };
-			String str = String.format("ffmpeg命令为: \r\n%s -i %s -i %s -c copy %s", FFMPEG_PATH,
-					Global.savePath + videoName, Global.savePath + audioName, Global.savePath + dstName);
-			Logger.println(str);
-			return cmd;
+//			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
+//					"copy", Global.savePath + dstName };
+			cmd = Global.ffmpegCmd4Merge.clone();
+			for(int i = 0; i < cmd.length; i++) {
+				cmd[i] = cmd[i].replace("{FFmpeg}", FFMPEG_PATH).replace("{SavePath}", Global.savePath)
+						.replace("{VideoName}", videoName).replace("{AudioName}", audioName)
+						.replace("{DstName}", dstName);
+			}
 		}
+		String str = String.format("ffmpeg命令为: %s", Arrays.toString(cmd));
+		Logger.println(str);
+		return cmd;
 	}
 
 	/**

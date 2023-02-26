@@ -2,8 +2,9 @@ package nicelee.bilibili;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -14,11 +15,13 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.annotations.Controller;
 import nicelee.bilibili.plugin.CustomClassLoader;
 import nicelee.bilibili.plugin.Plugin;
+import nicelee.bilibili.util.ResourcesUtil;
 
 public abstract class PackageScanLoader {
 
@@ -34,14 +37,14 @@ public abstract class PackageScanLoader {
 		// 扫描parsers文件夹，加载自定义类名
 		Plugin parserPlg = new Plugin("parsers", "nicelee.bilibili.parsers.impl");
 		CustomClassLoader ccloader = new CustomClassLoader();
-		File parserFolder = new File("parsers");
+		File parserFolder = new File(ResourcesUtil.baseDirectory(), "parsers");
 		// 如果parsers.ini存在, 逐行读取类名, 按照顺序进行扫描
 		// 这是为了在jar包里的类加载生效之前使用, 替换原来的功能
 		// 大多数情况下不需要用到
 		File parserInit = new File(parserFolder, "parsers.ini");
 		if(parserInit.exists()) {
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(parserInit));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(parserInit), "utf-8"));
 				String clazzName = reader.readLine();
 				while(clazzName != null) {
 					compileAndLoad(parserPlg, ccloader, clazzName);
@@ -147,7 +150,7 @@ public abstract class PackageScanLoader {
 
 	public List<Class<?>> scanRoot(String packNameWithDot) {
 		validClazzList = new ArrayList<Class<?>>();
-		classLoader = Thread.currentThread().getContextClassLoader();
+		classLoader = this.getClass().getClassLoader();
 		String packNameWithFileSep = packNameWithDot.replace("\\", "/").replace(".", "/");
 		packNameWithDot = packNameWithDot.replace("/", ".");
 
@@ -165,6 +168,8 @@ public abstract class PackageScanLoader {
 					} else if (file.getName().endsWith(".class")) {
 						deaWithJavaClazzFile(packNameWithDot, file);
 					}
+				} else if (type.equals("mem")) {
+					dealWithMemoryJar(currentUrl, packNameWithFileSep);
 				}
 			}
 		} catch (IOException e) {
@@ -245,5 +250,34 @@ public abstract class PackageScanLoader {
 			e.printStackTrace();
 		}
 
+	}
+	
+	// 处理自定义内存加载类型
+	private void dealWithMemoryJar(URL url, String packNameWithFileSep) {
+		try {
+			JarInputStream jin = (JarInputStream) url.openStream();
+			JarEntry entry = jin.getNextJarEntry();
+			while (entry != null) {
+				if (entry.isDirectory() || !entry.getName().endsWith(".class") || !entry.getName().startsWith(packNameWithFileSep)) {
+					entry = jin.getNextJarEntry();
+					continue;
+				}
+				// 处理class类型
+				String jarName = entry.getName();
+				int dotIndex = jarName.indexOf(".class");
+				String className = jarName.substring(0, dotIndex).replace("/", ".");
+				Class<?> klass = Class.forName(className, true, classLoader);
+				if (isValid(klass)) {
+					validClazzList.add(klass);
+				}
+				entry = jin.getNextJarEntry();
+			}
+			jin.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -104,7 +104,7 @@ public class HttpRequestUtilEx extends HttpRequestUtil {
 						} catch (Exception e) {
 							e.printStackTrace();
 							Logger.println(specificHeader.get("range"));
-							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "utf-8"));
 							String temp;
 							while ((temp = reader.readLine()) != null) {
 								System.out.println(temp);

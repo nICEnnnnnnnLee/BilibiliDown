@@ -24,7 +24,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.23", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.24", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -149,8 +149,13 @@ public class Global {
 	// FFMPEG 路径
 	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
 	public static String ffmpegPath;
+	@Config(key = "bilibili.dash.ffmpeg.command.merge", note = "ffmpeg音视频合并命令", 
+			defaultValue = "{FFmpeg}, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}")
+	public static String[] ffmpegCmd4Merge;
 	@Config(key = "bilibili.flv.ffmpeg", note = "FLV合并时是否调用ffmpeg", defaultValue = "false", valids = { "true", "false" })
 	public static boolean flvUseFFmpeg = false;
+	@Config(key = "bilibili.cmd.debug", note = "调用外部命令时是否显示输出", defaultValue = "false", valids = { "true", "false" })
+	public static boolean debugCmd;
 	// 批量下载设置相关
 	@Config(key = "bilibili.menu.download.plan", defaultValue = "1")
 	public static int menu_plan; // 0 下载每个tab页的第一个视频； 1 下载每个Tab页的全部视频
@@ -209,7 +214,7 @@ public class Global {
 		}
 		// 特殊处理
 		downLoadThreadPool = Executors.newFixedThreadPool(downloadPoolSize);
-		String savePath = Global.savePath;
+		String savePath = ResourcesUtil.resolve(Global.savePath);
 		if (savePath.endsWith("\\")) {
 			savePath = savePath.substring(0, savePath.length() - 1) + "/";
 		} else if (!savePath.endsWith("/")) {
@@ -290,7 +295,13 @@ public class Global {
 					field.set(null, null);
 				else
 					field.set(null, value);
-			} else if (field.getType().equals(int[].class)) {
+			}else if (field.getType().equals(String[].class)) {
+				String[] valueStrs = value.split(",");
+				for(int i=0; i<valueStrs.length; i++) {
+					valueStrs[i] = valueStrs[i].trim();
+				}
+				field.set(null, valueStrs);
+			}else if (field.getType().equals(int[].class)) {
 				String[] valueStrs = value.split(",");
 				int[] values = new int[valueStrs.length];
 				for(int i=0; i<values.length; i++) {

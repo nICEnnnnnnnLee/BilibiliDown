@@ -187,7 +187,7 @@ public class HttpRequestUtil {
 			} catch (Exception e) {
 				e.printStackTrace();
 				Logger.println(headers.get("range"));
-				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "utf-8"));
 				String temp;
 				while ((temp = reader.readLine()) != null) {
 					System.out.println(temp);
@@ -319,7 +319,7 @@ public class HttpRequestUtil {
 				ism = new InflaterInputStream(ism, new Inflater(true));
 			}
 
-			in = new BufferedReader(new InputStreamReader(ism, "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(ism, "utf-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
 				result.append(line).append("\r\n");
@@ -375,7 +375,7 @@ public class HttpRequestUtil {
 			if (encoding != null && encoding.contains("gzip")) {
 				ism = new GZIPInputStream(conn.getInputStream());
 			}
-			in = new BufferedReader(new InputStreamReader(ism));
+			in = new BufferedReader(new InputStreamReader(ism, "utf-8"));
 			String line;
 			while ((line = in.readLine()) != null) {
 				line = new String(line.getBytes(), "UTF-8");

@@ -11,7 +11,7 @@ import java.util.Enumeration;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -42,7 +42,9 @@ public class FrameMain extends JFrame {
 	public static void main(String[] args) {
 		System.out.println();
 		// System.getProperties().setProperty("file.encoding", "utf-8");
-		System.out.println(System.getProperty("os.name"));
+		String osName = System.getProperty("os.name");
+		boolean isWindows = osName.startsWith("Windows");
+		System.out.println(osName);
 		System.out.println("Java version:" + System.getProperty("java.specification.version"));
 		System.out.println(ResourcesUtil.baseDirectory());
 		// 读取配置文件
@@ -92,29 +94,27 @@ public class FrameMain extends JFrame {
 		loginTh.start();
 
 		// 初始化 - ffmpeg环境判断
-		String[] cmd = { "ffmpeg", "-version" };
+		CmdUtil.DEFAULT_WORKING_DIR = ResourcesUtil.baseDirFile();
+		String ffmpeg = ResourcesUtil.resolve(Global.ffmpegPath);
+		String[] cmd = new String[] { ffmpeg, "-version" };
 		if (!CmdUtil.run(cmd)) {
-			System.out.println(Global.ffmpegPath);
-			cmd = new String[] { Global.ffmpegPath, "-version" };
-			if (!CmdUtil.run(cmd)) {
-				if (System.getProperty("os.name").toLowerCase().contains("win")) {
-					Object[] options = { "是", "否" };
-					int m = JOptionPane.showOptionDialog(null,
-							"检测到当前没有ffmpeg环境, mp4及小部分flv文件将无法转码或合并.\r\n     是否下载ffmpeg(自编译, 3M左右)?", "请选择：",
-							JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-					Logger.println(m);
-					if (m == 0) {
-						VideoInfo avInfo = new INeedAV().getVideoDetail("ffmpeg", 0, false);
-						DownloadRunnable downThread = new DownloadRunnable(avInfo, avInfo.getClips().get(1234L), 0);
-						Global.queryThreadPool.execute(downThread);
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "当前没有ffmpeg环境，大部分mp4及小部分flv文件将无法转码或合并", "请注意!!",
-							JOptionPane.WARNING_MESSAGE);
+			if (isWindows) {
+				Object[] options = { "是", "否" };
+				int m = JOptionPane.showOptionDialog(null,
+						"检测到当前没有ffmpeg环境, mp4及小部分flv文件将无法转码或合并.\r\n     是否下载ffmpeg(自编译, 3M左右)?", "请选择：",
+						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+				Logger.println(m);
+				if (m == 0) {
+					VideoInfo avInfo = new INeedAV().getVideoDetail("ffmpeg", 0, false);
+					DownloadRunnable downThread = new DownloadRunnable(avInfo, avInfo.getClips().get(1234L), 0);
+					Global.queryThreadPool.execute(downThread);
 				}
-
-			} else
-				CmdUtil.FFMPEG_PATH = Global.ffmpegPath;
+			} else {
+				JOptionPane.showMessageDialog(null, "当前没有ffmpeg环境，大部分mp4及小部分flv文件将无法转码或合并", "请注意!!",
+						JOptionPane.WARNING_MESSAGE);
+			}
+		} else {
+			CmdUtil.FFMPEG_PATH = ffmpeg;
 		}
 
 		//
@@ -135,6 +135,7 @@ public class FrameMain extends JFrame {
 		} catch (InterruptedException e) {
 			Global.frWaiting.stop();
 		}
+		Global.frWaiting = null;
 		main.setVisible(true);
 		main.setExtendedState(JFrame.NORMAL);
 		main.toFront();

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.VideoQualityEnum;

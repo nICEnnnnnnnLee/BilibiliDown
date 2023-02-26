@@ -41,6 +41,8 @@ jobs:
       run: |
         chmod +x package.sh
         ./package.sh
+        chmod +x .github/scripts/package_launcher.sh
+        ./.github/scripts/package_launcher.sh
 
     - name: Test Jar
       env:

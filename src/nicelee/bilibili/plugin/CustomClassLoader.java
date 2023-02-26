@@ -9,6 +9,10 @@ public class CustomClassLoader extends ClassLoader {
 
 	private HashMap<String, Class<?>> classList = new HashMap<>();
 
+	public CustomClassLoader() {
+		super(CustomClassLoader.class.getClassLoader());
+	}
+
 	protected Class<?> findClass(String classPath, String className) {
 		if (classList.containsKey(className))
 			return classList.get(className);

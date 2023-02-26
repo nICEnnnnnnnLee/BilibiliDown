@@ -43,6 +43,7 @@ public class FrameAbout extends JFrame implements HyperlinkListener {
 		
 		// 添加内容
 		JEditorPane editorPane = new JEditorPane();
+		editorPane.putClientProperty("charset", "utf-8");
 		editorPane.setEditable(false);
 		editorPane.setTransferHandler(new TextTransferHandler());
 		try {

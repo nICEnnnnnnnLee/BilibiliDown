@@ -6,8 +6,10 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,7 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 import nicelee.bilibili.API;
@@ -169,6 +171,7 @@ public class MJMenuBar extends JMenuBar {
 			@Override
 			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
 				qnQualityPri = item.getText();
+				Global.menu_qn = qnQualityPri;
 				Logger.println("优先清晰度(菜单)为: " + qnQualityPri);
 			}
 			
@@ -181,10 +184,10 @@ public class MJMenuBar extends JMenuBar {
 				}
 			}
 		}.build();
-		File configDir = ResourcesUtil.search("config");
+		File configDir = new File(ResourcesUtil.baseDirectory(), "config");
 		List<String> configFiles = new ArrayList<>();
 		configFiles.add(Global.batchDownloadConfigName);
-		if(configDir != null) {
+		if(configDir.exists()) {
 			for(String fName: configDir.list()) {
 				Matcher m = Global.batchDownloadConfigNamePattern.matcher(fName);
 				if(m.find() && !fName.equals(Global.batchDownloadConfigName)) {
@@ -301,9 +304,8 @@ public class MJMenuBar extends JMenuBar {
 		saveDownloading.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File dir = ResourcesUtil.search("config");
-				if(dir == null) {
-					dir = new File("config");
+				File dir = new File(ResourcesUtil.baseDirectory(), "config");
+				if(!dir.exists()) {
 					dir.mkdirs();
 				}
 				File downloadingTasks = new File(dir, "tasks.config");
@@ -311,7 +313,7 @@ public class MJMenuBar extends JMenuBar {
 				// \r\n@@\r\n 分隔 ClipInfo属性和 Qn
 				final String taskSep = "\r\n##\r\n";
 				final String attrSep = "\r\n@@\r\n";
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(downloadingTasks))){
+				try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(downloadingTasks), "utf-8"))){
 					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
 						ClipInfo c = dp.getClipInfo();
 						writer.append(c.getAvTitle());
@@ -359,7 +361,7 @@ public class MJMenuBar extends JMenuBar {
 				// \r\n@@\r\n 分隔 ClipInfo属性和 Qn
 				final String taskSep = "\r\n##\r\n";
 				final String attrSep = "\r\n@@\r\n";
-				try(BufferedReader reader = new BufferedReader(new FileReader(downloadingTasks))){
+				try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(downloadingTasks), "utf-8"))){
 					String line;
 					StringBuilder result = new StringBuilder();
 					while ((line = reader.readLine()) != null) {
@@ -463,7 +465,7 @@ public class MJMenuBar extends JMenuBar {
 							JOptionPane.WARNING_MESSAGE);
 				}else {
 					API.logout();
-					new File("./config/cookies.config").delete();
+					ResourcesUtil.sourceOf("./config/cookies.config").delete();
 					// 置空全局cookie
 					HttpCookies.setGlobalCookies(null);
 					// 更改登录状态

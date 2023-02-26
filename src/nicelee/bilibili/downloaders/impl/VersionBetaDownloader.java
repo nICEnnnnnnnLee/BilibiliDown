@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JOptionPane;
+import nicelee.ui.item.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,7 +18,7 @@ import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.Global;
 
 @Bilibili(name = "version-beta-downloader", type = "downloader", note = "最新的Beta版本下载")
-public class VersionBetaDownloader extends FLVDownloader {
+public class VersionBetaDownloader extends VersionDownloader {
 
 	private static final Pattern pattern = Pattern.compile("^BilibiliDown\\.PreRelease$");
 
@@ -75,9 +75,12 @@ public class VersionBetaDownloader extends FLVDownloader {
 		Logger.println(url);
 		// 开始下载
 		if (file == null) {
-			file = new File("update/" + downName);
+			file = new File(updateDir, downName);
 		}
-		util.setSavePath("./update");
+		try {
+			util.setSavePath(updateDir.getCanonicalPath());
+		} catch (IOException e1) {
+		}
 		boolean succ = util.download(url, downName, headers);
 		if (succ) {
 			sumSuccessDownloaded += util.getTotalFileSize();

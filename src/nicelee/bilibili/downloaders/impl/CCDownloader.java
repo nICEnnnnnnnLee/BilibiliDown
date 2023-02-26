@@ -2,7 +2,8 @@ package nicelee.bilibili.downloaders.impl;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -121,7 +122,7 @@ public class CCDownloader implements IDownloader {
 //			file.delete();
 //		}
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
 			String json = util.getContent(url, new HashMap<>());
 			JSONArray lines = new JSONObject(json).getJSONArray("body");
 			for(int i=0; i<lines.length(); i++) {

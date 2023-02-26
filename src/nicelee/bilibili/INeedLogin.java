@@ -3,8 +3,9 @@ package nicelee.bilibili;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
 import java.net.URLEncoder;
@@ -121,9 +122,9 @@ public class INeedLogin {
 	 * 
 	 */
 	public void saveCookiesAndToken() {
-		File file = new File("./config/cookies.config");
+		File file = ResourcesUtil.sourceOf("./config/cookies.config");
 		try {
-			FileWriter fileWriter = new FileWriter(file);
+			OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
 			BufferedWriter oos = new BufferedWriter(fileWriter);
 			oos.write(iCookies.toString());
 			if(refreshToken != null) {
@@ -145,7 +146,7 @@ public class INeedLogin {
 	 * @return
 	 */
 	public String readCookies() {
-		File file = new File("./config/cookies.config");
+		File file = ResourcesUtil.sourceOf("./config/cookies.config");
 		return ResourcesUtil.readAll(file);
 	}
 
@@ -173,7 +174,7 @@ public class INeedLogin {
 			return loginHeader;
 		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
 		String cookie = null;
-		File fingerprint = new File("./config/fingerprint.config");
+		File fingerprint = ResourcesUtil.sourceOf("./config/fingerprint.config");
 		if(fingerprint.exists()) {
 			cookie = ResourcesUtil.readAll(fingerprint);
 		}else {

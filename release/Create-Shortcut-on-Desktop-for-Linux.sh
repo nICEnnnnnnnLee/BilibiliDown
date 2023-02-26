@@ -18,7 +18,7 @@ echo '创建运行脚本并添加可执行权限'
 echo "#!/bin/bash" > Run-for-Linux.sh
 echo "" >> Run-for-Linux.sh
 echo 'cd $(dirname $0)' >> Run-for-Linux.sh
-echo "java -Dfile.encoding=utf-8 -Dhttps.protocols=TLSv1.2 -jar INeedBiliAV.jar" >> Run-for-Linux.sh
+echo "java -Dfile.encoding=utf-8 -Dhttps.protocols=TLSv1.2 -jar launch.jar" >> Run-for-Linux.sh
 sudo chmod +x Run-for-Linux.sh
 
 echo "[Desktop Entry]" > BilibiliDown.desktop

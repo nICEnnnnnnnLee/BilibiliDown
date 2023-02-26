@@ -18,6 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          # https://stackoverflow.com/questions/60868897/git-log-dates-incorrect-in-a-github-action
+          fetch-depth: '0'
           ref: docs
       - uses: actions/setup-node@v3
         with:

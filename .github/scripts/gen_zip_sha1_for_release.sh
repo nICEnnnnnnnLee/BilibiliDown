@@ -17,7 +17,7 @@ mv -f ./release/config/* ./config/
 mv -f ./release/LICENSE/* ./LICENSE/        
 
 zip "BilibiliDown.v$VERSION_NUMBER.release.zip" INeedBiliAV.jar
-zip -m "BilibiliDown.v$VERSION_NUMBER.pre-release.zip" ./launch.jar
+zip -m "BilibiliDown.v$VERSION_NUMBER.release.zip" ./launch.jar
 zip -m "BilibiliDown.v$VERSION_NUMBER.release.zip" ./Create-Shortcut-on-Desktop-for-Linux.sh
 zip -m "BilibiliDown.v$VERSION_NUMBER.release.zip" ./Create-Shortcut-on-Desktop-for-Mac.sh
 zip -m "BilibiliDown.v$VERSION_NUMBER.release.zip" ./Create-Shortcut-on-Desktop-for-Win.vbs

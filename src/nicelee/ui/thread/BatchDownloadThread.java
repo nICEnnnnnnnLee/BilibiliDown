@@ -105,7 +105,7 @@ public class BatchDownloadThread extends Thread {
 			}
 			JOptionPane.showMessageDialog(null, "一键下载完毕", "OK", JOptionPane.PLAIN_MESSAGE);
 		} catch (BilibiliError e) {
-			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", e.getMessage());
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

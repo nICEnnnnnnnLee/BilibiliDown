@@ -14,6 +14,7 @@ import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.parsers.impl.AbstractPageQueryParser;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
 import nicelee.ui.item.ClipInfoPanel;
@@ -74,7 +75,7 @@ public class GetVideoDetailThread extends Thread{
 			jpContent.repaint();
 		} catch (BilibiliError e) {
 			e.printStackTrace();
-			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", e.getMessage());
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

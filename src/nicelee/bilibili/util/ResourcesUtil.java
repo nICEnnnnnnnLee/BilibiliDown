@@ -6,18 +6,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 
 public class ResourcesUtil {
-	
+
 	final static boolean isJarLaunch;
 	static {
 		String[] mainCommand = System.getProperty("sun.java.command", "").split(" ");
 		isJarLaunch = mainCommand[0].endsWith(".jar");
-		// isJarLaunch = System.getProperty("java.class.path").startsWith("INeedBiliAV.jar");
+		// isJarLaunch =
+		// System.getProperty("java.class.path").startsWith("INeedBiliAV.jar");
 	}
 
 	public static void write(File f, String content) {
@@ -111,7 +114,7 @@ public class ResourcesUtil {
 			return file;
 		return null;
 	}
-	
+
 	public static File sourceOf(String relativePath) {
 		File file = new File(baseDirectory(), relativePath);
 		if (!file.exists())
@@ -121,9 +124,9 @@ public class ResourcesUtil {
 
 	static String cacheBaseDir;
 	static File cacheBaseDirFile;
-	
+
 	public static String resolve(String path) {
-		if(!Paths.get(path).isAbsolute()) {
+		if (!Paths.get(path).isAbsolute()) {
 			try {
 				File f = new File(baseDirectory(), path);
 				return f.getCanonicalPath();
@@ -133,16 +136,16 @@ public class ResourcesUtil {
 		}
 		return path;
 	}
-	
+
 	public static File baseDirFile() {
-		if(cacheBaseDirFile == null)
+		if (cacheBaseDirFile == null)
 			cacheBaseDirFile = new File(baseDirectory());
 		return cacheBaseDirFile;
 	}
-	
+
 	public static String baseDirectory() {
-		if(cacheBaseDir == null) {
-			if(isJarLaunch) {
+		if (cacheBaseDir == null) {
+			if (isJarLaunch) {
 				try {
 					String path = ClassLoader.getSystemResource("").getPath();
 					if (path == null || "".equals(path))
@@ -158,7 +161,7 @@ public class ResourcesUtil {
 		}
 		return cacheBaseDir;
 	}
-	
+
 	public static String canonicalPath(String path) {
 		try {
 			return new File(path).getCanonicalPath();
@@ -219,6 +222,18 @@ public class ResourcesUtil {
 		} catch (NoSuchMethodException | SecurityException | IOException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static String detailsOfException(Throwable e) {
+		try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+			pw.write("\n");
+			e.printStackTrace(pw);
+			pw.write("\n");
+			String s = sw.toString();
+			return s;
+		} catch (IOException e1) {
+			return e.getMessage();
 		}
 	}
 }

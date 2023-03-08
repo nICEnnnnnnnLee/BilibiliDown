@@ -14,6 +14,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
+import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.ui.Global;
 import nicelee.ui.TabDownload;
 import nicelee.ui.item.DownloadInfoPanel;
@@ -58,7 +59,7 @@ public class DownloadRunnable implements Runnable {
 		try {
 			download();
 		} catch (BilibiliError e) {
-			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", e.getMessage());
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 		}
 	}
 

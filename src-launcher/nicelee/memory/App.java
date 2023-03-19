@@ -100,7 +100,7 @@ public class App {
 			for (String cmdPart : mainCommand) {
 				if (cmdPart.endsWith(".jar")) {
 					sb.append(cmdPart);
-					if (new File(jarPath).exists()) {
+					if (new File(sb.toString()).exists()) {
 						jarPath = sb.toString();
 					}
 					break;

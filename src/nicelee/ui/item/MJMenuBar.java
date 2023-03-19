@@ -188,11 +188,14 @@ public class MJMenuBar extends JMenuBar {
 		List<String> configFiles = new ArrayList<>();
 		configFiles.add(Global.batchDownloadConfigName);
 		if(configDir.exists()) {
-			for(String fName: configDir.list()) {
-				Matcher m = Global.batchDownloadConfigNamePattern.matcher(fName);
-				if(m.find() && !fName.equals(Global.batchDownloadConfigName)) {
-					Logger.println(fName);
-					configFiles.add(fName);
+			String[] list = configDir.list();
+			if(list != null) {
+				for(String fName: list) {
+					Matcher m = Global.batchDownloadConfigNamePattern.matcher(fName);
+					if(m.find() && !fName.equals(Global.batchDownloadConfigName)) {
+						Logger.println(fName);
+						configFiles.add(fName);
+					}
 				}
 			}
 		}

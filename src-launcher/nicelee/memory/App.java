@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.security.ProtectionDomain;
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,9 @@ import nicelee.memory.url.MemoryURLHandler;
 
 public class App {
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws FileNotFoundException, IOException, URISyntaxException {
 		final ProtectionDomain pd = App.class.getProtectionDomain();
-		final File launchJarFile = new File(pd.getCodeSource().getLocation().getPath());
+		final File launchJarFile = new File(pd.getCodeSource().getLocation().toURI());
 		final File coreJarFile = new File(launchJarFile.getParentFile(), "INeedBiliAV.jar");
 //		final File coreJarFile = new File("D:\\Workspace\\javaweb-springboot\\Demo\\test\\INeedBiliAV.jar");
 //		final File coreJarFile = new File("D:\\Workspace\\javaweb-springboot\\Demo\\JarClassLoader-main\\INeedBiliAV.jar");

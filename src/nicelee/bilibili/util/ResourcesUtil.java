@@ -15,10 +15,19 @@ import java.nio.file.Paths;
 
 public class ResourcesUtil {
 
-	final static boolean isJarLaunch;
+	static boolean isJarLaunch;
 	static {
 		String[] mainCommand = System.getProperty("sun.java.command", "").split(" ");
-		isJarLaunch = mainCommand[0].endsWith(".jar");
+		isJarLaunch = false;
+		// 考虑路径中包含有空格的命令行
+		for (String cmd : mainCommand) {
+			if (cmd.endsWith(".jar")) {
+				isJarLaunch = true;
+				break;
+			} else if (cmd.startsWith("-")) {
+				break;
+			}
+		}
 		// isJarLaunch =
 		// System.getProperty("java.class.path").startsWith("INeedBiliAV.jar");
 	}
@@ -151,7 +160,7 @@ public class ResourcesUtil {
 					if (path == null || "".equals(path))
 						cacheBaseDir = getProjectPath();
 					else
-						cacheBaseDir = path;
+						cacheBaseDir = java.net.URLDecoder.decode(path, "UTF-8");
 				} catch (Exception ignored) {
 					cacheBaseDir = getProjectPath();
 				}

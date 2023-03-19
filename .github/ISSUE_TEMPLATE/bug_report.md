@@ -9,6 +9,7 @@ assignees: ''
 
 **我已经确认**
 - 使用的当前版本为最新版本
+- 使用最新的CI版本仍然存在该问题[CI传送门](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/pre-release-artifacts.yml)
 - issue区没有类似的情况（有的话请直接去该问题讨论）
 
 **问题描述**

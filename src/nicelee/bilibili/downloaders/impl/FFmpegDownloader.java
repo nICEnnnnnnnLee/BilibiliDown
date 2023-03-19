@@ -37,7 +37,7 @@ public class FFmpegDownloader extends FLVDownloader {
 		if(file == null) {
 			file = ResourcesUtil.sourceOf("ffmpeg.exe");
 		}
-		util.setSavePath(".");
+		util.setSavePath(ResourcesUtil.baseDirectory());
 		boolean succ = util.download(url, "ffmpeg.exe", new HashMap<>());
 		if (succ) {
 			String sha1 = Encrypt.SHA1(util.getFileDownload());
@@ -50,7 +50,7 @@ public class FFmpegDownloader extends FLVDownloader {
 			}
 			sumSuccessDownloaded += util.getTotalFileSize();
 			util.reset();
-			JOptionPane.showMessageDialog(null, "ffmpeg.exe已经下载完成, 转码功能可使用", "成功!!",
+			JOptionPane.showMessageDialog(null, "ffmpeg.exe已经下载完成, 转码功能在重启后可使用", "成功!!",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 		return succ;

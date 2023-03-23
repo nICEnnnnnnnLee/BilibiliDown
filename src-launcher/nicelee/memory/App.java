@@ -94,10 +94,24 @@ public class App {
 
 			// program main and program arguments
 			String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
+			String jarPath = null;
+			StringBuilder sb = new StringBuilder();
+			// 考虑路径中包含有空格的命令行
+			for (String cmdPart : mainCommand) {
+				if (cmdPart.endsWith(".jar")) {
+					sb.append(cmdPart);
+					if (new File(sb.toString()).exists()) {
+						jarPath = sb.toString();
+					}
+					break;
+				} else {
+					sb.append(cmdPart).append(" ");
+				}
+			}
 			// program main is a jar
-			if (mainCommand[0].endsWith(".jar")) {
+			if (jarPath != null) {
 				// if it's a jar, add -jar mainJar
-				cmd.append("-jar \"" + new File(mainCommand[0]).getPath() + "\"");
+				cmd.append("-jar \"" + new File(jarPath).getPath() + "\"");
 			} else {
 				// else it's a .class, add the classpath and mainClass
 				cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);

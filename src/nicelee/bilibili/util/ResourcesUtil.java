@@ -19,13 +19,19 @@ public class ResourcesUtil {
 	static {
 		String[] mainCommand = System.getProperty("sun.java.command", "").split(" ");
 		isJarLaunch = false;
+		StringBuilder sb = new StringBuilder();
 		// 考虑路径中包含有空格的命令行
 		for (String cmd : mainCommand) {
 			if (cmd.endsWith(".jar")) {
-				isJarLaunch = true;
+				sb.append(cmd);
+				String jarPath = sb.toString();
+				Logger.println(jarPath);
+				if (new File(jarPath).exists()) {
+					isJarLaunch = true;
+				}
 				break;
-			} else if (cmd.startsWith("-")) {
-				break;
+			} else {
+				sb.append(cmd).append(" ");
 			}
 		}
 		// isJarLaunch =

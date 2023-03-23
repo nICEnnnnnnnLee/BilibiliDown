@@ -37,8 +37,6 @@ Bilibili 视频下载器，用于下载B站视频。
 ```
 
 + 本项目遵守开源协议`Apache 2.0`。  
-为了分发的便利，历史版本可能直接使用过其它编译版本ffmpeg.     
-当协议不兼容时，具体情况请以使用的ffmpeg版本为准（大概率是`GPL 3.0`）  
 ```
 Copyright (C) 2019-2023 NiceLee. All Rights Reserved.
 

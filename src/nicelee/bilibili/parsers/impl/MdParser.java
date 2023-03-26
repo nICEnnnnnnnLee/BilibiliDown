@@ -40,23 +40,22 @@ public class MdParser extends SSParser {
 	}
 	
 	/**
-	 * 已知MdId, 求SsId 目前没有抓到api哦... 暂时从网页里面爬
-	 * 
+	 * @see https://www.bilibili.com/bangumi/media/md134912
+	 * 		https://api.bilibili.com/pgc/review/user?media_id=134912
+	 *      https://api.bilibili.com/pgc/web/season/section?season_id=25617
 	 * @input HttpRequestUtil util
 	 * @param mdId
 	 * @return
 	 */
 	private String MdIdToSsId(String mdId) {
 		HttpHeaders headers = new HttpHeaders();
-		String url = "https://www.bilibili.com/bangumi/media/" + mdId;
-		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
+		String mdIdNumber = mdId.replace("md", "");
+		String url = "https://api.bilibili.com/pgc/review/user?media_id=" + mdIdNumber;
+		String result = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
 
-		int begin = html.indexOf("window.__INITIAL_STATE__=");
-		int end = html.indexOf(";(function()", begin);
-		String json = html.substring(begin + 25, end);
-		System.out.println(json);
-		JSONObject jObj = new JSONObject(json);
-		int ssId = jObj.getJSONObject("mediaInfo").getJSONObject("param").getInt("season_id");
+		System.out.println(result);
+		JSONObject jObj = new JSONObject(result);
+		int ssId = jObj.getJSONObject("result").getJSONObject("media").getInt("season_id");
 		System.out.println("ssId为: " + ssId);
 		return "ss" + ssId;
 	}

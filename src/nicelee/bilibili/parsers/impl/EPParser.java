@@ -41,27 +41,22 @@ public class EPParser extends AbstractBaseParser {
 	}
 	
 	/**
-	 * 已知epId, 求bvId 目前没有抓到api哦... 暂时从网页里面爬
-	 * 
+	 * @see https://www.bilibili.com/bangumi/media/md134912
+	 * 		https://api.bilibili.com/pgc/view/web/season?ep_id=250435
 	 * @input HttpRequestUtil util
 	 */
 	private String EpIdToBvId(String epId) {
 		HttpHeaders headers = new HttpHeaders();
-		String url = "https://www.bilibili.com/bangumi/play/" + epId;
-		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
+		String epIdNumber = epId.replace("ep", "");
+		String url = "https://api.bilibili.com/pgc/view/web/season?ep_id=" + epIdNumber;
+		String json = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
 
-		int begin = html.indexOf("__NEXT_DATA__");
-		begin = html.indexOf(">", begin);
-		int end = html.indexOf("</script>", begin);
-		String json = html.substring(begin + 1, end);
 		Logger.println(json);
-		JSONObject jObj = new JSONObject(json).getJSONObject("props").getJSONObject("pageProps")
-				.getJSONObject("dehydratedState").getJSONArray("queries").getJSONObject(0)
-				.getJSONObject("state").getJSONObject("data").getJSONObject("mediaInfo");
+		JSONObject jObj = new JSONObject(json).getJSONObject("result");
 		JSONArray array = jObj.getJSONArray("episodes");
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject ep = array.getJSONObject(i);
-			if(ep.getString("link").endsWith(epId)) {
+			if(epIdNumber.equals(ep.optString("id"))) {
 				String bvid = ep.getString("bvid");
 				Logger.println("bvId为: " + bvid);
 				return bvid;

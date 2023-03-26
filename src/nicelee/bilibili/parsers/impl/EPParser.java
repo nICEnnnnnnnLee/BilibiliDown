@@ -2,6 +2,7 @@ package nicelee.bilibili.parsers.impl;
 
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import nicelee.bilibili.annotations.Bilibili;
@@ -49,14 +50,24 @@ public class EPParser extends AbstractBaseParser {
 		String url = "https://www.bilibili.com/bangumi/play/" + epId;
 		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
 
-		int begin = html.indexOf("window.__INITIAL_STATE__=");
-		int end = html.indexOf(";(function()", begin);
-		String json = html.substring(begin + 25, end);
+		int begin = html.indexOf("__NEXT_DATA__");
+		begin = html.indexOf(">", begin);
+		int end = html.indexOf("</script>", begin);
+		String json = html.substring(begin + 1, end);
 		Logger.println(json);
-		JSONObject jObj = new JSONObject(json);
-		String bvid = jObj.getJSONObject("epInfo").getString("bvid");
-		Logger.println("bvId为: " + bvid);
-		return bvid;
+		JSONObject jObj = new JSONObject(json).getJSONObject("props").getJSONObject("pageProps")
+				.getJSONObject("dehydratedState").getJSONArray("queries").getJSONObject(0)
+				.getJSONObject("state").getJSONObject("data").getJSONObject("mediaInfo");
+		JSONArray array = jObj.getJSONArray("episodes");
+		for (int i = 0; i < array.length(); i++) {
+			JSONObject ep = array.getJSONObject(i);
+			if(ep.getString("link").endsWith(epId)) {
+				String bvid = ep.getString("bvid");
+				Logger.println("bvId为: " + bvid);
+				return bvid;
+			}
+		}
+		throw new RuntimeException("No epId found in the page");
 	}
 
 }

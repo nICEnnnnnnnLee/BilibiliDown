@@ -58,19 +58,22 @@ public class SSParser extends AbstractBaseParser {
 		String url = "https://www.bilibili.com/bangumi/play/" + ssId;
 		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
 
-		int begin = html.indexOf("window.__INITIAL_STATE__=");
-		int end = html.indexOf(";(function()", begin);
-		String json = html.substring(begin + 25, end);
+		int begin = html.indexOf("__NEXT_DATA__");
+		begin = html.indexOf(">", begin);
+		int end = html.indexOf("</script>", begin);
+		String json = html.substring(begin + 1, end);
 		Logger.println(url);
 		Logger.println(json);
-		JSONObject jObj = new JSONObject(json);
-		viInfo.setVideoName(jObj.getJSONObject("mediaInfo").getString("title"));
-		viInfo.setBrief(jObj.getJSONObject("mediaInfo").getString("evaluate"));
+		JSONObject jObj = new JSONObject(json).getJSONObject("props").getJSONObject("pageProps")
+				.getJSONObject("dehydratedState").getJSONArray("queries").getJSONObject(0)
+				.getJSONObject("state").getJSONObject("data").getJSONObject("mediaInfo");
+		viInfo.setVideoName(jObj.getString("title"));
+		viInfo.setBrief(jObj.getString("evaluate"));
 		viInfo.setAuthor("番剧");
 		viInfo.setAuthorId("番剧");
-		viInfo.setVideoPreview("https:" + jObj.getJSONObject("mediaInfo").getString("cover"));
+		viInfo.setVideoPreview("https:" + jObj.getString("cover"));
 		
-		JSONArray array = jObj.getJSONArray("epList");
+		JSONArray array = jObj.getJSONArray("episodes");
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 		ClipInfo lastClip = null;
 		int[] qnListDefault = null;
@@ -84,7 +87,7 @@ public class SSParser extends AbstractBaseParser {
 			clip.setAvId(clipObj.getString("bvid"));
 			clip.setcId(clipObj.getLong("cid"));
 			//clip.setPage(Integer.parseInt(clipObj.getString("index")));
-			clip.setRemark(clipObj.getInt("i") + 1);
+			clip.setRemark(i + 1);
 			clip.setPicPreview("https:" +clipObj.getString("cover"));
 			//如果和前面avid一致，那么是前者page + 1, 否则为 1
 			if(i > 0 && array.getJSONObject(i-1).getString("bvid").equals(clipObj.getString("bvid"))) {
@@ -93,7 +96,7 @@ public class SSParser extends AbstractBaseParser {
 				clip.setPage(1);
 			}
 			//clip.setTitle(clipObj.getString("index_title"));
-			clip.setTitle(clipObj.getString("longTitle"));
+			clip.setTitle(clipObj.getString("long_title"));
 			clip.setUpName(viInfo.getVideoName());
 			clip.setUpId(ssId);
 			

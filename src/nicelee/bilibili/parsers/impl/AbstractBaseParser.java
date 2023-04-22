@@ -323,7 +323,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
-		if(linkQN < 64 && qn > linkQN && Global.isLogin) {
+		if(Global.alertIfQualityUnexpected && linkQN < 64 && qn > linkQN && Global.isLogin) {
 			throw new QualityTooLowException(bvId + " : " + cid + " - 查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		}
 		try {

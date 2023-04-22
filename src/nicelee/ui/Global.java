@@ -163,6 +163,8 @@ public class Global {
 	public static String menu_qn; // 菜单批量下载时, 优先下载清晰度 详见VideoQualityEnum
 	@Config(key = "bilibili.tab.download.qn", note = "标签页下载时的优先清晰度", defaultValue = "1080P")
 	public static String tab_qn; // 标签页批量下载时, 优先下载清晰度 详见VideoQualityEnum
+	@Config(key = "bilibili.alert.qualityUnexpected", note = "当遇到不期望的480P视频时是否抛出异常", defaultValue = "true", valids = { "true", "false" })
+	public static boolean alertIfQualityUnexpected;
 	// 字幕弹幕相关
 	@Config(key = "bilibili.cc.lang", note = "CC字幕优先语种", defaultValue = "zh-CN")
 	public static String cc_lang; // 字幕优先语种,如zh-CN等, 详见 release/wiki/langs.txt

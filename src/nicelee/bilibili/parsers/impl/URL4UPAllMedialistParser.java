@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nicelee.bilibili.API;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
@@ -154,8 +155,10 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 					}
 				}
 				int lastPageNumber = (page - 1) * API_PMAX + 1;
-				String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
+				// String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
+				String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&special_type=&pn=%d&keyword=&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
 				String url = String.format(urlFormat, spaceID, 1, params.get("tid"), lastPageNumber, sortFieldParam);
+				url = API.encWbi(url);
 				String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
 				Logger.println(url);
 				Logger.println(json);

@@ -62,8 +62,10 @@ public class Global {
 	public static int downloadFormat = MP4; // 优先下载格式，如不存在该类型的源，那么将默认转为下载另一种格式
 	@Config(key = "bilibili.dash.download.mode", defaultValue = "0", valids = { "0", "1", "2" }, note = "DASH下载模式: 0-下载音视频,1-仅视频,2-仅音频")
 	public static DownloadModeEnum downloadMode = DownloadModeEnum.All;
-	@Config(key = "bilibili.dash.video.codec.priority", defaultValue = "7, 12, 13", note = "视频编码优先级,AV1:13,HEVC:12,AVC:7,随意-1")
+	@Config(key = "bilibili.dash.video.codec.priority", defaultValue = "7, 12, 13", note = "视频编码优先级(默认),AV1:13,HEVC:12,AVC:7,随意-1")
 	public static int[] videoCodecPriority = {7, 12, 13};
+	@Config(key = "bilibili.dash.video.codec.priority.map", defaultValue = "80:7, 12, 13| 64:7, 12, 13", note = "视频编码优先级(区分清晰度),AV1:13,HEVC:12,AVC:7,随意-1")
+	public static HashMap<Integer, int[]> videoCodecPriorityMap;
 	@Config(key = "bilibili.dash.audio.quality.priority", defaultValue = "30280, 30232, 30216, -1, 30251, 30250", 
 			note = "音频编码优先级,30216:64K, 30232:132K, 30280:192K, 随意-1")
 	public static int[] audioQualityPriority = {30280, 30232, 30216, -1};
@@ -303,6 +305,21 @@ public class Global {
 					valueStrs[i] = valueStrs[i].trim();
 				}
 				field.set(null, valueStrs);
+			}else if (field.getType().equals(HashMap.class)) { // HashMap<Integer, int[]>
+				// 80:7, 12, 13| 64:7, 12, 13
+				String[] patterns = value.split("\\|");
+				HashMap<Integer, int[]> m = new HashMap<Integer, int[]>();
+				for(String pattern: patterns) {
+					String[] pair = pattern.split(":");
+					Integer key = Integer.parseInt(pair[0].trim());
+					String[] valueStrs = pair[1].split(",");
+					int[] values = new int[valueStrs.length];
+					for(int i=0; i<values.length; i++) {
+						values[i] = Integer.parseInt(valueStrs[i].trim());
+					}
+					m.put(key, values);
+				}
+				field.set(null, m);
 			}else if (field.getType().equals(int[].class)) {
 				String[] valueStrs = value.split(",");
 				int[] values = new int[valueStrs.length];

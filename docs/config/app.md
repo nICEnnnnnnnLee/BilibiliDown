@@ -430,3 +430,51 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     值为`true`时，外部命令行调用会显示输出    
     值为`false`时，外部命令行调用不会显示输出    
+
+## bilibili.alert.qualityUnexpected
+- 引入版本: V6.26
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `true`  
+- 释义:   
+    针对[#141](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/141)引入。  
+    在已经登录的情况下，程序认为视频的质量应当不低于720P，因此遇到低画质的链接会抛出异常。  
+    值为`true`时，当遇到不期望的480P视频时会抛出异常  
+    值为`false`时，当遇到不期望的480P视频时不会抛出异常
+
+
+## bilibili.dash.video.codec.priority.map
+- 引入版本: V6.26
+- 默认值:   
+    `32:7, 12, 13| 16:7, 12, 13`  
+- 释义:   
+    针对[#145](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/145)引入。  
+    ```
+    7：AVC编码 12：HEVC编码 13：AV1编码
+    ```
+    ```  
+    127：超高清         125：真彩 HDR   120：超清4K     116：高清1080P60   
+    112：高清1080P+     80：高清1080P   64：720P        32：480P   
+    ```  
+    该配置优先级更高，如果没有在该配置中指定优先级，则配合`bilibili.dash.video.codec.priority`使用。  
+	举例，假设：
+    ```  
+    bilibili.dash.video.codec.priority      = 12, 7, 13  
+    bilibili.dash.video.codec.priority.map  = 64: 7, 12, 13| 32:7, 12, 13| 16:7, 12, 13  
+    ```
+    如果请求得到的1080P，那么优先HEVC编码；  
+    如果请求得到的480P，那么优先AVC编码。   
+    需要注意的是，分隔符均使用英文标点，注意区分全半角。  
+
+## bilibili.login.cookie.refresh.runWASMinBrowser
+- 引入版本: V6.26
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    值为`true`时，刷新cookie时，借用浏览器环境运行wasm  
+    值为`false`时，刷新cookie时，直接在程序内运行代码
+
+    

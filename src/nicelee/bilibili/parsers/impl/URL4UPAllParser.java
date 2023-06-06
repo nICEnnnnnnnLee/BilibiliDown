@@ -1,5 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nicelee.bilibili.API;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
@@ -84,8 +86,11 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 		boolean getVideoLink = (boolean) obj[1];
 		try {
 			//String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
-			String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&jsonp=jsonp";
-			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, params.get("keyword"), params.get("order"));
+			//String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&jsonp=jsonp";
+			String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
+			String keyword = URLDecoder.decode(params.get("keyword"), "UTF-8");
+			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, keyword, params.get("order"));
+			url = API.encWbi(url);
 			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"), HttpCookies.globalCookiesWithFingerprint());
 			Logger.println(url);
 			Logger.println(json);

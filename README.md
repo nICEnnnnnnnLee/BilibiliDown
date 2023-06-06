@@ -19,6 +19,7 @@ Bilibili 视频下载器，用于下载B站视频。
 * 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
 * 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
 * geetest验证码实现参考了[geetest-validator](https://github.com/kuresaru/geetest-validator)[![](https://img.shields.io/badge/license-unknown-gray.svg)](https://github.com/kuresaru/geetest-validator)
+* cookie刷新代码的wasm逆向实现参考了[SocialSisterYi/bilibili-API-collect#524](https://github.com/SocialSisterYi/bilibili-API-collect/issues/524#issuecomment-1537519232)[![](https://img.shields.io/badge/license-CC%20BY%20NC%204.0-green.svg)](https://github.com/SocialSisterYi/bilibili-API-collect/issues/524#issuecomment-1537519232)
 
 ## :smile:其它  
 * **下载地址**: <https://nICEnnnnnnnLee.github.io/BilibiliDown/guide/quick-start/download>   

@@ -118,12 +118,14 @@ public class TabVideo extends JPanel implements ActionListener, MouseListener {
 		this.add(btnDownCC);
 		// 空白模块- 占位
 		JLabel jlBLANK11 = new JLabel();
-		jlBLANK11.setPreferredSize(new Dimension(140, 30));
+		jlBLANK11.setPreferredSize(new Dimension(90, 30));
+		// jlBLANK11.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(jlBLANK11);
 
 		// 空白模块- 占位
 		JLabel jlBLANK2 = new JLabel();
 		jlBLANK2.setPreferredSize(new Dimension(100, 60));
+		// jlBLANK2.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.add(jlBLANK2);
 
 		lbBreif.setBorder(BorderFactory.createLineBorder(Color.red));

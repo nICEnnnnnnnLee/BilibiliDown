@@ -12,7 +12,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
-//@Bilibili(name = "ss")
+//@Bilibili(name = "SSParser")
 public class SSParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("(?!/cheese/play/ss[0-9]+)ss[0-9]+");
@@ -44,7 +44,9 @@ public class SSParser extends AbstractBaseParser {
 	}
 	
 	/**
-	 * 
+	 * @see https://www.bilibili.com/bangumi/media/md134912
+	 * 		https://api.bilibili.com/pgc/review/user?media_id=139252&ts=...
+	 *      https://api.bilibili.com/pgc/view/web/season?ep_id=250479
 	 * @input HttpRequestUtil util
 	 * @param ssId
 	 * @param isGetLink
@@ -54,23 +56,21 @@ public class SSParser extends AbstractBaseParser {
 		VideoInfo viInfo = new VideoInfo();
 		viInfo.setVideoId(ssId);
 		
+		String ssIdNumber = ssId.replace("ss", "");
 		HttpHeaders headers = new HttpHeaders();
-		String url = "https://www.bilibili.com/bangumi/play/" + ssId;
-		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
+		String url = "https://api.bilibili.com/pgc/view/web/season?season_id=" + ssIdNumber;
+		String json = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
 
-		int begin = html.indexOf("window.__INITIAL_STATE__=");
-		int end = html.indexOf(";(function()", begin);
-		String json = html.substring(begin + 25, end);
 		Logger.println(url);
 		Logger.println(json);
-		JSONObject jObj = new JSONObject(json);
-		viInfo.setVideoName(jObj.getJSONObject("mediaInfo").getString("title"));
-		viInfo.setBrief(jObj.getJSONObject("mediaInfo").getString("evaluate"));
+		JSONObject jObj = new JSONObject(json).getJSONObject("result");
+		viInfo.setVideoName(jObj.getString("title"));
+		viInfo.setBrief(jObj.getString("evaluate"));
 		viInfo.setAuthor("番剧");
 		viInfo.setAuthorId("番剧");
-		viInfo.setVideoPreview("https:" + jObj.getJSONObject("mediaInfo").getString("cover"));
+		viInfo.setVideoPreview(jObj.getString("cover"));
 		
-		JSONArray array = jObj.getJSONArray("epList");
+		JSONArray array = jObj.getJSONArray("episodes");
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 		ClipInfo lastClip = null;
 		int[] qnListDefault = null;
@@ -84,8 +84,8 @@ public class SSParser extends AbstractBaseParser {
 			clip.setAvId(clipObj.getString("bvid"));
 			clip.setcId(clipObj.getLong("cid"));
 			//clip.setPage(Integer.parseInt(clipObj.getString("index")));
-			clip.setRemark(clipObj.getInt("i") + 1);
-			clip.setPicPreview("https:" +clipObj.getString("cover"));
+			clip.setRemark(i + 1);
+			clip.setPicPreview(clipObj.getString("cover"));
 			//如果和前面avid一致，那么是前者page + 1, 否则为 1
 			if(i > 0 && array.getJSONObject(i-1).getString("bvid").equals(clipObj.getString("bvid"))) {
 				clip.setPage(lastClip.getPage() + 1);
@@ -93,7 +93,7 @@ public class SSParser extends AbstractBaseParser {
 				clip.setPage(1);
 			}
 			//clip.setTitle(clipObj.getString("index_title"));
-			clip.setTitle(clipObj.getString("longTitle"));
+			clip.setTitle(clipObj.getString("long_title"));
 			clip.setUpName(viInfo.getVideoName());
 			clip.setUpId(ssId);
 			

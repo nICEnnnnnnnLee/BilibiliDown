@@ -323,7 +323,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		int linkQN = jObj.getInt("quality");
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
-		if(linkQN < 64 && qn > linkQN && Global.isLogin) {
+		if(Global.alertIfQualityUnexpected && linkQN < 64 && qn > linkQN && Global.isLogin) {
 			throw new QualityTooLowException(bvId + " : " + cid + " - 查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		}
 		try {
@@ -468,8 +468,11 @@ public abstract class AbstractBaseParser implements IInputParser {
 				System.out.println("API返回质量为:" + linkQN + "的链接, 实际上只有质量为:" + paramSetter.getRealQN() + "的链接");
 				qnVideos.add(v);
 			}
+			// 根据清晰度选择合适的编码优先级
+			Integer rQN = Integer.valueOf(paramSetter.getRealQN());
+			int[] videoCodecPriority = Global.videoCodecPriorityMap.getOrDefault(rQN, Global.videoCodecPriority);
 			// 根据需求选择编码合适的视频
-			JSONObject video = findMediaByPriList(qnVideos, Global.videoCodecPriority, 0);
+			JSONObject video = findMediaByPriList(qnVideos, videoCodecPriority, 0);
 			// 选择可以连通的链接
 			String videoLink = getUrlOfMedia(video, Global.checkDashUrl, headerForValidCheck);
 			link.append(videoLink).append("#");

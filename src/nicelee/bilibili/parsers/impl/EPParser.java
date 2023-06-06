@@ -2,6 +2,7 @@ package nicelee.bilibili.parsers.impl;
 
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import nicelee.bilibili.annotations.Bilibili;
@@ -40,23 +41,28 @@ public class EPParser extends AbstractBaseParser {
 	}
 	
 	/**
-	 * 已知epId, 求bvId 目前没有抓到api哦... 暂时从网页里面爬
-	 * 
+	 * @see https://www.bilibili.com/bangumi/media/md134912
+	 * 		https://api.bilibili.com/pgc/view/web/season?ep_id=250435
 	 * @input HttpRequestUtil util
 	 */
 	private String EpIdToBvId(String epId) {
 		HttpHeaders headers = new HttpHeaders();
-		String url = "https://www.bilibili.com/bangumi/play/" + epId;
-		String html = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
+		String epIdNumber = epId.replace("ep", "");
+		String url = "https://api.bilibili.com/pgc/view/web/season?ep_id=" + epIdNumber;
+		String json = util.getContent(url, headers.getCommonHeaders("www.bilibili.com"));
 
-		int begin = html.indexOf("window.__INITIAL_STATE__=");
-		int end = html.indexOf(";(function()", begin);
-		String json = html.substring(begin + 25, end);
 		Logger.println(json);
-		JSONObject jObj = new JSONObject(json);
-		String bvid = jObj.getJSONObject("epInfo").getString("bvid");
-		Logger.println("bvId为: " + bvid);
-		return bvid;
+		JSONObject jObj = new JSONObject(json).getJSONObject("result");
+		JSONArray array = jObj.getJSONArray("episodes");
+		for (int i = 0; i < array.length(); i++) {
+			JSONObject ep = array.getJSONObject(i);
+			if(epIdNumber.equals(ep.optString("id"))) {
+				String bvid = ep.getString("bvid");
+				Logger.println("bvId为: " + bvid);
+				return bvid;
+			}
+		}
+		throw new RuntimeException("No epId found in the page");
 	}
 
 }

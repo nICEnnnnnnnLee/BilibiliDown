@@ -1,4 +1,12 @@
 ## UPDATE  
+* V6.26  `2023-06-06`  
+    * 修复: [issues 146](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/146),[issues 147](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/147) 解决api更换导致的UP主所有视频无法查询的问题  
+    * 修复: [issues 149](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/149), 作品信息页面尝试兼容mac下的UI布局 
+    * 优化: [issues 140](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/140) 卸载脚本增加更多提示 
+    * 优化: [issues 141](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/141) 增加配置`bilibili.alert.qualityUnexpected`，可以开启/关闭对非期望的低画质清晰度视频的判断
+    * 优化: [issues 145](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/145) 增加相关配置，可以针对不同分辨率设置不同的视频编码优先级
+    * 优化: 现在可以直接在程序代码中刷新cookie，而不必再打开浏览器
+    
 * V6.25  `2023-03-23`  
     * 修复`V6.24`引入的一个bug，该bug导致jar包路径存在空格或者中文时，程序不能正确运行。  
     * 优化: 出现报错弹窗时，输出更详细的异常信息

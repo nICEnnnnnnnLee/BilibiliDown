@@ -113,6 +113,8 @@ public class Global {
 	@Config(key = "bilibili.download.batch.config.name.pattern", note = "一键下载配置名称的匹配正则表达式", defaultValue = "^batchDownload.*\\.config$")
 	public static Pattern batchDownloadConfigNamePattern;
 	// 登录相关
+	@Config(key = "bilibili.login.cookie.refresh.runWASMinBrowser", defaultValue = "false", valids = { "true", "false" })
+	public static boolean runWASMinBrowser;
 	@Config(key = "bilibili.server.port", note = "http server监听端口，用于极验校验", defaultValue = "8787")
 	public static int serverPort = 8787;
 	@Config(key = "bilibili.user.userName", defaultValue = "", warning = false)

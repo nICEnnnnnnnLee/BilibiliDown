@@ -42,6 +42,8 @@ public class Global {
 	public static boolean minimizeToSystray;
 	@Config(key = "bilibili.sysTray.closeToSystray", note = "点击关闭按钮到托盘", defaultValue = "false", valids = { "true", "false" })
 	public static boolean closeToSystray;
+	@Config(key = "bilibili.tab.display.previewPic", note = "Tab页面自动显示作品预览图", defaultValue = "on", eq_true = "on", valids = { "on", "off" })
+	public static boolean autoDisplayPreviewPic;
 	
 	public static ImageIcon backgroundImg;
 	public static FrameWaiting frWaiting;

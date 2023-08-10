@@ -16,6 +16,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * 
@@ -124,8 +125,17 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 		pageQueryResult.setClips(new LinkedHashMap<>());
 	}
 
-	@Override
-	protected boolean query(int page, int min, int max, Object... obj) {
+	/**
+	 * 分页查询
+	 * 
+	 * @param pageSize
+	 * @param page
+	 * @param obj
+	 * @return 以pageSize 进行分页查询，获取第page页的结果
+	 */
+	public VideoInfo result(int pageSize, int page, Object... obj) {
+		initPageQueryParam();
+		Logger.printf("pageSize: %d, page: %d", pageSize, page);
 		int videoFormat = (int) obj[0];
 		boolean getVideoLink = (boolean) obj[1];
 		String sortField = params.get("sort_field");
@@ -145,29 +155,21 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 				pageQueryResult.setAuthor(jobj.getJSONObject("upper").getString("name"));
 			}
 			// 获取oid(返回结果的第一个视频id)
-			String oid = "";
-			if (page > 1) {
-				String sortFieldParam = paramDicts[0][1];
-				for (int i = 0; i < paramDicts.length; i++) {
-					if (paramDicts[i][0].equals(sortField)) {
-						sortFieldParam = paramDicts[i][1];
-						break;
-					}
+			String sortFieldParam = paramDicts[0][1];
+			for (int i = 0; i < paramDicts.length; i++) {
+				if (paramDicts[i][0].equals(sortField)) {
+					sortFieldParam = paramDicts[i][1];
+					break;
 				}
-				int lastPageNumber = (page - 1) * API_PMAX + 1;
-				// String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
-				String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&special_type=&pn=%d&keyword=&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
-				String url = String.format(urlFormat, spaceID, 1, params.get("tid"), lastPageNumber, sortFieldParam);
-				url = API.encWbi(url);
-				String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
-				Logger.println(url);
-				Logger.println(json);
-				oid = new JSONObject(json).getJSONObject("data").getJSONObject("list").getJSONArray("vlist")
-						.getJSONObject(0).optString("aid");
-				Logger.printf("page: %d, lastPageNumber: %d, oid: %s\n", page, lastPageNumber, oid);
 			}
+			String firstOid = position2Oid((page - 1) * pageSize + 1, headers, sortFieldParam);
+			if(firstOid.equals("end"))
+				return pageQueryResult;
+			String lastOidPlus1 = position2Oid(page * pageSize + 1, headers, sortFieldParam);
+			
 			// 根据oid查询分页的详细信息
-			String urlFormat = "https://api.bilibili.com/x/v2/medialist/resource/list?type=1&oid=%s&otype=2&biz_id=%s&bvid=&with_current=true&mobi_app=web&ps=%d&direction=false&sort_field=%d&tid=%s&desc=true";
+			String urlFormat = "https://api.bilibili.com/x/v2/medialist/resource/list?type=1&oid=%s&otype=2&biz_id=%s&bvid=&with_current=%s&mobi_app=web&ps=%d&direction=false&sort_field=%d&tid=%s&desc=true";
+			boolean withCurrent = true;
 			int sortFieldIndex = 1;
 			for (int i = 0; i < paramDicts.length; i++) {
 				if (paramDicts[i][0].equals(sortField)) {
@@ -175,67 +177,113 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 					break;
 				}
 			}
-			String url = String.format(urlFormat, oid, spaceID, API_PMAX, sortFieldIndex, params.get("tid"));
-			Logger.println(url);
-			String json = util.getContent(url, headers);
-			JSONObject jobj = new JSONObject(json);
-			JSONArray arr = jobj.getJSONObject("data").getJSONArray("media_list");
-
-			if (pageQueryResult.getVideoPreview() == null) {
-				pageQueryResult.setVideoPreview(arr.getJSONObject(0).getString("cover"));
-			}
-
-			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
-			for (int i = min - 1; i < arr.length() && i < max; i++) {
-				JSONObject jAV = arr.getJSONObject(i);
-				String avId = jAV.getString("bv_id");
-				String avTitle = jAV.getString("title");
-				String upName = jAV.getJSONObject("upper").getString("name");
-				String upId = jAV.getJSONObject("upper").optString("mid");
-				long cTime = jAV.optLong("pubtime") * 1000;
-				JSONArray jClips = jAV.optJSONArray("pages");
-				if (jClips == null) {
-					continue;
+			boolean findLastOid = false;
+			String currentOid = firstOid;
+			int pageRemark = (page - 1) * pageSize;
+			while(!findLastOid) {
+				String url = String.format(urlFormat, currentOid, spaceID, withCurrent, API_PMAX, sortFieldIndex, params.get("tid"));
+				Logger.println(url);
+				withCurrent = false; // 接下来的查询不需要包括定位的 oid
+				String json = util.getContent(url, headers);
+				JSONObject jobj = new JSONObject(json);
+				JSONArray arr = jobj.getJSONObject("data").getJSONArray("media_list");
+				
+				if (pageQueryResult.getVideoPreview() == null) {
+					pageQueryResult.setVideoPreview(arr.getJSONObject(0).getString("cover"));
 				}
-				for (int pointer = 0; pointer < jClips.length(); pointer++) {
-					JSONObject jClip = jClips.getJSONObject(pointer);
-					ClipInfo clip = new ClipInfo();
-					clip.setAvId(avId);
-					clip.setcId(jClip.getLong("id"));
-					clip.setPage(jClip.getInt("page"));
-					clip.setRemark((page - 1) * API_PMAX + i + 1);
-					clip.setPicPreview(jAV.getString("cover"));
-					// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
-					clip.setListName(listName.replaceAll("[/\\\\]", "_"));
-					clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
-					clip.setUpName(upName);
-					clip.setUpId(upId);
-					clip.setAvTitle(avTitle);
-					clip.setTitle(jClip.getString("title"));
-					clip.setcTime(cTime);
-
-					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
-					try {
-						for (VideoQualityEnum VQ : VideoQualityEnum.values()) {
-							if (getVideoLink) {
-								String link = getVideoLink(avId, String.valueOf(clip.getcId()), VQ.getQn(),
-										videoFormat);
-								links.put(VQ.getQn(), link);
-							} else {
-								links.put(VQ.getQn(), "");
-							}
-						}
-					} catch (Exception e) {
+				
+				LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
+				for (int i = 0; i < arr.length(); i++) {
+					pageRemark++;
+					JSONObject jAV = arr.getJSONObject(i);
+					String oid = jAV.optString("id");
+					if(oid.equals(lastOidPlus1)) {
+						findLastOid = true;
+						break;
 					}
-					clip.setLinks(links);
-
-					map.put(clip.getcId(), clip);
+					currentOid = oid;
+					String avId = jAV.getString("bv_id");
+					String avTitle = jAV.getString("title");
+					String upName = jAV.getJSONObject("upper").getString("name");
+					String upId = jAV.getJSONObject("upper").optString("mid");
+					long cTime = jAV.optLong("pubtime") * 1000;
+					JSONArray jClips = jAV.optJSONArray("pages");
+					if (jClips == null) {
+						continue;
+					}
+					for (int pointer = 0; pointer < jClips.length(); pointer++) {
+						JSONObject jClip = jClips.getJSONObject(pointer);
+						ClipInfo clip = new ClipInfo();
+						clip.setAvId(avId);
+						clip.setcId(jClip.getLong("id"));
+						clip.setPage(jClip.getInt("page"));
+						clip.setRemark(pageRemark); //这个已经没法计算准确了
+						clip.setPicPreview(jAV.getString("cover"));
+						// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
+						clip.setListName(listName.replaceAll("[/\\\\]", "_"));
+						clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
+						clip.setUpName(upName);
+						clip.setUpId(upId);
+						clip.setAvTitle(avTitle);
+						clip.setTitle(jClip.getString("title"));
+						clip.setcTime(cTime);
+						
+						LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
+						try {
+							for (VideoQualityEnum VQ : VideoQualityEnum.values()) {
+								if (getVideoLink) {
+									String link = getVideoLink(avId, String.valueOf(clip.getcId()), VQ.getQn(),
+											videoFormat);
+									links.put(VQ.getQn(), link);
+								} else {
+									links.put(VQ.getQn(), "");
+								}
+							}
+						} catch (Exception e) {
+						}
+						clip.setLinks(links);
+						
+						map.put(clip.getcId(), clip);
+					}
 				}
 			}
-			return true;
 		} catch (Exception e) {
 			// e.printStackTrace();
-			return false;
 		}
+		return pageQueryResult;
+	}
+
+	/**
+	 * 返回 "" 表示开头
+	 * 返回 "end" 表示结尾
+	 * 返回 数字 表示具体id
+	 * @param pageNumber
+	 * @param headers
+	 * @param sortFieldParam
+	 */
+	private String position2Oid(int pageNumber, HashMap<String, String> headers, String sortFieldParam) {
+		if(pageNumber == 1)
+			return "";
+		// String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
+		String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&special_type=&pn=%d&keyword=&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
+		String url = String.format(urlFormat, spaceID, 1, params.get("tid"), pageNumber, sortFieldParam);
+		url = API.encWbi(url);
+		String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
+		Logger.println(url);
+		Logger.println(json);
+		JSONArray vlist = new JSONObject(json).getJSONObject("data").getJSONObject("list").getJSONArray("vlist");
+		if(vlist.length() == 0) {
+			Logger.printf("position: %d, oid: search till end", pageNumber);
+			return "end";
+		} else {
+			String oid = vlist.getJSONObject(0).optString("aid");
+			Logger.printf("position: %d, oid: %s", pageNumber, oid);
+			return oid;
+		}
+	}
+	
+	@Override
+	protected boolean query(int page, int min, int max, Object... obj) {
+		throw new NotImplementedException();
 	}
 }

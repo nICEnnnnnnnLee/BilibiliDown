@@ -26,6 +26,7 @@ import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.ui.item.MJTitleBar;
+import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
@@ -85,6 +86,17 @@ public class FrameMain extends JFrame {
 		MonitoringThread th = new MonitoringThread();
 		th.start();
 
+		// 尝试刷新cookie
+		if(Global.tryRefreshCookieOnStartup && !Global.runWASMinBrowser) {
+			CookieRefreshThread.showTips = false;
+			CookieRefreshThread thCR = CookieRefreshThread.newInstance();
+			thCR.start();
+			try {
+				thCR.join();
+			} catch (InterruptedException e1) {
+			}
+			CookieRefreshThread.showTips = true;
+		}
 		// 初始化 - 登录
 		INeedLogin inl = new INeedLogin();
 		if (inl.readCookies() != null) {

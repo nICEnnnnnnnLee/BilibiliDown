@@ -21,16 +21,6 @@ on:
         type: boolean
         default: true
         required: false
-      railway:
-        description: 'Upload to railway?'
-        type: boolean
-        default: true
-        required: false
-      railwayFFmpeg:
-        description: 'Upload FFmpeg to railway?'
-        type: boolean
-        default: false
-        required: false
       giteePush:
         description: 'Push to gitee?'
         type: boolean
@@ -93,25 +83,6 @@ jobs:
         chmod +x .github/scripts/upload_imagekit.sh
         ./.github/scripts/upload_imagekit.sh         
             
-    - name: Upload release to railway
-      env:
-        RAILWAY_AUTH: ${{ secrets.RAILWAY_AUTH }}
-        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ always() && env.RAILWAY_AUTH != '' && github.event.inputs.railway == 'true'}}
-      run: |
-        chmod +x .github/scripts/upload_railway.sh
-        ./.github/scripts/upload_railway.sh
-            
-    - name: Upload ffmpeg to railway
-      env:
-        RAILWAY_AUTH: ${{ secrets.RAILWAY_AUTH }}
-      if: ${{ always() && env.RAILWAY_AUTH != '' && github.event.inputs.railwayFFmpeg == 'true'}}
-      run: |
-        wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe
-        curl -X POST "https://bili.up.railway.app/upload" \
-            --cookie "auth=$RAILWAY_AUTH" \
-            -F "file=@ffmpeg_N-108857-g00b03331a0-20221027.exe;type=application/octet-stream"  
             
     - name: Sync Push to Gitee
       env:

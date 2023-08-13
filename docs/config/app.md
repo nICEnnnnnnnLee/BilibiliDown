@@ -477,4 +477,26 @@ bilibili.system.properties.jre11.override = false
     值为`true`时，刷新cookie时，借用浏览器环境运行wasm  
     值为`false`时，刷新cookie时，直接在程序内运行代码
 
+## bilibili.login.cookie.tryRefreshOnStartup
+- 引入版本: V6.27
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    值为`true`时，且`bilibili.login.cookie.refresh.runWASMinBrowser`为`false`时，每次程序打开时会尝试刷新Cookie。  
+    值为`false`时，每次程序打开时不会尝试刷新Cookie。    
     
+    这里的尝试刷新Cookie，会先通过api判断Cookie是否需要刷新，然后才会尝试刷新。  
+
+## bilibili.tab.display.previewPic
+- 引入版本: V6.27
+- 取值范围:   
+    `on | off`
+- 默认值:   
+    `on`  
+- 释义:   
+    值为`on`时，Tab页面自动显示第一个作品预览图 
+    值为`off`时，Tab页面不自动显示作品预览图。你需要在右侧选择相应的视频标题，长按鼠标左键后松开，可显示对应预览图。  
+- 相关issue
+    + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/151

@@ -79,13 +79,19 @@
     合集的第几个视频 
 - 对应内容举例:  
     `pn1` / `pn2`
+- 注意：  
+    对于含有多BV合集的UP主所有视频的分页查询来说，这个值并不一定准确。  
+    详见[issue #155](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/155)
 
 ## pDisplay[0-9]
 - 释义:   
     合集的第几个视频的格式化字符串, 后面的数字n表示n位数，不足补零
 - 对应内容举例:  
     `pDisplay2` 对应 `pn01` / `pn99` /  `pn100` 
-
+- 注意：  
+    对于含有多BV合集的UP主所有视频的分页查询来说，这个值并不一定准确。  
+    详见[issue #155](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/155)
+    
 ## qn
 - 释义:   
     清晰度值 

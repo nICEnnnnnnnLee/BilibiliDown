@@ -1,5 +1,12 @@
 ## UPDATE  
 * V6.26  `2023-06-06`  
+    * 修复: [issues 155](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/155) 重写对于UP主所有视频的分页查询逻辑  
+        需要注意的是，若UP主上传有多BV的合集，此时自定义文件名中的参数`pDisplay`将不再准确。  
+    * 修复: [issues 152](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/152) 考虑只有杜比视界而没有杜比音效的解析场景(e.g. BV1SN411A7KT)  
+    * 优化: [issues 151](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/151) 增加配置`bilibili.tab.display.previewPic`，可以开启/关闭Tab页的视频封面预览 
+    * 优化: 通过配置`bilibili.login.cookie.tryRefreshOnStartup`，可以使程序在每次打开时尝试刷新cookie。不再需要手动点击对应菜单。  
+    
+* V6.26  `2023-06-06`  
     * 修复: [issues 146](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/146),[issues 147](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/147) 解决api更换导致的UP主所有视频无法查询的问题  
     * 修复: [issues 149](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/149), 作品信息页面尝试兼容mac下的UI布局 
     * 优化: [issues 140](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/140) 卸载脚本增加更多提示 

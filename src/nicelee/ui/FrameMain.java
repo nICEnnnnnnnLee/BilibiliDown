@@ -22,10 +22,12 @@ import nicelee.bilibili.PackageScanLoader;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.ConfigUtil;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.ui.item.MJTitleBar;
+import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
@@ -85,11 +87,24 @@ public class FrameMain extends JFrame {
 		MonitoringThread th = new MonitoringThread();
 		th.start();
 
-		// 初始化 - 登录
+		// 尝试刷新cookie
 		INeedLogin inl = new INeedLogin();
-		if (inl.readCookies() != null) {
+		String cookiesStr = inl.readCookies();
+		if (cookiesStr != null) {
 			Global.needToLogin = true;
+			if(Global.tryRefreshCookieOnStartup && !Global.runWASMinBrowser) {
+				HttpCookies.setGlobalCookies(HttpCookies.convertCookies(cookiesStr));
+				CookieRefreshThread.showTips = false;
+				CookieRefreshThread thCR = CookieRefreshThread.newInstance();
+				thCR.start();
+				try {
+					thCR.join();
+				} catch (InterruptedException e1) {
+				}
+				CookieRefreshThread.showTips = true;
+			}
 		}
+		// 初始化 - 登录
 		LoginThread loginTh = new LoginThread();
 		loginTh.start();
 

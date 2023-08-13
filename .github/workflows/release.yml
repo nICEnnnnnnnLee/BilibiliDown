@@ -104,15 +104,6 @@ jobs:
         chmod +x .github/scripts/upload_imagekit.sh
         ./.github/scripts/upload_imagekit.sh          
             
-    - name: Upload release to railway
-      env:
-        RAILWAY_AUTH: ${{ secrets.RAILWAY_AUTH }}
-        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ env.RAILWAY_AUTH != ''}}
-      run: |
-        chmod +x .github/scripts/upload_railway.sh
-        ./.github/scripts/upload_railway.sh
             
     - name: Sync Push to Gitee
       env:

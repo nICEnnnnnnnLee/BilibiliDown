@@ -24,7 +24,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.26", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.27", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -42,6 +42,8 @@ public class Global {
 	public static boolean minimizeToSystray;
 	@Config(key = "bilibili.sysTray.closeToSystray", note = "点击关闭按钮到托盘", defaultValue = "false", valids = { "true", "false" })
 	public static boolean closeToSystray;
+	@Config(key = "bilibili.tab.display.previewPic", note = "Tab页面自动显示作品预览图", defaultValue = "on", eq_true = "on", valids = { "on", "off" })
+	public static boolean autoDisplayPreviewPic;
 	
 	public static ImageIcon backgroundImg;
 	public static FrameWaiting frWaiting;
@@ -113,6 +115,8 @@ public class Global {
 	@Config(key = "bilibili.download.batch.config.name.pattern", note = "一键下载配置名称的匹配正则表达式", defaultValue = "^batchDownload.*\\.config$")
 	public static Pattern batchDownloadConfigNamePattern;
 	// 登录相关
+	@Config(key = "bilibili.login.cookie.tryRefreshOnStartup", note = "每次程序打开时尝试刷新Cookie", defaultValue = "false", valids = { "true", "false" })
+	public static boolean tryRefreshCookieOnStartup;
 	@Config(key = "bilibili.login.cookie.refresh.runWASMinBrowser", defaultValue = "false", valids = { "true", "false" })
 	public static boolean runWASMinBrowser;
 	@Config(key = "bilibili.server.port", note = "http server监听端口，用于极验校验", defaultValue = "8787")

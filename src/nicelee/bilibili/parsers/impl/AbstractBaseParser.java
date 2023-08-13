@@ -490,9 +490,11 @@ public abstract class AbstractBaseParser implements IInputParser {
 			}
 			JSONObject dolby = dash.optJSONObject("dolby");// 杜比
 			if (dolby != null && linkQN == 126) {
-				audios = dolby.getJSONArray("audio");
-				for (int i = 0; i < audios.length(); i++) {
-					listAudios.add(audios.getJSONObject(i));
+				audios = dolby.optJSONArray("audio");
+				if (audios != null) {
+					for (int i = 0; i < audios.length(); i++) {
+						listAudios.add(audios.getJSONObject(i));
+					}
 				}
 			}
 			JSONObject flac = dash.optJSONObject("flac");// flac

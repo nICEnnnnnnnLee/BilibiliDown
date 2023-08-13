@@ -42,18 +42,22 @@ public class GetVideoDetailThread extends Thread{
 			video.setAvInfo(avInfo);
 			video.getLbAvID().setText(avInfo.getVideoId());
 			Collection<ClipInfo> clips = avInfo.getClips().values();
-			if(clips.size() == 0)
-				video.setCurrentDisplayPic(avInfo.getVideoPreview());
-			else
-				video.setCurrentDisplayPic(clips.iterator().next().getPicPreview());
-			try {
-				URL fileURL = new URL(video.getCurrentDisplayPic());
-				ImageIcon imag1 = new ImageIcon(fileURL);
-				imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_SMOOTH));
-				video.getLbAvPrivew().setIcon(imag1);
-				video.getLbAvPrivew().setText("");
-			}catch (Exception e) {
-				video.getLbAvPrivew().setText("无效预览图");
+			if(Global.autoDisplayPreviewPic) {
+				if(clips.size() == 0)
+					video.setCurrentDisplayPic(avInfo.getVideoPreview());
+				else
+					video.setCurrentDisplayPic(clips.iterator().next().getPicPreview());
+				try {
+					URL fileURL = new URL(video.getCurrentDisplayPic());
+					ImageIcon imag1 = new ImageIcon(fileURL);
+					imag1 = new ImageIcon(imag1.getImage().getScaledInstance(700, 460, Image.SCALE_SMOOTH));
+					video.getLbAvPrivew().setIcon(imag1);
+					video.getLbAvPrivew().setText("");
+				}catch (Exception e) {
+					video.getLbAvPrivew().setText("无效预览图");
+				}
+			} else {
+				video.getLbAvPrivew().setText("不显示预览");
 			}
 			video.getLbBreif().setText(avInfo.getBrief());
 			video.getLbBreif().setToolTipText(avInfo.getBrief());

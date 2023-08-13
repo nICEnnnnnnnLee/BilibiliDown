@@ -21,6 +21,7 @@ import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 
 import nicelee.ui.item.JOptionPane;
+import nicelee.ui.item.JOptionPaneManager;
 
 import org.json.JSONObject;
 
@@ -29,12 +30,12 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
-import nicelee.server.core.PathDealer;
 import nicelee.server.core.SocketServer;
 import nicelee.ui.Global;
 
 public class CookieRefreshThread extends Thread {
 
+	public static boolean showTips = true;
 	static CookieRefreshThread instance;
 
 	public static CookieRefreshThread newInstance() {
@@ -51,6 +52,7 @@ public class CookieRefreshThread extends Thread {
 
 	private CookieRefreshThread() {
 		this.setName("Thread-CookieRefresh");
+		this.setDaemon(true);
 	}
 
 	private static String encrypt(String origin) {
@@ -86,9 +88,16 @@ public class CookieRefreshThread extends Thread {
 
 	@Override
 	public void run() {
+		Logger.println("---CookieRefreshThread---");
+		if (HttpCookies.getGlobalCookies() == null) {
+			if(showTips)
+				JOptionPaneManager.showMsgWithNewThread("消息", "当前未登录");
+			return;
+		}
 		// 判断有没有refresh_token
 		if (HttpCookies.getRefreshToken() == null) {
-			JOptionPane.showMessageDialog(null, "当前的登录凭证为旧版本生成，无法刷新cookie");
+			if(showTips)
+				JOptionPaneManager.showMsgWithNewThread("消息", "当前的登录凭证为旧版本生成，无法刷新cookie");
 			return;
 		}
 		// 判断需不需要刷新
@@ -100,7 +109,8 @@ public class CookieRefreshThread extends Thread {
 		JSONObject csrfInfoObj = new JSONObject(csrfInfo).getJSONObject("data");
 		boolean needRefresh = csrfInfoObj.getBoolean("refresh");
 		if (!needRefresh) {
-			JOptionPane.showMessageDialog(null, "当前cookie无需刷新");
+			if(showTips)
+				JOptionPaneManager.showMsgWithNewThread("消息", "当前cookie无需刷新");
 			return;
 		}
 		if (Global.runWASMinBrowser) {
@@ -143,18 +153,21 @@ public class CookieRefreshThread extends Thread {
 				Logger.println(refreshCsrf);
 			} catch (Exception e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "刷新cookie出现错误");
+				if(showTips)
+					JOptionPaneManager.showMsgWithNewThread("消息", "刷新cookie出现错误");
 				return;
 			}
 		}
 		// 调用刷新Cookie的API
 		INeedLogin inl = new INeedLogin();
 		String tips = inl.refreshCookie(HttpCookies.getCsrf(), refreshCsrf, HttpCookies.getRefreshToken());
-		if (tips != null) {
-			JOptionPane.showMessageDialog(null, tips);
-		} else {
-			JOptionPane.showMessageDialog(null, "Cookie 刷新成功");
-		}
+		if(showTips)
+			if (tips != null) {
+				Logger.println(tips);
+				JOptionPaneManager.showMsgWithNewThread("消息", tips);
+			} else {
+				JOptionPaneManager.showMsgWithNewThread("消息", "Cookie 刷新成功");
+			}
 		Logger.println("Cookie刷新运行完毕");
 	}
 

@@ -94,16 +94,6 @@ jobs:
         chmod +x .github/scripts/upload_cloudinary.sh
         ./.github/scripts/upload_cloudinary.sh              
             
-    - name: Upload release to imagekit
-      env:
-        IMAGEKIT_PRIVATE_KEY: ${{ secrets.IMAGEKIT_PRIVATE_KEY }}
-        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ env.IMAGEKIT_PRIVATE_KEY != ''}}
-      run: |
-        chmod +x .github/scripts/upload_imagekit.sh
-        ./.github/scripts/upload_imagekit.sh          
-            
             
     - name: Sync Push to Gitee
       env:

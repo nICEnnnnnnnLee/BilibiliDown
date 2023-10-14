@@ -16,11 +16,6 @@ on:
         type: boolean
         default: true
         required: false
-      imagekit:
-        description: 'Upload to imagekit?'
-        type: boolean
-        default: true
-        required: false
       giteePush:
         description: 'Push to gitee?'
         type: boolean
@@ -72,16 +67,6 @@ jobs:
       run: |
         chmod +x .github/scripts/upload_cloudinary.sh
         ./.github/scripts/upload_cloudinary.sh                    
-            
-    - name: Upload release to imagekit
-      env:
-        IMAGEKIT_PRIVATE_KEY: ${{ secrets.IMAGEKIT_PRIVATE_KEY }}
-        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ always() && env.IMAGEKIT_PRIVATE_KEY != '' && github.event.inputs.imagekit == 'true'}}
-      run: |
-        chmod +x .github/scripts/upload_imagekit.sh
-        ./.github/scripts/upload_imagekit.sh         
             
             
     - name: Sync Push to Gitee

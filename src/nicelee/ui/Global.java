@@ -24,7 +24,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.27", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.28", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -364,13 +364,12 @@ public class Global {
 		settingsMustCreateManualy.add("bilibili.download.update.sources");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Cloudinary");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Supabase");
-		settingsMustCreateManualy.add("bilibili.download.update.patterns.Railway");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Twicpics");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Github");
-		settingsMustCreateManualy.add("bilibili.download.update.patterns.Imagekit");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.sources");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Cloudinary");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Supabase");
-		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Railway");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Twicpics");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Github");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Imagekit");
 		settingsMustCreateManualy.add("bilibili.dash.download.mode");

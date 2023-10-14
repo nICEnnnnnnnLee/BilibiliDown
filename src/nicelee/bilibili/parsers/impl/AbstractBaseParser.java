@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import nicelee.bilibili.API;
 import nicelee.bilibili.enums.DownloadModeEnum;
 import nicelee.bilibili.exceptions.ApiLinkQueryParseError;
 import nicelee.bilibili.exceptions.QualityTooLowException;
@@ -298,12 +299,16 @@ public abstract class AbstractBaseParser implements IInputParser {
 		Long aid = infoObj.optLong("aid");
 
 		if (infoObj.optString("redirect_url").isEmpty()) {
+			String trylookTail = Global.isLogin ? "" : "&try_look=1";
 			// 普通类型
 			url = downloadFormat == 2 ? 
 					// 下面这个API清晰度没法选择，编码方式没法选择，固定返回1080P? mp4
-					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&platform=html5&high_quality=1":
-					"https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
+					// https://api.bilibili.com/x/player/wbi/playurl?avid=857672756&bvid=BV1HV4y1p7ce&cid=1084157816&qn=80&fnver=0&fnval=4048&fourk=1
+					"https://api.bilibili.com/x/player/wbi/playurl?cid=%s&bvid=%s&qn=%d":
+					"https://api.bilibili.com/x/player/wbi/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=%s&fourk=1";
+			url += trylookTail;
 			url = String.format(url, cid, bvId, qn, fnval);
+			url = API.encWbi(url);
 			Logger.println(url);
 //			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
 			List<HttpCookie> cookie = HttpCookies.getGlobalCookies();
@@ -321,6 +326,17 @@ public abstract class AbstractBaseParser implements IInputParser {
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 		int linkQN = jObj.getInt("quality");
+		if(qn != linkQN) { // 只有和预期不符才会去判断
+			// 有时候，api返回的列表中含有比指定清晰度更高的内容
+			JSONObject dash = jObj.optJSONObject("dash");
+			if(dash != null) {
+				JSONArray videos = dash.getJSONArray("video");
+				int firstLinkQN = videos.getJSONObject(0).getInt("id");
+				if(linkQN < firstLinkQN) {
+					linkQN = firstLinkQN > qn? qn: firstLinkQN;
+				}
+			}
+		}
 		paramSetter.setRealQN(linkQN);
 		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
 		if(Global.alertIfQualityUnexpected && linkQN < 64 && qn > linkQN && Global.isLogin) {

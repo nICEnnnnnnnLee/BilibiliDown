@@ -224,6 +224,7 @@ public class HttpRequestUtil {
 		}
 		// 使用finally块来关闭输入流
 		finally {
+			buffer = null;
 			// System.out.println("下载Finally...");
 			ResourcesUtil.closeQuietly(inn);
 			ResourcesUtil.closeQuietly(raf);

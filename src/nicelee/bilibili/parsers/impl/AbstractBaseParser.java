@@ -326,13 +326,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 			jObj = new JSONObject(json).getJSONObject("result");
 		}
 		int linkQN = jObj.getInt("quality");
-		// 有时候，api返回的列表中含有比指定清晰度更高的内容
-		JSONObject dash = jObj.optJSONObject("dash");
-		if(dash != null) {
-			JSONArray videos = dash.getJSONArray("video");
-			int firstLinkQN = videos.getJSONObject(0).getInt("id");
-			if(linkQN < firstLinkQN) {
-				linkQN = firstLinkQN;
+		if(qn != linkQN) { // 只有和预期不符才会去判断
+			// 有时候，api返回的列表中含有比指定清晰度更高的内容
+			JSONObject dash = jObj.optJSONObject("dash");
+			if(dash != null) {
+				JSONArray videos = dash.getJSONArray("video");
+				int firstLinkQN = videos.getJSONObject(0).getInt("id");
+				if(linkQN < firstLinkQN) {
+					linkQN = firstLinkQN > qn? qn: firstLinkQN;
+				}
 			}
 		}
 		paramSetter.setRealQN(linkQN);

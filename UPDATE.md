@@ -1,5 +1,12 @@
 ## UPDATE  
-* V6.26  `2023-06-06`  
+* V6.28  `2023-10-14`  
+    * 优化: 更新视频链接获取方式，优化实际清晰度判断逻辑。  
+        现在，即使不登录也能获取1080P DASH视频(但后续不做任何保证)。
+    * 优化: [issues 157](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/157) 下载完毕后buffer置空。在不清空任务面板的情况下，可以容纳多得多的下载任务。
+    * 优化: 镜像源去除Imagekit, 添加Twicpics。
+    * 优化(GUI): 设置面板的内容高度微调，关于页面内容调整。
+    
+* V6.27  `2023-08-13`  
     * 修复: [issues 155](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/155) 重写对于UP主所有视频的分页查询逻辑  
         需要注意的是，若UP主上传有多BV的合集，此时自定义文件名中的参数`pDisplay`将不再准确。  
     * 修复: [issues 152](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/152) 考虑只有杜比视界而没有杜比音效的解析场景(e.g. BV1SN411A7KT)  

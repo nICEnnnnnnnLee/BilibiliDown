@@ -27,7 +27,6 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.annotations.Config;
 import nicelee.bilibili.util.ConfigUtil;
-import nicelee.bilibili.util.Logger;
 import nicelee.ui.item.MJButton;
 
 public class TabSettings extends JPanel implements ActionListener {
@@ -257,7 +256,7 @@ public class TabSettings extends JPanel implements ActionListener {
 				}
 			}
 		}
-		jpContent.setPreferredSize(new Dimension(1100, (LINE_HEIGHT + 4) * (lineOunt + 1) + 10));
+		jpContent.setPreferredSize(new Dimension(1100, (LINE_HEIGHT + 5) * lineOunt + 10));
 	}
 
 	@Override

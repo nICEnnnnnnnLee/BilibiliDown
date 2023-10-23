@@ -4,6 +4,11 @@
   status = 200
   
 [[redirects]]
-  from = "/"
+  from = "/favicon.ico"
+  to = "https://nicelee.top/favicon.ico"
+  status = 200
+  
+[[redirects]]
+  from = "/*"
   to = "/BilibiliDown"
   status = 301

@@ -1,3 +1,4 @@
 [[redirects]]
-  from = "/*"
-  to = "/BilibiliDown/:splat"
+  from = "/BilibiliDown/*"
+  to = "/:splat"
+  status = 200

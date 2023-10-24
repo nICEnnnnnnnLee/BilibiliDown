@@ -11,7 +11,7 @@ Bilibili 视频下载器，用于下载B站视频。
 ===============================
 登录后的凭证明文保存在`config`文件夹下的`cookies.config`。    
 如有需要请直接删除，或`操作->登录相关->退出登录`  
-更多详情请参考[帮助文档](https://nICEnnnnnnnLee.github.io/BilibiliDown)   
+更多详情请参考[帮助文档](https://nICEnnnnnnnLee.github.io/BilibiliDown) ( 如果访问不太顺畅的话，可以试试[备用帮助文档](https://bili.nicelee.top/BilibiliDown))  
 
 ## :smile:第三方库使用声明  
 * AV和BV转换参考了[AV-BV-Convert](https://github.com/CCRcmcpe/AV-BV-Convert)[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/CCRcmcpe/AV-BV-Convert/blob/master/LICENSE)  

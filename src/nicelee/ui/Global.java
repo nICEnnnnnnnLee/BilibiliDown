@@ -366,11 +366,13 @@ public class Global {
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Supabase");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Twicpics");
 		settingsMustCreateManualy.add("bilibili.download.update.patterns.Github");
+		settingsMustCreateManualy.add("bilibili.download.update.patterns.Bitbucket");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.sources");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Cloudinary");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Supabase");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Twicpics");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Github");
+		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Bitbucket");
 		settingsMustCreateManualy.add("bilibili.download.ffmpeg.url.Imagekit");
 		settingsMustCreateManualy.add("bilibili.dash.download.mode");
 	}

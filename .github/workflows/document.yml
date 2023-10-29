@@ -47,3 +47,15 @@ jobs:
             # git fetch --unshallow origin "$branch_name"
             git push -f gitee "$branch_name"
             rm -f .credential
+      - name: Sync Push to Bitbucket
+        env:
+            BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
+        if: ${{ env.BITBUCKET_TOKEN != ''}}
+        run: |
+            echo "https://x-token-auth:$BITBUCKET_TOKEN@bitbucket.org/" > .credential
+            git config --local credential.helper "store --file=.credential"
+            git remote add bitbucket https://bitbucket.org/niceleeee/bilibilidown.git
+            branch_name=`git rev-parse --abbrev-ref HEAD`
+            # git fetch --unshallow origin "$branch_name"
+            git push -f bitbucket "$branch_name"
+            rm -f .credential

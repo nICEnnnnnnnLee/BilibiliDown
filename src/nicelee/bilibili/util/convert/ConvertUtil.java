@@ -3,10 +3,10 @@ package nicelee.bilibili.util.convert;
 import java.util.HashMap;
 
 /**
- * https://github.com/CCRcmcpe/AV-BV-Convert 
+ * https://github.com/Colerar/abv
  * MIT License
  * 
- * Copyright (c) 2020 CCRcmcpe
+ * Copyright (c) 2022 Colerar
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,10 +28,10 @@ import java.util.HashMap;
  */
 public class ConvertUtil {
 
-	private final static String Table = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF";
-	private final static int Xor = 177451812;
-	private final static long Add = 100618342136696320L;
-	private final static int[] S = { 11, 10, 3, 8, 4, 6, 2, 9, 5, 7 };
+	private final static String Table = "FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf";
+	private final static long XOR = 23442827791579L;
+	private final static long MASK = 2251799813685247L;
+	private final static long MAX_AID = 1L << 51;
 	private final static HashMap<Character, Integer> Tr = new HashMap<Character, Integer>((int) (58 / 0.75 + 1));
 
 	static {
@@ -40,26 +40,33 @@ public class ConvertUtil {
 		}
 	}
 
-	public static long Bv2Av(String bv) {
-		long r = 0;
-		long pow = 1;
-		for (int i = 0; i < 10; i++) {
-			r += Tr.get(bv.charAt(S[i])) * pow;
-			pow *= 58;
+	public static long Bv2Av(String bvId) {
+		char[] bv = bvId.toCharArray();
+		char swap1 = bv[3]; bv[3] = bv[9]; bv[9] = swap1;
+		char swap2 = bv[4]; bv[4] = bv[7]; bv[7] = swap2;
+		long tmp = 0;
+		for (int bvIdx = 3; bvIdx < bv.length; bvIdx++) { // 前三个字母是 BV1
+			int tableIdx = Tr.get(bv[bvIdx]);
+			tmp = tmp * 58 + (long) tableIdx; // 字母表的长度就是58
 		}
-		return (r - Add) ^ Xor;
+		long avId = (tmp & MASK) ^ XOR;
+		return avId;
 	}
 
 	public static String Av2Bv(long avNum) {
-		long x1 = (avNum ^ Xor) + Add;
-		long pow = 1;
-		char[] r = "BV          ".toCharArray();
-		for (int i = 0; i < 10; i++) {
-			int index = (int) (x1 / pow % 58);
-			pow *= 58;
-			r[S[i]] = Table.charAt(index);
+		char[] bv = "BV1000000000".toCharArray();
+		int bvIdx = 11;
+		long tmp = (MAX_AID | avNum) ^ XOR;
+		while (tmp != 0) {
+			int tableIdx = (int) (tmp % 58); // 字母表的长度就是58
+			char cc = Table.charAt(tableIdx);
+			bv[bvIdx] = cc;
+			tmp /= 58;
+			bvIdx--;
 		}
-		return String.valueOf(r);
+		char swap1 = bv[3]; bv[3] = bv[9]; bv[9] = swap1;
+		char swap2 = bv[4]; bv[4] = bv[7]; bv[7] = swap2;
+		return String.valueOf(bv);
 	}
 
 	public static String Av2Bv(String av) {
@@ -67,8 +74,20 @@ public class ConvertUtil {
 	}
 
 	public static void main(String[] args) {
+		System.out.println(Bv2Av("BV1L9Uoa9EUx"));
+		System.out.println(Av2Bv(111298867365120L));
+		System.out.println("------------");
+		System.out.println(Bv2Av("BV1UM411d7LQ"));
+		System.out.println(Av2Bv(536870911L));
+		System.out.println("------------");
+		System.out.println(Bv2Av("BV1Si4y1e72D"));
+		System.out.println(Av2Bv(536870912L));
+		System.out.println("------------");
 		System.out.println(Bv2Av("BV1Yx411w777"));
 		System.out.println(Av2Bv(250000L));
 		System.out.println(Av2Bv("250000"));
+		System.out.println("------------");
+		System.out.println(Av2Bv(111298867365120L));
+		System.out.println(Bv2Av("BV1L9Uoa9EUx"));
 	}
 }

@@ -44,6 +44,8 @@ public class Global {
 	public static boolean closeToSystray;
 	@Config(key = "bilibili.tab.display.previewPic", note = "Tab页面自动显示作品预览图", defaultValue = "on", eq_true = "on", valids = { "on", "off" })
 	public static boolean autoDisplayPreviewPic;
+	@Config(key = "bilibili.menu.tab.promptBeforeCloseAllTabs", note = "点击【关闭全部Tab页】后，弹出确认框", defaultValue = "true", valids = { "true", "false" })
+	public static boolean promptBeforeCloseAllTabs;
 	
 	public static ImageIcon backgroundImg;
 	public static FrameWaiting frWaiting;

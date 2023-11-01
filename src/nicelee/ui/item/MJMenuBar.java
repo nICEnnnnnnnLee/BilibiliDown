@@ -410,7 +410,16 @@ public class MJMenuBar extends JMenuBar {
 		closeAllMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Global.index.closeAllVideoTabs();
+				if(Global.promptBeforeCloseAllTabs) {
+					Object[] options = { "是", "否" };
+					int m = JOptionPane.showOptionDialog(null, 
+							"关闭所有Tab页面?\n\nps:想要取消此确认框，可在配置页搜索关键词\n【menu.tab】 或 【promptBeforeCloseAllTabs】 或 【弹出确认框】", 
+							"请确认", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+					if (m == 0) {
+						Global.index.closeAllVideoTabs();
+					}
+				}else
+					Global.index.closeAllVideoTabs();
 			}
 		});
 

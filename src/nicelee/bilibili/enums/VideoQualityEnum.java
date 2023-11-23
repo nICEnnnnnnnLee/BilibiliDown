@@ -1,8 +1,8 @@
 package nicelee.bilibili.enums;
 
 public enum VideoQualityEnum {
-//	QDanmu("Danmu", 801, "弹幕"),
-//	QCC("CC", 800, "字幕"),
+	QDanmu("弹幕", 801, "弹幕"),
+	QCC("CC字幕", 800, "字幕"),
 	Q8K("8K", 127, "超高清 8K"),
 	QHDR("HDR", 125, "真彩 HDR"),
 	Q4K("4K", 120, "超清4K"),

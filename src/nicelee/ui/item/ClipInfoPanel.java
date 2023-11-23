@@ -81,6 +81,8 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		}
 		
 		for (final int qn : clip.getLinks().keySet()) {
+			if(qn >= 800)
+				continue;
 			// JButton btn = new JButton("清晰度: " + qn);
 			String qnName = VideoQualityEnum.getQualityDescript(qn);
 			if (qnName == null)

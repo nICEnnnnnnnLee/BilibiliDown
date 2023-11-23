@@ -130,6 +130,20 @@ public class MJMenuBar extends JMenuBar {
 //			}
 //		}.build();
 		
+		JMenu dUseRepoMenuItem = new MJMenuWithRadioGroupBuilder("下载前先查询记录?", "查询", "不查询") {
+			@Override
+			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
+				Global.useRepo = itemIndex == 0;
+				Logger.println("仓库功能开启:" + Global.useRepo);
+			}
+			
+			@Override
+			public void init(JRadioButtonMenuItem[] menuItems) {
+				int itemIndex = Global.useRepo ? 0 : 1;
+				menuItems[itemIndex].setSelected(true);
+			}
+		}.build();
+		
 		JMenu dDashDownTypeMenuItem = new MJMenuWithRadioGroupBuilder("下载模式(DASH)", "全部", "仅视频","仅音频") {
 			@Override
 			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
@@ -245,6 +259,7 @@ public class MJMenuBar extends JMenuBar {
 		}.build();
 		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
 //		configMenu.add(dTypeMenuItem);
+		configMenu.add(dUseRepoMenuItem);
 		configMenu.add(dDashDownTypeMenuItem);
 		configMenu.add(dTypeReDownloadMenuItem);
 		configMenu.add(dQNMenuItem);

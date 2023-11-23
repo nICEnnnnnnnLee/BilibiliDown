@@ -110,8 +110,8 @@ public class RepoUtil {
 	 */
 	public static void appendAndSave(String avRecord) {
 		System.out.println("已完成下载： " + avRecord);
-		if (avRecord.contains("-800-")) {
-			Logger.println("字幕文件，不计入下载记录");
+		if (avRecord.contains("-800-") || avRecord.contains("-801-")) {
+			Logger.println("字幕/弹幕文件，不计入下载记录");
 			return;
 		}
 		if (!isInRepo(avRecord)) {

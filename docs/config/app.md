@@ -500,3 +500,15 @@ bilibili.system.properties.jre11.override = false
     值为`off`时，Tab页面不自动显示作品预览图。你需要在右侧选择相应的视频标题，长按鼠标左键后松开，可显示对应预览图。  
 - 相关issue
     + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/151
+
+## bilibili.menu.tab.promptBeforeCloseAllTabs
+- 引入版本: V6.29
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `true`  
+- 释义:   
+    值为`true`时，在菜单栏里，点击`关闭全部Tab页`后，弹出确认框 
+    值为`false`时，在菜单栏里，点击`关闭全部Tab页`后，直接关闭全部Tab页。  
+- 相关issue
+    + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/165

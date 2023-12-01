@@ -49,7 +49,7 @@ public class MJMenuBar extends JMenuBar {
 	private static final long serialVersionUID = -344077300590858072L;
 
 	private JFrame frame;
-	int tabDownloadType; 	// 保存 从菜单栏批量下载的计划类型
+	// int tabDownloadType; 	// 保存 从菜单栏批量下载的计划类型
 	String qnQualityPri;	// 保存 从菜单栏批量下载的优先清晰度选项
 	String batchDownloadFileName; // 保存 从菜单栏一键下载的配置文件选项
 	
@@ -118,15 +118,29 @@ public class MJMenuBar extends JMenuBar {
 		/**
 		 * 创建二级 配置 子菜单
 		 */
-		JMenu dTypeMenuItem = new MJMenuWithRadioGroupBuilder("下载策略", "仅第一", "全部") {
+//		JMenu dTypeMenuItem = new MJMenuWithRadioGroupBuilder("下载策略", "仅第一", "全部") {
+//			@Override
+//			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
+//				tabDownloadType = itemIndex;
+//			}
+//			
+//			@Override
+//			public void init(JRadioButtonMenuItem[] menuItems) {
+//				menuItems[Global.menu_plan].setSelected(true);
+//			}
+//		}.build();
+		
+		JMenu dUseRepoMenuItem = new MJMenuWithRadioGroupBuilder("下载前先查询记录?", "查询", "不查询") {
 			@Override
 			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
-				tabDownloadType = itemIndex;
+				Global.useRepo = itemIndex == 0;
+				Logger.println("仓库功能开启:" + Global.useRepo);
 			}
 			
 			@Override
 			public void init(JRadioButtonMenuItem[] menuItems) {
-				menuItems[Global.menu_plan].setSelected(true);
+				int itemIndex = Global.useRepo ? 0 : 1;
+				menuItems[itemIndex].setSelected(true);
 			}
 		}.build();
 		
@@ -244,7 +258,8 @@ public class MJMenuBar extends JMenuBar {
 			}
 		}.build();
 		JMenuItem settingsMenuItem = new JMenuItem("打开配置页");
-		configMenu.add(dTypeMenuItem);
+//		configMenu.add(dTypeMenuItem);
+		configMenu.add(dUseRepoMenuItem);
 		configMenu.add(dDashDownTypeMenuItem);
 		configMenu.add(dTypeReDownloadMenuItem);
 		configMenu.add(dQNMenuItem);
@@ -410,7 +425,16 @@ public class MJMenuBar extends JMenuBar {
 		closeAllMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Global.index.closeAllVideoTabs();
+				if(Global.promptBeforeCloseAllTabs) {
+					Object[] options = { "是", "否" };
+					int m = JOptionPane.showOptionDialog(null, 
+							"关闭所有Tab页面?\n\nps:想要取消此确认框，可在配置页搜索关键词\n【menu.tab】 或 【promptBeforeCloseAllTabs】 或 【弹出确认框】", 
+							"请确认", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+					if (m == 0) {
+						Global.index.closeAllVideoTabs();
+					}
+				}else
+					Global.index.closeAllVideoTabs();
 			}
 		});
 
@@ -418,7 +442,7 @@ public class MJMenuBar extends JMenuBar {
 		doMultiDownMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean downAll = tabDownloadType != 0;
+				boolean downAll = true; // tabDownloadType != 0;
 				Logger.println(qnQualityPri);
 				int qn = VideoQualityEnum.getQN(qnQualityPri);
 				Global.index.downVideoTabs(downAll, qn);

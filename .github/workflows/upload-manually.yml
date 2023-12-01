@@ -16,8 +16,18 @@ on:
         type: boolean
         default: true
         required: false
+      bitbucket:
+        description: 'Upload to bitbucket?'
+        type: boolean
+        default: true
+        required: false
       giteePush:
         description: 'Push to gitee?'
+        type: boolean
+        default: true
+        required: false
+      bitbucketPush:
+        description: 'Push to bitbucket?'
         type: boolean
         default: true
         required: false
@@ -66,7 +76,16 @@ jobs:
       if: ${{ always() && env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != '' && github.event.inputs.cloudinary == 'true'}}
       run: |
         chmod +x .github/scripts/upload_cloudinary.sh
-        ./.github/scripts/upload_cloudinary.sh                    
+        ./.github/scripts/upload_cloudinary.sh        
+        
+    - name: Upload release to bitbucket
+      env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
+        BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
+      if: ${{ always() && env.BITBUCKET_TOKEN != '' && github.event.inputs.bitbucket == 'true'}}
+      run: |
+        chmod +x .github/scripts/upload_bitbucket.sh
+        ./.github/scripts/upload_bitbucket.sh                    
             
             
     - name: Sync Push to Gitee
@@ -75,4 +94,12 @@ jobs:
       if: ${{ always() && env.GITEE_AUTH != '' && github.event.inputs.giteePush == 'true'}}
       run: |
         chmod +x .github/scripts/sync_push_to_gitee.sh
-        ./.github/scripts/sync_push_to_gitee.sh
+        ./.github/scripts/sync_push_to_gitee.sh            
+        
+    - name: Sync Push to Bitbucket
+      env:
+        BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
+      if: ${{ always() && env.BITBUCKET_TOKEN != '' && github.event.inputs.bitbucketPush == 'true'}}
+      run: |
+        chmod +x .github/scripts/sync_push_to_bitbucket.sh
+        ./.github/scripts/sync_push_to_bitbucket.sh

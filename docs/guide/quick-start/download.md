@@ -9,6 +9,9 @@ let assetWithJreSHA1 = `BilibiliDown.v${version}.win_x64_jre11.release.zip.sha1`
 let urlFromGithub = (version, fileName)=>{
     return `https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V${version}/${fileName}`
 }
+let urlFromBitbucket = (version, fileName)=>{
+    return `https://bitbucket.org/niceleeee/bilibilidown/downloads/${fileName}`
+}
 let urlFromSupaBase = (version, fileName)=>{
     return `https://vezfoeoqirnvcqsuiext.supabase.co/storage/v1/object/public/bili/release/${fileName}`
 }
@@ -34,7 +37,7 @@ let urlFromTransloadit = (version, fileName)=>{
 或者直接在下面的列表里选择进行下载。  
 |文件     |链接 |
 |-              |---|
-|{{ asset }} | <a :href="urlFromGithub(version, asset)" target="_blank" rel="noreferrer">Github</a>&nbsp;&nbsp;<a :href="urlFromGithub(version, assetSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a><br/> <a :href="urlFromSupaBase(version, asset)" target="_blank" rel="noreferrer">SUPABASE</a> &nbsp;&nbsp; <a :href="urlFromSupaBase(version, assetSHA1)" target="_blank" rel="noreferrer">SUPABASE-SHA1</a> <br/> <a :href="urlFromTransloadit(version, asset)" target="_blank" rel="noreferrer">Transloadit</a> &nbsp;&nbsp; <a :href="urlFromTransloadit(version, assetSHA1)" target="_blank" rel="noreferrer">Transloadit-SHA1</a><br/> <a :href="urlFromCloudinary(version, asset)" target="_blank" rel="noreferrer">Cloudinary</a> &nbsp;&nbsp; <a :href="urlFromCloudinary(version, assetSHA1)" target="_blank" rel="noreferrer">Cloudinary-SHA1</a><br/> <a :href="urlFromTwicpics(version, asset)" target="_blank" rel="noreferrer">Twicpics</a> &nbsp;&nbsp; <a :href="urlFromTwicpics(version, assetSHA1)" target="_blank" rel="noreferrer">Twicpics-SHA1</a>|
+|{{ asset }} | <a :href="urlFromGithub(version, asset)" target="_blank" rel="noreferrer">Github</a>&nbsp;&nbsp;<a :href="urlFromGithub(version, assetSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a><br/> <a :href="urlFromBitbucket(version, asset)" target="_blank" rel="noreferrer">Bitbucket</a>&nbsp;&nbsp;<a :href="urlFromBitbucket(version, assetSHA1)" target="_blank" rel="noreferrer">Bitbucket-SHA1</a><br/> <a :href="urlFromSupaBase(version, asset)" target="_blank" rel="noreferrer">SUPABASE</a> &nbsp;&nbsp; <a :href="urlFromSupaBase(version, assetSHA1)" target="_blank" rel="noreferrer">SUPABASE-SHA1</a> <br/> <a :href="urlFromTransloadit(version, asset)" target="_blank" rel="noreferrer">Transloadit</a> &nbsp;&nbsp; <a :href="urlFromTransloadit(version, assetSHA1)" target="_blank" rel="noreferrer">Transloadit-SHA1</a><br/> <a :href="urlFromCloudinary(version, asset)" target="_blank" rel="noreferrer">Cloudinary</a> &nbsp;&nbsp; <a :href="urlFromCloudinary(version, assetSHA1)" target="_blank" rel="noreferrer">Cloudinary-SHA1</a><br/> <a :href="urlFromTwicpics(version, asset)" target="_blank" rel="noreferrer">Twicpics</a> &nbsp;&nbsp; <a :href="urlFromTwicpics(version, assetSHA1)" target="_blank" rel="noreferrer">Twicpics-SHA1</a>|
 |{{ assetWithJre }} | <a :href="urlFromGithub(version, assetWithJre)" target="_blank" rel="noreferrer">Github</a> <br/><a :href="urlFromGithub(version, assetWithJreSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a>|
 
 **注意**: 请尽量使用Github源进行下载，其它白嫖网站有可能会因为额度使用完毕或其它原因导致无法使用。  

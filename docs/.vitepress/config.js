@@ -82,6 +82,7 @@ function sidebarGuide() {
             items: [
                 { text: '典型案例', link: '/guide/basic/examples' },
                 { text: '支持链接', link: '/guide/basic/surports' },
+                { text: '使用技巧', link: '/guide/basic/tips' },
                 { text: '补充说明', link: '/guide/basic/additional-remarks' },
             ]
         },

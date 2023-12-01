@@ -4,7 +4,7 @@
 ![测试版本64位Win10系统, jre 1.8.0_101](https://img.shields.io/badge/TestPass-Win10%20x64__java__1.8.0__101-green.svg)
 ![开源协议Apache2.0](https://img.shields.io/badge/license-apache--2.0-green.svg)  
 ![当前版本](https://img.shields.io/github/release/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square)
-![CI](https://github.com/nICEnnnnnnnLee/BilibiliDown/workflows/CI/badge.svg)
+[![CI](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/release.yml/badge.svg)](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/release.yml)
 ![最近更新](https://img.shields.io/github/last-commit/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square&color=FF9900)
 
 Bilibili 视频下载器，用于下载B站视频。  

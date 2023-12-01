@@ -98,7 +98,7 @@ jobs:
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ always() && env.BITBUCKET_TOKEN != '' && github.event.inputs.bitbucket == 'true'}}
+      if: ${{ env.BITBUCKET_TOKEN != ''}}
       run: |
         chmod +x .github/scripts/upload_bitbucket.sh
         ./.github/scripts/upload_bitbucket.sh                    

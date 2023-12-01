@@ -15,6 +15,14 @@ export default {
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();`
+        ],
+        ['script', { type: 'text/javascript' },
+        `window.smartlook||(function(d) {
+          var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
+          var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+          c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js';h.appendChild(c);
+          })(document);
+          smartlook('init', '19ece82e2fc254b6b9cb148c545244ca1fc2ade2', { region: 'eu' });`
         ]
     ],
     ignoreDeadLinks: true,

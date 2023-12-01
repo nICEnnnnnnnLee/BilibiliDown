@@ -23,6 +23,12 @@ export default {
                     console.log("上报百度统计", to);
                 }
             }
+            if (typeof smartlook != "undefined") {
+                if (to) {
+                    smartlook('navigation', to);
+                    console.log("上报smartlook统计", to);
+                }
+            }
         })
     }
 

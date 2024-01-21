@@ -1,6 +1,8 @@
 package nicelee.ui.thread;
 
+import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -78,6 +80,7 @@ public class BatchDownloadThread extends Thread {
 						if (batch.matchStopCondition(clip, page)) {
 							// 判断边界BV是否要下载
 							if (batch.isIncludeBoundsBV() && batch.matchDownloadCondition(clip, page)) {
+								addTask(clip);
 								DownloadRunnable downThread = new DownloadRunnable(avInfo, clip,
 										VideoQualityEnum.getQN(Global.menu_qn));
 								Global.queryThreadPool.execute(downThread);
@@ -87,6 +90,7 @@ public class BatchDownloadThread extends Thread {
 						}
 						// 判断是否要下载
 						if (batch.matchDownloadCondition(clip, page)) {
+							addTask(clip);
 							DownloadRunnable downThread = new DownloadRunnable(avInfo, clip,
 									VideoQualityEnum.getQN(Global.menu_qn));
 							Global.queryThreadPool.execute(downThread);
@@ -99,11 +103,11 @@ public class BatchDownloadThread extends Thread {
 				Thread.sleep(1000);
 				Logger.printf("[url:%s] 任务完毕", batch.getUrl());
 				if (batch.isAlertAfterMissionComplete()) {
-					JOptionPane.showMessageDialog(null, "url:" + batch.getUrl(), "任务完毕!! " + batch.getRemark(),
+					showMessageDialog(null, "url:" + batch.getUrl(), "任务完毕!! " + batch.getRemark(),
 							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
-			JOptionPane.showMessageDialog(null, "一键下载完毕", "OK", JOptionPane.PLAIN_MESSAGE);
+			showMessageDialog(null, "一键下载完毕", "OK", JOptionPane.PLAIN_MESSAGE);
 		} catch (BilibiliError e) {
 			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 		} catch (Exception e) {
@@ -132,5 +136,13 @@ public class BatchDownloadThread extends Thread {
 			}
 			throw new RuntimeException("配置文件`" + configFilePath + "`不存在");
 		}
+	}
+
+	public void addTask(ClipInfo clip) {
+	}
+	
+	public void showMessageDialog(Component parentComponent, String message, String title, int messageType)
+			throws HeadlessException {
+		JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
 	}
 }

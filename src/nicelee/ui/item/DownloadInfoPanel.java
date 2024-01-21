@@ -393,4 +393,12 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		return qn;
 	}
 
+	public int getRealqn() {
+		return realqn;
+	}
+
+	public void setRealqn(int realqn) {
+		this.realqn = realqn;
+	}
+
 }

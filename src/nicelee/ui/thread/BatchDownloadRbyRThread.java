@@ -17,6 +17,7 @@ import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.TaskInfo;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
+import nicelee.ui.item.DownloadInfoPanel;
 
 public class BatchDownloadRbyRThread extends BatchDownloadThread {
 
@@ -46,9 +47,13 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 		currentTaskList = new ConcurrentHashMap<>();
 		super.run();
 		for (TaskInfo task : currentTaskList.values()) {
-			while (task.getStatus() == null || "just put in download panel".equals(task.getStatus())) {
+			// 一直循环，等待结果
+			while (isTaskRunning(task)) {
 				try {
 					sleep(10000);
+					Logger.printf("等待任务完毕%s %s %s\n", task.getClip().getAvId(),
+							task.getClip().getAvTitle(),
+							task.getClip().getTitle());
 				} catch (InterruptedException e) {
 				}
 			}
@@ -59,6 +64,26 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 		simplePush(currentTaskList, batchDownloadBeginTime, batchDownloadEndTime);
 		// 将一切置空
 		currentTaskList = null;
+	}
+
+	private boolean isTaskRunning(TaskInfo task) {
+		if(task.getStatus() != null) {
+			if("just put in download panel".equals(task.getStatus())) {
+				DownloadInfoPanel dp = new DownloadInfoPanel(task.getClip(), 0);
+				return Global.downloadTaskList.containsKey(dp); // 这是防止下载面板里面人工删除了该任务
+//				boolean isTaskInDownPanel = false;
+//				for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
+//					if(dp.getClipInfo().equals(task.getClip())) {
+//						isTaskInDownPanel = true;
+//						break;
+//					}
+//				}
+//				return isTaskInDownPanel; 
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void simplePush(Map<ClipInfo, TaskInfo> currentTaskList, long begin, long end) {
@@ -125,12 +150,30 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 	@Override
 	public void run() {
 		try {
+			long lastCookieRefreshTime = 0L;
 			while (true) {
-				// TODO 把下载面板的所有任务清空
-				// TODO 刷新cookie
+				long currentTime = System.currentTimeMillis();
+				// 必须确保当前没有下载任务
+				if(Global.downloadTab.activeTask == 0) {
+					// 把下载面板的所有任务清空(堆积过多可能引起内存溢出)
+					for(DownloadInfoPanel dp : Global.downloadTaskList.keySet()) {
+						dp.removeTask(true);
+					}
+					// 尝试刷新cookie (已登录且不需要浏览器交互且距离上次刷新间隔大于一天)
+					if (Global.isLogin && !Global.runWASMinBrowser && currentTime - lastCookieRefreshTime > MILLI_SECONDS_OF_ONE_DAY) {
+						CookieRefreshThread.showTips = false;
+						CookieRefreshThread thCR = CookieRefreshThread.newInstance();
+						thCR.start();
+						try {
+							thCR.join();
+						} catch (InterruptedException e1) {
+						}
+						CookieRefreshThread.showTips = true;
+					}
+				}
 				runBatchDownloadOnce();
 				try {
-					sleep(timeToSleep(plans, System.currentTimeMillis()));
+					sleep(timeToSleep(plans, currentTime));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

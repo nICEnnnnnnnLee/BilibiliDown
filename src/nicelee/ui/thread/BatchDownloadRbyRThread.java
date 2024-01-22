@@ -4,9 +4,6 @@ import java.awt.Component;
 import java.awt.HeadlessException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +12,7 @@ import java.util.regex.Pattern;
 
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.TaskInfo;
+import nicelee.bilibili.pushers.Push;
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
@@ -43,7 +41,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 	
 	public void runBatchDownloadOnce() {
 		batchDownloadBeginTime = System.currentTimeMillis();
-		Logger.printf("--%s批量下载开始\n", sdf.format(batchDownloadBeginTime));
+		Logger.printf("--%s批量下载开始", sdf.format(batchDownloadBeginTime));
 		currentTaskList = new ConcurrentHashMap<>();
 		super.run();
 		for (TaskInfo task : currentTaskList.values()) {
@@ -51,7 +49,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 			while (isTaskRunning(task)) {
 				try {
 					sleep(10000);
-					Logger.printf("等待任务完毕%s %s %s\n", task.getClip().getAvId(),
+					Logger.printf("等待任务完毕%s %s %s", task.getClip().getAvId(),
 							task.getClip().getAvTitle(),
 							task.getClip().getTitle());
 				} catch (InterruptedException e) {
@@ -59,9 +57,9 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 			}
 		}
 		batchDownloadEndTime = System.currentTimeMillis();
-		Logger.printf("--%s批量下载完毕\n", sdf.format(batchDownloadEndTime));
-		// TODO push消息
-		simplePush(currentTaskList, batchDownloadBeginTime, batchDownloadEndTime);
+		Logger.printf("--%s批量下载完毕", sdf.format(batchDownloadEndTime));
+		// push消息
+		new Push().push(currentTaskList, batchDownloadBeginTime, batchDownloadEndTime);
 		// 将一切置空
 		currentTaskList = null;
 	}
@@ -84,32 +82,6 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 			}
 		}
 		return true;
-	}
-
-	private void simplePush(Map<ClipInfo, TaskInfo> currentTaskList, long begin, long end) {
-		int successCnt = 0, failCnt = 0;
-		List<TaskInfo> successTasks = new ArrayList<TaskInfo>();
-		List<TaskInfo> failTasks = new ArrayList<TaskInfo>();
-		for (TaskInfo task : currentTaskList.values()) {
-			if ("success".equals(task.getStatus())) {
-				successCnt++;
-				successTasks.add(task);
-			} else {
-				failCnt++;
-				failTasks.add(task);
-			}
-		}
-		System.out.println(String.format("任务总数:%d, 成功:%d，失败:%d", successCnt + failCnt, successCnt, failCnt));
-		
-		System.out.println("下载成功的任务有: ");
-		for (TaskInfo task : successTasks) {
-			System.out.println("\t" + task.getFileName());
-		}
-		System.out.println("下载失败的任务有: ");
-		for (TaskInfo task : failTasks) {
-			ClipInfo clip = task.getClip();
-			System.out.println("\t" + task.getStatus() + "\t" + clip.getAvId() + "\t" + clip.getAvTitle() + " - " + clip.getTitle());
-		}
 	}
 
 	@Override

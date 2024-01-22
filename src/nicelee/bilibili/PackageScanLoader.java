@@ -28,10 +28,12 @@ public abstract class PackageScanLoader {
 	private ClassLoader classLoader;
 	private List<Class<?>> validClazzList;
 	
+	public static List<Class<?>> validPusherClasses;
 	public static List<Class<?>> validParserClasses;
 	public static List<Class<?>> validDownloaderClasses;
 	public static List<java.lang.Class<?>> controllerClazzes;
 	static {
+		validPusherClasses = new ArrayList<Class<?>>();
 		validParserClasses = new ArrayList<Class<?>>();
 		validDownloaderClasses = new ArrayList<Class<?>>();
 		// 扫描parsers文件夹，加载自定义类名
@@ -42,30 +44,15 @@ public abstract class PackageScanLoader {
 		// 这是为了在jar包里的类加载生效之前使用, 替换原来的功能
 		// 大多数情况下不需要用到
 		File parserInit = new File(parserFolder, "parsers.ini");
-		if(parserInit.exists()) {
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(parserInit), "utf-8"));
-				String clazzName = reader.readLine();
-				while(clazzName != null) {
-					compileAndLoad(parserPlg, ccloader, clazzName);
-					clazzName = reader.readLine();
-				}
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if(parserFolder.exists()){
-			// 遍历文件进行扫描
-			for(File file: parserFolder.listFiles()) {
-				String fileName = file.getName();
-				if(fileName.endsWith(".java")) {
-					String clazzName = fileName.substring(0, fileName.length() - 5);
-					compileAndLoad(parserPlg, ccloader, clazzName);
-				}
-			}
-		}
+		loadTargetFolder(parserPlg, ccloader, parserFolder, parserInit);
 		
-		// 扫描包，加载 parser 类
+		// 扫描pushers文件夹，加载自定义类名
+		Plugin pusherPlg = new Plugin("pushers", "nicelee.bilibili.pushers.impl");
+		File pusherFolder = new File(ResourcesUtil.baseDirectory(), "pushers");
+		File pusherInit = new File(pusherFolder, "pushers.ini");
+		loadTargetFolder(pusherPlg, ccloader, pusherFolder, pusherInit);
+		
+		// 扫描包，加载 parser 类、downloader类、pusher类
 		PackageScanLoader pLoader = new PackageScanLoader() {
 			@Override
 			public boolean isValid(Class<?> klass) {
@@ -75,6 +62,8 @@ public abstract class PackageScanLoader {
 						validParserClasses.add(klass);
 					}else if("downloader".equals(bili.type())){
 						validDownloaderClasses.add(klass);
+					}else if("pusher".equals(bili.type())){
+						validPusherClasses.add(klass);
 					}
 				}
 				return false;
@@ -82,22 +71,17 @@ public abstract class PackageScanLoader {
 		};
 		pLoader.scanRoot("nicelee.bilibili");
 		// 按权重排序,越大越优先
-		Collections.sort(validParserClasses, new Comparator<Class<?>>() {
+		Comparator<Class<?>> comparator = new Comparator<Class<?>>() {
 			@Override
 			public int compare(Class<?> o1, Class<?> o2) {
 				int bili1 = o1 == null? 0 : o1.getAnnotation(Bilibili.class).weight();
 				int bili2 = o2 == null? 0 : o2.getAnnotation(Bilibili.class).weight();
 				return bili2 - bili1;
 			}
-		});
-		Collections.sort(validDownloaderClasses, new Comparator<Class<?>>() {
-			@Override
-			public int compare(Class<?> o1, Class<?> o2) {
-				int bili1 = o1 == null? 0 : o1.getAnnotation(Bilibili.class).weight();
-				int bili2 = o2 == null? 0 : o2.getAnnotation(Bilibili.class).weight();
-				return bili2 - bili1;
-			}
-		});
+		};
+		Collections.sort(validPusherClasses, comparator);
+		Collections.sort(validParserClasses, comparator);
+		Collections.sort(validDownloaderClasses, comparator);
 
 		// 扫描包，加载 controller 类
 		controllerClazzes = new ArrayList<java.lang.Class<?>>();
@@ -112,6 +96,32 @@ public abstract class PackageScanLoader {
 			}
 		};
 		pLoader.scanRoot("nicelee.server.controller");
+	}
+
+	private static void loadTargetFolder(Plugin plug, CustomClassLoader ccloader, File jFileFolder,
+			File initConfFile) {
+		if(initConfFile.exists()) {
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(initConfFile), "utf-8"));
+				String clazzName = reader.readLine();
+				while(clazzName != null) {
+					compileAndLoad(plug, ccloader, clazzName);
+					clazzName = reader.readLine();
+				}
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if(jFileFolder.exists()){
+			// 遍历文件进行扫描
+			for(File file: jFileFolder.listFiles()) {
+				String fileName = file.getName();
+				if(fileName.endsWith(".java")) {
+					String clazzName = fileName.substring(0, fileName.length() - 5);
+					compileAndLoad(plug, ccloader, clazzName);
+				}
+			}
+		}
 	}
 
 	/**
@@ -133,6 +143,8 @@ public abstract class PackageScanLoader {
 			if (null != bili) {
 				if("parser".equals(bili.type())){
 					validParserClasses.add(klass);
+				}else if("pusher".equals(bili.type())){
+					validPusherClasses.add(klass);
 				}
 			}
 		} catch (Exception e) {

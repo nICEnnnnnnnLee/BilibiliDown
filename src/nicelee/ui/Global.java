@@ -112,6 +112,8 @@ public class Global {
 	@Config(key = "bilibili.repo.definitionStrictMode", note = "是否将同一视频不同清晰度看作不同任务", defaultValue = "false", eq_true = "on", valids = { "on",
 			"off" }) /* 存在某一清晰度后, 在下载另一种清晰度时是否判断已完成 */
 	public static boolean repoInDefinitionStrictMode; //
+	@Config(key = "bilibili.download.batch.plan", note = "按计划分配每次一键下载任务之间的间隔", defaultValue = "06:00~02:00=>r(300,480); 02:00~06:00=>~06:00+r(0,360); 00:00~00:00=>r(600,600)")
+	public static String batchDownloadPlan;
 	@Config(key = "bilibili.download.batch.config.name", note = "一键下载配置的默认名称", defaultValue = "batchDownload.config")
 	public static String batchDownloadConfigName;
 	@Config(key = "bilibili.download.batch.config.name.pattern", note = "一键下载配置名称的匹配正则表达式", defaultValue = "^batchDownload.*\\.config$")

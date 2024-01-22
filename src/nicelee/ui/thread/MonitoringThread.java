@@ -181,7 +181,7 @@ public class MonitoringThread extends Thread {
 			//System.out.println("当前map总任务数： " + totalTask);
 			//totalTask = activeTask + pauseTask + doneTask + queuingTask;
 			//System.out.println("当前计算总任务数： " + totalTask);
-			Global.downloadTab.refreshStatus(totalTask, activeTask, pauseTask, doneTask, queuingTask);
+			Global.downloadTab.refreshStatus(totalTask, activeTask + pauseTaskCanRetry, pauseTask - pauseTaskCanRetry, doneTask, queuingTask);
 			//Global.activeTask = activeTask;
 			//Logger.printf("lastActiveTaskCount: %d, activeTask: %d\n", lastActiveTaskCount, activeTask);
 			if(Global.playSoundAfterMissionComplete && lastActiveTaskCount > 0 && activeTask == 0 && pauseTaskCanRetry == 0)

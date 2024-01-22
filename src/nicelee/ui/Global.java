@@ -114,6 +114,10 @@ public class Global {
 	public static boolean repoInDefinitionStrictMode; //
 	@Config(key = "bilibili.download.push.type", note = "推送消息器的类型", defaultValue = "Print")
 	public static String msgPushType;
+	@Config(key = "bilibili.download.push.account", note = "推送消息需要的账户", defaultValue = "")
+	public static String msgPushAccount;
+	@Config(key = "bilibili.download.push.token", note = "推送消息需要的密码或者凭证", defaultValue = "")
+	public static String msgPushToken;
 	@Config(key = "bilibili.download.batch.plan", note = "按计划分配每次一键下载任务之间的间隔", defaultValue = "06:00~02:00=>r(300,480); 02:00~06:00=>~06:00+r(0,360); 00:00~00:00=>r(600,600)")
 	public static String batchDownloadPlan;
 	@Config(key = "bilibili.download.batch.config.name", note = "一键下载配置的默认名称", defaultValue = "batchDownload.config")

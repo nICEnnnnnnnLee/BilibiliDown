@@ -150,7 +150,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 	@Override
 	public void run() {
 		try {
-			long lastCookieRefreshTime = 0L;
+			long lastCookieRefreshTime = System.currentTimeMillis();
 			while (true) {
 				long currentTime = System.currentTimeMillis();
 				// 必须确保当前没有下载任务
@@ -169,6 +169,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 						} catch (InterruptedException e1) {
 						}
 						CookieRefreshThread.showTips = true;
+						lastCookieRefreshTime = currentTime;
 					}
 				}
 				runBatchDownloadOnce();

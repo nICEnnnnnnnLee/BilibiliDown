@@ -235,7 +235,10 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 						toTime += MILLI_SECONDS_OF_ONE_DAY;
 					toTimeDelta = toTime - currentTime;
 				}
-				return toTimeDelta + rollTime;
+				long timeToSleep = toTimeDelta + rollTime;
+				Logger.printf("现在时间是 %s, 将要等待%dmin", 
+						sdf.format(System.currentTimeMillis()), timeToSleep/60000);
+				return timeToSleep;
 			}
 		}
 		throw new IllegalArgumentException("一键下载计划时间配置错误" + currentTime);

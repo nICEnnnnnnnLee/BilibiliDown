@@ -35,11 +35,11 @@ public class ClipInfo {
 		if (listOwnerName != null)
 			sb.append("--listOwnerName为 :").append(listOwnerName).append(" \r\n");
 		
-		if (links != null) {
-			for (String link : links.values()) {
-				sb.append("----下载链接 :").append(link).append(" \r\n");
-			}
-		}
+//		if (links != null) {
+//			for (String link : links.values()) {
+//				sb.append("----下载链接 :").append(link).append(" \r\n");
+//			}
+//		}
 
 		return sb.toString();
 	}

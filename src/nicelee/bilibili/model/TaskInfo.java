@@ -5,12 +5,12 @@ public class TaskInfo {
 	String fileName;	// 文件名称
 	String fileSize;	// 文件大小
 	String qn;			// 清晰度
-	String status;		// success 或者 fail 或者 not sent to download queue
+	String status;		// 开始为null，中间会有个过渡状态"just put in download panel"，最终会落到 "success" 或者 "fail" 或者 "stop" 或者 其它失败原因
 	
 	public TaskInfo(ClipInfo clip) {
 		this.clip = clip;
-		status = "not sent to download queue";
 	}
+    
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

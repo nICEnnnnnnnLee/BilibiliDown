@@ -26,6 +26,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 	final static SimpleDateFormat sdfToday = new SimpleDateFormat("yyyy-MM-dd");
 	static {
 		TimeZone _8zone = TimeZone.getTimeZone("GMT+8:00");
+		TimeZone.setDefault(_8zone);
 		sdf.setTimeZone(_8zone);
 		sdfToday.setTimeZone(_8zone);
 	}

@@ -87,7 +87,7 @@ public class MailPush implements IPush {
 				failTasks.add(task);
 			}
 		}
-		String title = String.format("%1$tF %1$tR%1$tz 新增视频:%2$d个, 成功:%3$d个，失败:%4$d个", new Date(), successCnt + failCnt,
+		String title = String.format("%1$tF %1$tR 新增视频:%2$d个, 成功:%3$d个，失败:%4$d个", new Date(), successCnt + failCnt,
 				successCnt, failCnt);
 
 		StringBuilder html = new StringBuilder();

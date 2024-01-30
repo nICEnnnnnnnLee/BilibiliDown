@@ -338,9 +338,12 @@ public abstract class AbstractBaseParser implements IInputParser {
 			}
 		}
 		paramSetter.setRealQN(linkQN);
-		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+		String tips = String.format("%s:%s - 查询质量为: %d的链接, 得到质量为: %d的链接", bvId, cid, qn, linkQN);
+		Logger.println(tips);
 		if(Global.alertIfQualityUnexpected && linkQN < 64 && qn > linkQN && Global.isLogin) {
-			throw new QualityTooLowException(bvId + " : " + cid + " - 查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+			String notes = tips + "\n该视频的最高画质清晰度较低，请更换相匹配的优先清晰度之后再进行尝试。\n" 
+					+ "如果你认为此处应当继续下载，而不是报错，请在配置页搜索 qualityUnexpected 并进行配置\n";
+			throw new QualityTooLowException(notes);
 		}
 		try {
 			return parseType1(jObj, linkQN, headers.getBiliWwwM4sHeaders(bvId));

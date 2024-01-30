@@ -310,6 +310,9 @@ public class Global {
 
 	private static void setValue(Field field, String value, boolean isDefaultValue, Config config) {
 		try {
+			if(value.contains("，") || value.contains("：")) {
+				System.err.printf("%s 配置含有非法字符，请注意全半角\n", config.key());
+			}
 			if (field.getType().equals(String.class)) {
 				if (isDefaultValue && value.isEmpty())
 					field.set(null, null);

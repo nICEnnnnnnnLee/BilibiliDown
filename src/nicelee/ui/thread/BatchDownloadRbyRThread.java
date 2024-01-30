@@ -4,6 +4,9 @@ import java.awt.Component;
 import java.awt.HeadlessException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,14 +44,42 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 	}
 	
 	public void runBatchDownloadOnce() {
+		taskOrderNo = 0;
 		batchDownloadBeginTime = System.currentTimeMillis();
 		Logger.printf("--%s批量下载开始", sdf.format(batchDownloadBeginTime));
 		currentTaskList = new ConcurrentHashMap<>();
 		super.run();
-		for (TaskInfo task : currentTaskList.values()) {
+		waitUtilAllTaskDone(false);
+		waitUtilAllTaskDone(true);
+		batchDownloadEndTime = System.currentTimeMillis();
+		Logger.printf("--%s批量下载完毕", sdf.format(batchDownloadEndTime));
+		// push消息
+		new Push().push(currentTaskList, batchDownloadBeginTime, batchDownloadEndTime);
+		// 将一切置空
+		currentTaskList = null;
+	}
+
+	private void waitUtilAllTaskDone(boolean isStrictMode) {
+		List<TaskInfo> tasks = new ArrayList<>(currentTaskList.values());
+		Collections.sort(tasks, (a, b) ->{
+			return a.getOrderNum() - b.getOrderNum();
+		});
+		for (TaskInfo task : tasks) {
 			// 一直循环，等待结果
+			int nullCnt = 0;
 			while (isTaskRunning(task)) {
 				try {
+					if(task.getStatus() == null) {
+						if(isStrictMode) {
+							task.setStatus("not sent to download queue");
+							break;
+						} else {
+							nullCnt ++;
+							if(nullCnt > 3 || System.currentTimeMillis() - batchDownloadBeginTime >= 300000) {
+								break;
+							}
+						}
+					}
 					sleep(10000);
 					Logger.printf("等待任务完毕%s %s %s", task.getClip().getAvId(),
 							task.getClip().getAvTitle(),
@@ -57,12 +88,6 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 				}
 			}
 		}
-		batchDownloadEndTime = System.currentTimeMillis();
-		Logger.printf("--%s批量下载完毕", sdf.format(batchDownloadEndTime));
-		// push消息
-		new Push().push(currentTaskList, batchDownloadBeginTime, batchDownloadEndTime);
-		// 将一切置空
-		currentTaskList = null;
 	}
 
 	private boolean isTaskRunning(TaskInfo task) {
@@ -85,10 +110,12 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 		return true;
 	}
 
+	int taskOrderNo = 0;
 	@Override
 	public void addTask(ClipInfo clip) {
 		if (currentTaskList != null) {
-			currentTaskList.put(clip, new TaskInfo(clip));
+			currentTaskList.put(clip, new TaskInfo(clip, taskOrderNo));
+			taskOrderNo ++;
 		}
 	}
 	

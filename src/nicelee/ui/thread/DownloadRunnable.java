@@ -60,6 +60,8 @@ public class DownloadRunnable implements Runnable {
 		} catch (BilibiliError e) {
 			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 			BatchDownloadRbyRThread.taskFail(clip, ResourcesUtil.detailsOfException(e));
+		} catch (Exception e) {
+			BatchDownloadRbyRThread.taskFail(clip, ResourcesUtil.detailsOfException(e));
 		}
 	}
 

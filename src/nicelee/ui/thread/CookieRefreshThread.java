@@ -25,6 +25,7 @@ import nicelee.ui.item.JOptionPaneManager;
 
 import org.json.JSONObject;
 
+import nicelee.bilibili.API;
 import nicelee.bilibili.INeedLogin;
 import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
@@ -111,6 +112,8 @@ public class CookieRefreshThread extends Thread {
 		if (!needRefresh) {
 			if(showTips)
 				JOptionPaneManager.showMsgWithNewThread("消息", "当前cookie无需刷新");
+			API.uploadFingerprint();
+			Logger.println("Fingerprint上传完毕");
 			return;
 		}
 		if (Global.runWASMinBrowser) {
@@ -169,6 +172,8 @@ public class CookieRefreshThread extends Thread {
 				JOptionPaneManager.showMsgWithNewThread("消息", "Cookie 刷新成功");
 			}
 		Logger.println("Cookie刷新运行完毕");
+		API.uploadFingerprint();
+		Logger.println("Fingerprint上传完毕");
 	}
 
 	private void shutDownServerAsyncDelay() {

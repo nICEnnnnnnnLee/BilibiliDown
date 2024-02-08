@@ -209,6 +209,10 @@ public class Global {
 
 	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
 	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
+	@Config(key = "bilibili.userAgent.pc.fingerprint", note = "浏览器指纹(取自cookie buvid_fp)", defaultValue = "a8bad806241b0b0f7add1024fbd701fa")
+	public static String userAgentFingerprint = "";
+	@Config(key = "bilibili.userAgent.pc.payload", note = "截取自api请求https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi", defaultValue = "")
+	public static String userAgentPayload = "";
 	@Config(key = "bilibili.github.token", note = "Github API鉴权token", defaultValue = "", warning = false)
 	public static String githubToken; // 一般情况下，用于Github API鉴权, 暂只用于更新Beta版本
 	final public static HashMap<String, String> settings = new LinkedHashMap<>();

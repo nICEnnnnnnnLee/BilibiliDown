@@ -75,7 +75,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 							break;
 						} else {
 							nullCnt ++;
-							if(nullCnt > 3 || System.currentTimeMillis() - batchDownloadBeginTime >= 300000) {
+							if(nullCnt > 2 && nullCnt * 10000 > Global.sleepAfterDownloadQuery) {
 								break;
 							}
 						}
@@ -187,6 +187,16 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 
 	public static void main(String[] a) {
 		try {
+			SimpleDateFormat sdf_0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			sdf_0.setTimeZone(TimeZone.getTimeZone("GMT"));
+			// Wed, 29 Jan 2025 08:21:29 GMT
+			long expTime = sdf_0.parse("2025-01-29 08:21:29").getTime();
+			long nutTime = 1706602889L * 1000L;
+			long delta = expTime- nutTime;
+			System.out.println(expTime);
+			System.out.println(nutTime);
+			System.out.println(delta/1000/60/60/24);
+			System.exit(1);
 			BatchDownloadRbyRThread ooxx = new BatchDownloadRbyRThread("");
 			String plan = "06:00~02:00=>r(300,480); 02:00~04:00=>~06:00+r(0,360); 00:00~00:00=>r(30,31)";
 			String[] plans = plan.split(";");

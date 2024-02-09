@@ -172,7 +172,7 @@ public class API {
 
 	final static long SECONDS_OF_ONE_YEAR = 60 * 60 * 24 * 365;
 
-	public static String getFingerprint() {
+	public static synchronized String getFingerprint() {
 		String cookie = null;
 		File fingerprint = ResourcesUtil.sourceOf("./config/fingerprint.config");
 		if (fingerprint.exists()) {

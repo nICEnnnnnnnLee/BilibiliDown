@@ -93,6 +93,8 @@ public class CookieRefreshThread extends Thread {
 		if (HttpCookies.getGlobalCookies() == null) {
 			if(showTips)
 				JOptionPaneManager.showMsgWithNewThread("消息", "当前未登录");
+			API.uploadFingerprint();
+			Logger.println("Fingerprint上传完毕");
 			return;
 		}
 		// 判断有没有refresh_token

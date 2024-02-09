@@ -29,6 +29,10 @@ public class HttpCookies {
 		return iCookies;
 	}
 
+	/**
+	 * @deprecated	推荐使用HttpCookies.globalCookiesWithFingerprint()
+	 * @return	不带指纹的全局cookie
+	 */
 	public static List<HttpCookie> getGlobalCookies() {
 		return globalCookies;
 	}

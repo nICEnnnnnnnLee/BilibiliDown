@@ -174,7 +174,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 				}
 				runBatchDownloadOnce();
 				try {
-					sleep(timeToSleep(plans, currentTime));
+					sleep(timeToSleep(plans, System.currentTimeMillis()));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -233,7 +233,7 @@ public class BatchDownloadRbyRThread extends BatchDownloadThread {
 	/**
 	 * <p> 06:00~02:00=>r(300,480); 02:00~04:00=>~06:00+r(0,360); 00:00~00:00=>r(30,30) </p>
 	 * <p> 北京时间、时间都是闭区间、roll点是左闭右开、左边优先级最高 </p>
-	 * <p> 每天早上6点到第二天早上2点，随机300s~480s(5~8min) </p>
+	 * <p> 每天早上6点到第二天早上2点(但实际只包括当天剩余时间，即到第二天零点为止)，随机300s~480s(5~8min) </p>
 	 * <p> 每天早上2点到早上4点，sleep到早上6点再加一个随机时间 0s~480s(0~6min) </p>
 	 * <p> 其它时间，固定30s </p>
 	 * @param plans				字符串数组，其中字符串格式类似于06:00~02:00=>r(300,480) 或 02:00~04:00=>~06:00+r(0,360)

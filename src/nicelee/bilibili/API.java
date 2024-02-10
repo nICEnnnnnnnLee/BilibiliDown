@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
@@ -128,6 +129,21 @@ public class API {
 		}
 	}
 
+	public static String encodeURL(String rawUrl) {
+		String url = rawUrl;
+		if (!url.contains("%")) {
+			try {
+				url = URLEncoder.encode(url, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+			}
+		}
+		return url.replace("+", "%20");
+	}
+
+	/**
+	 * @param url	url含有空格会报错，建议先URLEncode处理
+	 * @return
+	 */
 	public static String encWbi(String url) {
 		// Logger.println(url);
 		// 获取 mixinKey
@@ -150,7 +166,7 @@ public class API {
 					// Logger.println(aEqB);
 					String[] keyValue = aEqB.split("=", 2);
 					String key = URLEncoder.encode(keyValue[0], "UTF-8");
-					String value = keyValue.length >= 2 ? URLEncoder.encode(keyValue[1], "UTF-8") : "";
+					String value = keyValue.length >= 2 ? encodeURL(keyValue[1]) : "";
 					return key + "=" + value;
 				} catch (UnsupportedEncodingException e) {
 					return aEqB;
@@ -219,7 +235,7 @@ public class API {
 			String b_lsid = ResourcesUtil.randomHex(8) + "_" + Long.toHexString(currentTime).toUpperCase();
 			HttpCookies.set("b_lsid", b_lsid);
 		}
-		
+
 		// TODO payload
 		String payload = Global.userAgentPayload;
 		payload = payload.replaceFirst("\"5062\":\"[^\"]+\"", "\"5062\":\"" + currentTime + "\"");

@@ -82,7 +82,7 @@ public class MJMenuBar extends JMenuBar {
 		 * 创建二级 操作 子菜单
 		 */
 		JMenuItem batchDownload = new JMenuItem("一键下载");
-		JMenuItem batchDownloadRbyR = new JMenuItem("按计划下载");
+		JMenuItem batchDownloadRbyR = new JMenuItem("按计划周期下载");
 		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
 		JMenuItem saveDownloading = new JMenuItem("保存下载任务");
@@ -105,7 +105,6 @@ public class MJMenuBar extends JMenuBar {
 		loginRelated.add(logout);
 		
 		operMenu.add(batchDownload);
-		operMenu.add(batchDownloadRbyR);
 		operMenu.addSeparator();
 		operMenu.add(reloadConfig);
 		operMenu.add(reloadRepo);
@@ -117,6 +116,9 @@ public class MJMenuBar extends JMenuBar {
 		operMenu.add(doMultiDownMenuItem);
 		operMenu.addSeparator();
 		operMenu.add(loginRelated);
+		operMenu.addSeparator();
+		operMenu.add(batchDownloadRbyR);
+		
 		
 		/**
 		 * 创建二级 配置 子菜单

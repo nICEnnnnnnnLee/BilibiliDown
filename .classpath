@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-launcher"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="D:/Workspace/javaweb-springboot/BilibiliDown/libs/core-3.3.3.jar"/>
+	<classpathentry kind="lib" path="libs/core-3.3.3.jar"/>
+	<classpathentry kind="lib" path="libs/javax.mail-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/jaf-1.1.1-activation.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

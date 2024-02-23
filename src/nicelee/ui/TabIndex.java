@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.model.FavList;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.item.MJButton;
 import nicelee.ui.item.MJTabVideo;
 import nicelee.ui.item.MJTextField;
@@ -199,17 +200,17 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 		if(!placeHolder.equals(avId)) {
 			INeedAV iNeedAV = new INeedAV();
 			avId = iNeedAV.getValidID(avId);
-			System.out.println("当前解析的id为：");
-			System.out.println(avId);
-			if(avId.contains(" ")) {
-				String avs[] = avId.trim().split(" ");
-				System.out.println("将弹出窗口个数： " + avs.length);
-				for(String av : avs) {
-					popVideoInfoTab(av);
-				}
-			}else {
-				popVideoInfoTab(avId);
-			}
+			Logger.println("当前解析的id为：" + avId);
+//			if(avId.contains(" ")) {
+//				String avs[] = avId.trim().split(" ");
+//				System.out.println("将弹出窗口个数： " + avs.length);
+//				for(String av : avs) {
+//					popVideoInfoTab(av);
+//				}
+//			}else {
+//				popVideoInfoTab(avId);
+//			}
+			popVideoInfoTab(avId);
 		}
 		
 	}

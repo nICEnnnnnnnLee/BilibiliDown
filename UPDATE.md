@@ -1,4 +1,13 @@
 ## UPDATE  
+* V6.30  `2024-02-23`  
+    * 新增: 添加功能，可以周期性地进行“一键下载”，并通报结果。  
+    * 优化: 现在按平台和架构编译了四个版本ffmpeg，缺省时符合条件的会提示进行下载：`win_amd64`、`linux_amd64`、`win_arm64`、`linux_arm64`  
+    * 优化: 现在补充完善了浏览器指纹等方面的cookie，期望是预防风控[#177](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/177), [#180](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/180)
+        + 因为尚不清楚相关机制，目前`通过API上传指纹`这一动作只在`刷新cookie`时才会进行。在遇到风控时，不妨先试一试菜单栏里的`刷新cookie`选项。  
+        + 现在最好不要随意修改配置的UA，如果必要，需要在隐私模式下抓取cookie并抓包相应API的payload。详见配置页。
+    * 修复: [#182](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/182) 考虑在`UP主所有视频`类型的链接解析时，keyword中含有空格的情况。
+    * 删除: 移除解析分页链接时`promptAll`模式相关代码。  
+
 * V6.29  `2023-12-01`  
     * 新增(GUI): 菜单配置栏添加`下载前先查询记录?`配置项，更改后可临时开启/关闭仓库功能。重启后失效。  
     * 删除(GUI): 菜单配置栏删除`下载策略`配置项。  

@@ -24,7 +24,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.29", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.30", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -112,6 +112,14 @@ public class Global {
 	@Config(key = "bilibili.repo.definitionStrictMode", note = "是否将同一视频不同清晰度看作不同任务", defaultValue = "false", eq_true = "on", valids = { "on",
 			"off" }) /* 存在某一清晰度后, 在下载另一种清晰度时是否判断已完成 */
 	public static boolean repoInDefinitionStrictMode; //
+	@Config(key = "bilibili.download.push.type", note = "推送消息器的类型", defaultValue = "Print")
+	public static String msgPushType;
+	@Config(key = "bilibili.download.push.account", note = "推送消息需要的账户", defaultValue = "")
+	public static String msgPushAccount;
+	@Config(key = "bilibili.download.push.token", note = "推送消息需要的密码或者凭证", defaultValue = "")
+	public static String msgPushToken;
+	@Config(key = "bilibili.download.batch.plan", note = "按计划分配每次一键下载任务之间的间隔", defaultValue = "06:00~02:00=>r(300,480); 02:00~06:00=>~06:00+r(0,360); 00:00~00:00=>r(600,600)")
+	public static String batchDownloadPlan;
 	@Config(key = "bilibili.download.batch.config.name", note = "一键下载配置的默认名称", defaultValue = "batchDownload.config")
 	public static String batchDownloadConfigName;
 	@Config(key = "bilibili.download.batch.config.name.pattern", note = "一键下载配置名称的匹配正则表达式", defaultValue = "^batchDownload.*\\.config$")
@@ -201,6 +209,10 @@ public class Global {
 
 	@Config(key = "bilibili.userAgent.pc", note = "HTTP请求使用的UserAgent(PC Web)", defaultValue = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0")
 	public static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0";
+	@Config(key = "bilibili.userAgent.pc.fingerprint", note = "浏览器指纹(取自cookie buvid_fp)", defaultValue = "a8bad806241b0b0f7add1024fbd701fa")
+	public static String userAgentFingerprint = "";
+	@Config(key = "bilibili.userAgent.pc.payload", note = "截取自api请求https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi", defaultValue = "")
+	public static String userAgentPayload = "";
 	@Config(key = "bilibili.github.token", note = "Github API鉴权token", defaultValue = "", warning = false)
 	public static String githubToken; // 一般情况下，用于Github API鉴权, 暂只用于更新Beta版本
 	final public static HashMap<String, String> settings = new LinkedHashMap<>();
@@ -302,6 +314,9 @@ public class Global {
 
 	private static void setValue(Field field, String value, boolean isDefaultValue, Config config) {
 		try {
+			if(value.contains("，") || value.contains("：")) {
+				System.err.printf("%s 配置含有非法字符，请注意全半角\n", config.key());
+			}
 			if (field.getType().equals(String.class)) {
 				if (isDefaultValue && value.isEmpty())
 					field.set(null, null);

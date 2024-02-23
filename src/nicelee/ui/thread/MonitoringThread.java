@@ -29,7 +29,7 @@ public class MonitoringThread extends Thread {
 		while (true) {
 			int MAX_FAIL_CNT = Global.maxFailRetry;
 			//每一次while循环， 统计一次任务状态， 并在UI上更新
-			int totalTask = 0, activeTask = 0, pauseTask = 0, doneTask = 0, queuingTask = 0;
+			int totalTask = 0, activeTask = 0, pauseTask = 0, pauseTaskCanRetry = 0,doneTask = 0, queuingTask = 0;
 			for (Entry<DownloadInfoPanel, IDownloader> entry : map.entrySet()) {
 				DownloadInfoPanel dp = entry.getKey();
 				IDownloader downloader = entry.getValue();
@@ -44,19 +44,29 @@ public class MonitoringThread extends Thread {
 					switch (downloader.currentStatus()) {
 					case SUCCESS:
 						doneTask ++;
-						dp.getLbCurrentStatus().setText(genTips("%d/%d 下载完成. ", downloader));
-						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));
-						dp.getBtnControl().setVisible(false);
-						dp.setBackground(lightGreen);
+						if(dp.getBackground() != lightGreen) {
+							String fileSize = IDownloader.transToSizeStr(downloader.sumTotalFileSize());
+							dp.getLbCurrentStatus().setText(genTips("%d/%d 下载完成. ", downloader));
+							dp.getLbDownFile().setText("文件大小: "  + fileSize);
+							dp.getBtnControl().setVisible(false);
+							dp.setBackground(lightGreen);
+							// TODO 将成功的任务状态记入
+							BatchDownloadRbyRThread.taskSucceed(dp.getClipInfo(), formattedTitle, fileSize, "" + dp.getRealqn());
+						}
 						break;
 					case FAIL:
 						pauseTask ++;
 						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 						if(dp.getFailCnt() == MAX_FAIL_CNT) {
-							dp.getLbCurrentStatus().setText(genTips("%d/%d 下载异常. ", downloader));
-							dp.getBtnControl().setText("继续下载");
-							dp.getBtnControl().setVisible(true);
+							if(!dp.getLbCurrentStatus().getText().endsWith("下载异常. ")) {
+								dp.getLbCurrentStatus().setText(genTips("%d/%d 下载异常. ", downloader));
+								dp.getBtnControl().setText("继续下载");
+								dp.getBtnControl().setVisible(true);
+								// TODO 将成功的任务状态记入
+								BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "fail");
+							}
 						}else {
+							pauseTaskCanRetry++;
 							dp.getLbCurrentStatus().setText(String.format("下载异常. 尝试重连 %d ", dp.getFailCnt()));
 							dp.setFailCnt(dp.getFailCnt() + 1);
 							dp.continueTask();
@@ -69,7 +79,10 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 						dp.getBtnControl().setText("继续下载");
 						dp.getBtnControl().setVisible(true);
-						dp.setBackground(lightPink);
+						if(dp.getBackground() != lightGreen && dp.getBackground() != lightPink) {
+							BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "stop");
+							dp.setBackground(lightPink);
+						}
 						break;
 					case PROCESSING:
 						activeTask ++;
@@ -86,7 +99,10 @@ public class MonitoringThread extends Thread {
 							dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 							dp.getBtnControl().setText("继续下载");
 							dp.getBtnControl().setVisible(true);
-							dp.setBackground(lightPink);
+							if(dp.getBackground() != lightGreen && dp.getBackground() != lightPink) {
+								BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "stop");
+								dp.setBackground(lightPink);
+							}
 						}else {
 							queuingTask ++;
 							dp.getLbCurrentStatus().setText("等待下载中..");
@@ -127,7 +143,10 @@ public class MonitoringThread extends Thread {
 						dp.getLbDownFile().setText("任务取消");
 						dp.getBtnControl().setText("继续下载");
 						dp.getBtnControl().setVisible(true);
-						dp.setBackground(lightPink);
+						if(dp.getBackground() != lightGreen && dp.getBackground() != lightPink) {
+							BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "stop");
+							dp.setBackground(lightPink);
+						}
 					}if(downloader.currentStatus() == StatusEnum.PROCESSING) {
 						activeTask ++;
 						dp.getLbCurrentStatus().setText(genTips("%d/%d 转码中... ", downloader));
@@ -143,7 +162,10 @@ public class MonitoringThread extends Thread {
 							dp.getLbDownFile().setText(genSizeCntStr("文件%d进度： %s/%s", downloader));
 							dp.getBtnControl().setText("继续下载");
 							dp.getBtnControl().setVisible(true);
-							dp.setBackground(lightPink);
+							if(dp.getBackground() != lightGreen && dp.getBackground() != lightPink) {
+								BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "stop");
+								dp.setBackground(lightPink);
+							}
 						}else {
 							queuingTask ++;
 							dp.getLbCurrentStatus().setText("等待下载中..");
@@ -159,12 +181,11 @@ public class MonitoringThread extends Thread {
 			//System.out.println("当前map总任务数： " + totalTask);
 			//totalTask = activeTask + pauseTask + doneTask + queuingTask;
 			//System.out.println("当前计算总任务数： " + totalTask);
-			Global.downloadTab.refreshStatus(totalTask, activeTask, pauseTask, doneTask, queuingTask);
+			Global.downloadTab.refreshStatus(totalTask, activeTask + pauseTaskCanRetry, pauseTask - pauseTaskCanRetry, doneTask, queuingTask);
 			//Global.activeTask = activeTask;
 			//Logger.printf("lastActiveTaskCount: %d, activeTask: %d\n", lastActiveTaskCount, activeTask);
-			if(Global.playSoundAfterMissionComplete && lastActiveTaskCount > 0 && activeTask == 0) {
+			if(Global.playSoundAfterMissionComplete && lastActiveTaskCount > 0 && activeTask == 0 && pauseTaskCanRetry == 0)
 				Audio.play();
-			}
 			lastActiveTaskCount = activeTask;
 			try {
 				Thread.sleep(1500);

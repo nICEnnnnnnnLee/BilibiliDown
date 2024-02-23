@@ -64,7 +64,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		// 获取av下的视频列表
 		String url = String.format("https://api.bilibili.com/x/player/pagelist?bvid=%s&jsonp=jsonp", bvId);
 		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
-		String json = util.getContent(url, headers_json, HttpCookies.getGlobalCookies());
+		String json = util.getContent(url, headers_json, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(url);
 		Logger.println(json);
 		JSONArray array = new JSONObject(json).getJSONArray("data");
@@ -73,7 +73,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		JSONObject jObj = array.getJSONObject(0);
 		long cid = jObj.getLong("cid");
 		String detailUrl = String.format("https://api.bilibili.com/x/web-interface/view?cid=%d&bvid=%s", cid, bvId);
-		String detailJson = util.getContent(detailUrl, headers_json, HttpCookies.getGlobalCookies());
+		String detailJson = util.getContent(detailUrl, headers_json, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(detailUrl);
 		Logger.println(detailJson);
 		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data");
@@ -90,7 +90,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			// 查询graph_version版本
 			String url_graph_version = String.format("https://api.bilibili.com/x/player.so?id=cid:%d&bvid=%s", cid,
 					bvId);
-			String xml = util.getContent(url_graph_version, headers_json, HttpCookies.getGlobalCookies());
+			String xml = util.getContent(url_graph_version, headers_json, HttpCookies.globalCookiesWithFingerprint());
 			Logger.println(xml);
 			Pattern p = Pattern.compile("<interaction>.*\"graph_version\" *: *([0-9]+).*</interaction>");
 			Matcher matcher = p.matcher(xml);
@@ -179,7 +179,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=4048&fourk=1";
 			url = String.format(url, cid, bvId, 32);
 			Logger.println(url);
-			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.getGlobalCookies());
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.globalCookiesWithFingerprint());
 			System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} else {
@@ -188,7 +188,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = String.format(url, aid, cid, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
-					HttpCookies.getGlobalCookies());
+					HttpCookies.globalCookiesWithFingerprint());
 			System.out.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
 		}
@@ -238,7 +238,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		String url = String.format("https://www.bilibili.com/audio/music-service-c/url?songid=%s&privilege=2&quality=%d&mid=&platform=web", auIdNum, qn);
 		Logger.println(url);
 		HashMap<String, String> headers = new HttpHeaders().getCommonHeaders();
-		String r = util.getContent(url, headers, HttpCookies.getGlobalCookies());
+		String r = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(r);
 		JSONObject data = new JSONObject(r).getJSONObject("data");
 		int realQn = data.optInt("type");
@@ -253,7 +253,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
 		Logger.println(url);
 		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
-		String xml = util.getContent(url, headers_json, HttpCookies.getGlobalCookies());
+		String xml = util.getContent(url, headers_json, HttpCookies.globalCookiesWithFingerprint());
 		Pattern p = Pattern.compile("<subtitle>(.*?)</subtitle>");
 		Matcher matcher = p.matcher(xml);
 		if (matcher.find()) {
@@ -310,8 +310,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = String.format(url, cid, bvId, qn, fnval);
 			url = API.encWbi(url);
 			Logger.println(url);
-//			List cookie = downloadFormat == 2 ? null : HttpCookies.getGlobalCookies();
-			List<HttpCookie> cookie = HttpCookies.getGlobalCookies();
+//			List cookie = downloadFormat == 2 ? null : HttpCookies.globalCookiesWithFingerprint();
+			List<HttpCookie> cookie = HttpCookies.globalCookiesWithFingerprint();
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), cookie);
 			System.out.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
@@ -320,7 +320,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = "https://api.bilibili.com/pgc/player/web/playurl?fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s&fnval=%s";
 			url = String.format(url, aid, cid, qn, fnval);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
-					HttpCookies.getGlobalCookies());
+					HttpCookies.globalCookiesWithFingerprint());
 			Logger.println(url);
 			Logger.println(json);
 			jObj = new JSONObject(json).getJSONObject("result");
@@ -338,9 +338,12 @@ public abstract class AbstractBaseParser implements IInputParser {
 			}
 		}
 		paramSetter.setRealQN(linkQN);
-		System.out.println("查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+		String tips = String.format("%s:%s - 查询质量为: %d的链接, 得到质量为: %d的链接", bvId, cid, qn, linkQN);
+		Logger.println(tips);
 		if(Global.alertIfQualityUnexpected && linkQN < 64 && qn > linkQN && Global.isLogin) {
-			throw new QualityTooLowException(bvId + " : " + cid + " - 查询质量为:" + qn + "的链接, 得到质量为:" + linkQN + "的链接");
+			String notes = tips + "\n该视频的最高画质清晰度较低，请更换相匹配的优先清晰度之后再进行尝试。\n" 
+					+ "如果你认为此处应当继续下载，而不是报错，请在配置页搜索 qualityUnexpected 并进行配置\n";
+			throw new QualityTooLowException(notes);
 		}
 		try {
 			return parseType1(jObj, linkQN, headers.getBiliWwwM4sHeaders(bvId));
@@ -378,7 +381,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		Logger.println(url_node);
 		HashMap<String, String> headers_gv = new HashMap<>();
 		headers_gv.put("Referer", "https://www.bilibili.com/video/" + bvid);
-		String str_nodeInfo = util.getContent(url_node, headers_gv, HttpCookies.getGlobalCookies());
+		String str_nodeInfo = util.getContent(url_node, headers_gv, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(str_nodeInfo);
 		JSONObject nodeInfo = new JSONObject(str_nodeInfo).getJSONObject("data");
 		JSONArray questions = nodeInfo.optJSONObject("edges").optJSONArray("questions");

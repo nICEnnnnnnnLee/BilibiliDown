@@ -1,6 +1,5 @@
 package nicelee.bilibili.parsers.impl;
 
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
@@ -45,7 +44,7 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);
 		if (matcher.find()) {
-			System.out.println("匹配UP主主页全部视频,返回 av1 av2 av3 ...");
+			System.out.println("匹配UP主主页全部视频 URL4UPAllParser");
 			spaceID = matcher.group(1);
 			params = new HashMap<>();
 			params.put("tid", "0");
@@ -69,7 +68,6 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	@Override
 	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {
-		Logger.println(paramSetter.getPage());
 		return result(pageSize, paramSetter.getPage(), videoFormat, getVideoLink);
 	}
 
@@ -88,7 +86,7 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			//String urlFormat = "https://space.bilibili.com/ajax/member/getSubmitVideos?mid=%s&pagesize=%d&tid=0&page=%d&keyword=&order=pubdate";
 			//String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&jsonp=jsonp";
 			String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
-			String keyword = URLDecoder.decode(params.get("keyword"), "UTF-8");
+			String keyword = API.encodeURL(params.get("keyword"));
 			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, keyword, params.get("order"));
 			url = API.encWbi(url);
 			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"), HttpCookies.globalCookiesWithFingerprint());

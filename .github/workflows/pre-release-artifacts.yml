@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: dev
         
     - name: Set up JDK 1.8
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '8' 
@@ -42,7 +42,7 @@ jobs:
         ./.github/scripts/gen_zip_for_pre_release.sh
         
     - name: Upload artifacts(no jre)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release
         path: ./BilibiliDown.v${{steps.tag_latest.outputs.value}}.pre-release.zip

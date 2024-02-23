@@ -173,62 +173,7 @@ public class INeedLogin {
 		if(loginHeader != null)
 			return loginHeader;
 		HashMap<String, String> headers = new HttpHeaders().getBiliLoginAuthHeaders();
-		String cookie = null;
-		File fingerprint = ResourcesUtil.sourceOf("./config/fingerprint.config");
-		if(fingerprint.exists()) {
-			cookie = ResourcesUtil.readAll(fingerprint);
-		}else {
-			StringBuilder sb = new StringBuilder();
-			sb.append("_uuid=")
-			.append(ResourcesUtil.randomUpper(8)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(18)).append("infoc")
-			.append("; ");
-			sb.append("b_lsid=")
-			.append(ResourcesUtil.randomUpper(8)).append("_")
-			.append(ResourcesUtil.randomUpper(11))
-			.append("; ");
-			sb.append("b_nut=")
-			.append(System.currentTimeMillis()/1000)
-			.append("; ");
-			sb.append("b_timer=")
-			.append("%7B%22ffp%22%3A%7B%22333.130.fp.risk_")
-			.append(ResourcesUtil.randomUpper(8))
-			.append("%22%3A%22")
-			.append(ResourcesUtil.randomInt(10))
-			.append("A%22%7D%7D; ");
-			sb.append("buvid3=")
-			.append(ResourcesUtil.randomUpper(8)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(17)).append("infoc")
-			.append("; ");
-			sb.append("buvid4=")
-			.append(ResourcesUtil.randomInt(8)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(17)).append("-")
-			.append(ResourcesUtil.randomInt(9)).append("-")
-			.append(ResourcesUtil.randomLower(4)).append("/")
-			.append(ResourcesUtil.randomUpper(4)).append("+")
-			.append(ResourcesUtil.randomUpper(12)).append("%3D%3D")
-			.append("; ");
-			sb.append("buvid_fp=")
-			.append(ResourcesUtil.randomUpper(8)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(4)).append("-")
-			.append(ResourcesUtil.randomUpper(17)).append("infoc")
-			.append("; ");
-			sb.append("fingerprint=").append(ResourcesUtil.randomLower(32));
-			cookie = sb.toString();
-			ResourcesUtil.write(fingerprint, cookie);
-		}
-		cookie = cookie.replaceFirst("b_nut=[0-9]+", "b_nut=" + System.currentTimeMillis()/1000);
+		String cookie = API.getFingerprint();
 		headers.put("Cookie", cookie);
 		loginHeader = headers;
 		return headers;

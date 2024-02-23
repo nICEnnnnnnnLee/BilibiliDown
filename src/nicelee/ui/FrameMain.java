@@ -26,6 +26,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.SysUtil;
 import nicelee.ui.item.MJTitleBar;
 import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
@@ -44,9 +45,7 @@ public class FrameMain extends JFrame {
 	public static void main(String[] args) {
 		System.out.println();
 		// System.getProperties().setProperty("file.encoding", "utf-8");
-		String osName = System.getProperty("os.name");
-		boolean isWindows = osName.startsWith("Windows");
-		System.out.println(osName);
+		boolean isFFmpegSurported = SysUtil.surportFFmpegOfficially();
 		System.out.println("Java version:" + System.getProperty("java.specification.version"));
 		System.out.println(ResourcesUtil.baseDirectory());
 		// 读取配置文件
@@ -113,7 +112,7 @@ public class FrameMain extends JFrame {
 		String ffmpeg = ResourcesUtil.resolve(Global.ffmpegPath);
 		String[] cmd = new String[] { ffmpeg, "-version" };
 		if (!CmdUtil.run(cmd)) {
-			if (isWindows) {
+			if (isFFmpegSurported) {
 				Object[] options = { "是", "否" };
 				int m = JOptionPane.showOptionDialog(null,
 						"检测到当前没有ffmpeg环境, mp4及小部分flv文件将无法转码或合并.\r\n     是否下载ffmpeg(自编译, 3M左右)?", "请选择：",

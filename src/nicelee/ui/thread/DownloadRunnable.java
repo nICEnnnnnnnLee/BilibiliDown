@@ -8,7 +8,6 @@ import nicelee.bilibili.API;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.exceptions.BilibiliError;
-import nicelee.bilibili.exceptions.Status412Exception;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
@@ -60,6 +59,9 @@ public class DownloadRunnable implements Runnable {
 			download();
 		} catch (BilibiliError e) {
 			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
+			BatchDownloadRbyRThread.taskFail(clip, ResourcesUtil.detailsOfException(e));
+		} catch (Exception e) {
+			BatchDownloadRbyRThread.taskFail(clip, ResourcesUtil.detailsOfException(e));
 		}
 	}
 
@@ -68,12 +70,14 @@ public class DownloadRunnable implements Runnable {
 		// 如果点击了全部暂停按钮，而此时在队列中
 		if(TabDownload.isStopAll()) {
 			System.out.println("你点击了一次暂停按钮...");
+			BatchDownloadRbyRThread.taskFail(clip, "stop manualy");
 			return;
 		}
 		//判断是否已经下载过
 		if(Global.useRepo && RepoUtil.isInRepo(record)) {
 			JOptionPaneManager.showMsgWithNewThread("提示", "您已经下载过视频" + record);
 			System.out.println("已经下载过 " + record);
+			BatchDownloadRbyRThread.taskFail(clip, "already downloaded");
 			return;
 		}
 		// 新建下载部件
@@ -81,6 +85,7 @@ public class DownloadRunnable implements Runnable {
 		// 判断是否在下载任务中
 		if (Global.downloadTaskList.get(downPanel) != null) {
 			System.out.println("已经存在相关下载");
+			BatchDownloadRbyRThread.taskFail(clip, "already in download panel");
 			return;
 		}
 		// 查询下载链接
@@ -104,6 +109,7 @@ public class DownloadRunnable implements Runnable {
 		if (qn != realQN && Global.useRepo && RepoUtil.isInRepo(record)) {
 			JOptionPaneManager.showMsgWithNewThread("提示", "您已经下载过视频" + record);
 			System.out.println("已经下载过 " + record);
+			BatchDownloadRbyRThread.taskFail(clip, "already downloaded2");
 			return;
 		}
 		//获取实际清晰度后，初始化下载部件参数
@@ -111,10 +117,12 @@ public class DownloadRunnable implements Runnable {
 		// 再进行一次判断，看下载列表是否已经存在相应任务(防止并发误判)
 		if (Global.downloadTaskList.get(downPanel) != null) {
 			System.out.println("已经存在相关下载");
+			BatchDownloadRbyRThread.taskFail(clip, "already in download panel2");
 			return;
 		}
 		// 将下载任务(HttpRequestUtil + DownloadInfoPanel)添加至全局列表, 让监控进程周期获取信息并刷新
 		Global.downloadTaskList.put(downPanel, iNeedAV.getDownloader());
+		BatchDownloadRbyRThread.taskFail(clip, "just put in download panel");
 		// 根据信息初始化绘制下载部件
 		JPanel jpContent = Global.downloadTab.getJpContent();
 		jpContent.add(downPanel);

@@ -24,12 +24,12 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.ref }}
         
     - name: Set up JDK 1.8
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '8'  
@@ -61,7 +61,7 @@ jobs:
         ./.github/scripts/gen_zip_sha1_for_release.sh
         
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@master
       with:
         tag_name: V${{steps.tag_latest.outputs.value}}
         name: BilibiliDown - v${{steps.tag_latest.outputs.value}}
@@ -98,7 +98,7 @@ jobs:
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ always() && env.BITBUCKET_TOKEN != '' && github.event.inputs.bitbucket == 'true'}}
+      if: ${{ env.BITBUCKET_TOKEN != ''}}
       run: |
         chmod +x .github/scripts/upload_bitbucket.sh
         ./.github/scripts/upload_bitbucket.sh                    

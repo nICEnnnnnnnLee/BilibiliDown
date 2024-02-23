@@ -36,6 +36,7 @@ import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.FrameAbout;
 import nicelee.ui.Global;
 import nicelee.ui.TabSettings;
+import nicelee.ui.thread.BatchDownloadRbyRThread;
 import nicelee.ui.thread.BatchDownloadThread;
 import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
@@ -81,6 +82,7 @@ public class MJMenuBar extends JMenuBar {
 		 * 创建二级 操作 子菜单
 		 */
 		JMenuItem batchDownload = new JMenuItem("一键下载");
+		JMenuItem batchDownloadRbyR = new JMenuItem("按计划周期下载");
 		JMenuItem reloadConfig = new JMenuItem("重新加载配置");
 		JMenuItem reloadRepo = new JMenuItem("重新加载仓库");
 		JMenuItem saveDownloading = new JMenuItem("保存下载任务");
@@ -114,6 +116,9 @@ public class MJMenuBar extends JMenuBar {
 		operMenu.add(doMultiDownMenuItem);
 		operMenu.addSeparator();
 		operMenu.add(loginRelated);
+		operMenu.addSeparator();
+		operMenu.add(batchDownloadRbyR);
+		
 		
 		/**
 		 * 创建二级 配置 子菜单
@@ -292,6 +297,21 @@ public class MJMenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new BatchDownloadThread(batchDownloadFileName).start();
+			}
+		});
+		// 按计划一键下载
+		batchDownloadRbyR.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object[] options = { "我要继续", "我再想想" };
+				String msg = "程序将会周期性的执行一键下载，是否继续";
+				int m = JOptionPane.showOptionDialog(null, msg, "警告", JOptionPane.YES_NO_OPTION,
+						JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+				Logger.println(m);
+				if (m == 0){
+					new BatchDownloadRbyRThread(batchDownloadFileName).start();
+					batchDownloadRbyR.setEnabled(false);
+				}
 			}
 		});
 		// 打开设置面板

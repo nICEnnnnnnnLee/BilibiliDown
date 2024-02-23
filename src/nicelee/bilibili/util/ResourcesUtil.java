@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
+import java.util.Random;
 
 public class ResourcesUtil {
 
@@ -64,6 +65,16 @@ public class ResourcesUtil {
 			return null;
 		}
 	}
+	
+	public static String random(int length, String alphabet, long seed) {
+		StringBuilder sb = new StringBuilder(length);
+		Random random = new Random(seed);
+		for (int j = 0; j < length; j++) {
+			int m = random.nextInt(alphabet.length());
+			sb.append(alphabet.charAt(m));
+		}
+		return sb.toString();
+	}
 
 	public static String randomInt(int i) {
 		StringBuilder sb = new StringBuilder(i);
@@ -85,6 +96,16 @@ public class ResourcesUtil {
 		return sb.toString();
 	}
 
+	public static String randomHex(int i) {
+		StringBuilder sb = new StringBuilder(i);
+		String alphabet = "ABCDEF0123456789";
+		for (int j = 0; j < i; j++) {
+			int m = (int) (Math.random() * alphabet.length());
+			sb.append(alphabet.charAt(m));
+		}
+		return sb.toString();
+	}
+	
 	public static String randomUpper(int i) {
 		StringBuilder sb = new StringBuilder(i);
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

@@ -37,6 +37,10 @@ public class RepoUtil {
 		definitionStrictMode = Global.repoInDefinitionStrictMode;
 		if (fRepo == null || refresh) {
 			fRepo = ResourcesUtil.sourceOf("config/repo.config");
+			if(!fRepo.exists())
+				try {
+					fRepo.createNewFile();
+				} catch (IOException e1) {}
 			standardAvPattern = Pattern.compile("^((?:av|h|BV|season|au|edd_)[0-9a-zA-Z_]+)-([0-9]+)(-p[0-9]+)$");
 			int initialSize = (int) (233 / 0.75f);
 			try {
@@ -87,7 +91,7 @@ public class RepoUtil {
 	 */
 	public static boolean isInRepo(String avRecord) {
 		System.out.println("查询记录" + avRecord);
-		if (avRecord.contains("-800-") || avRecord.contains("-801-")) {
+		if (avRecord.contains("-800-") || avRecord.contains("-801-") || avRecord.startsWith("FFmpeg")) {
 			return false;
 		}
 		if (definitionStrictMode) {

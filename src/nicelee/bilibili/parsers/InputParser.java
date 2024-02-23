@@ -36,7 +36,7 @@ public class InputParser implements IInputParser, IParamSetter {
 						for (Class<?> clazz : PackageScanLoader.validParserClasses) {
 							// 判断是否需要载入
 							Bilibili bili = clazz.getAnnotation(Bilibili.class);
-							if (bili.ifLoad().isEmpty() || bili.ifLoad().equals(loadContition)) {
+							if (bili.ifLoad().isEmpty() || bili.ifLoad().equals("listAll")) {
 								// 实例化并加入parser列表
 								// IInputParser inputParser = (IInputParser) clazz.newInstance();
 								// 获取构造函数

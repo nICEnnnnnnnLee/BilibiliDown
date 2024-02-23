@@ -209,9 +209,12 @@ bilibili.savePath = /home/user123/download/
 
 ## bilibili.userAgent.pc
 - 取值范围: User Agent
-- 默认值: `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0`  
+- 默认值: `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0`  
 - 释义:   
-    程序在使用WEB端API时，会使用的UserAgent
+    程序在使用WEB端API时，会使用的UserAgent。  
+    修改时，下面两项也需要改动。  
+    - `bilibili.userAgent.pc.fingerprint`  
+    - `bilibili.userAgent.pc.payload`
 
 ## bilibili.user.login
 - 取值范围: `qr | pwd | sms`
@@ -266,7 +269,8 @@ bilibili.system.properties.jre11.override = false
 - 取值范围:   
     单个源名称不包含`|`、空格等特殊字符，源与源之间以`|`隔开
 - 默认值:   
-    `Github|Supabase|Railway|Cloudinary|Imagekit`  
+    ~~`Github|Supabase|Railway|Cloudinary|Imagekit`~~  
+    `Github|Bitbucket|Supabase|Cloudinary|Twicpics`  
 - 释义:   
     可用的更新源，与配置`bilibili.download.update.patterns.{源名称}`搭配。   
     例如： `Github`更新源对应的配置是`bilibili.download.update.patterns.Github`  
@@ -293,7 +297,8 @@ bilibili.system.properties.jre11.override = false
 - 取值范围:   
     单个源名称不包含`|`、空格等特殊字符，源与源之间以`|`隔开
 - 默认值:   
-    `Github|Supabase|Railway|Cloudinary|Imagekit`  
+    ~~`Github|Supabase|Railway|Cloudinary|Imagekit`~~  
+    `Github|Bitbucket|Supabase|Cloudinary|Twicpics`  
 - 释义:   
     可用的更新源，与配置`bilibili.download.ffmpeg.url.{源名称}`搭配。   
     例如： `Github`更新源对应的配置是`bilibili.download.ffmpeg.url.Github`  
@@ -301,7 +306,7 @@ bilibili.system.properties.jre11.override = false
 ## bilibili.download.ffmpeg.sources.active
 - 取值范围:   
     局限于`bilibili.download.ffmpeg.sources`
-- 默认值: `Github`  
+- 默认值: ~~`Github`~~ `Bitbucket`  
 - 释义:   
     正在使用的ffmpeg源
 
@@ -309,7 +314,9 @@ bilibili.system.properties.jre11.override = false
 - 取值范围:   
     用于描述ffmpeg的下载地址
 - 释义:   
-    例如，Github源，`https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe`
+    例如，Github源  
+    ~~`https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg_N-108857-g00b03331a0-20221027.exe`~~  
+    `https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg-20240123-{os}-{arch}{exeSuffix}`  
 
 ## bilibili.dash.video.codec.priority
 - 默认值:   
@@ -496,7 +503,7 @@ bilibili.system.properties.jre11.override = false
 - 默认值:   
     `on`  
 - 释义:   
-    值为`on`时，Tab页面自动显示第一个作品预览图 
+    值为`on`时，Tab页面自动显示第一个作品预览图。   
     值为`off`时，Tab页面不自动显示作品预览图。你需要在右侧选择相应的视频标题，长按鼠标左键后松开，可显示对应预览图。  
 - 相关issue
     + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/151
@@ -508,7 +515,97 @@ bilibili.system.properties.jre11.override = false
 - 默认值:   
     `true`  
 - 释义:   
-    值为`true`时，在菜单栏里，点击`关闭全部Tab页`后，弹出确认框 
+    值为`true`时，在菜单栏里，点击`关闭全部Tab页`后，弹出确认框。   
     值为`false`时，在菜单栏里，点击`关闭全部Tab页`后，直接关闭全部Tab页。  
 - 相关issue
     + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/165
+
+## bilibili.download.batch.plan
+- 引入版本: V6.30
+- 默认值:   
+    `06:00~02:00=>r(300,480); 00:00~02:00=>r(300,480); 02:00~06:00=>~06:00+r(0,360); 00:00~00:00=>r(600,600)`  
+- 释义:   
+    ```
+    # 按计划分配每次一键下载任务之间的间隔
+    # 配置格式为 {时间段1} => {间隔时间1} ; {时间段2} => {间隔时间2} ; {时间段3} => {间隔时间3} ; ... {时间段n} => {间隔时间n}
+    # 左边配置的优先级更高
+    ## 时间段格式为闭区间 {时刻1}~{时刻2}
+    ### 时刻格式为北京时间24小时制 HH:mm
+    ### 如果时刻1 大于等于 时刻2，则表示当天时刻1到第二天时刻2(但实际只包括当天剩余时间，即到第二天零点为止。遇到跨天最好在后面再补一个区间 00:00~{时刻2})
+    ## 间隔时间格式1为 r(t1,t2) 
+    ### t1<=t2, 正整数，单位为秒，表示随机等待t1 到 t2秒
+    ## 间隔时间格式2为 ~HH:mm
+    ### HH:mm为北京时间24小时制时刻，表示等待到该时刻
+    ## 间隔时间格式3为 ~HH:mm+r(t1,t2)
+    ### 参考格式1/2,表示等待到该时刻后再随机等待t1 到 t2秒
+    
+    当次任务完成后，时间在每天6点到第二天0点（不是2点），随机休眠300~480秒，再继续下次任务
+    当次任务完成后，时间在每天2点到6点，休眠到当天6点，再随机休眠0~360秒，再继续下次任务
+    其它情况（每天0点~2点这一段时间才能到这来），当次任务完成后，休眠600秒，再继续下次任务
+    06:00~02:00=>r(300,480); 02:00~06:00=>~06:00+r(0,360); 00:00~00:00=>r(600,600)
+
+    当次任务完成后，时间在每天6点到第二天2点，随机休眠300~480秒，再继续下次任务
+    当次任务完成后，时间在每天2点到6点，休眠到当天6点，再随机休眠0~360秒，再继续下次任务
+    其它情况（实际上不可能到这个判断），当次任务完成后，休眠600秒，再继续下次任务
+    06:00~00:00=>r(300,480); 00:00~02:00=>r(300,480); 02:00~06:00=>~06:00+r(0,360); 00:00~00:00=>r(600,600)
+    ```
+
+## bilibili.download.push.type
+- 引入版本: V6.30
+- 取值范围:   
+    `Print | Mail`
+- 默认值:   
+    `Print`  
+- 释义:   
+    每次按计划一键下载后，使用什么来推送消息
+    `Print`，仅打印  
+    `Mail`，通过邮件通知  
+
+## bilibili.download.push.account
+- 引入版本: V6.30
+- 取值范围:   
+    取决于`bilibili.download.push.type`
+- 默认值:   
+    空字符串  
+- 释义:   
+    推送消息需要的账户。当消息类型为邮件时，可参考以下注释  
+    ```
+    /**
+    * 以下为相关配置
+    * @bilibili.download.push.type      Mail
+    * @bilibili.download.push.account   发送的邮箱地址
+    * @bilibili.download.push.token     发送的邮箱凭证，需要注意的是并不一定是密码
+    * @mail.smtp.to.addr                接收的邮箱地址，为空时等于发送的邮箱地址
+    * @mail.smtp.host                   选填，邮箱不为@sina.com @163.com @qq.com时，必填
+    * @mail.smtp.port					选填，邮箱不为@sina.com @163.com @qq.com时，必填
+    * @mail.smtp.ssl.enable	            选填，邮箱不为@sina.com @163.com @qq.com时，必填  值为 true/false
+    * @mail.smtp.starttls.enale         选填，需要starttls再填写 true/false
+    * @mail.smtp.debug                  选填，是否输出debug。值为 true/false，默认false
+    */
+    ```
+
+## bilibili.download.push.token
+- 引入版本: V6.30
+- 取值范围:   
+    取决于`bilibili.download.push.type`
+- 默认值:   
+    空字符串  
+- 释义:   
+    推送消息需要的密码或者凭证 
+
+## bilibili.userAgent.pc.fingerprint
+- 引入版本: V6.30
+- 默认值:   
+    `a8bad806241b0b0f7add1024fbd701fa`  
+- 释义:   
+    `bilibili.userAgent.pc`对应的浏览器指纹(取自cookie buvid_fp)  
+
+## bilibili.userAgent.pc.payload
+- 引入版本: V6.30
+- 默认值:   
+    ```
+    {"3064":1,"5062":"1707365865753","03bf":"https%3A%2F%2Fwww.bilibili.com%2F","39c8":"333.1007.fp.risk","34f1":"","d402":"","654a":"","6e7c":"1536x684","3c43":{"2673":0,"5766":24,"6527":0,"7003":1,"807e":1,"b8ce":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0","641c":0,"07a4":"zh-CN","1c57":"not available","0bd0":4,"748e":[864,1536],"d61f":[824,1536],"fc9d":-480,"6aa9":"Asia/Shanghai","75b8":1,"3b21":1,"8a1c":0,"d52f":"not available","adca":"Win32","80c9":[["PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["Chrome PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["Chromium PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["Microsoft Edge PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["WebKit built-in PDF","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]]],"13ab":"x7DlAAAAAElFTkSuQmCC","bfe9":"SAAmYUAFhmrCZRFNCvwHPGlBW1raHI4gAAAABJRU5ErkJggg==","a3c1":["extensions:ANGLE_instanced_arrays;EXT_blend_minmax;EXT_color_buffer_half_float;EXT_float_blend;EXT_frag_depth;EXT_shader_texture_lod;EXT_sRGB;EXT_texture_compression_bptc;EXT_texture_compression_rgtc;EXT_texture_filter_anisotropic;OES_element_index_uint;OES_fbo_render_mipmap;OES_standard_derivatives;OES_texture_float;OES_texture_float_linear;OES_texture_half_float;OES_texture_half_float_linear;OES_vertex_array_object;WEBGL_color_buffer_float;WEBGL_compressed_texture_s3tc;WEBGL_compressed_texture_s3tc_srgb;WEBGL_debug_renderer_info;WEBGL_debug_shaders;WEBGL_depth_texture;WEBGL_draw_buffers;WEBGL_lose_context","webgl aliased line width range:[1, 1]","webgl aliased point size range:[1, 1024]","webgl alpha bits:8","webgl antialiasing:yes","webgl blue bits:8","webgl depth bits:24","webgl green bits:8","webgl max anisotropy:16","webgl max combined texture image units:32","webgl max cube map texture size:16384","webgl max fragment uniform vectors:1024","webgl max render buffer size:16384","webgl max texture image units:16","webgl max texture size:16384","webgl max varying vectors:30","webgl max vertex attribs:16","webgl max vertex texture image units:16","webgl max vertex uniform vectors:4096","webgl max viewport dims:[32767, 32767]","webgl red bits:8","webgl renderer:ANGLE (Intel, Intel(R) HD Graphics 400 Direct3D11 vs_5_0 ps_5_0)","webgl shading language version:WebGL GLSL ES 1.0","webgl stencil bits:0","webgl vendor:Mozilla","webgl version:WebGL 1.0","webgl unmasked vendor:Google Inc. (Intel)","webgl unmasked renderer:ANGLE (Intel, Intel(R) HD Graphics 400 Direct3D11 vs_5_0 ps_5_0)","webgl vertex shader high float precision:23","webgl vertex shader high float precision rangeMin:127","webgl vertex shader high float precision rangeMax:127","webgl vertex shader medium float precision:23","webgl vertex shader medium float precision rangeMin:127","webgl vertex shader medium float precision rangeMax:127","webgl vertex shader low float precision:23","webgl vertex shader low float precision rangeMin:127","webgl vertex shader low float precision rangeMax:127","webgl fragment shader high float precision:23","webgl fragment shader high float precision rangeMin:127","webgl fragment shader high float precision rangeMax:127","webgl fragment shader medium float precision:23","webgl fragment shader medium float precision rangeMin:127","webgl fragment shader medium float precision rangeMax:127","webgl fragment shader low float precision:23","webgl fragment shader low float precision rangeMin:127","webgl fragment shader low float precision rangeMax:127","webgl vertex shader high int precision:0","webgl vertex shader high int precision rangeMin:31","webgl vertex shader high int precision rangeMax:30","webgl vertex shader medium int precision:0","webgl vertex shader medium int precision rangeMin:31","webgl vertex shader medium int precision rangeMax:30","webgl vertex shader low int precision:0","webgl vertex shader low int precision rangeMin:31","webgl vertex shader low int precision rangeMax:30","webgl fragment shader high int precision:0","webgl fragment shader high int precision rangeMin:31","webgl fragment shader high int precision rangeMax:30","webgl fragment shader medium int precision:0","webgl fragment shader medium int precision rangeMin:31","webgl fragment shader medium int precision rangeMax:30","webgl fragment shader low int precision:0","webgl fragment shader low int precision rangeMin:31","webgl fragment shader low int precision rangeMax:30"],"6bc5":"Google Inc. (Intel)~ANGLE (Intel, Intel(R) HD Graphics 400 Direct3D11 vs_5_0 ps_5_0)","ed31":0,"72bd":0,"097b":0,"52cd":[0,0,0],"a658":["Arial","Arial Black","Arial Narrow","Arial Unicode MS","Book Antiqua","Bookman Old Style","Calibri","Cambria","Cambria Math","Century","Century Gothic","Comic Sans MS","Consolas","Courier","Courier New","Georgia","Helvetica","Impact","Lucida Bright","Lucida Calligraphy","Lucida Console","Lucida Fax","Lucida Handwriting","Lucida Sans Unicode","Microsoft Sans Serif","Monotype Corsiva","MS Gothic","MS PGothic","MS Reference Sans Serif","MS Sans Serif","MS Serif","Palatino Linotype","Segoe Print","Segoe Script","Segoe UI","Segoe UI Light","Segoe UI Semibold","Segoe UI Symbol","Tahoma","Times","Times New Roman","Trebuchet MS","Verdana","Wingdings","Wingdings 2","Wingdings 3"],"d02f":"35.7383295930922"},"54ef":"{\"b_ut\":\"7\",\"home_version\":\"V8\",\"i-wanna-go-back\":\"-1\",\"in_new_ab\":true,\"ab_version\":{\"for_ai_home_version\":\"V8\",\"tianma_banner_inline\":\"CONTROL\",\"enable_web_push\":\"DISABLE\"},\"ab_split_num\":{\"for_ai_home_version\":54,\"tianma_banner_inline\":54,\"enable_web_push\":10}}","8b94":"","df35":"6D30A3F0-669B-6582-5832-00B5EC7795C51E174Cinfoc","07a4":"zh-CN","5f45":null,"db46":0}
+    ```  
+- 释义:   
+    截取自api请求<pre>[*https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi*](#)</pre>  
+    注意，不是整个json，而是该json的`payload`的值

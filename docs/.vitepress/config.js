@@ -108,7 +108,9 @@ function sidebarGuide() {
                 { text: '自定义背景图', link: '/guide/advanced/custom-background-img' },
                 { text: '自定义任务完成提示音', link: '/guide/advanced/custom-beep-sound' },
                 { text: '自定义解析器', link: '/guide/advanced/custom-parsers' },
+                { text: '自定义消息推送器', link: '/guide/advanced/custom-pushers' },
                 { text: '通过配置一键批量下载', link: '/guide/advanced/quick-batch-download' },
+                { text: '周期性一键批量下载', link: '/guide/advanced/quick-batch-download-rbr' },
             ]
         },
         {
@@ -117,14 +119,11 @@ function sidebarGuide() {
             collapsed:true,
             items: [
                 { text: '怎么关闭打开的标签页？', link: '/guide/frequently-asked/how-to-close-tab' },
+                { text: '一段时间后，下载面板一片红，如何解决？', link: '/guide/frequently-asked/why-task-fail-after-hours' },
                 { text: '批量下载的清晰度不符合预期，如何解决？', link: '/guide/frequently-asked/how-to-redownload-videos' },
                 { text: '视频一直下载失败，如何解决？', link: '/guide/frequently-asked/what-to-do-if-download-fail' },
-                { text: '为什么只能下载5个视频？', link: '/guide/frequently-asked/why-only-5' },
                 { text: '为什么总是弹出已经下载？', link: '/guide/frequently-asked/why-always-prompt' },
-                { text: '为什么找不到javaw？', link: '/guide/frequently-asked/why-windows-no-javaw' },
-                { text: '为什么MacOS保存不了配置？', link: '/guide/frequently-asked/why-errors-occur-on-mac' },
-                { text: '为什么MacOS ffmpeg无法生效？', link: '/guide/frequently-asked/why-errors-occur-on-mac' },
-                { text: '为什么MacOS无法登录？', link: '/guide/frequently-asked/why-errors-occur-on-mac' },
+                { text: '为什么下载的视频同分辨率比别的工具下的体积要小？', link: '/guide/why-video-size-smaller-than-others' },
             ]
         },
     ]

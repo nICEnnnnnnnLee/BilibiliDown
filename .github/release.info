@@ -1,11 +1,10 @@
-* 新增(GUI): 菜单配置栏添加`下载前先查询记录?`配置项，更改后可临时开启/关闭仓库功能。重启后失效。  
-* 删除(GUI): 菜单配置栏删除`下载策略`配置项。  
-* 优化(GUI): [issues 165](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/165)点击`关闭全部Tab页`后，弹出提示框。  
-* 优化: [issues 167](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/167) 优先清晰度添加`字幕`/`弹幕`选项，用于快速批量下载。  
-    + 需要注意，`字幕`/`弹幕`不计入下载记录，因而也没有相应判断。  
-    + 需要注意，视频、对应字幕、弹幕的下载任务不能同时存在于下载面板。你需要清空下载任务以后再继续。    
-* 优化: 更新适用范围更广的AV和BV转换方式。
-* 优化: 代码和附件都镜像到了`Bitbucket`，程序里面也添加了镜像源。这意味着程序自升级门槛更低了。  
+* 新增: 添加功能，可以周期性地进行“一键下载”，并通报结果。  
+* 优化: 现在按平台和架构编译了四个版本ffmpeg，缺省时符合条件的会提示进行下载：`win_amd64`、`linux_amd64`、`win_arm64`、`linux_arm64`  
+* 优化: 现在补充完善了浏览器指纹等方面的cookie，期望是预防风控[#177](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/177), [#180](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/180)
+    + 因为尚不清楚相关机制，目前`通过API上传指纹`这一动作只在`刷新cookie`时才会进行。在遇到风控时，不妨先试一试菜单栏里的`刷新cookie`选项。  
+    + 现在最好不要随意修改配置的UA，如果必要，需要在隐私模式下抓取cookie并抓包相应API的payload。详见配置页。
+* 修复: [#182](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/182) 考虑在`UP主所有视频`类型的链接解析时，keyword中含有空格的情况。
+* 删除: 移除解析分页链接时`promptAll`模式相关代码。 
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`

@@ -17,7 +17,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          let response = await github.issues.listForRepo({
+          let response = await github.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
             state: 'open'
@@ -44,13 +44,13 @@ jobs:
             }
             if(is2Deal){
                 var id = issue['number'];
-                github.issues.createComment({
+                github.rest.issues.createComment({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     issue_number: id,
                     body: '由于长期没有状态更新，该问题自动关闭。如有需要可重新打开。'
                 });
-                github.issues.update({
+                github.rest.issues.update({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: id,

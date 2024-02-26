@@ -123,7 +123,7 @@ function sidebarGuide() {
                 { text: '批量下载的清晰度不符合预期，如何解决？', link: '/guide/frequently-asked/how-to-redownload-videos' },
                 { text: '视频一直下载失败，如何解决？', link: '/guide/frequently-asked/what-to-do-if-download-fail' },
                 { text: '为什么总是弹出已经下载？', link: '/guide/frequently-asked/why-always-prompt' },
-                { text: '为什么下载的视频同分辨率比别的工具下的体积要小？', link: '/guide/why-video-size-smaller-than-others' },
+                { text: '为什么下载的视频同分辨率比别的工具下的体积要小？', link: '/guide/frequently-asked/why-video-size-smaller-than-others' },
             ]
         },
     ]

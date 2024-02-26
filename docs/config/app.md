@@ -557,7 +557,7 @@ bilibili.system.properties.jre11.override = false
 - 默认值:   
     `Print`  
 - 释义:   
-    每次按计划一键下载后，使用什么来推送消息
+    每次按计划一键下载后，使用什么来推送消息  
     `Print`，仅打印  
     `Mail`，通过邮件通知  
 

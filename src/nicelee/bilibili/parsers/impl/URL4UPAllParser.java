@@ -88,6 +88,7 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=%s&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
 			String keyword = API.encodeURL(params.get("keyword"));
 			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, keyword, params.get("order"));
+			url += API.genDmImgParams();
 			url = API.encWbi(url);
 			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"), HttpCookies.globalCookiesWithFingerprint());
 			Logger.println(url);

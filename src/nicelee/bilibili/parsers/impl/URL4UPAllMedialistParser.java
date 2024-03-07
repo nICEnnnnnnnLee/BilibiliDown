@@ -267,6 +267,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 		// String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
 		String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&special_type=&pn=%d&keyword=&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
 		String url = String.format(urlFormat, spaceID, 1, params.get("tid"), pageNumber, sortFieldParam);
+		url += API.genDmImgParams();
 		url = API.encWbi(url);
 		String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(url);

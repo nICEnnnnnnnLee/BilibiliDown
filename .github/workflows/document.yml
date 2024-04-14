@@ -31,7 +31,7 @@ jobs:
         run: npm run docs:build
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@main
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/.vitepress/dist

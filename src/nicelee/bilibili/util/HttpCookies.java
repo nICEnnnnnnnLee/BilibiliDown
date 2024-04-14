@@ -99,6 +99,8 @@ public class HttpCookies {
 				return true;
 			}
 		}
+		HttpCookie cCookie = new HttpCookie(key, value);
+		globalCookiesWithFingerprint().add(cCookie);
 		return false;
 	}
 }

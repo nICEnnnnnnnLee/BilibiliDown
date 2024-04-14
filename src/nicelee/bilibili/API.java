@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Base64;
@@ -237,7 +236,12 @@ public class API {
 			String b_lsid = ResourcesUtil.randomHex(8) + "_" + Long.toHexString(currentTime).toUpperCase();
 			HttpCookies.set("b_lsid", b_lsid);
 		}
-
+		// 设置 browser_resolution
+		Matcher mResolution = pResolution.matcher(Global.userAgentPayload);
+		if(mResolution.find()) {
+			String resolution = String.format("%s-%s", mResolution.group(1), mResolution.group(2));
+			HttpCookies.set("browser_resolution", resolution);
+		}
 		// TODO payload
 		String payload = Global.userAgentPayload;
 		payload = payload.replaceFirst("\"5062\":\"[^\"]+\"", "\"5062\":\"" + currentTime + "\"");
@@ -295,6 +299,11 @@ public class API {
 			String buvid_fp = Global.userAgentFingerprint;
 			kvMap.put("buvid_fp", buvid_fp);
 			kvMap.put("fingerprint", buvid_fp);
+			// 获取 browser_resolution
+			Matcher mResolution = pResolution.matcher(Global.userAgentPayload);
+			mResolution.find();
+			String resolution = String.format("%s-%s", mResolution.group(1), mResolution.group(2));
+			kvMap.put("browser_resolution", resolution);
 			return HttpCookies.map2CookieStr(kvMap);
 		} catch (IOException e) {
 			e.printStackTrace();

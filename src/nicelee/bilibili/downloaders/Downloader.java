@@ -51,6 +51,7 @@ public class Downloader implements IDownloader {
 					try {
 						this.downloader = downloader.getClass().newInstance();
 						this.downloader.matches(url);
+						break;
 					} catch (InstantiationException | IllegalAccessException e) {
 					}
 				}

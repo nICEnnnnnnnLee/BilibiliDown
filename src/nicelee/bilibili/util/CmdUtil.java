@@ -310,7 +310,7 @@ public class CmdUtil {
 				File folder = file.getParentFile();
 				if (!folder.exists())
 					folder.mkdirs();
-				if(!originFile.renameTo(file)) {// 如果不成功，大概率是文件名重复，在后面加上序号，类似于(01)
+				if((!originFile.renameTo(file)) && Global.autoNumberWhenFileExists) {// 如果不成功，大概率是文件名重复，在后面加上序号，类似于(01)
 					for(int i = 1; i < 100; i++) {
 						File f = new File(Global.savePath, 
 								String.format("%s(%02d)%s", formattedTitle, i, tail));

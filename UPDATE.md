@@ -1,4 +1,12 @@
 ## UPDATE  
+* V6.31  `2024-05-08`  
+    * 新增: 重命名文件失败时，尝试添加序号继续重命名。[#185](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/185)
+        + 目的地址存在文件时，会在约定的名称末尾尝试添加`(01)、(02)...`这样的序号
+        + 通过配置`bilibili.name.autoNumber`可以开启/关闭该功能
+    * 优化: 查询UP主所有链接时添加`dm_img`系列参数，防止返回352。（不登录也能用了）
+    * 修复: 查询UP主所有链接时相关请求添加`referer`，防止返回412。[#192](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/192)
+    * 其它常规优化，详见[V6.30...V6.31](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.30...V6.31)
+    
 * V6.30  `2024-02-23`  
     * 新增: 添加功能，可以周期性地进行“一键下载”，并通报结果。  
     * 优化: 现在按平台和架构编译了四个版本ffmpeg，缺省时符合条件的会提示进行下载：`win_amd64`、`linux_amd64`、`win_arm64`、`linux_arm64`  

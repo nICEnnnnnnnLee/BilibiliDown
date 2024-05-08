@@ -1,10 +1,9 @@
-* 新增: 添加功能，可以周期性地进行“一键下载”，并通报结果。  
-* 优化: 现在按平台和架构编译了四个版本ffmpeg，缺省时符合条件的会提示进行下载：`win_amd64`、`linux_amd64`、`win_arm64`、`linux_arm64`  
-* 优化: 现在补充完善了浏览器指纹等方面的cookie，期望是预防风控[#177](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/177), [#180](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/180)
-    + 因为尚不清楚相关机制，目前`通过API上传指纹`这一动作只在`刷新cookie`时才会进行。在遇到风控时，不妨先试一试菜单栏里的`刷新cookie`选项。  
-    + 现在最好不要随意修改配置的UA，如果必要，需要在隐私模式下抓取cookie并抓包相应API的payload。详见配置页。
-* 修复: [#182](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/182) 考虑在`UP主所有视频`类型的链接解析时，keyword中含有空格的情况。
-* 删除: 移除解析分页链接时`promptAll`模式相关代码。 
+* 新增: 重命名文件失败时，尝试添加序号继续重命名。[#185](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/185)
+    + 目的地址存在文件时，会在约定的名称末尾尝试添加`(01)、(02)...`这样的序号
+    + 通过配置`bilibili.name.autoNumber`可以开启/关闭该功能
+* 优化: 查询UP主所有链接时添加`dm_img`系列参数，防止返回352。（不登录也能用了）
+* 修复: 查询UP主所有链接时相关请求添加`referer`，防止返回412。[#192](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/192)
+* 其它常规优化，详见[V6.30...V6.31](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.30...V6.31)
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`

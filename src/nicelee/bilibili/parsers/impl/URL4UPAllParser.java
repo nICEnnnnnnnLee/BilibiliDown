@@ -90,7 +90,10 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			String url = String.format(urlFormat, spaceID, API_PMAX, params.get("tid"), page, keyword, params.get("order"));
 			url += API.genDmImgParams();
 			url = API.encWbi(url);
-			String json = util.getContent(url, new HttpHeaders().getCommonHeaders("api.bilibili.com"), HttpCookies.globalCookiesWithFingerprint());
+			HashMap<String, String> headersRefer = new HttpHeaders().getCommonHeaders("api.bilibili.com");
+			headersRefer.put("Referer", "https://space.bilibili.com/");
+			headersRefer.put("Origin", "https://space.bilibili.com/");
+			String json = util.getContent(url, headersRefer, HttpCookies.globalCookiesWithFingerprint());
 			Logger.println(url);
 			Logger.println(json);
 			JSONObject jobj = new JSONObject(json);

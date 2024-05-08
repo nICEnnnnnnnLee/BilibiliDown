@@ -609,3 +609,13 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     截取自api请求<pre>[*https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi*](#)</pre>  
     注意，不是整个json，而是该json的`payload`的值
+
+## bilibili.name.autoNumber
+- 引入版本: V6.31
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `true`  
+- 释义:   
+    遇到同名文件时是否自动添加序号 (01)、(02)...   
+    如果为`false`，会在下载目录留存有类似于`BVxxxxxxx-80-p1.mp4`的文件。  

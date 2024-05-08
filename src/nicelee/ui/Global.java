@@ -24,7 +24,7 @@ import nicelee.ui.item.DownloadInfoPanel;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.30", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.31", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
@@ -109,6 +109,8 @@ public class Global {
 	public static String cTimeFormat;
 	@Config(key = "bilibili.name.doAfterComplete", note = "下载完成后自动重命名", defaultValue = "true", valids = { "true", "false" })
 	public static boolean doRenameAfterComplete = true;
+	@Config(key = "bilibili.name.autoNumber", note = "遇到同名文件自动添加序号", defaultValue = "true", valids = { "true", "false" })
+	public static boolean autoNumberWhenFileExists = true;
 	@Config(key = "bilibili.repo.definitionStrictMode", note = "是否将同一视频不同清晰度看作不同任务", defaultValue = "false", eq_true = "on", valids = { "on",
 			"off" }) /* 存在某一清晰度后, 在下载另一种清晰度时是否判断已完成 */
 	public static boolean repoInDefinitionStrictMode; //

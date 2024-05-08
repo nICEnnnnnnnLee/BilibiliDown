@@ -310,7 +310,17 @@ public class CmdUtil {
 				File folder = file.getParentFile();
 				if (!folder.exists())
 					folder.mkdirs();
-				originFile.renameTo(file);
+				if((!originFile.renameTo(file)) && Global.autoNumberWhenFileExists) {// 如果不成功，大概率是文件名重复，在后面加上序号，类似于(01)
+					for(int i = 1; i < 100; i++) {
+						File f = new File(Global.savePath, 
+								String.format("%s(%02d)%s", formattedTitle, i, tail));
+						Logger.println(f.getAbsolutePath());
+						if(!f.exists()) {
+							originFile.renameTo(f);
+							break;
+						}
+					}
+				}
 			} else {
 				File f = new File(Global.savePath, "rename.bat");
 				boolean isExist = f.exists();

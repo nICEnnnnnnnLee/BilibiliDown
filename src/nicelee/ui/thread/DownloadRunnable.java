@@ -31,6 +31,9 @@ public class DownloadRunnable implements Runnable {
 	String record;
 	int qn; //想要申请的链接视频质量
 
+	final static String MSG_VIDEO_DOWNLOADED = "您已经下载过视频 %s\n如果想继续下载:\n"
+			+ "临时方案: 右上角[配置] -> [下载前先查询记录?] -> [不查询]\n"
+			+ "持久化方案: 在配置页搜索并修改配置 bilibili.repo";
 //	public DownloadRunnable(ClipInfo clip, int qn) {
 //		this.displayName = clip.getAvTitle() + "p" + clip.getRemark() + "-" +clip.getTitle();
 //		this.clip = clip;
@@ -75,7 +78,7 @@ public class DownloadRunnable implements Runnable {
 		}
 		//判断是否已经下载过
 		if(Global.useRepo && RepoUtil.isInRepo(record)) {
-			JOptionPaneManager.showMsgWithNewThread("提示", "您已经下载过视频" + record);
+			JOptionPaneManager.showMsgWithNewThread("提示", String.format(MSG_VIDEO_DOWNLOADED, record));
 			System.out.println("已经下载过 " + record);
 			BatchDownloadRbyRThread.taskFail(clip, "already downloaded");
 			return;
@@ -107,7 +110,7 @@ public class DownloadRunnable implements Runnable {
 		//如果清晰度不符合预期，再判断一次记录
 		//判断是否已经下载过
 		if (qn != realQN && Global.useRepo && RepoUtil.isInRepo(record)) {
-			JOptionPaneManager.showMsgWithNewThread("提示", "您已经下载过视频" + record);
+			JOptionPaneManager.showMsgWithNewThread("提示", String.format(MSG_VIDEO_DOWNLOADED, record));
 			System.out.println("已经下载过 " + record);
 			BatchDownloadRbyRThread.taskFail(clip, "already downloaded2");
 			return;

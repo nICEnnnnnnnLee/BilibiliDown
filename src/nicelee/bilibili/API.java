@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -235,7 +236,12 @@ public class API {
 			String b_lsid = ResourcesUtil.randomHex(8) + "_" + Long.toHexString(currentTime).toUpperCase();
 			HttpCookies.set("b_lsid", b_lsid);
 		}
-
+		// 设置 browser_resolution
+		Matcher mResolution = pResolution.matcher(Global.userAgentPayload);
+		if(mResolution.find()) {
+			String resolution = String.format("%s-%s", mResolution.group(1), mResolution.group(2));
+			HttpCookies.set("browser_resolution", resolution);
+		}
 		// TODO payload
 		String payload = Global.userAgentPayload;
 		payload = payload.replaceFirst("\"5062\":\"[^\"]+\"", "\"5062\":\"" + currentTime + "\"");
@@ -293,10 +299,67 @@ public class API {
 			String buvid_fp = Global.userAgentFingerprint;
 			kvMap.put("buvid_fp", buvid_fp);
 			kvMap.put("fingerprint", buvid_fp);
+			// 获取 browser_resolution
+			Matcher mResolution = pResolution.matcher(Global.userAgentPayload);
+			mResolution.find();
+			String resolution = String.format("%s-%s", mResolution.group(1), mResolution.group(2));
+			kvMap.put("browser_resolution", resolution);
 			return HttpCookies.map2CookieStr(kvMap);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	static String b64Sub2(String data) {
+		try {
+			String result = new String(Base64.getEncoder().encode(data.getBytes("UTF-8")), "UTF-8");
+			result = result.substring(0, result.length() - 2);
+			return result;
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	static Random random = new Random();
+
+	static String f114(int a, int b) {
+		int t = random.nextInt(114);
+		return String.format("[%d,%d,%d]", 2 * a + 2 * b + 3 * t, 4 * a - b + t, t);
+	}
+
+	static String f514(int a, int b) {
+		int t = random.nextInt(514);
+		return String.format("[%d,%d,%d]", 3 * a + 2 * b + t, 4 * a - 4 * b + 2 * t, t);
+	}
+
+	static Pattern pWebglVersion = Pattern.compile("\"webgl version:([^\"]+)\"");
+	static Pattern pResolution = Pattern.compile("\"6e7c\":\"(\\d+)x(\\d+)\"");
+	static Pattern pWebglUnRenderer = Pattern.compile("\"webgl unmasked renderer:([^\"]+)\"");
+	static Pattern pWebglUnVendor = Pattern.compile("\"webgl unmasked vendor:([^\"]+)\"");
+
+	public static String genDmImgParams() {
+		// TODO dm_img_list 浏览器加载完毕后，如果没什么动作，请求始终为[]
+		String dm_img_list = "[]";
+		// dm_img_str
+		Matcher mWebglVersion = pWebglVersion.matcher(Global.userAgentPayload);
+		mWebglVersion.find();
+		String dm_img_str = b64Sub2(mWebglVersion.group(1).trim());
+		// TODO dm_img_inter 浏览器加载完毕后第一个请求始终为
+		// {"ds":[],"wh":f114(width, height),"of":f514(0,0)}
+		Matcher mResolution = pResolution.matcher(Global.userAgentPayload);
+		mResolution.find();
+		String _wh = f114(Integer.parseInt(mResolution.group(1)), Integer.parseInt(mResolution.group(2)));
+		String _of = f514(0, 0);
+		String dm_img_inter = String.format("{\"ds\":[],\"wh\":%s,\"of\":%s}", _wh, _of);
+		// dm_cover_img_str
+		Matcher mWebglUnRenderer = pWebglUnRenderer.matcher(Global.userAgentPayload);
+		mWebglUnRenderer.find();
+		Matcher mWebglUnVendor = pWebglUnVendor.matcher(Global.userAgentPayload);
+		mWebglUnVendor.find();
+		String dm_cover_img_str = mWebglUnRenderer.group(1).trim() + mWebglUnVendor.group(1).trim();
+		dm_cover_img_str = b64Sub2(dm_cover_img_str);
+		return String.format("&dm_img_list=%s&dm_img_str=%s&dm_img_inter=%s&dm_cover_img_str=%s", dm_img_list,
+				dm_img_str, dm_img_inter, dm_cover_img_str);
 	}
 }

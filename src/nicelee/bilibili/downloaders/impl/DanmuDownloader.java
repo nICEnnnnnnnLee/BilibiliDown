@@ -3,6 +3,7 @@ package nicelee.bilibili.downloaders.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import nicelee.bilibili.annotations.Bilibili;
@@ -57,7 +58,7 @@ public class DanmuDownloader implements IDownloader {
 		}
 		FileWriter out = null;
 		try {
-			out = new FileWriter(xmlfile);
+			out = new FileWriter(xmlfile, Charset.forName("UTF-8"));
 			out.write(result);
 			status = StatusEnum.SUCCESS;
 			//Logger.println(result);

@@ -1,8 +1,9 @@
 package nicelee.bilibili.downloaders.impl;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
-import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.danmuku.Danmuku;
 import nicelee.bilibili.util.danmuku.Xml2Ass;
@@ -56,9 +56,9 @@ public class DanmuDownloader implements IDownloader {
 			status = StatusEnum.FAIL;
 			return false;
 		}
-		FileWriter out = null;
+		OutputStreamWriter out = null;
 		try {
-			out = new FileWriter(xmlfile, Charset.forName("UTF-8"));
+			out = new OutputStreamWriter(new FileOutputStream(xmlfile),Charset.forName("UTF-8"));
 			out.write(result);
 			status = StatusEnum.SUCCESS;
 			//Logger.println(result);

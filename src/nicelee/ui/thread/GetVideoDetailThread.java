@@ -33,12 +33,13 @@ public class GetVideoDetailThread extends Thread{
 		try {
 			//获取当前av详细信息
 			INeedAV avs = new INeedAV();
-			if (avs.getInputParser(avId).selectParser(avId) instanceof AbstractPageQueryParser) {
+			//更新当前Tab页面
+			VideoInfo avInfo =avs.getVideoDetail(avId, Global.downloadFormat, false);
+			// 通过getVideoDetail方法已经调用过selectParser，且是去掉过分页参数的
+			if (avs.getInputParser(avId).getParser() instanceof AbstractPageQueryParser) {
 				Logger.println("当前为分页查询");
 				video.displayNextPagePanel();
 			}
-			//更新当前Tab页面
-			VideoInfo avInfo =avs.getVideoDetail(avId, Global.downloadFormat, false);
 			video.setAvInfo(avInfo);
 			video.getLbAvID().setText(avInfo.getVideoId());
 			Collection<ClipInfo> clips = avInfo.getClips().values();

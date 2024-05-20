@@ -152,4 +152,8 @@ public class InputParser implements IInputParser, IParamSetter {
 		return realQN;
 	}
 
+	public IInputParser getParser() {
+		return parser;
+	}
+	
 }

@@ -16,6 +16,12 @@ features: []
 .VPHome>.VPFeatures.VPHomeFeatures:nth-child(2) {
     display: none
 }
+
+.VPFeature h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-top: 0 !important;
+}
 </style>
 <script setup>
 import { VPHomeHero, VPHomeFeatures, VPTeamMembers } from "vitepress/theme";

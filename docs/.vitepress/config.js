@@ -8,7 +8,7 @@ export default {
     description: 'BilibiliDown 帮助文档',
     head: [
         ['script', { type: 'text/javascript' },
-        `var _hmt = _hmt || [];
+            `var _hmt = _hmt || [];
         (function() {
           var hm = document.createElement("script");
           hm.src = "//hm.baidu.com/hm.js?11f780e4e4ccd4e99b101eac776e93e4";
@@ -17,7 +17,7 @@ export default {
         })();`
         ],
         ['script', { type: 'text/javascript' },
-        `window.smartlook||(function(d) {
+            `window.smartlook||(function(d) {
           var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
           var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
           c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js';h.appendChild(c);
@@ -32,7 +32,7 @@ export default {
         lineNumbers: false
     },
     outDir: './.vitepress/dist',
-    
+
     themeConfig: {
         siteTitle: 'BilibiliDown',
         logo: 'favicon.svg',
@@ -54,11 +54,49 @@ export default {
             pattern: 'https://github.com/nICEnnnnnnnLee/BilibiliDown/edit/docs/docs/:path',
             text: '编辑该页面'
         },
-        lastUpdatedText: '上次更新: ',
+        // lastUpdatedText: '上次更新: ',
+        lastUpdated: {
+            text: '最后更新于',
+            formatOptions: {
+                dateStyle: 'short',
+                timeStyle: 'medium'
+            }
+        },
+        returnToTopLabel: '回到顶部',
+        sidebarMenuLabel: '菜单',
+        darkModeSwitchLabel: '主题',
+        lightModeSwitchTitle: '切换到浅色模式',
+        darkModeSwitchTitle: '切换到深色模式',
         docFooter: {
             prev: '上一篇',
             next: '下一篇'
         },
+        search: {
+            provider: 'local',
+            options: {
+                translations: {
+                    button: {
+                        buttonText: '搜索文档',
+                        buttonAriaLabel: '搜索文档'
+                    },
+                    modal: {
+                        displayDetails: '显示详情',
+                        backButtonTitle: '后退',
+                        noResultsText: '无法找到相关结果',
+                        resetButtonTitle: '清除查询条件',
+                        footer: {
+                            selectText: '选择',
+                            navigateText: '切换',
+                            closeText: '关闭',
+                            // selectKeyAriaLabel: string
+                            // navigateUpKeyAriaLabel: string
+                            // navigateDownKeyAriaLabel: string
+                            // closeKeyAriaLabel: string
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -86,7 +124,7 @@ function sidebarGuide() {
         {
             text: '基础使用',
             collapsible: true,
-            collapsed:true,
+            collapsed: true,
             items: [
                 { text: '典型案例', link: '/guide/basic/examples' },
                 { text: '支持链接', link: '/guide/basic/surports' },
@@ -97,7 +135,7 @@ function sidebarGuide() {
         {
             text: '进阶使用',
             collapsible: true,
-            collapsed:true,
+            collapsed: true,
             items: [
                 { text: '文件结构说明', link: '/guide/advanced/dir-list' },
                 { text: '设置视频格式(MP4/FLV)', link: '/guide/advanced/media-type-format' },
@@ -116,7 +154,7 @@ function sidebarGuide() {
         {
             text: '常见问题',
             collapsible: true,
-            collapsed:true,
+            collapsed: true,
             items: [
                 { text: '怎么关闭打开的标签页？', link: '/guide/frequently-asked/how-to-close-tab' },
                 { text: '一段时间后，下载面板一片红，如何解决？', link: '/guide/frequently-asked/why-task-fail-after-hours' },

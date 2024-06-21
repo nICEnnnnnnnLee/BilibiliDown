@@ -7,5 +7,5 @@ if "%option%"=="Y" echo 您输入了Y &goto :unistall
 echo 您输入了%option% &goto :end
 
 :unistall
-rd /s /q  %~dp0
+rd /s /q  "%~dp0"
 :end

@@ -39,6 +39,9 @@ public class M4SDownloader extends FLVDownloader{
 		HttpHeaders header = new HttpHeaders();
 		boolean audioOnly = url.startsWith("#");
 		String links[] = url.split("#");
+		for(int i=0; i<links.length; i++) {
+			links[i] = tryForceHttp(links[i]);
+		}
 		String fName = avId + "-" + qn + "-p" + page;
 		String suffix = ".mp4"; // TODO audioOnly? ".aac": ".mp4";  // mp4 / aac / flac
 		String videoName = fName + "_video.m4s";

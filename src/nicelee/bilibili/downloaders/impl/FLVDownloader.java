@@ -53,6 +53,7 @@ public class FLVDownloader implements IDownloader {
 		return download(url, avId, qn, page, ".flv");
 	}
 	
+	static Pattern pcdnPattern;
 	static Pattern hostPattern;
 	static String hostAlt;
 	
@@ -65,6 +66,22 @@ public class FLVDownloader implements IDownloader {
 			Logger.println(hostAlt);
 			Matcher m = hostPattern.matcher(url);
 			return m.replaceAll(hostAlt);
+		}
+		return url;
+	}
+	
+	protected String tryForceHttp(String url) {
+		if(Global.forceHttp) {
+			if(pcdnPattern == null) {
+				pcdnPattern = Pattern.compile("://[^/:]+:\\d+/");
+			}
+			Matcher m = pcdnPattern.matcher(url);
+			if(!m.find()) {
+				Logger.println("https替换为http");
+				return url.replace("https:/", "http:/");
+			}
+			// Logger.println(url);
+			Logger.println("检测为PCDN，forceHttp未生效");
 		}
 		return url;
 	}
@@ -86,6 +103,7 @@ public class FLVDownloader implements IDownloader {
 			// 从 currentTask 继续开始任务
 			util.init();
 			for (int i = currentTask - 1; i < links.length; i++) {
+				links[i] = tryForceHttp(links[i]);
 				currentTask = (i + 1);
 				Matcher matcher = numUrl.matcher(links[i]);
 				matcher.find();
@@ -108,6 +126,7 @@ public class FLVDownloader implements IDownloader {
 			}
 			return result;
 		} else {
+			url = tryForceHttp(url);
 			String fileName = fName + suffix;
 			boolean succ = util.download(url, fileName, header.getBiliWwwFLVHeaders(avId));
 			if (succ) {

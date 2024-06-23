@@ -10,6 +10,7 @@ import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
+import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 
 
@@ -48,7 +49,24 @@ public class FLVDownloader implements IDownloader {
 	 */
 	@Override
 	public boolean download(String url, String avId, int qn, int page) {
+		url = tryReplaceHost(url);
 		return download(url, avId, qn, page, ".flv");
+	}
+	
+	static Pattern hostPattern;
+	static String hostAlt;
+	
+	protected String tryReplaceHost(String url) {
+		if(Global.forceReplaceUposHost) {
+			if(hostPattern == null) {
+				hostPattern = Pattern.compile("://[^/]+");
+				hostAlt = "://" + Global.altHost;
+			}
+			Logger.println(hostAlt);
+			Matcher m = hostPattern.matcher(url);
+			return m.replaceAll(hostAlt);
+		}
+		return url;
 	}
 	
 	protected boolean download(String url, String avId, int qn, int page, String suffix) {

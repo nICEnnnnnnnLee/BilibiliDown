@@ -75,6 +75,10 @@ public class Global {
 	public static int[] audioQualityPriority = {30280, 30232, 30216, -1};
 	@Config(key = "bilibili.dash.checkUrl", note = "查询DASH方式的下载链接时，检查链接有效性", defaultValue = "false", valids = { "true", "false" })
 	public static boolean checkDashUrl = false;
+	@Config(key = "bilibili.download.host.forceReplace", note = "强制开启替换下载服务器host功能", defaultValue = "false", valids = { "true", "false" })
+	public static boolean forceReplaceUposHost = false;
+	@Config(key = "bilibili.download.host.alternative", note = "自定义的下载服务器host", defaultValue = "upos-sz-estghw.bilivideo.com")
+	public static String altHost = "upos-sz-estghw.bilivideo.com";
 	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/")
 	public static String savePath = "./download/"; // 下载文件保存路径
 	@Config(key = "bilibili.download.poolSize", note = "下载任务线程池大小", defaultValue = "1")

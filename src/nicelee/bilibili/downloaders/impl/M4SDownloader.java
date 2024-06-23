@@ -34,6 +34,7 @@ public class M4SDownloader extends FLVDownloader{
 	 */
 	@Override
 	public boolean download(String url, String avId, int qn, int page) {
+		url = tryReplaceHost(url);
 		convertingStatus = StatusEnum.NONE;
 		HttpHeaders header = new HttpHeaders();
 		boolean audioOnly = url.startsWith("#");

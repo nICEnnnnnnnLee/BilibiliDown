@@ -314,6 +314,7 @@ public class MJMenuBar extends JMenuBar {
 				}
 			}
 		});
+		batchDownloadRbyR.setEnabled(!Global.batchDownloadRbyRRunOnStartup);
 		// 打开设置面板
 		settingsMenuItem.addActionListener(new ActionListener() {
 			@Override

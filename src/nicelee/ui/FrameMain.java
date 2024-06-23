@@ -28,6 +28,7 @@ import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.SysUtil;
 import nicelee.ui.item.MJTitleBar;
+import nicelee.ui.thread.BatchDownloadRbyRThread;
 import nicelee.ui.thread.CookieRefreshThread;
 import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
@@ -140,7 +141,19 @@ public class FrameMain extends JFrame {
 //		qr.dispose();
 		// 预扫描加载类
 		PackageScanLoader.validParserClasses.isEmpty();
-
+		if(Global.batchDownloadRbyRRunOnStartup) {
+			// 开始按计划周期性批量下载
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// 等待相关线程运行完毕
+					try {
+						loginTh.join();
+					} catch (InterruptedException e) {}
+					new BatchDownloadRbyRThread(Global.batchDownloadConfigName).start();
+				}
+			}).start();
+		}
 		System.out.println("如果过度界面显示时间过长，可双击跳过");
 		try {
 			while (Global.frWaiting.isVisible()) {

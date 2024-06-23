@@ -10,6 +10,7 @@ import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.exceptions.BilibiliError;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.parsers.InputParser;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
@@ -93,15 +94,16 @@ public class DownloadRunnable implements Runnable {
 		}
 		// 查询下载链接
 		INeedAV iNeedAV = new INeedAV();
-		String urlQuery = null;
-		int realQN = 0;
+		String urlQuery;
+		int realQN;
 		if(!avid.startsWith("h")){
 			urlQuery = iNeedAV.getInputParser(avid).getVideoLink(avid, cid, qn, Global.downloadFormat); //该步含网络查询， 可能较为耗时
 			realQN = iNeedAV.getInputParser(avid).getVideoLinkQN();
 		}else {
 			urlQuery = clip.getLinks().get(0);
+			realQN = 0;
 		}
-		String url = urlQuery;
+		long urlTimestamp = System.currentTimeMillis();
 		// 生成格式化名称
 		String formattedTitle = CmdUtil.genFormatedName(
 				avInfo,clip,realQN);
@@ -116,7 +118,7 @@ public class DownloadRunnable implements Runnable {
 			return;
 		}
 		//获取实际清晰度后，初始化下载部件参数
-		downPanel.initDownloadParams(iNeedAV, url, avid_qn, formattedTitle, realQN);
+		downPanel.initDownloadParams(iNeedAV, urlQuery, avid_qn, formattedTitle, realQN);
 		// 再进行一次判断，看下载列表是否已经存在相应任务(防止并发误判)
 		if (Global.downloadTaskList.get(downPanel) != null) {
 			System.out.println("已经存在相关下载");
@@ -142,8 +144,22 @@ public class DownloadRunnable implements Runnable {
 						Logger.println("已经人工停止,无需再下载");
 						return;
 					}
+					long currentTime = System.currentTimeMillis();
+					long deltaTime = currentTime - urlTimestamp;
+					String validUrl = urlQuery;
+					if(deltaTime > 2400000L && !avid.startsWith("h")) {
+						Logger.println("下载url距离上次查询已经过了超过40min，重新查询下载链接");
+						InputParser parser = iNeedAV.getInputParser(avid);
+						validUrl = parser.getVideoLink(avid, cid, qn, Global.downloadFormat);
+						downPanel.url = validUrl;
+						if(realQN != parser.getVideoLinkQN()) {
+							Logger.println("清晰度链接已经改变，无法再重新下载");
+							iNeedAV.getUtil().stopDownloadAsFail();
+							return;
+						}
+					}
 					// 开始下载
-					if(iNeedAV.downloadClip(url, avid, iNeedAV.getInputParser(avid).getVideoLinkQN(), page)) {
+					if(iNeedAV.downloadClip(validUrl, avid, iNeedAV.getInputParser(avid).getVideoLinkQN(), page)) {
 						// 下载成功后保存到仓库
 						if(Global.saveToRepo) {
 							RepoUtil.appendAndSave(record);

@@ -180,6 +180,19 @@ public class MJMenuBar extends JMenuBar {
 				}
 			}
 		}.build();
+		JMenu dForceReplaceHostMenuItem = new MJMenuWithRadioGroupBuilder("音视频链接替换host?", "替换", "不替换") {
+			@Override
+			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
+				Global.forceReplaceUposHost = itemIndex == 0;
+				Logger.println("音视频链接强制替换host:" + Global.forceReplaceUposHost);
+			}
+			
+			@Override
+			public void init(JRadioButtonMenuItem[] menuItems) {
+				int itemIndex = Global.forceReplaceUposHost ? 0 : 1;
+				menuItems[itemIndex].setSelected(true);
+			}
+		}.build();
 		
 		List<String> qnSelections = new ArrayList<>();
 		for (VideoQualityEnum item : VideoQualityEnum.values()) {
@@ -267,6 +280,7 @@ public class MJMenuBar extends JMenuBar {
 		configMenu.add(dUseRepoMenuItem);
 		configMenu.add(dDashDownTypeMenuItem);
 		configMenu.add(dTypeReDownloadMenuItem);
+		configMenu.add(dForceReplaceHostMenuItem);
 		configMenu.add(dQNMenuItem);
 		configMenu.add(dBatchDownMenuItem);
 		configMenu.add(dUpdateMenuItem);

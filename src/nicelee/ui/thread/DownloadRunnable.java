@@ -147,8 +147,8 @@ public class DownloadRunnable implements Runnable {
 					long currentTime = System.currentTimeMillis();
 					long deltaTime = currentTime - urlTimestamp;
 					String validUrl = urlQuery;
-					if(deltaTime > 2400000L && !avid.startsWith("h")) {
-						Logger.println("下载url距离上次查询已经过了超过40min，重新查询下载链接");
+					if(deltaTime > Global.urlValidPeriod && !avid.startsWith("h")) {
+						Logger.printf("下载url距离上次查询已经过了超过%d min，重新查询下载链接", Global.urlValidPeriod / 60000L);
 						InputParser parser = iNeedAV.getInputParser(avid);
 						validUrl = parser.getVideoLink(avid, cid, qn, Global.downloadFormat);
 						downPanel.url = validUrl;

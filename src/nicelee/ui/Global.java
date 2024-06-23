@@ -62,6 +62,8 @@ public class Global {
 	public static int maxFailRetry;
 	@Config(key = "bilibili.download.retry.reloadDownloadUrl", note = "重试时，重新查询下载链接", defaultValue = "false", valids = { "true", "false" })
 	public static boolean reloadDownloadUrl;
+	@Config(key = "bilibili.download.urlValidPeriod", note = "下载url的有效时长(min)", defaultValue = "90", multiply = 60000)
+	public static long urlValidPeriod;
 	@Config(key = "bilibili.format", defaultValue = "0", valids = { "0", "1", "2" }, note = "优先下载格式, 0-m4s,1-flv,2-mp4")
 	public static int downloadFormat = MP4; // 优先下载格式，如不存在该类型的源，那么将默认转为下载另一种格式
 	@Config(key = "bilibili.dash.download.mode", defaultValue = "0", valids = { "0", "1", "2" }, note = "DASH下载模式: 0-下载音视频,1-仅视频,2-仅音频")

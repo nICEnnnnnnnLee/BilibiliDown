@@ -26,6 +26,7 @@ public class MP4Downloader extends FLVDownloader{
 	 */
 	@Override
 	public boolean download(String url, String avId, int qn, int page) {
+		url = tryReplaceHost(url);
 		return download(url, avId, qn, page, ".mp4");
 	}
 

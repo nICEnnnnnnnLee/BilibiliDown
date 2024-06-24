@@ -250,7 +250,9 @@ public class DownloadInfoPanel extends JPanel implements ActionListener {
 		StatusEnum status = downloader.currentStatus();
 		if (status != StatusEnum.DOWNLOADING && status != StatusEnum.SUCCESS && status != StatusEnum.PROCESSING) {
 			downloader.startTask();
-			Global.downLoadThreadPool.execute(new DownloadRunnableInternal(this, System.currentTimeMillis(), true));
+			if(!Global.downLoadThreadPool.isShutdown()){
+				Global.downLoadThreadPool.execute(new DownloadRunnableInternal(this, System.currentTimeMillis(), true));
+			}
 		}
 	}
 

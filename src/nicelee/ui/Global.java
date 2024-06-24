@@ -363,10 +363,7 @@ public class Global {
 				}
 				field.set(null, values);
 			}else if (field.getType().equals(int.class) || field.getType().equals(long.class)) {
-				if (isDefaultValue)
-					field.set(null, Integer.parseInt(value));
-				else
-					field.set(null, Integer.parseInt(value) * config.multiply());
+				field.set(null, Integer.parseInt(value) * config.multiply());
 			} else if (field.getType().equals(boolean.class)) {
 				if (isDefaultValue)
 					field.set(null, "true".equalsIgnoreCase(value));

@@ -1,6 +1,7 @@
 package nicelee.ui.thread;
 
 import java.awt.Color;
+import java.io.File;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,12 +36,15 @@ public class MonitoringThread extends Thread {
 				IDownloader downloader = entry.getValue();
 				String formattedTitle = dp.formattedTitle.replace("\\", "\\\\");
 				try {
-					String path = downloader.file().getAbsolutePath();
-					if(Global.doRenameAfterComplete && downloader.currentStatus() == StatusEnum.SUCCESS) {
-						path = path.replaceFirst("(?:av|h|BV|season|au|edd_)[0-9a-zA-Z_]+-[0-9]+-p[0-9]+", formattedTitle);
+					File file = downloader.file();
+					if(file != null) {
+						String path = file.getAbsolutePath();
+						if(Global.doRenameAfterComplete && downloader.currentStatus() == StatusEnum.SUCCESS) {
+							path = path.replaceFirst("(?:av|h|BV|season|au|edd_)[0-9a-zA-Z_]+-[0-9]+-p[0-9]+", formattedTitle);
+						}
+						dp.getLbFileName().setText(path);
+						dp.getLbFileName().setToolTipText(path);
 					}
-					dp.getLbFileName().setText(path);
-					dp.getLbFileName().setToolTipText(path);
 					switch (downloader.currentStatus()) {
 					case SUCCESS:
 						doneTask ++;
@@ -62,7 +66,7 @@ public class MonitoringThread extends Thread {
 								dp.getLbCurrentStatus().setText(genTips("%d/%d 下载异常. ", downloader));
 								dp.getBtnControl().setText("继续下载");
 								dp.getBtnControl().setVisible(true);
-								// TODO 将成功的任务状态记入
+								// TODO 将失败的任务状态记入
 								BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "fail");
 							}
 						}else {
@@ -136,7 +140,7 @@ public class MonitoringThread extends Thread {
 						break;
 					}
 				}catch(Exception e) { 
-					//e.printStackTrace();
+					//e.printStackTrace(); // L38 文件不存在 NullPointerException
 					if(downloader.currentStatus() == StatusEnum.STOP) {
 						pauseTask ++;
 						dp.getLbCurrentStatus().setText("任务取消");
@@ -147,7 +151,7 @@ public class MonitoringThread extends Thread {
 							BatchDownloadRbyRThread.taskFail(dp.getClipInfo(), "stop");
 							dp.setBackground(lightPink);
 						}
-					}if(downloader.currentStatus() == StatusEnum.PROCESSING) {
+					}else if(downloader.currentStatus() == StatusEnum.PROCESSING) {
 						activeTask ++;
 						dp.getLbCurrentStatus().setText(genTips("%d/%d 转码中... ", downloader));
 						dp.getLbDownFile().setText("文件大小: "  + IDownloader.transToSizeStr(downloader.sumTotalFileSize()));

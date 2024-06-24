@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,6 +17,7 @@ import javax.swing.JScrollPane;
 
 import nicelee.ui.item.DownloadInfoPanel;
 import nicelee.ui.item.MJButton;
+import nicelee.ui.thread.DownloadExecutors;
 
 public class TabDownload extends JPanel implements ActionListener {
 
@@ -157,7 +157,7 @@ public class TabDownload extends JPanel implements ActionListener {
 						dp.stopTask();
 					}
 					int fixPool = Global.downloadPoolSize;
-					Global.downLoadThreadPool = Executors.newFixedThreadPool(fixPool);
+					Global.downLoadThreadPool = DownloadExecutors.newPriorityFixedThreadPool(fixPool);
 					btnContinue.setEnabled(true);
 					btnStop.setEnabled(true);
 					btnDeleteAll.setEnabled(true);

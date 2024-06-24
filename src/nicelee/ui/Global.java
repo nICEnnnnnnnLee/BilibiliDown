@@ -21,6 +21,7 @@ import nicelee.bilibili.enums.DownloadModeEnum;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.net.TrustAllCertSSLUtil;
 import nicelee.ui.item.DownloadInfoPanel;
+import nicelee.ui.thread.DownloadExecutors;
 
 public class Global {
 	// 界面显示相关
@@ -249,7 +250,7 @@ public class Global {
 			}
 		}
 		// 特殊处理
-		downLoadThreadPool = Executors.newFixedThreadPool(downloadPoolSize);
+		downLoadThreadPool = DownloadExecutors.newPriorityFixedThreadPool(downloadPoolSize);
 		String savePath = ResourcesUtil.resolve(Global.savePath);
 		if (savePath.endsWith("\\")) {
 			savePath = savePath.substring(0, savePath.length() - 1) + "/";

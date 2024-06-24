@@ -11,6 +11,7 @@ assignees: ''
 - 使用的当前版本为最新版本
 - 使用最新的CI版本仍然存在该问题[CI传送门](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/pre-release-artifacts.yml)
 - issue区没有类似的情况（有的话请直接去该问题讨论）
+- 我已经阅读过[帮助文档](https://nicennnnnnnlee.github.io/BilibiliDown/guide/quick-start/what-is-BilibiliDown)/[备用帮助文档](https://bili.nicelee.top/BilibiliDown/guide/quick-start/what-is-BilibiliDown)
 
 **问题描述**
 请尽量详细地描述问题，以告诉如何复现，方便定位问题。

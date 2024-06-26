@@ -124,6 +124,10 @@ public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
 			for (int i = min - 1; i < arr.length() && i < max; i++) {
 				JSONObject jAV = arr.getJSONObject(i);
+				// 跳过课程解析
+				String jumpUrl = jAV.optString("jump_url", "");
+				if(jumpUrl.startsWith("https://www.bilibili.com/cheese/"))
+					continue;
 				map.putAll(convertVideoToClipMap(jAV.getString("bvid"), (page - 1) * API_PMAX + i + 1, videoFormat,
 						getVideoLink));
 			}

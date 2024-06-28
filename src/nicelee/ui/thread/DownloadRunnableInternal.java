@@ -16,6 +16,7 @@ public class DownloadRunnableInternal implements Runnable {
 	final DownloadInfoPanel downPanel;
 	final long urlTimestamp;
 	final boolean invokeByContinueTask;
+	final int failCnt;
 	// 下面这些值都可以从 downPanel 直接或者间接获取
 	final String record;
 	final INeedAV iNeedAV;
@@ -30,11 +31,13 @@ public class DownloadRunnableInternal implements Runnable {
 	 * @param downPanel					下载任务绑定的UI控件，相关信息可以从这里获取
 	 * @param urlTimestamp				当前下载链接的获取时间
 	 * @param invokeByContinueTask		该线程是否是 “继续任务”， 而不是 “开始任务”
+	 * @param failCnt					在此之前的任务失败次数
 	 */
-	public DownloadRunnableInternal(DownloadInfoPanel downPanel, long urlTimestamp, boolean invokeByContinueTask) {
+	public DownloadRunnableInternal(DownloadInfoPanel downPanel, long urlTimestamp, boolean invokeByContinueTask, int failCnt) {
 		this.downPanel = downPanel;
 		this.urlTimestamp = urlTimestamp;
 		this.invokeByContinueTask = invokeByContinueTask;
+		this.failCnt = failCnt;
 		iNeedAV = downPanel.iNeedAV;
 		downloader = iNeedAV.getDownloader();
 		urlQuery = downPanel.url;

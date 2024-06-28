@@ -127,7 +127,7 @@ public class DownloadRunnable implements Runnable {
 		jpContent.add(downPanel);
 		jpContent.setPreferredSize(new Dimension(1100, 128 * Global.downloadTaskList.size()));
 		if(!Global.downLoadThreadPool.isShutdown()){
-			Global.downLoadThreadPool.execute(new DownloadRunnableInternal(downPanel, System.currentTimeMillis(), false));
+			Global.downLoadThreadPool.execute(new DownloadRunnableInternal(downPanel, System.currentTimeMillis(), false, 0));
 		}
 		if(Global.sleepAfterDownloadQuery > 0) {
 			try {

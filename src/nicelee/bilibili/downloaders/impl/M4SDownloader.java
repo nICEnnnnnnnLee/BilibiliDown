@@ -34,13 +34,12 @@ public class M4SDownloader extends FLVDownloader{
 	 */
 	@Override
 	public boolean download(String url, String avId, int qn, int page) {
-		url = tryReplaceHost(url);
 		convertingStatus = StatusEnum.NONE;
 		HttpHeaders header = new HttpHeaders();
 		boolean audioOnly = url.startsWith("#");
 		String links[] = url.split("#");
 		for(int i=0; i<links.length; i++) {
-			links[i] = tryForceHttp(links[i]);
+			links[i] = tryBetterUrl(links[i]);
 		}
 		String fName = avId + "-" + qn + "-p" + page;
 		String suffix = ".mp4"; // TODO audioOnly? ".aac": ".mp4";  // mp4 / aac / flac

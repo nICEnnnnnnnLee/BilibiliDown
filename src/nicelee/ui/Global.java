@@ -82,6 +82,8 @@ public class Global {
 	public static boolean forceHttp = false;
 	@Config(key = "bilibili.download.host.forceReplace", note = "强制替换音视频下载服务器host", defaultValue = "false", valids = { "true", "false" })
 	public static boolean forceReplaceUposHost = false;
+	@Config(key = "bilibili.download.host.forceReplace.pattern", note = "功能开启时，匹配该规则的链接会被替换host", defaultValue = "https?://[^/]+/upgcxcode")
+	public static String forceReplaceUrlPattern = "^https?://[^/]+/upgcxcode";
 	@Config(key = "bilibili.download.host.alternative", note = "自定义的下载服务器host", defaultValue = "upos-sz-estghw.bilivideo.com")
 	public static String altHost = "upos-sz-mirror08c.bilivideo.com";
 	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/")

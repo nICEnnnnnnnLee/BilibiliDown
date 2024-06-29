@@ -49,39 +49,51 @@ public class FLVDownloader implements IDownloader {
 	 */
 	@Override
 	public boolean download(String url, String avId, int qn, int page) {
-		url = tryReplaceHost(url);
 		return download(url, avId, qn, page, ".flv");
 	}
 	
 	static Pattern pcdnPattern;
 	static Pattern hostPattern;
+	static Pattern urlReplaceWhitelist;
 	static String hostAlt;
 	
-	protected String tryReplaceHost(String url) {
+	protected String tryBetterUrl(String url) {
+		url = tryReplaceHost(url);
+		url = tryForceHttp(url);
+		return url;
+	}
+	
+	private String tryReplaceHost(String url) {
 		if(Global.forceReplaceUposHost) {
 			if(hostPattern == null) {
 				hostPattern = Pattern.compile("://[^/]+");
+				// 不能替换 https://xy111x48x218x66xy.mcdn.bilivideo.cn:8082/v1/resource/1597612179-1-30280.m4s
+				// 可以替换 https://xy111x48x218x66xy.mcdn.bilivideo.cn:8082/upgcxcode/35/83/1532588335/1532588335-1-30280.m4s
+				// urlReplaceWhitelist = Pattern.compile("https?://[^/]+/upgcxcode");
+				urlReplaceWhitelist = Pattern.compile(Global.forceReplaceUrlPattern);
 				hostAlt = "://" + Global.altHost;
 			}
-			Logger.println(hostAlt);
-			Matcher m = hostPattern.matcher(url);
-			return m.replaceAll(hostAlt);
+			Matcher mWList = urlReplaceWhitelist.matcher(url);
+			// Logger.println(url);
+			if(mWList.find()) {
+				Matcher m = hostPattern.matcher(url);
+				return m.replaceFirst(hostAlt);
+			}
 		}
 		return url;
 	}
 	
-	protected String tryForceHttp(String url) {
+	private String tryForceHttp(String url) {
 		if(Global.forceHttp) {
 			if(pcdnPattern == null) {
 				pcdnPattern = Pattern.compile("://[^/:]+:\\d+/");
 			}
 			Matcher m = pcdnPattern.matcher(url);
 			if(!m.find()) {
-				Logger.println("https替换为http");
+				// Logger.println("https替换为http");
 				return url.replace("https:/", "http:/");
 			}
-			// Logger.println(url);
-			Logger.println("检测为PCDN，forceHttp未生效");
+			// Logger.println("检测为PCDN，forceHttp未生效");
 		}
 		return url;
 	}
@@ -103,7 +115,7 @@ public class FLVDownloader implements IDownloader {
 			// 从 currentTask 继续开始任务
 			util.init();
 			for (int i = currentTask - 1; i < links.length; i++) {
-				links[i] = tryForceHttp(links[i]);
+				links[i] = tryBetterUrl(links[i]);
 				currentTask = (i + 1);
 				Matcher matcher = numUrl.matcher(links[i]);
 				matcher.find();
@@ -126,7 +138,7 @@ public class FLVDownloader implements IDownloader {
 			}
 			return result;
 		} else {
-			url = tryForceHttp(url);
+			url = tryBetterUrl(url);
 			String fileName = fName + suffix;
 			boolean succ = util.download(url, fileName, header.getBiliWwwFLVHeaders(avId));
 			if (succ) {

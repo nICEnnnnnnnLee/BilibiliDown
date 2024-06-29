@@ -161,14 +161,14 @@ public class HttpRequestUtil {
 			HttpURLConnection conn = connect(headers, urlNameString, null);
 			conn.connect();
 
-			if (conn.getResponseCode() == 403) {
-				Logger.println("403被拒，尝试更换Headers");
-				conn.disconnect();
-				headers = HttpHeaders.getBiliAppDownHeaders();
-				offset = modifyHeaderMapByDownloaded(headers, raf, fileDownloadPart, offset);
-				conn = connect(headers, urlNameString, null);
-				conn.connect();
-			}
+//			if (conn.getResponseCode() == 403) {
+//				Logger.println("403被拒，尝试更换Headers");
+//				conn.disconnect();
+//				headers = HttpHeaders.getBiliAppDownHeaders();
+//				offset = modifyHeaderMapByDownloaded(headers, raf, fileDownloadPart, offset);
+//				conn = connect(headers, urlNameString, null);
+//				conn.connect();
+//			}
 			// 获取所有响应头字段
 			Map<String, List<String>> map = conn.getHeaderFields();
 			// 遍历所有的响应头字段

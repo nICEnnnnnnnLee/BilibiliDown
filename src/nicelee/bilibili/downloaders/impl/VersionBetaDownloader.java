@@ -70,7 +70,7 @@ public class VersionBetaDownloader extends VersionDownloader {
 		JSONObject artifact = new JSONObject(r2).getJSONArray("artifacts").getJSONObject(0);
 		String downName = artifact.getString("name") + "." + artifact.optString("id") + ".zip";
 		String url = artifact.getString("archive_download_url");
-		sumSuccessDownloaded = artifact.optLong("size_in_bytes", 0);
+//		sumSuccessDownloaded = artifact.optLong("size_in_bytes", 0);
 		Logger.println(downName);
 		Logger.println(url);
 		// 开始下载

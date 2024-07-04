@@ -30,7 +30,7 @@ cmd_package = f'''"{jpackage_path}" \
   --vendor "nICEnnnnnnnLee" \
   --copyright "Copyright © 2019-2024 nICEnnnnnnnLee" \
   --win-dir-chooser \
-  --win-shortcut-prompt \
+  --win-shortcut \
   --temp ./temp \
   --verbose
 '''

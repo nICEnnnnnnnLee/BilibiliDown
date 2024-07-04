@@ -69,7 +69,44 @@ jobs:
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1
-
+          
+    - name: Upload release to supabase
+      env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
+        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      if: ${{ env.SUPABASE_ANON_KEY != ''}}
+      run: |
+        chmod +x .github/scripts/upload_supabase.sh
+        ./.github/scripts/upload_supabase.sh     
+            
+    - name: Upload release to cloudinary
+      env:
+        CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+        CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
+        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
+      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
+      run: |
+        chmod +x .github/scripts/upload_cloudinary.sh
+        ./.github/scripts/upload_cloudinary.sh              
+    
+    - name: Upload release to bitbucket
+      env:
+        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
+        BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
+      if: ${{ env.BITBUCKET_TOKEN != ''}}
+      run: |
+        chmod +x .github/scripts/upload_bitbucket.sh
+        ./.github/scripts/upload_bitbucket.sh                    
+            
+    - name: Sync Push to Gitee
+      env:
+        GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
+      if: ${{ env.GITEE_AUTH != ''}}
+      run: |
+        chmod +x .github/scripts/sync_push_to_gitee.sh
+        ./.github/scripts/sync_push_to_gitee.sh
+        
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:

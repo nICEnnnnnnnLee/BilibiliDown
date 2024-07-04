@@ -28,7 +28,7 @@ import nicelee.bilibili.util.Logger;
  * https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
  *
  */
-@Bilibili(name = "URL4UPAllParser", ifLoad = "listAll", note = "个人上传的视频列表", weight=75)
+@Bilibili(name = "URL4UPAllParser", ifLoad = "listAll", note = "个人上传的视频列表", weight=69)
 public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/search/video\\?|/? *$|\\?)");

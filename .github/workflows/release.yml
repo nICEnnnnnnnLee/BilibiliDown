@@ -13,16 +13,12 @@ on:
       # Trigger only when src/** changes
       - ".github/release.info"
       
-#  push:
-#    paths:
-#    # Trigger only when src/** changes
-#      - ".github/release.json"
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
-   
+    outputs:
+      VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -61,7 +57,7 @@ jobs:
         ./.github/scripts/gen_zip_sha1_for_release.sh
         
     - name: Create Release
-      uses: softprops/action-gh-release@master
+      uses: softprops/action-gh-release@v2.0.6
       with:
         tag_name: V${{steps.tag_latest.outputs.value}}
         name: BilibiliDown - v${{steps.tag_latest.outputs.value}}
@@ -73,48 +69,51 @@ jobs:
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release
+        path: BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
           
-    - name: Upload release to supabase
-      env:
-        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
-        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      if: ${{ env.SUPABASE_ANON_KEY != ''}}
-      run: |
-        chmod +x .github/scripts/upload_supabase.sh
-        ./.github/scripts/upload_supabase.sh     
-            
-    - name: Upload release to cloudinary
-      env:
-        CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-        CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-        ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
-        SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
-      run: |
-        chmod +x .github/scripts/upload_cloudinary.sh
-        ./.github/scripts/upload_cloudinary.sh              
-    
-    - name: Upload release to bitbucket
-      env:
-        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
-        BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ env.BITBUCKET_TOKEN != ''}}
-      run: |
-        chmod +x .github/scripts/upload_bitbucket.sh
-        ./.github/scripts/upload_bitbucket.sh                    
-            
-    - name: Sync Push to Gitee
-      env:
-        GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
-      if: ${{ env.GITEE_AUTH != ''}}
-      run: |
-        chmod +x .github/scripts/sync_push_to_gitee.sh
-        ./.github/scripts/sync_push_to_gitee.sh
+  # 生成win64 安装包
+  build_win64_msi:
+    needs: build
+    name: Build win64 msi
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: release
+        path: win_msi
         
-    - name: Sync Push to Bitbucket
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Build MSI
       env:
-        BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ env.BITBUCKET_TOKEN != ''}}
-      run: |
-        chmod +x .github/scripts/sync_push_to_bitbucket.sh
-        ./.github/scripts/sync_push_to_bitbucket.sh
+        VERSION_NUMBER: ${{needs.build.outputs.VERSION_NUMBER}}
+        VERSION_NUMBER_TAIL: 0
+        JAVA_TOOL_OPTIONS: '-Duser.region=CN -Duser.language=zh'
+        PYTHONIOENCODING: utf-8
+        PYTHONLEGACYWINDOWSSTDIO: utf-8
+      run:  |
+        cd win_msi
+        # pip install requests
+        python ../.github/scripts/installer-win/win64_msi.py
+        move target/BilibiliDown-1.${{needs.build.outputs.VERSION_NUMBER}}.0.msi        target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi
+        move target/BilibiliDown-1.${{needs.build.outputs.VERSION_NUMBER}}.0.msi.sha1   target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi.sha1
+        
+    - name: Upload MSI File to release asset
+      uses: softprops/action-gh-release@v2.0.6
+      with:
+        tag_name: V${{needs.build.outputs.VERSION_NUMBER}}
+        name: BilibiliDown - v${{needs.build.outputs.VERSION_NUMBER}}
+        files: |
+          win_msi/target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi
+          win_msi/target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi.sha1

@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'utf-8'?>
+<WixLocalization Culture="zh-cn" xmlns="http://schemas.microsoft.com/wix/2006/localization" Codepage="936">
+  <String Id="DownloadDirDlg_Title" Localizable="yes" Overridable="yes">[ProductName] 下载设置</String>
+  <String Id="DownloadDirDlg_BannerTitle" Localizable="yes" Overridable="yes">{\WixUI_Font_Title}自定义下载路径</String>
+  <String Id="DownloadDirDlg_Description" Localizable="yes" Overridable="yes">请设置预期下载的保存位置</String>
+  <String Id="DownloadDirDlg_Label" Localizable="yes" Overridable="yes">&amp;下载路径:</String>
+</WixLocalization>

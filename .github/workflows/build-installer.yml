@@ -1,0 +1,62 @@
+name: Build Installers(Manual trigger)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_number:
+        description: 'The version to build. e.g. 6.31'
+        required: false
+        type: string
+        default: '6.31'
+      version_number_tail:
+        description: 'The version tail.e.g. 0 -> total ver: 1.63.0'
+        required: false
+        type: string
+        default: '0'
+  push:
+    branches:
+      - master
+  
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Set Locale to zh-CN
+      shell: pwsh
+      run: |
+        Set-Culture zh-CN
+        Set-WinSystemLocale -SystemLocale zh-CN
+        Set-WinUILanguageOverride -Language zh-CN
+        Set-WinHomeLocation -GeoId 45 # China (see https://docs.microsoft.com/de-ch/windows/win32/intl/table-of-geographical-locations)
+        #Get-WinUserLanguageList
+        #Set-WinUserLanguageList zh-CN -Force
+        
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Build MSI
+      env:
+        VERSION_NUMBER: ${{ inputs.version_number }}
+        VERSION_NUMBER_TAIL: ${{ inputs.version_number_tail }}
+        JAVA_TOOL_OPTIONS: '-Duser.region=CN -Duser.language=zh'
+        PYTHONIOENCODING: utf-8
+        PYTHONLEGACYWINDOWSSTDIO: utf-8
+      run:  |
+        mkdir win_msi
+        cd win_msi
+        pip install requests
+        python ../.github/scripts/installer-win/win64_msi.py
+      
+    - name: Upload MSI
+      uses: actions/upload-artifact@v4
+      with:
+        name: BilibiliDown.v${{ inputs.version_number }}.win64
+        path: win_msi/target/*.msi
+        

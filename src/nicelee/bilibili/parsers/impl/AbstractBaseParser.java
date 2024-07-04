@@ -170,7 +170,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 				+ bvId;
 		HashMap<String, String> header = headers.getBiliJsonAPIHeaders(bvId);
 		String callBack = util.getContent(url, header);
-		JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 2)).getJSONObject("data")
+		JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 1)).getJSONObject("data")
 				.getJSONObject("View");
 		Long aid = infoObj.optLong("aid");
 
@@ -294,7 +294,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 				+ bvId;
 		HashMap<String, String> header = headers.getBiliJsonAPIHeaders(bvId);
 		String callBack = util.getContent(url, header);
-		JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 2)).getJSONObject("data")
+		JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 1)).getJSONObject("data")
 				.getJSONObject("View");
 		Long aid = infoObj.optLong("aid");
 

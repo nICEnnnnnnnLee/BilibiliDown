@@ -1,6 +1,7 @@
 package nicelee.bilibili.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,11 @@ public class HttpRequestUtil {
 	protected volatile boolean bDown = true;
 	// Cookie管理
 	CookieManager manager;
+	
+	static Charset UTF_8;
+	static {
+		UTF_8 = Charset.forName("UTF-8");
+	}
 
 	public HttpRequestUtil() {
 		this(defaultManager);
@@ -320,11 +327,16 @@ public class HttpRequestUtil {
 				ism = new InflaterInputStream(ism, new Inflater(true));
 			}
 
-			in = new BufferedReader(new InputStreamReader(ism, "utf-8"));
-			String line;
-			while ((line = in.readLine()) != null) {
-				result.append(line).append("\r\n");
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			byte[] buffer = new byte[256];
+			int len = ism.read(buffer);
+			while (len > 0) {
+				out.write(buffer, 0, len);
+				len = ism.read(buffer);
 			}
+			
+			result.append(new String(out.toByteArray(), UTF_8));
+			out.close();
 		} catch (Status412Exception e) {
 			throw e;
 		} catch (Exception e) {
@@ -376,16 +388,19 @@ public class HttpRequestUtil {
 			if (encoding != null && encoding.contains("gzip")) {
 				ism = new GZIPInputStream(conn.getInputStream());
 			}
-			in = new BufferedReader(new InputStreamReader(ism, "utf-8"));
-			String line;
-			while ((line = in.readLine()) != null) {
-				line = new String(line.getBytes(), "UTF-8");
-				result.append(line);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			byte[] buffer = new byte[256];
+			int len = ism.read(buffer);
+			while (len > 0) {
+				out.write(buffer, 0, len);
+				len = ism.read(buffer);
 			}
+			result.append(new String(out.toByteArray(), UTF_8));
+			out.close();
 		} catch (Status412Exception e) {
 			throw e;
 		} catch (Exception e) {
-			System.out.println("发送GET请求出现异常！" + e);
+			System.out.println("发送POST请求出现异常！" + e);
 		} finally {
 			ResourcesUtil.closeQuietly(in);
 		}

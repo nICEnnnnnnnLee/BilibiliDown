@@ -82,6 +82,7 @@ public class ConfigUtil {
 		File tmp = new File(source.getParentFile(), "app.config.new");
 		try (BufferedWriter buWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"))) {
 			HashMap<String, String> copy = new LinkedHashMap<>(Global.settings);
+			HashMap<String, String> notSaveYet = new LinkedHashMap<>(copy);
 			String line;
 			try (BufferedReader buReader = new BufferedReader(new InputStreamReader(new FileInputStream(source), "utf-8"))){
 				line = buReader.readLine();
@@ -92,7 +93,7 @@ public class ConfigUtil {
 						String value = copy.getOrDefault(key, matcher.group(2));
 						line = String.format("%s = %s", key, value);
 						buWriter.write(line);
-						copy.remove(key);
+						notSaveYet.remove(key);
 					} else {// 原封不动写入
 						buWriter.write(line);
 					}
@@ -102,7 +103,7 @@ public class ConfigUtil {
 			}catch (IOException e) {
 			}
 			// 将copy 中剩下的值写入配置
-			for(Entry<String, String> entry: copy.entrySet()) {
+			for(Entry<String, String> entry: notSaveYet.entrySet()) {
 				if(!entry.getValue().isEmpty() && !Global.settingsMustCreateManualy.contains(entry.getKey())) {
 					line = String.format("%s = %s", entry.getKey(), entry.getValue());
 					buWriter.write(line);

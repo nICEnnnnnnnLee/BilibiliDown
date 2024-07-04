@@ -13,9 +13,6 @@ on:
         required: false
         type: string
         default: '0'
-  push:
-    branches:
-      - master
   
 jobs:
   build:

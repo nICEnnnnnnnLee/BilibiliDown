@@ -20,12 +20,15 @@ import nicelee.bilibili.util.Logger;
  * 针对以下url类型
  * https://space.bilibili.com/378034/search/video?tid=3&keyword=葫芦丝&order=pubdate keyword必须不为空
  * 另外，以下类型也可以解析，但是优先级不如URL4UPAllMedialistParser，所以被拦截
+ * https://space.bilibili.com/378034
  * https://space.bilibili.com/378034/
+ * https://space.bilibili.com/378034?spm=xxx
+ * https://space.bilibili.com/378034/?spm=xxx
  * https://space.bilibili.com/378034/video
  * https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
  *
  */
-@Bilibili(name = "URL4UPAllParser", ifLoad = "listAll", note = "个人上传的视频列表")
+@Bilibili(name = "URL4UPAllParser", ifLoad = "listAll", note = "个人上传的视频列表", weight=75)
 public class URL4UPAllParser extends AbstractPageQueryParser<VideoInfo> {
 
 	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)(/video|/search/video\\?|/? *$|\\?)");

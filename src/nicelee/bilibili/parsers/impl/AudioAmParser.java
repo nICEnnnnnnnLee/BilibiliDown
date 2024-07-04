@@ -14,7 +14,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
-@Bilibili(name = "AudioAmParser", note = "音频歌单")
+@Bilibili(name = "AudioAmParser", note = "音频歌单", weight=22)
 public class AudioAmParser extends AbstractPageQueryParser<VideoInfo> {
 	// https://www.bilibili.com/audio/am33012874
 	private final static Pattern pattern = Pattern.compile("am([0-9]+)");

@@ -13,7 +13,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
-@Bilibili(name = "AudioAuParser", note = "单个音频解析")
+@Bilibili(name = "AudioAuParser", note = "单个音频解析", weight=22)
 public class AudioAuParser extends AbstractBaseParser {
 	// e.g. https://www.bilibili.com/audio/au3688627
 	private final static Pattern pattern = Pattern.compile("au([0-9]+)");

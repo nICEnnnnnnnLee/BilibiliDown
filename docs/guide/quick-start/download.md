@@ -5,6 +5,8 @@ let asset = `BilibiliDown.v${version}.release.zip`
 let assetSHA1 = `BilibiliDown.v${version}.release.zip.sha1`
 let assetWithJre = `BilibiliDown.v${version}.win_x64_jre11.release.zip`
 let assetWithJreSHA1 = `BilibiliDown.v${version}.win_x64_jre11.release.zip.sha1`
+let assetWithMsi = `BilibiliDown.v${version}.win_x64.msi`
+let assetWithMsiSHA1 = `BilibiliDown.v${version}.win_x64.msi.sha1`
 
 let urlFromGithub = (version, fileName)=>{
     return `https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V${version}/${fileName}`
@@ -35,11 +37,13 @@ let urlFromTransloadit = (version, fileName)=>{
 ## 下载Release程序
 你可以前往[Github Release](https://github.com/nICEnnnnnnnLee/BilibiliDown/releases)页面查看更新详情以及历史版本  
 或者直接在下面的列表里选择进行下载。  
-|文件     |链接 |
-|-              |---|
-|{{ asset }} | <a :href="urlFromGithub(version, asset)" target="_blank" rel="noreferrer">Github</a>&nbsp;&nbsp;<a :href="urlFromGithub(version, assetSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a><br/> <a :href="urlFromBitbucket(version, asset)" target="_blank" rel="noreferrer">Bitbucket</a>&nbsp;&nbsp;<a :href="urlFromBitbucket(version, assetSHA1)" target="_blank" rel="noreferrer">Bitbucket-SHA1</a><br/> <a :href="urlFromSupaBase(version, asset)" target="_blank" rel="noreferrer">SUPABASE</a> &nbsp;&nbsp; <a :href="urlFromSupaBase(version, assetSHA1)" target="_blank" rel="noreferrer">SUPABASE-SHA1</a> <br/> <a :href="urlFromTransloadit(version, asset)" target="_blank" rel="noreferrer">Transloadit</a> &nbsp;&nbsp; <a :href="urlFromTransloadit(version, assetSHA1)" target="_blank" rel="noreferrer">Transloadit-SHA1</a><br/> <a :href="urlFromCloudinary(version, asset)" target="_blank" rel="noreferrer">Cloudinary</a> &nbsp;&nbsp; <a :href="urlFromCloudinary(version, assetSHA1)" target="_blank" rel="noreferrer">Cloudinary-SHA1</a><br/> <a :href="urlFromTwicpics(version, asset)" target="_blank" rel="noreferrer">Twicpics</a> &nbsp;&nbsp; <a :href="urlFromTwicpics(version, assetSHA1)" target="_blank" rel="noreferrer">Twicpics-SHA1</a>|
-|{{ assetWithJre }} | <a :href="urlFromGithub(version, assetWithJre)" target="_blank" rel="noreferrer">Github</a> <br/><a :href="urlFromGithub(version, assetWithJreSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a>|
+|文件     |链接 | 备注 |
+|-              |---|---|
+|{{ asset }} | <a :href="urlFromGithub(version, asset)" target="_blank" rel="noreferrer">Github</a>&nbsp;&nbsp;<a :href="urlFromGithub(version, assetSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a><br/> <a :href="urlFromBitbucket(version, asset)" target="_blank" rel="noreferrer">Bitbucket</a>&nbsp;&nbsp;<a :href="urlFromBitbucket(version, assetSHA1)" target="_blank" rel="noreferrer">Bitbucket-SHA1</a><br/> <a :href="urlFromSupaBase(version, asset)" target="_blank" rel="noreferrer">SUPABASE</a> &nbsp;&nbsp; <a :href="urlFromSupaBase(version, assetSHA1)" target="_blank" rel="noreferrer">SUPABASE-SHA1</a> <br/> <a :href="urlFromTransloadit(version, asset)" target="_blank" rel="noreferrer">Transloadit</a> &nbsp;&nbsp; <a :href="urlFromTransloadit(version, assetSHA1)" target="_blank" rel="noreferrer">Transloadit-SHA1</a><br/> <a :href="urlFromCloudinary(version, asset)" target="_blank" rel="noreferrer">Cloudinary</a> &nbsp;&nbsp; <a :href="urlFromCloudinary(version, assetSHA1)" target="_blank" rel="noreferrer">Cloudinary-SHA1</a><br/> <a :href="urlFromTwicpics(version, asset)" target="_blank" rel="noreferrer">Twicpics</a> &nbsp;&nbsp; <a :href="urlFromTwicpics(version, assetSHA1)" target="_blank" rel="noreferrer">Twicpics-SHA1</a>|-|
+|{{ assetWithJre }} | <a :href="urlFromGithub(version, assetWithJre)" target="_blank" rel="noreferrer">Github</a> <br/><a :href="urlFromGithub(version, assetWithJreSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a>| Win x64压缩包<br/>`.vbs`创建桌面快捷方式<br/>`.bat`脚本运行或Debug |
+|{{ assetWithMsi }} | <a :href="urlFromGithub(version, assetWithMsi)" target="_blank" rel="noreferrer">Github</a> <br/><a :href="urlFromGithub(version, assetWithMsiSHA1)" target="_blank" rel="noreferrer">Github-SHA1</a>| Win x64安装包 |
 
+**注意**: **SHA1**值用于校验文件完整性，并防止篡改。  
 **注意**: 请尽量使用Github源进行下载，其它白嫖网站有可能会因为额度使用完毕或其它原因导致无法使用。  
 
 ### 关于如何校验SHA1值

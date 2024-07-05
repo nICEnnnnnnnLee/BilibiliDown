@@ -45,6 +45,17 @@
     当值大于0时, 为下载异常后尝试次数  
     当值等于0时, 下载异常后不再尝试
 
+## bilibili.download.retry.reloadDownloadUrl
+- 引入版本: V6.19
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    在下载任务失败重试时，是否重新获取下载链接。  
+    [V6.32] 需要注意的是，如果url的存在时间超过阈值，不管该配置如何，都会重新获取下载链接。  
+    
+
 ## bilibili.cc.lang
 - 取值范围: 详见release/wiki/langs.txt
 - 默认值: zh-CN
@@ -320,8 +331,8 @@ bilibili.system.properties.jre11.override = false
 
 ## bilibili.dash.video.codec.priority
 - 默认值:   
-    `12, 7, 13`(如果存在app.config)  
-    `7, 12, 13`(如果不存在app.config)
+    `12, 7, 13`   
+    ~~`7, 12, 13`(如果不存在app.config)~~ V6.32后统一配置
 - 释义:   
     DASH视频的优先编码方式, 越往前优先级越高, 用`,`分开，接受空格
     ```
@@ -607,7 +618,8 @@ bilibili.system.properties.jre11.override = false
     {"3064":1,"5062":"1707365865753","03bf":"https%3A%2F%2Fwww.bilibili.com%2F","39c8":"333.1007.fp.risk","34f1":"","d402":"","654a":"","6e7c":"1536x684","3c43":{"2673":0,"5766":24,"6527":0,"7003":1,"807e":1,"b8ce":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0","641c":0,"07a4":"zh-CN","1c57":"not available","0bd0":4,"748e":[864,1536],"d61f":[824,1536],"fc9d":-480,"6aa9":"Asia/Shanghai","75b8":1,"3b21":1,"8a1c":0,"d52f":"not available","adca":"Win32","80c9":[["PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["Chrome PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["Chromium PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["Microsoft Edge PDF Viewer","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]],["WebKit built-in PDF","Portable Document Format",[["application/pdf","pdf"],["text/pdf","pdf"]]]],"13ab":"x7DlAAAAAElFTkSuQmCC","bfe9":"SAAmYUAFhmrCZRFNCvwHPGlBW1raHI4gAAAABJRU5ErkJggg==","a3c1":["extensions:ANGLE_instanced_arrays;EXT_blend_minmax;EXT_color_buffer_half_float;EXT_float_blend;EXT_frag_depth;EXT_shader_texture_lod;EXT_sRGB;EXT_texture_compression_bptc;EXT_texture_compression_rgtc;EXT_texture_filter_anisotropic;OES_element_index_uint;OES_fbo_render_mipmap;OES_standard_derivatives;OES_texture_float;OES_texture_float_linear;OES_texture_half_float;OES_texture_half_float_linear;OES_vertex_array_object;WEBGL_color_buffer_float;WEBGL_compressed_texture_s3tc;WEBGL_compressed_texture_s3tc_srgb;WEBGL_debug_renderer_info;WEBGL_debug_shaders;WEBGL_depth_texture;WEBGL_draw_buffers;WEBGL_lose_context","webgl aliased line width range:[1, 1]","webgl aliased point size range:[1, 1024]","webgl alpha bits:8","webgl antialiasing:yes","webgl blue bits:8","webgl depth bits:24","webgl green bits:8","webgl max anisotropy:16","webgl max combined texture image units:32","webgl max cube map texture size:16384","webgl max fragment uniform vectors:1024","webgl max render buffer size:16384","webgl max texture image units:16","webgl max texture size:16384","webgl max varying vectors:30","webgl max vertex attribs:16","webgl max vertex texture image units:16","webgl max vertex uniform vectors:4096","webgl max viewport dims:[32767, 32767]","webgl red bits:8","webgl renderer:ANGLE (Intel, Intel(R) HD Graphics 400 Direct3D11 vs_5_0 ps_5_0)","webgl shading language version:WebGL GLSL ES 1.0","webgl stencil bits:0","webgl vendor:Mozilla","webgl version:WebGL 1.0","webgl unmasked vendor:Google Inc. (Intel)","webgl unmasked renderer:ANGLE (Intel, Intel(R) HD Graphics 400 Direct3D11 vs_5_0 ps_5_0)","webgl vertex shader high float precision:23","webgl vertex shader high float precision rangeMin:127","webgl vertex shader high float precision rangeMax:127","webgl vertex shader medium float precision:23","webgl vertex shader medium float precision rangeMin:127","webgl vertex shader medium float precision rangeMax:127","webgl vertex shader low float precision:23","webgl vertex shader low float precision rangeMin:127","webgl vertex shader low float precision rangeMax:127","webgl fragment shader high float precision:23","webgl fragment shader high float precision rangeMin:127","webgl fragment shader high float precision rangeMax:127","webgl fragment shader medium float precision:23","webgl fragment shader medium float precision rangeMin:127","webgl fragment shader medium float precision rangeMax:127","webgl fragment shader low float precision:23","webgl fragment shader low float precision rangeMin:127","webgl fragment shader low float precision rangeMax:127","webgl vertex shader high int precision:0","webgl vertex shader high int precision rangeMin:31","webgl vertex shader high int precision rangeMax:30","webgl vertex shader medium int precision:0","webgl vertex shader medium int precision rangeMin:31","webgl vertex shader medium int precision rangeMax:30","webgl vertex shader low int precision:0","webgl vertex shader low int precision rangeMin:31","webgl vertex shader low int precision rangeMax:30","webgl fragment shader high int precision:0","webgl fragment shader high int precision rangeMin:31","webgl fragment shader high int precision rangeMax:30","webgl fragment shader medium int precision:0","webgl fragment shader medium int precision rangeMin:31","webgl fragment shader medium int precision rangeMax:30","webgl fragment shader low int precision:0","webgl fragment shader low int precision rangeMin:31","webgl fragment shader low int precision rangeMax:30"],"6bc5":"Google Inc. (Intel)~ANGLE (Intel, Intel(R) HD Graphics 400 Direct3D11 vs_5_0 ps_5_0)","ed31":0,"72bd":0,"097b":0,"52cd":[0,0,0],"a658":["Arial","Arial Black","Arial Narrow","Arial Unicode MS","Book Antiqua","Bookman Old Style","Calibri","Cambria","Cambria Math","Century","Century Gothic","Comic Sans MS","Consolas","Courier","Courier New","Georgia","Helvetica","Impact","Lucida Bright","Lucida Calligraphy","Lucida Console","Lucida Fax","Lucida Handwriting","Lucida Sans Unicode","Microsoft Sans Serif","Monotype Corsiva","MS Gothic","MS PGothic","MS Reference Sans Serif","MS Sans Serif","MS Serif","Palatino Linotype","Segoe Print","Segoe Script","Segoe UI","Segoe UI Light","Segoe UI Semibold","Segoe UI Symbol","Tahoma","Times","Times New Roman","Trebuchet MS","Verdana","Wingdings","Wingdings 2","Wingdings 3"],"d02f":"35.7383295930922"},"54ef":"{\"b_ut\":\"7\",\"home_version\":\"V8\",\"i-wanna-go-back\":\"-1\",\"in_new_ab\":true,\"ab_version\":{\"for_ai_home_version\":\"V8\",\"tianma_banner_inline\":\"CONTROL\",\"enable_web_push\":\"DISABLE\"},\"ab_split_num\":{\"for_ai_home_version\":54,\"tianma_banner_inline\":54,\"enable_web_push\":10}}","8b94":"","df35":"6D30A3F0-669B-6582-5832-00B5EC7795C51E174Cinfoc","07a4":"zh-CN","5f45":null,"db46":0}
     ```  
 - 释义:   
-    截取自api请求<pre>[*https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi*](#)</pre>  
+    截取自api请求
+    `https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi`  
     注意，不是整个json，而是该json的`payload`的值
 
 ## bilibili.name.autoNumber
@@ -619,3 +631,89 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     遇到同名文件时是否自动添加序号 (01)、(02)...   
     如果为`false`，会在下载目录留存有类似于`BVxxxxxxx-80-p1.mp4`的文件。  
+
+## bilibili.download.batch.plan.runOnStartup
+- 引入版本: V6.32
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    在程序启动时，是否按计划进行周期性批量下载。
+
+## bilibili.download.host.forceReplace
+- 引入版本: V6.32
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    是否强制开启替换下载服务器host功能。   
+
+    如果为`true`，会将音/视频下载链接中的域名(包括端口)替换为配置值`bilibili.download.host.alternative`。  
+    此时，没有必要测试之前链接的有效性，建议`bilibili.dash.checkUrl = false`。    
+
+    主要是针对MCDN/PCDN下载过慢或者失败的场景，即下载链接的域名大概像这样的情况：  
+    `xy123x184x63x196xy.mcdn.bilivideo.cn:4483`、`a26blo3f.v1d.szbdyd.com:8997`  
+
+## bilibili.download.host.alternative
+- 引入版本: V6.32
+- 取值范围:   
+    B站下载服务器的域名
+- 默认值:   
+    `upos-sz-mirror08c.bilivideo.com`  
+- 释义:   
+    音/视频下载链接中的域名(加上端口)的替代值。下列值仅供参考：
+    ```
+    百度云？
+    upos-sz-mirrorbd.bilivideo.com
+    upos-sz-mirrorbos.bilivideo.com
+    腾讯云？
+    upos-sz-mirrorcos.bilivideo.com
+    upos-sz-mirrorcosb.bilivideo.com
+    upos-sz-mirrorcoso1.bilivideo.com
+    华为云？
+    upos-sz-mirrorhw.bilivideo.com
+    upos-sz-mirrorhwb.bilivideo.com
+    upos-sz-mirrorhwo1.bilivideo.com
+    upos-sz-mirror08c.bilivideo.com
+    upos-sz-mirror08h.bilivideo.com
+    upos-sz-mirror08ct.bilivideo.com
+    阿里云？
+    upos-sz-mirrorali.bilivideo.com
+    upos-sz-mirroralib.bilivideo.com
+    upos-sz-mirroralio1.bilivideo.com
+    新网？？？
+    upos-sz-estghw.bilivideo.com
+    海外？ Akamai、腾讯、阿里
+    upos-hz-mirrorakam.akamaized.net
+    upos-sz-mirrorcosov.bilivideo.com
+    upos-sz-mirroraliov.bilivideo.com
+    免流？？
+    upos-tf-all-hw.bilivideo.com
+    upos-tf-all-tx.bilivideo.com
+    ```
+
+## bilibili.download.forceHttp
+- 引入版本: V6.32
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    是否强制将音视频下载地址的https转为http(PCDN除外)。   
+    如果为`true`，会将音/视频下载链接中的`https`换成`http`。  
+    当然，如果下载链接已经指定了端口，像`*.mcdn.bilivideo.cn:4483`，那么无论配置怎样都不会替换。  
+
+    显而易见的，`http`比`https`连接速度和传输速率都要好。  
+    如果开启功能后没有遭遇到下载失败的问题，那么建议一直开启。  
+
+## bilibili.download.urlValidPeriod
+- 引入版本: V6.32
+- 取值范围:   
+    正整数
+- 默认值:   
+    `90`  
+- 释义:   
+    下载url的有效时长，单位分钟。  
+    当下载任务开始时，如果距离查询该视频的链接已经超过了配置的时长，那么就重新查询。  

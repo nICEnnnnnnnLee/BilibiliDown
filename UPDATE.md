@@ -23,7 +23,7 @@
             + `https://space.bilibili.com/336399506/`
             + `https://space.bilibili.com/336399506?spm_id_from=333.999.0.0`
     * 优化: Windows下jre11版本、modules更新 
-        + 版本`Oracle 11+28 2018-09-25`升级为`Temurin 21.0.3+9-LTS 2024-04-16`
+        + 版本`Oracle 11+28 2018-09-25`升级为`Temurin 11.0.23+9-LTS 2024-04-16`
         + modules
             + 前`java.base,java.compiler,java.datatransfer,java.desktop,java.management`
             + 后`java.base,java.compiler,java.datatransfer,java.desktop,java.management,java.security.sasl,java.xml,java.logging` 

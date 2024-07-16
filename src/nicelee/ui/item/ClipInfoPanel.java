@@ -24,6 +24,7 @@ import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.ui.Global;
 import nicelee.ui.TabVideo;
 import nicelee.ui.thread.DownloadRunnable;
@@ -52,7 +53,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 		this.setBorder(BorderFactory.createLineBorder(Color.red));
 		this.setPreferredSize(new Dimension(340, 170));
 		// 分情况显示
-		boolean isPic = clip.getAvId().startsWith("h");
+		boolean isPic = ResourcesUtil.isPicture(clip);
 		if(clip.getListName() != null || isPic) {
 			labelTitle = new JLabel(clip.getRemark() + " - " + clip.getAvTitle()+ " " +clip.getTitle(), JLabel.CENTER);
 		}else {

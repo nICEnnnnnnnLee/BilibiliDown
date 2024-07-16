@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Random;
 
+import nicelee.bilibili.model.ClipInfo;
+
 public class ResourcesUtil {
 
 	static boolean isJarLaunch;
@@ -271,5 +273,13 @@ public class ResourcesUtil {
 		} catch (IOException e1) {
 			return e.getMessage();
 		}
+	}
+	
+	public static boolean isPicture(String avId) {
+		return avId.startsWith("h") || avId.startsWith("cv") || avId.startsWith("opus");
+	}
+	
+	public static boolean isPicture(ClipInfo clip) {
+		return isPicture(clip.getAvId());
 	}
 }

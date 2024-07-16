@@ -68,7 +68,7 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 		Logger.println(json);
 		JSONObject jObj = new JSONObject(json);
 		String cvIdNumber = jObj.optString("cvid");
-		if(cvIdNumber != null && !cvIdNumber.isEmpty()) {
+		if (cvIdNumber != null && !cvIdNumber.isEmpty()) {
 			Logger.println(cvIdNumber);
 			return getCVDetail(cvIdNumber);
 		}
@@ -82,7 +82,7 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 			return getCVDetail(cvIdNumber);
 		}
 		VideoInfo viInfo = new VideoInfo();
-		JSONArray jParagraphs = null, jModules = jObj.getJSONArray("modules");
+		JSONArray jParagraphs = null, jTopPics = null, jModules = jObj.getJSONArray("modules");
 		JSONObject jUp = null;
 		for (int i = 0; i < jModules.length(); i++) {
 			JSONObject module = jModules.getJSONObject(i);
@@ -91,7 +91,10 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 				jUp = module.getJSONObject("module_author");
 			else if (mType.equals("MODULE_TYPE_CONTENT"))
 				jParagraphs = module.getJSONObject("module_content").getJSONArray("paragraphs");
-			if (jUp != null && jParagraphs != null)
+			else if (mType.equals("MODULE_TYPE_TOP"))
+				jTopPics = module.getJSONObject("module_top").getJSONObject("display").getJSONObject("album")
+						.getJSONArray("pics");
+			if (jUp != null && jParagraphs != null && jTopPics != null)
 				break;
 		}
 		// 总体大致信息
@@ -121,34 +124,34 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 				}
 			}
 		}
-		if(viInfo.getVideoName() == null)
+		if (viInfo.getVideoName() == null)
 			viInfo.setVideoName("空");
-		
+
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
-		for (int i = 0, picIndex = 0; i < jParagraphs.length(); i++) {
+		int picIndex = 0;
+		// 先遍历 jTopPics
+		if (jTopPics != null) {
+			for (int i = 0; i < jTopPics.length(); i++) {
+				String picUrl = jTopPics.getJSONObject(i).getString("url");
+				ClipInfo clip = newCommonClip(opusIdStr, viInfo, author, authorId, cTime, null, null);
+				setPicOfClip(clip, clipMap, picIndex, picUrl);
+				if (viInfo.getVideoPreview() == null)
+					viInfo.setVideoPreview(picUrl);
+				picIndex++;
+			}
+		}
+		// 再遍历 jParagraphs
+		for (int i = 0; i < jParagraphs.length(); i++) {
 			JSONObject jPara = jParagraphs.getJSONObject(i);
 			int paraType = jPara.optInt("para_type");
 			if (paraType == 2) {
 				JSONArray pics = jPara.getJSONObject("pic").getJSONArray("pics");
 				for (int nIdx = 0; nIdx < pics.length(); nIdx++) {
 					String picUrl = pics.getJSONObject(nIdx).getString("url");
-					ClipInfo clip = new ClipInfo();
-					clip.setAvTitle(viInfo.getVideoName());
-					clip.setAvId(opusIdStr);
-					clip.setcId(picIndex);
-					clip.setPage(picIndex);
-					clip.setRemark(picIndex);
-					clip.setTitle("第" + picIndex + "张");
-					clip.setPicPreview(picUrl);
-					clip.setUpName(author);
-					clip.setUpId(authorId);
-					clip.setcTime(cTime);
+					ClipInfo clip = newCommonClip(opusIdStr, viInfo, author, authorId, cTime, null, null);
+					setPicOfClip(clip, clipMap, picIndex, picUrl);
 					if (viInfo.getVideoPreview() == null)
 						viInfo.setVideoPreview(picUrl);
-					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
-					links.put(0, picUrl);
-					clip.setLinks(links);
-					clipMap.put(clip.getcId(), clip);
 					picIndex++;
 				}
 			}

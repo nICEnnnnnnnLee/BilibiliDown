@@ -130,7 +130,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		return viInfo;
 	}
 
-	private void setPicOfClip(ClipInfo clip, LinkedHashMap<Long, ClipInfo> clipMap, int picIndex, String picUrl) {
+	protected void setPicOfClip(ClipInfo clip, LinkedHashMap<Long, ClipInfo> clipMap, int picIndex, String picUrl) {
 		clip.setcId(picIndex);
 		clip.setPage(picIndex);
 		clip.setRemark(picIndex);
@@ -142,7 +142,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		clipMap.put(clip.getcId(), clip);
 	}
 
-	private ClipInfo newCommonClip(String cvIdStr, VideoInfo viInfo, String author, String authorId, long cTime,
+	protected ClipInfo newCommonClip(String cvIdStr, VideoInfo viInfo, String author, String authorId, long cTime,
 			String listName, String listOwnerName) {
 		ClipInfo clip = new ClipInfo();
 		clip.setAvTitle(viInfo.getVideoName());

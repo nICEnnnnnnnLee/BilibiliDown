@@ -137,6 +137,7 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 					clip.setAvId(opusIdStr);
 					clip.setcId(picIndex);
 					clip.setPage(picIndex);
+					clip.setRemark(picIndex);
 					clip.setTitle("第" + picIndex + "张");
 					clip.setPicPreview(picUrl);
 					clip.setUpName(author);
@@ -209,6 +210,7 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 //			clip.setAvId(opusIdStr);
 //			clip.setcId(picIndex);
 //			clip.setPage(picIndex);
+//			clip.setRemark(picIndex);
 //			clip.setTitle("第" + picIndex + "张");
 //			clip.setPicPreview(picUrl);
 //			clip.setUpName(author);

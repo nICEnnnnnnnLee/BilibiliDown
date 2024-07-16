@@ -23,6 +23,7 @@ import nicelee.bilibili.util.Logger;
 public class URL4PictureCVParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("\\.bilibili\\.com/read/(mobile\\?id=|cv)([0-9]+)");
+	private final static Pattern picSrcPattern = Pattern.compile("img (data-)?src=\"([^\"]+)\"");
 	private String cvIdNumber;
 
 	public URL4PictureCVParser(Object... obj) {
@@ -49,8 +50,6 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {
 		return getCVDetail(cvIdNumber);
 	}
-
-	static Pattern picSrcPattern = Pattern.compile("img (data-)?src=\"([^\"]+)\"");
 
 	protected VideoInfo getCVDetail(String cvIdNumber) {
 		Logger.println("URL4PictureCVParser正在获取结果: cv" + cvIdNumber);
@@ -79,9 +78,9 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		viInfo.setAuthor(author);
 		viInfo.setAuthorId(authorId);
 		viInfo.setVideoPreview(videoPreview);
-		
+
 		long cTime = jObj.optLong("ctime") * 1000;
-		String listName = videoName.replaceAll("[/\\\\]", "_");
+		String listName = jObj.getJSONObject("list").getString("name").replaceAll("[/\\\\]", "_");
 		String listOwnerName = author.replaceAll("[/\\\\]", "_");
 
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
@@ -101,6 +100,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 					clip.setAvId(cvIdStr);
 					clip.setcId(picIndex);
 					clip.setPage(picIndex);
+					clip.setRemark(picIndex);
 					clip.setTitle("第" + picIndex + "张");
 					clip.setPicPreview(picUrl);
 					clip.setUpName(author);
@@ -129,6 +129,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 				clip.setAvId(cvIdStr);
 				clip.setcId(picIndex);
 				clip.setPage(picIndex);
+				clip.setRemark(picIndex);
 				clip.setTitle("第" + picIndex + "张");
 				clip.setPicPreview(picUrl);
 				clip.setUpName(author);
@@ -205,6 +206,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 //					clip.setAvId(cvIdStr);
 //					clip.setcId(picIndex);
 //					clip.setPage(picIndex);
+//					clip.setRemark(picIndex);
 //					clip.setTitle("第" + picIndex + "张");
 //					clip.setPicPreview(picUrl);
 //					clip.setUpName(author);
@@ -231,6 +233,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 //				clip.setAvId(cvIdStr);
 //				clip.setcId(picIndex);
 //				clip.setPage(picIndex);
+//				clip.setRemark(picIndex);
 //				clip.setTitle("第" + picIndex + "张");
 //				clip.setPicPreview(picUrl);
 //				clip.setUpName(author);

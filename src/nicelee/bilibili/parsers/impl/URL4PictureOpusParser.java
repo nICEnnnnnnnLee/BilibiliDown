@@ -69,7 +69,6 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 		JSONObject jObj = new JSONObject(json);
 		String cvIdNumber = jObj.optString("cvid");
 		if (cvIdNumber != null && !cvIdNumber.isEmpty()) {
-			Logger.println(cvIdNumber);
 			return getCVDetail(cvIdNumber);
 		}
 		jObj = jObj.getJSONObject("detail");
@@ -94,7 +93,9 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 			else if (mType.equals("MODULE_TYPE_TOP"))
 				jTopPics = module.getJSONObject("module_top").getJSONObject("display").getJSONObject("album")
 						.getJSONArray("pics");
-			if (jUp != null && jParagraphs != null && jTopPics != null)
+			else if (mType.equals("MODULE_TYPE_TITLE"))
+				viInfo.setVideoName(module.getJSONObject("module_title").getString("text"));
+			if (jUp != null && jParagraphs != null && jTopPics != null && viInfo.getVideoName() != null)
 				break;
 		}
 		// 总体大致信息
@@ -115,10 +116,12 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 					if ("TEXT_NODE_TYPE_WORD".equals(node.getString("type"))) {
 						String text = node.getJSONObject("word").getString("words");
 						viInfo.setBrief(text);
-						String videoName = text;
-						if (videoName.length() > 15)
-							videoName = videoName.substring(0, 15);
-						viInfo.setVideoName(videoName);
+						if (viInfo.getVideoName() == null) {
+							String videoName = text;
+							if (videoName.length() > 15)
+								videoName = videoName.substring(0, 15);
+							viInfo.setVideoName(videoName);
+						}
 						break;
 					}
 				}

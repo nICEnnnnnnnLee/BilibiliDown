@@ -73,6 +73,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		String author = jUp.getString("name");
 		String authorId = jUp.optString("mid");
 		String videoPreview = jObj.getJSONArray("image_urls").getString(0);
+		String bannerUrl = jObj.optString("banner_url"); // 可能为空
 		viInfo.setVideoName(videoName);
 		viInfo.setBrief(brief);
 		viInfo.setAuthor(author);
@@ -80,14 +81,24 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		viInfo.setVideoPreview(videoPreview);
 
 		long cTime = jObj.optLong("ctime") * 1000;
-		String listName = jObj.getJSONObject("list").getString("name").replaceAll("[/\\\\]", "_");
-		String listOwnerName = author.replaceAll("[/\\\\]", "_");
+		String listName = null, listOwnerName = null;
+		JSONObject jList = jObj.optJSONObject("list");
+		if (jList != null) {
+			listName = jList.getString("name").replaceAll("[/\\\\]", "_");
+			listOwnerName = author.replaceAll("[/\\\\]", "_");
+		}
 
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
+		int picIndex = 0;
+		if (bannerUrl != null && !bannerUrl.isEmpty()) {
+			ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, listName, listOwnerName);
+			setPicOfClip(clip, clipMap, picIndex, bannerUrl);
+			picIndex++;
+		}
 		JSONObject opus = jObj.optJSONObject("opus");
 		if (opus != null) {
 			JSONArray jParas = jObj.getJSONObject("opus").getJSONObject("content").getJSONArray("paragraphs");
-			for (int i = 0, picIndex = 0; i < jParas.length(); i++) {
+			for (int i = 0; i < jParas.length(); i++) {
 				JSONObject para = jParas.getJSONObject(i);
 				if (para.getInt("para_type") != 2) {
 					continue;
@@ -95,52 +106,21 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 				JSONArray pics = para.getJSONObject("pic").getJSONArray("pics");
 				for (int j = 0; j < pics.length(); j++) {
 					String picUrl = pics.getJSONObject(j).getString("url");
-					ClipInfo clip = new ClipInfo();
-					clip.setAvTitle(viInfo.getVideoName());
-					clip.setAvId(cvIdStr);
-					clip.setcId(picIndex);
-					clip.setPage(picIndex);
-					clip.setRemark(picIndex);
-					clip.setTitle("第" + picIndex + "张");
-					clip.setPicPreview(picUrl);
-					clip.setUpName(author);
-					clip.setUpId(authorId);
-					clip.setcTime(cTime);
-					clip.setListName(listName);
-					clip.setListOwnerName(listOwnerName);
-					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
-					links.put(0, picUrl);
-					clip.setLinks(links);
-					clipMap.put(clip.getcId(), clip);
+					ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, listName, listOwnerName);
+					setPicOfClip(clip, clipMap, picIndex, picUrl);
 					picIndex++;
 				}
 			}
 		} else {
 			String content = jObj.getString("content");
-			Logger.println(content);
+//			Logger.println(content);
 			Matcher m = picSrcPattern.matcher(content);
-			int picIndex = 0;
 			while (m.find()) {
 				String picUrl = m.group(2);
 				if (picUrl.startsWith("//"))
 					picUrl = "http:" + picUrl;
-				ClipInfo clip = new ClipInfo();
-				clip.setAvTitle(viInfo.getVideoName());
-				clip.setAvId(cvIdStr);
-				clip.setcId(picIndex);
-				clip.setPage(picIndex);
-				clip.setRemark(picIndex);
-				clip.setTitle("第" + picIndex + "张");
-				clip.setPicPreview(picUrl);
-				clip.setUpName(author);
-				clip.setUpId(authorId);
-				clip.setcTime(cTime);
-				clip.setListName(listName);
-				clip.setListOwnerName(listOwnerName);
-				LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
-				links.put(0, picUrl);
-				clip.setLinks(links);
-				clipMap.put(clip.getcId(), clip);
+				ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, listName, listOwnerName);
+				setPicOfClip(clip, clipMap, picIndex, picUrl);
 				picIndex++;
 			}
 		}
@@ -148,6 +128,31 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		viInfo.setClips(clipMap);
 //		viInfo.print();
 		return viInfo;
+	}
+
+	private void setPicOfClip(ClipInfo clip, LinkedHashMap<Long, ClipInfo> clipMap, int picIndex, String picUrl) {
+		clip.setcId(picIndex);
+		clip.setPage(picIndex);
+		clip.setRemark(picIndex);
+		clip.setTitle("第" + picIndex + "张");
+		clip.setPicPreview(picUrl);
+		LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
+		links.put(0, picUrl);
+		clip.setLinks(links);
+		clipMap.put(clip.getcId(), clip);
+	}
+
+	private ClipInfo newCommonClip(String cvIdStr, VideoInfo viInfo, String author, String authorId, long cTime,
+			String listName, String listOwnerName) {
+		ClipInfo clip = new ClipInfo();
+		clip.setAvTitle(viInfo.getVideoName());
+		clip.setAvId(cvIdStr);
+		clip.setUpName(author);
+		clip.setUpId(authorId);
+		clip.setcTime(cTime);
+		clip.setListName(listName);
+		clip.setListOwnerName(listOwnerName);
+		return clip;
 	}
 
 //	protected VideoInfo getCVDetailCounter352(String cvIdNumber) {

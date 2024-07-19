@@ -2,26 +2,26 @@ package nicelee.bilibili.util;
 
 public class Logger {
 
-	/**
-	 * 测试用
-	 * @param str
-	 */
+	final static boolean mute;
+	static {
+		mute = !"true".equals(System.getProperty("bilibili.prop.log", "true"));
+	}
+
 	public static void print(Object str) {
+		if (mute)
+			return;
 		System.out.print(str);
 	}
-	/**
-	 * 测试用
-	 * @param str
-	 */
+
 	public static void println() {
+		if (mute)
+			return;
 		System.out.println();
 	}
-	
-	/**
-	 * 测试用
-	 * @param str
-	 */
+
 	public static void printf(String str, Object... obj) {
+		if (mute)
+			return;
 		StackTraceElement ele = Thread.currentThread().getStackTrace()[2];
 		String file = ele.getFileName();
 		file = file.substring(0, file.length() - 5);
@@ -31,12 +31,10 @@ public class Logger {
 		String result = String.format("%s-%s/%d : %s", file, method, line, preStr);
 		System.out.println(result);
 	}
-	
-	/**
-	 * 测试用
-	 * @param str
-	 */
+
 	public static void println(String str) {
+		if (mute)
+			return;
 		StackTraceElement ele = Thread.currentThread().getStackTrace()[2];
 		String file = ele.getFileName();
 		file = file.substring(0, file.length() - 5);
@@ -45,11 +43,10 @@ public class Logger {
 		String result = String.format("%s-%s/%d : %s", file, method, line, str);
 		System.out.println(result);
 	}
-	/**
-	 * 测试用
-	 * @param str
-	 */
+
 	public static void println(Object obj) {
+		if (mute)
+			return;
 		StackTraceElement ele = Thread.currentThread().getStackTrace()[2];
 		String file = ele.getFileName();
 		file = file.substring(0, file.length() - 5);

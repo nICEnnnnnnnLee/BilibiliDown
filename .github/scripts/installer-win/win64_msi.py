@@ -24,6 +24,7 @@ cmd_package = f'''"{jpackage_path}" \
   --main-class nicelee.memory.App \
   --main-jar launch.jar \
   --java-options -Dfile.encoding=utf-8 \
+  --java-options -Dbilibili.prop.log=false \
   --runtime-image "./runtime" \
   --icon ./resource/favicon.ico \
   --app-version {version_installer} \

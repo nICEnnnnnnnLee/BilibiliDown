@@ -67,8 +67,6 @@ jobs:
         files: |
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-          BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-          BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1
           
     - name: Upload release to supabase
       env:
@@ -146,7 +144,7 @@ jobs:
         move target/BilibiliDown-1.${{needs.build.outputs.VERSION_NUMBER}}.0.msi        target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi
         move target/BilibiliDown-1.${{needs.build.outputs.VERSION_NUMBER}}.0.msi.sha1   target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi.sha1
         
-    - name: Upload MSI File to release asset
+    - name: Upload MSI,ZIP File to release asset
       uses: softprops/action-gh-release@v2.0.6
       with:
         tag_name: V${{needs.build.outputs.VERSION_NUMBER}}
@@ -154,3 +152,5 @@ jobs:
         files: |
           win_msi/target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi
           win_msi/target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi.sha1
+          win_msi/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64_jre11.release.zip
+          win_msi/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64_jre11.release.zip.sha1

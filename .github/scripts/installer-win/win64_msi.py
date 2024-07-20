@@ -224,6 +224,70 @@ def step_6_deal_with_bundle_wxf():
     
     with open('resource/bundle.wxf','w', encoding='utf-8') as output:
         output.write(bundle)
+
+def compress_folder(folder_path, output_path):
+    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arc_name = os.path.relpath(file_path, folder_path)
+                # print(arc_name)
+                zipf.write(file_path, arc_name)
+                
+def step_7_build_msi():
+    print("step_7: 生成打包文件")
+    print("删除不必要的文件")
+    shutil.rmtree("./temp", onerror=on_err)
+    
+    msi_path = f"./target/BilibiliDown-{version_installer}.msi"
+    msi_sha1_path = f"{msi_path}.sha1"
+    if os.path.exists(msi_path):
+        os.remove(msi_path)
+    
+    print("执行jpackage命令")
+    exe_command(cmd_package, cmd_env)
+    
+    print("计算MSI SHA1并输出")
+    with open(msi_sha1_path,'w', encoding='utf-8') as output:
+        sha1 = cal_file_sha1(msi_path)
+        output.write(sha1)
+        
+def step_8_build_exe_zip():
+    print("step_8: 生成包含exe的压缩包")
+    print("重新解压程序包到 ./release_exe_zip")
+    zip_file = zipfile.ZipFile(zip_file_path, 'r')
+    zip_file.extractall("./release_exe_zip")
+    zip_file.close()
+    
+    print("jre由 minimal-bilibilidown-jre 重命名为 runtime")
+    # shutil.move("./release/minimal-bilibilidown-jre", "./runtime")
+    os.rename("./release_exe_zip/minimal-bilibilidown-jre", "./release_exe_zip/runtime")
+    
+    print("删除不必要的文件")
+    os.remove("./release_exe_zip/Double-Click-to-Run-for-Mac.command")
+    os.remove("./release_exe_zip/Create-Shortcut-on-Desktop-for-Linux.sh")
+    os.remove("./release_exe_zip/Create-Shortcut-on-Desktop-for-Mac.sh")
+    os.remove("./release_exe_zip/Create-Shortcut-on-Desktop-for-Win.vbs")
+    os.remove("./release_exe_zip/uninstall.bat")
+    os.remove("./release_exe_zip/update.bat")
+    
+    print("将相关文件复制到app文件夹")
+    os.mkdir("release_exe_zip/app")
+    shutil.copy("temp/images/win-msi.image/BilibiliDown/app/.package", "release_exe_zip/app/.package")
+    shutil.copy("resource/BilibiliDown.cfg", "release_exe_zip/app/BilibiliDown.cfg")
+    
+    print("复制exe文件")
+    shutil.copy("temp/images/win-msi.image/BilibiliDown/BilibiliDown.exe", "release_exe_zip/BilibiliDown.exe")
+    
+    print("打包成压缩包")
+    exe_zip_path = f"BilibiliDown.v{version}.win_x64_jre11.release.zip"
+    exe_zip_sha1_path = f"{exe_zip_path}.sha1"
+    compress_folder("release_exe_zip", exe_zip_path)
+    
+    print("计算zip SHA1并输出")
+    with open(exe_zip_sha1_path,'w', encoding='utf-8') as output:
+        sha1 = cal_file_sha1(exe_zip_path)
+        output.write(sha1)
         
 if __name__ == '__main__':
 
@@ -241,20 +305,7 @@ if __name__ == '__main__':
     
     step_6_deal_with_bundle_wxf()
     
-    print("step_7: 生成打包文件")
-    print("删除不必要的文件")
-    shutil.rmtree("./temp", onerror=on_err)
-    
-    msi_path = f"./target/BilibiliDown-{version_installer}.msi"
-    msi_sha1_path = f"{msi_path}.sha1"
-    if os.path.exists(msi_path):
-        os.remove(msi_path)
-    
-    print("执行jpackage命令")
-    exe_command(cmd_package, cmd_env)
-    
-    print("计算SHA1并输出")
-    with open(msi_sha1_path,'w', encoding='utf-8') as output:
-        sha1 = cal_file_sha1(msi_path)
-        output.write(sha1)
+    step_7_build_msi()
+        
+    step_8_build_exe_zip()
     """ """

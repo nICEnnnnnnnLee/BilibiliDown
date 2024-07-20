@@ -5,7 +5,12 @@ name: Build Release
 
 on:
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      enable_sync_third_party:
+        description: '同步上传代码、附件到第三方？'
+        required: false
+        type: boolean
+        default: true
   push:
     branches:
       - master
@@ -72,7 +77,7 @@ jobs:
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      if: ${{ env.SUPABASE_ANON_KEY != ''}}
+      if: ${{ env.SUPABASE_ANON_KEY != '' && github.event.inputs.enable_sync_third_party == 'true'}}
       run: |
         chmod +x .github/scripts/upload_supabase.sh
         ./.github/scripts/upload_supabase.sh     
@@ -83,7 +88,7 @@ jobs:
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
+      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != '' && github.event.inputs.enable_sync_third_party == 'true'}}
       run: |
         chmod +x .github/scripts/upload_cloudinary.sh
         ./.github/scripts/upload_cloudinary.sh              
@@ -92,7 +97,7 @@ jobs:
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ env.BITBUCKET_TOKEN != ''}}
+      if: ${{ env.BITBUCKET_TOKEN != '' && github.event.inputs.enable_sync_third_party == 'true'}}
       run: |
         chmod +x .github/scripts/upload_bitbucket.sh
         ./.github/scripts/upload_bitbucket.sh                    
@@ -100,7 +105,7 @@ jobs:
     - name: Sync Push to Gitee
       env:
         GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
-      if: ${{ env.GITEE_AUTH != ''}}
+      if: ${{ env.GITEE_AUTH != '' && github.event.inputs.enable_sync_third_party == 'true'}}
       run: |
         chmod +x .github/scripts/sync_push_to_gitee.sh
         ./.github/scripts/sync_push_to_gitee.sh

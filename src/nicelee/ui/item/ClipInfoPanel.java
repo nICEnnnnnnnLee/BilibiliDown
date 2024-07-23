@@ -89,7 +89,7 @@ public class ClipInfoPanel extends JPanel implements MouseListener {
 			if (qnName == null)
 				qnName = AudioQualityEnum.getQualityDescript(qn);
 			JButton btn = null;
-			if (qnName != null) {
+			if (qnName != null && !isPic) {
 				btn = new MJButton(qnName);
 			} else {
 				btn = new MJButton("清晰度: " + qn);

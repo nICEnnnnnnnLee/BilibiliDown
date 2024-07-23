@@ -106,6 +106,7 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 					uniqeNumber = uniqeNumber.substring(2); // 防止超出long的范围
 					map.put(Long.parseLong(uniqeNumber), clip);
 				}
+				Thread.sleep(100); // 通过抠html得到的，太频繁容易风控，除了给cookie外，只能先sleep试试了
 			}
 			return true;
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
@@ -51,6 +53,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		return getCVDetail(cvIdNumber);
 	}
 
+	final static protected HashMap<String, String> headers = new HttpHeaders().getCommonHeaders("www.bilibili.com");
 	protected VideoInfo getCVDetail(String cvIdNumber) {
 		Logger.println("URL4PictureCVParser正在获取结果: cv" + cvIdNumber);
 		String cvIdStr = "cv" + cvIdNumber;
@@ -58,7 +61,7 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		viInfo.setVideoId(cvIdStr);
 
 		String urlOpus = "https://www.bilibili.com/read/" + cvIdStr;
-		String html = util.getContent(urlOpus, new HttpHeaders().getCommonHeaders("www.bilibili.com"));
+		String html = util.getContent(urlOpus, headers, HttpCookies.globalCookiesWithFingerprint());
 		int begin = html.indexOf("window.__INITIAL_STATE__=");
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);

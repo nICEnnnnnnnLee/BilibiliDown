@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
-import nicelee.bilibili.util.HttpHeaders;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.Logger;
 
 /**
@@ -61,7 +61,7 @@ public class URL4PictureOpusParser extends URL4PictureCVParser {
 		String opusIdStr = "opus" + opusIdNumber;
 
 		String urlOpus = "https://www.bilibili.com/opus/" + opusIdNumber;
-		String html = util.getContent(urlOpus, new HttpHeaders().getCommonHeaders("www.bilibili.com"));
+		String html = util.getContent(urlOpus, headers, HttpCookies.globalCookiesWithFingerprint());
 		int begin = html.indexOf("window.__INITIAL_STATE__=");
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);

@@ -147,6 +147,7 @@ public class URL4PictureRLParser extends AbstractPageQueryParser<VideoInfo> {
 					clip.setRemark(i);
 					clipMap.put(Long.parseLong(cvIdNumber + clip.getPage()), clip);
 				}
+				Thread.sleep(100); // 通过抠html得到的，太频繁容易风控，除了给cookie外，只能先sleep试试
 			}
 
 		} catch (Exception e) {

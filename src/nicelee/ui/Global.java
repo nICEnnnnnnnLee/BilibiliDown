@@ -86,7 +86,7 @@ public class Global {
 	public static String forceReplaceUrlPattern = "^https?://[^/]+/upgcxcode";
 	@Config(key = "bilibili.download.host.alternative", note = "自定义的下载服务器host", defaultValue = "upos-sz-estghw.bilivideo.com")
 	public static String altHost = "upos-sz-mirror08c.bilivideo.com";
-	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/")
+	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/", pathType = "dir")
 	public static String savePath = "./download/"; // 下载文件保存路径
 	@Config(key = "bilibili.download.poolSize", note = "下载任务线程池大小", defaultValue = "1")
 	public static int downloadPoolSize;// 下载线程池
@@ -180,7 +180,7 @@ public class Global {
 	@Config(key = "bilibili.download.ffmpeg.sources.active", note = "生效的ffmpeg源", defaultValue = "Github")
 	public static String ffmpegSourceActive;
 	// FFMPEG 路径
-	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
+	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg", pathType = "file")
 	public static String ffmpegPath;
 	@Config(key = "bilibili.dash.ffmpeg.command.merge", note = "ffmpeg音视频合并命令", 
 			defaultValue = "{FFmpeg}, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}")

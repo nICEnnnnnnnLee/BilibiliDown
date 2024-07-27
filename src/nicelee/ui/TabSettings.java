@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -14,7 +13,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.lang.reflect.Field;
 
 import javax.swing.BorderFactory;
@@ -30,7 +28,6 @@ import javax.swing.JTextField;
 
 import nicelee.bilibili.annotations.Config;
 import nicelee.bilibili.util.ConfigUtil;
-import nicelee.bilibili.util.Logger;
 import nicelee.ui.item.MJButton;
 
 public class TabSettings extends JPanel implements ActionListener {
@@ -265,7 +262,8 @@ public class TabSettings extends JPanel implements ActionListener {
 							JButton btnFileChooser = new JButton("...");
 							btnFileChooser.setPreferredSize(btnChooserDim);
 							btnFileChooser.addActionListener(evt -> {
-								JFileChooser fChooser = new JFileChooser();
+								JFileChooser fChooser = new JFileChooser(value.getText());
+//								fChooser.setCurrentDirectory(new File(value.getText()));
 								fChooser.setFileSelectionMode(
 										isFile ? JFileChooser.FILES_ONLY : JFileChooser.DIRECTORIES_ONLY);
 								fChooser.setDialogTitle(isFile ? "请选择文件" : "请选择文件夹");

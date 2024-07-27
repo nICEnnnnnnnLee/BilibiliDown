@@ -116,7 +116,8 @@ jobs:
       with:
         name: release
         path: BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-          
+        retention-days: 1
+        
   # 生成win64 安装包
   build_win64_msi:
     needs: build

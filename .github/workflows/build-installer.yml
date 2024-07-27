@@ -56,4 +56,5 @@ jobs:
       with:
         name: BilibiliDown.v${{ inputs.version_number }}.win64
         path: win_msi/target/*.msi
+        retention-days: 2
         

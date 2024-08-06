@@ -26,6 +26,7 @@ import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.custom.System;
 
 public class INeedLogin {
 

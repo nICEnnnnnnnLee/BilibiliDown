@@ -27,6 +27,7 @@ import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.convert.ConvertUtil;
+import nicelee.bilibili.util.custom.System;
 import nicelee.ui.Global;
 
 public class API {

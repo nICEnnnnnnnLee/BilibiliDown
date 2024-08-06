@@ -22,6 +22,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.TaskInfo;
 import nicelee.bilibili.pushers.IPush;
+import nicelee.bilibili.util.custom.System;
 import nicelee.ui.Global;
 
 /**
@@ -87,8 +88,8 @@ public class MailPush implements IPush {
 				failTasks.add(task);
 			}
 		}
-		String title = String.format("%1$tF %1$tR 新增视频:%2$d个, 成功:%3$d个，失败:%4$d个", new Date(), successCnt + failCnt,
-				successCnt, failCnt);
+		String title = String.format("%1$tF %1$tR 新增视频:%2$d个, 成功:%3$d个，失败:%4$d个", new Date(System.currentTimeMillis()),
+				successCnt + failCnt, successCnt, failCnt);
 
 		StringBuilder html = new StringBuilder();
 		String thLeft = "<th style='border-bottom:1px solid black; border-right:1px solid black;'>";
@@ -194,7 +195,7 @@ public class MailPush implements IPush {
 	public static void main(String[] a) throws MessagingException {
 		String aa = String.format("<a href='https://b23.tv/%1$s'>%1$s</a>", "BVw13");
 		System.out.println(aa);
-		String time = String.format("%1$tF %1$tR%1$tz ", new Date());
+		String time = String.format("%1$tF %1$tR%1$tz ", new Date(System.currentTimeMillis()));
 		System.out.println(time);
 	}
 

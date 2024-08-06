@@ -27,6 +27,8 @@ public class Global {
 	// 界面显示相关
 	@Config(key = "bilibili.version", defaultValue = "v6.32", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
+	@Config(key = "bilibili.time.syncServer", note = "同步服务器的时间", defaultValue = "false", valids = { "true", "false" })
+	public static boolean syncServerTime;
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
 	@Config(key = "bilibili.button.style", note = "Button样式", defaultValue = "true", eq_true = "design", valids = { "design", "default" })

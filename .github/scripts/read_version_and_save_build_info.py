@@ -14,8 +14,8 @@ with open('src/nicelee/ui/Global.java', encoding='utf-8') as file:
     pattern = r'@Config\(key *= *"bilibili.version", *defaultValue *= *"v([\d\.]+)"'
     searchObj = re.search(pattern, content)
     version = searchObj.group(1)
-    #with open(os.environ.get("GITHUB_OUTPUT"),'w', encoding='utf-8') as output:
-    #    output.write("value=" + version)
+    with open(os.environ.get("GITHUB_OUTPUT"),'w', encoding='utf-8') as output:
+        output.write("value=" + version)
         
 with open('src/resources/about.html', 'r', encoding='utf-8') as file:
     about = file.read()
@@ -25,6 +25,5 @@ with open('src/resources/about.html', 'w', encoding='utf-8') as file:
                     <p>版本信息: v{version} {buildType} - commit hash:<a href="https://github.com/{repo}/commit/{hashSHA}">{hashSHA}</a></p>
                     <p>编译信息: Build by Github Actions at {dateTime}, workflow: <a href="https://github.com/{repo}/actions/runs/{runId}">{runId}</a></p>
                 </div>'''
-    #txtToSave = about.replace('<div id="versionInfo" ></div>', buildInfo)
-    #file.write(txtToSave)
-    print(buildInfo)
+    txtToSave = about.replace('<div id="versionInfo" ></div>', buildInfo)
+    file.write(txtToSave)

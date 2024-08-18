@@ -24,6 +24,8 @@ jobs:
       id: tag_latest
       env:
         BUILD_TYPE: Beta
+        GITHUB_REPO: ${{ github.repository }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
       run: |
         python ./.github/scripts/read_version_and_save_build_info.py
  

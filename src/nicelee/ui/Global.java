@@ -25,8 +25,10 @@ import nicelee.ui.thread.DownloadExecutors;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.32", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.33", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
+	@Config(key = "bilibili.time.syncServer", note = "同步服务器的时间", defaultValue = "false", valids = { "true", "false" })
+	public static boolean syncServerTime;
 	@Config(key = "bilibili.theme", note = "界面主题", defaultValue = "true", eq_true = "default", valids = { "default", "system" })
 	public static boolean themeDefault;
 	@Config(key = "bilibili.button.style", note = "Button样式", defaultValue = "true", eq_true = "design", valids = { "design", "default" })
@@ -86,7 +88,7 @@ public class Global {
 	public static String forceReplaceUrlPattern = "^https?://[^/]+/upgcxcode";
 	@Config(key = "bilibili.download.host.alternative", note = "自定义的下载服务器host", defaultValue = "upos-sz-estghw.bilivideo.com")
 	public static String altHost = "upos-sz-mirror08c.bilivideo.com";
-	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/")
+	@Config(key = "bilibili.savePath", note = "保存路径", defaultValue = "./download/", pathType = "dir")
 	public static String savePath = "./download/"; // 下载文件保存路径
 	@Config(key = "bilibili.download.poolSize", note = "下载任务线程池大小", defaultValue = "1")
 	public static int downloadPoolSize;// 下载线程池
@@ -180,7 +182,7 @@ public class Global {
 	@Config(key = "bilibili.download.ffmpeg.sources.active", note = "生效的ffmpeg源", defaultValue = "Github")
 	public static String ffmpegSourceActive;
 	// FFMPEG 路径
-	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg")
+	@Config(key = "bilibili.ffmpegPath", note = "ffmpeg路径", defaultValue = "ffmpeg", pathType = "file")
 	public static String ffmpegPath;
 	@Config(key = "bilibili.dash.ffmpeg.command.merge", note = "ffmpeg音视频合并命令", 
 			defaultValue = "{FFmpeg}, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}")

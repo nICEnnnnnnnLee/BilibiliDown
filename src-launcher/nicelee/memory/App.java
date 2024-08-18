@@ -20,11 +20,20 @@ public class App {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, URISyntaxException {
 		final ProtectionDomain pd = App.class.getProtectionDomain();
-		final File launchJarFile = new File(pd.getCodeSource().getLocation().toURI());
-		final File coreJarFile = new File(launchJarFile.getParentFile(), "INeedBiliAV.jar");
-//		final File coreJarFile = new File("D:\\Workspace\\javaweb-springboot\\Demo\\test\\INeedBiliAV.jar");
-//		final File coreJarFile = new File("D:\\Workspace\\javaweb-springboot\\Demo\\JarClassLoader-main\\INeedBiliAV.jar");
-//		final File coreJarFile = new File("D:\\Workspace\\javaweb-springboot\\BilibiliDown\\release\\INeedBiliAV.jar");
+		File coreJarFile = null;
+		{
+			// data 文件夹下的jar
+			String dataDirPath = System.getProperty("bilibili.prop.dataDirPath", "");
+			File coreJar0 = new File(dataDirPath, "INeedBiliAV.jar");
+			// launch.jar 同级目录下的jar
+			File launchJarFile = new File(pd.getCodeSource().getLocation().toURI());
+			File coreJar1 = new File(launchJarFile.getParentFile(), "INeedBiliAV.jar");
+			// 取最新的那个jar
+			if (coreJar0.exists() && coreJar1.exists())
+				coreJarFile = coreJar0.lastModified() > coreJar1.lastModified() ? coreJar0 : coreJar1;
+			else
+				coreJarFile = coreJar0.exists() ? coreJar0 : coreJar1;
+		}
 
 		MemoryURLHandler.addSource("INeedBiliAV.jar", readAllBytes(coreJarFile));
 		MemoryURLHandler.lockMemory();
@@ -121,14 +130,20 @@ public class App {
 				cmd.append(" ");
 				cmd.append(mainCommand[i]);
 			}
+			final String command;
+			if (java.endsWith("BilibiliDown.exe")) {
+				command = "\"" + java + "\"";
+			} else {
+				command = cmd.toString();
+			}
 			// execute the command in a shutdown hook, to be sure that all the
 			// resources have been disposed before restarting the application
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					System.out.println(cmd.toString());
+					System.out.println(command);
 					try {
-						Runtime.getRuntime().exec(cmd.toString());
+						Runtime.getRuntime().exec(command);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

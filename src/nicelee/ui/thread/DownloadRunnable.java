@@ -11,6 +11,7 @@ import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.custom.System;
 import nicelee.ui.Global;
 import nicelee.ui.TabDownload;
 import nicelee.ui.item.DownloadInfoPanel;
@@ -92,7 +93,7 @@ public class DownloadRunnable implements Runnable {
 		INeedAV iNeedAV = new INeedAV();
 		String urlQuery;
 		int realQN;
-		if(!avid.startsWith("h")){
+		if(!ResourcesUtil.isPicture(avid)){
 			urlQuery = iNeedAV.getInputParser(avid).getVideoLink(avid, cid, qn, Global.downloadFormat); //该步含网络查询， 可能较为耗时
 			realQN = iNeedAV.getInputParser(avid).getVideoLinkQN();
 		}else {

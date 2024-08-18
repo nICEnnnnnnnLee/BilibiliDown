@@ -14,12 +14,34 @@ import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Random;
 
+import nicelee.bilibili.model.ClipInfo;
+
 public class ResourcesUtil {
 
-	static boolean isJarLaunch;
+	final static String dataDirPath;
+	final static boolean isJarLaunch;
 	static {
+		String tmpdataDirPath = System.getProperty("bilibili.prop.dataDirPath");
+		try {
+			if (tmpdataDirPath != null) {
+				Logger.println(tmpdataDirPath);
+				File tmpFileDir = new File(tmpdataDirPath);
+				tmpdataDirPath = tmpFileDir.getCanonicalPath();
+				if (tmpFileDir.exists()) {
+					Logger.println("指定数据目录：" + tmpdataDirPath);
+				} else {
+					Logger.println("目录不存在：" + tmpdataDirPath);
+					tmpdataDirPath = null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			tmpdataDirPath = null;
+		}
+		dataDirPath = tmpdataDirPath;
+
 		String[] mainCommand = System.getProperty("sun.java.command", "").split(" ");
-		isJarLaunch = false;
+		boolean tmpIsJarLaunch = false;
 		StringBuilder sb = new StringBuilder();
 		// 考虑路径中包含有空格的命令行
 		for (String cmd : mainCommand) {
@@ -28,13 +50,14 @@ public class ResourcesUtil {
 				String jarPath = sb.toString();
 				Logger.println(jarPath);
 				if (new File(jarPath).exists()) {
-					isJarLaunch = true;
+					tmpIsJarLaunch = true;
 				}
 				break;
 			} else {
 				sb.append(cmd).append(" ");
 			}
 		}
+		isJarLaunch = tmpIsJarLaunch;
 		// isJarLaunch =
 		// System.getProperty("java.class.path").startsWith("INeedBiliAV.jar");
 	}
@@ -65,7 +88,7 @@ public class ResourcesUtil {
 			return null;
 		}
 	}
-	
+
 	public static String random(int length, String alphabet, long seed) {
 		StringBuilder sb = new StringBuilder(length);
 		Random random = new Random(seed);
@@ -105,7 +128,7 @@ public class ResourcesUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String randomUpper(int i) {
 		StringBuilder sb = new StringBuilder(i);
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -181,6 +204,11 @@ public class ResourcesUtil {
 
 	public static String baseDirectory() {
 		if (cacheBaseDir == null) {
+			// 由JVM传入参数 -Dbilibili.prop.dataDirPath={dataDirPath} 指定位置
+			if (dataDirPath != null) {
+				cacheBaseDir = dataDirPath;
+				return cacheBaseDir;
+			}
 			if (isJarLaunch) {
 				try {
 					String path = ClassLoader.getSystemResource("").getPath();
@@ -271,5 +299,13 @@ public class ResourcesUtil {
 		} catch (IOException e1) {
 			return e.getMessage();
 		}
+	}
+
+	public static boolean isPicture(String avId) {
+		return avId.startsWith("h") || avId.startsWith("cv") || avId.startsWith("opus");
+	}
+
+	public static boolean isPicture(ClipInfo clip) {
+		return isPicture(clip.getAvId());
 	}
 }

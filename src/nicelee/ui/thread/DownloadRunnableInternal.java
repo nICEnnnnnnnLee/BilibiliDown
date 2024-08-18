@@ -8,6 +8,8 @@ import nicelee.bilibili.parsers.InputParser;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
+import nicelee.bilibili.util.ResourcesUtil;
+import nicelee.bilibili.util.custom.System;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
 
@@ -64,7 +66,7 @@ public class DownloadRunnableInternal implements Runnable {
 			}
 			// 判断是不是需要重新获取url
 			String validUrl = urlQuery;
-			if (!avid.startsWith("h")) { // 不是图片类型(该类型没啥好重新获取的)
+			if (!ResourcesUtil.isPicture(avid)) { // 不是图片类型(该类型没啥好重新获取的)
 				boolean shouldReQuery = false;
 				// 如果是重新尝试下载，是否需要重新获取链接
 				if (invokeByContinueTask && Global.reloadDownloadUrl) {

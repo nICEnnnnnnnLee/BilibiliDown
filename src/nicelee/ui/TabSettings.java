@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import nicelee.ui.item.JOptionPane;
 import javax.swing.JPanel;
@@ -36,12 +37,12 @@ public class TabSettings extends JPanel implements ActionListener {
 	 */
 	private static final long serialVersionUID = 302743425054589939L;
 	final ImageIcon backgroundIcon = Global.backgroundImg;
-	final static int LINE_HEIGHT = 32;
+	final static int LINE_HEIGHT = 32, H_GAP = 5, V_GAP = 5;
 	JPanel jpContent;
 	String searchContent = "";
 	JTextField searchFiled;
 	JButton btnSearch, btnClear;
-	
+
 	private TabSettings() {
 		initUI();
 	}
@@ -79,16 +80,16 @@ public class TabSettings extends JPanel implements ActionListener {
 	public void initUI() {
 		JLabel tips = new JLabel("该面板仅用于辅助生成配置文件，配置在重启后方能生效！！");
 		tips.setFont(this.getFont().deriveFont(30.0f));
-		this.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		this.setLayout(new FlowLayout(FlowLayout.CENTER, H_GAP, V_GAP));
 		this.add(tips);
 		this.add(createTextLabel(null, 450, LINE_HEIGHT));
 		this.initSaveButton();
 		this.initResetButton();
 		this.initCloseButton(this);
 		this.add(createTextLabel(null, 470, LINE_HEIGHT));
-		
+
 		this.initSearchItems();
-		
+
 		jpContent = new JPanel();
 		jpContent.setOpaque(false);
 		JScrollPane jpScorll = new JScrollPane(jpContent);
@@ -104,28 +105,29 @@ public class TabSettings extends JPanel implements ActionListener {
 	private void initSearchItems() {
 		JPanel searchp = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
 		searchp.setPreferredSize(new Dimension(1150, LINE_HEIGHT + 2));
-		
+
 		searchFiled = new JTextField();
 		searchFiled.setPreferredSize(new Dimension(500, LINE_HEIGHT));
 		searchp.add(searchFiled);
 		searchFiled.addActionListener(this);
-		
+
 		btnSearch = new MJButton("筛选");
 		Dimension size = new Dimension(60, LINE_HEIGHT);
 		btnSearch.setPreferredSize(size);
 		btnSearch.addActionListener(this);
 		searchp.add(btnSearch);
-		
+
 		btnClear = new MJButton("清空");
 		btnClear.setPreferredSize(size);
 		btnClear.addActionListener(this);
 		searchp.add(btnClear);
-		
+
 		searchp.add(createTextLabel(null, 20, LINE_HEIGHT));
 		searchp.add(new JLabel("<-- 筛选/清空会恢复配置值，如有改动，请先保存修改再点击"));
-		
+
 		this.add(searchp);
 	}
+
 	private void initSaveButton() {
 		JButton btnSaveSettings = new MJButton("保存");
 		Dimension size = new Dimension(60, LINE_HEIGHT);
@@ -171,12 +173,14 @@ public class TabSettings extends JPanel implements ActionListener {
 		});
 		this.add(btn);
 	}
+
 	private void resetJPanel() {
 		jpContent.removeAll();
 		updateSettingsUI();
 		jpContent.updateUI();
 		jpContent.repaint();
 	}
+
 	private void initCloseButton(JPanel panel) {
 		JButton btn = new MJButton("关闭");
 		btn.setPreferredSize(new Dimension(60, LINE_HEIGHT));
@@ -196,8 +200,14 @@ public class TabSettings extends JPanel implements ActionListener {
 			label.setBackground(Color.PINK);
 		}
 	}
+
 	private void updateSettingsUI() {
 		int lineOunt = 0;
+		final int totalWidth = 700, sBoxWidth = 80, txtValueWidth = 340, btnChooserWidth = 20;
+		final Dimension sBoxDim = new Dimension(sBoxWidth, LINE_HEIGHT),
+				txtValueDimWithoutbtnChooser = new Dimension(txtValueWidth, LINE_HEIGHT),
+				txtValueDimWithbtnChooser = new Dimension(txtValueWidth - btnChooserWidth, LINE_HEIGHT),
+				btnChooserDim = new Dimension(btnChooserWidth, LINE_HEIGHT);
 		for (Field field : Global.class.getDeclaredFields()) {
 			Config config = field.getAnnotation(Config.class);
 			if (config != null) {
@@ -208,13 +218,12 @@ public class TabSettings extends JPanel implements ActionListener {
 					String selected = Global.settings.get(key);
 					JLabel name = this.createTextLabel(note, 380, LINE_HEIGHT);
 					name.setToolTipText(key);
-					boolean visible = note.contains(searchContent) || key.toLowerCase().contains(searchContent) 
+					boolean visible = note.contains(searchContent) || key.toLowerCase().contains(searchContent)
 							|| (selected != null && selected.toLowerCase().contains(searchContent));
 					if (selects.length > 0) {
 						JComboBox<String> selectCBox = new JComboBox<>(selects);
-						int totalWidth = 700, width = 80;
 						selectCBox.setSelectedItem(selected);
-						selectCBox.setPreferredSize(new Dimension(width, LINE_HEIGHT));
+						selectCBox.setPreferredSize(sBoxDim);
 						selectCBox.addItemListener(new ItemListener() {
 
 							@Override
@@ -224,7 +233,7 @@ public class TabSettings extends JPanel implements ActionListener {
 								}
 							}
 						});
-						JLabel blank = this.createTextLabel(null, totalWidth - width, LINE_HEIGHT);
+						JLabel blank = this.createTextLabel(null, totalWidth - sBoxWidth, LINE_HEIGHT);
 						name.setVisible(visible);
 						selectCBox.setVisible(visible);
 						blank.setVisible(visible);
@@ -232,41 +241,62 @@ public class TabSettings extends JPanel implements ActionListener {
 						jpContent.add(selectCBox);
 						jpContent.add(blank);
 					} else {
+						final boolean withBtnChooser = !config.pathType().isEmpty();
 						JTextField value = new JTextField(selected);
-						int totalWidth = 700, width = 340;
-						value.setPreferredSize(new Dimension(width, LINE_HEIGHT));
-						new FocusAdapter() {
-						};
+						value.setPreferredSize(
+								withBtnChooser ? txtValueDimWithbtnChooser : txtValueDimWithoutbtnChooser);
 						value.addFocusListener(new FocusAdapter() {
 							@Override
 							public void focusLost(FocusEvent e) {
 								onContentChanged(name, value.getText(), selected);
 							}
 						});
-						JLabel blank = this.createTextLabel(null, totalWidth - width, LINE_HEIGHT);
 						name.setVisible(visible);
 						value.setVisible(visible);
-						blank.setVisible(visible);
 						jpContent.add(name);
 						jpContent.add(value);
+
+						int blankWidth = totalWidth - txtValueWidth;
+						if (withBtnChooser) {
+							boolean isFile = !config.pathType().startsWith("dir");
+							JButton btnFileChooser = new JButton("...");
+							btnFileChooser.setPreferredSize(btnChooserDim);
+							btnFileChooser.addActionListener(evt -> {
+								JFileChooser fChooser = new JFileChooser(value.getText());
+//								fChooser.setCurrentDirectory(new File(value.getText()));
+								fChooser.setFileSelectionMode(
+										isFile ? JFileChooser.FILES_ONLY : JFileChooser.DIRECTORIES_ONLY);
+								fChooser.setDialogTitle(isFile ? "请选择文件" : "请选择文件夹");
+								fChooser.setApproveButtonText("确定");
+								int userSelection = fChooser.showOpenDialog(null);
+								if (userSelection == JFileChooser.APPROVE_OPTION) {
+									value.setText(fChooser.getSelectedFile().getAbsolutePath());
+								}
+							});
+							btnFileChooser.setVisible(visible);
+							jpContent.add(btnFileChooser);
+							blankWidth = blankWidth - H_GAP;
+						}
+						JLabel blank = this.createTextLabel(null, blankWidth, LINE_HEIGHT);
+						blank.setVisible(visible);
 						jpContent.add(blank);
 					}
-					if(visible)
+					if (visible)
 						lineOunt++;
 				}
 			}
 		}
-		jpContent.setPreferredSize(new Dimension(1100, (LINE_HEIGHT + 5) * lineOunt + 10));
+		jpContent.setPreferredSize(new Dimension(1100, (LINE_HEIGHT + V_GAP) * lineOunt + 10));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == btnClear) {
+		if (e.getSource() == btnClear) {
 			searchFiled.setText("");
 		}
 		searchContent = searchFiled.getText().toLowerCase();
 		resetJPanel();
-		
+
 	}
 
 }

@@ -14,21 +14,30 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
-@Bilibili(name = "URL4PictureFavParser", note = "个人收藏的相簿")
+/**
+ * 下载号主自己的图文收藏（需要登录）
+ * <p>https://space.bilibili.com/{spaceID}/favlist?fid=opus</p>
+ * <p>https://space.bilibili.com/{spaceID}/favlist?fid=albumfav</p>
+ *
+ */
+@Bilibili(name = "URL4PictureFavParser", note = "个人收藏的图文")
 public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 
-	private final static Pattern pattern = Pattern.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=albumfav");
+	private final static Pattern pattern = Pattern
+			.compile("space\\.bilibili\\.com/([0-9]+)/favlist\\?fid=(albumfav|opus)");
 	private String spaceID;
+	final private Object[] obj;
 
 	public URL4PictureFavParser(Object... obj) {
 		super(obj);
+		this.obj = obj;
 	}
 
 	@Override
 	public boolean matches(String input) {
 		matcher = pattern.matcher(input);
 		if (matcher.find()) {
-			System.out.println("匹配个人收藏的相簿");
+			Logger.println("匹配个人收藏的图文");
 			spaceID = matcher.group(1);
 			return true;
 		} else {
@@ -44,13 +53,12 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 
 	@Override
 	public VideoInfo result(String input, int videoFormat, boolean getVideoLink) {
-		Logger.println(paramSetter.getPage());
 		return result(pageSize, paramSetter.getPage(), videoFormat, getVideoLink);
 	}
 
 	@Override
 	public void initPageQueryParam() {
-		API_PMAX = 30;
+		API_PMAX = 10;
 		pageQueryResult = new VideoInfo();
 		pageQueryResult.setClips(new LinkedHashMap<>());
 	}
@@ -58,65 +66,51 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 	@Override
 	protected boolean query(int page, int min, int max, Object... obj) {
 		try {
-			String urlFormat = "https://api.vc.bilibili.com/user_plus/v1/Fav/getMyFav?biz_type=2&page=%d&pagesize=%d&_=%d";
-			String url = String.format(urlFormat, page, API_PMAX, System.currentTimeMillis());
+			String urlFormat = "https://api.bilibili.com/x/polymer/web-dynamic/v1/opus/favlist?page=%d&page_size=%d&timezone_offset=-480";
+			String url = String.format(urlFormat, page, API_PMAX);
 			HashMap<String, String> headers = new HttpHeaders().getCommonHeaders();
-			headers.put("Origin", "https://space.bilibili.com");
-			headers.put("Referer", "https://space.bilibili.com/"+ spaceID +"/favlist?fid=albumfav");
-			String json = util.getContent(url, headers, HttpCookies.getGlobalCookies());
-			System.out.println(url);
-			System.out.println(json);
+			String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
+			Logger.println(url);
+			Logger.println(json);
 			JSONObject jobj = new JSONObject(json);
-			JSONArray arr = jobj.getJSONObject("data").getJSONArray("list");
+			JSONArray items = jobj.getJSONObject("data").getJSONArray("items");
 
-			// 设置av信息
 			if (pageQueryResult.getVideoName() == null) {
 				pageQueryResult.setVideoId(spaceID);
 				pageQueryResult.setAuthor("我");
-				pageQueryResult.setVideoName("我的收藏相簿"+ paramSetter.getPage());
-				pageQueryResult.setVideoPreview(arr.getJSONObject(0).getJSONObject("content").getJSONObject("item").getJSONArray("pictures").getJSONObject(0).getString("img_src"));
+				pageQueryResult.setVideoName("我的收藏图文" + paramSetter.getPage());
 				pageQueryResult.setAuthorId(spaceID);
-				pageQueryResult.setBrief("相簿列表 - " + paramSetter.getPage());
+				pageQueryResult.setBrief("收藏图文列表 - " + paramSetter.getPage());
 			}
+			if (items.length() == 0)
+				return false;
 
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
-			for (int i = min - 1; i < arr.length() && i < max; i++) {
-				JSONObject jContent = arr.getJSONObject(i).getJSONObject("content");
-				JSONObject jAlbum = jContent.getJSONObject("item");
-				JSONArray jPics = jAlbum.getJSONArray("pictures");
-				String upperName = jContent.getJSONObject("user").getString("name");
-				String upperId = "" + jContent.getJSONObject("user").getLong("uid");
-				for (int j = 0; j < jPics.length(); j++) {
-					JSONObject jPic = jPics.getJSONObject(j);
-					ClipInfo clip = new ClipInfo();
-					String title = jAlbum.getString("title");
-					if(title.isEmpty()) {
-						title = jAlbum.getString("description");
-						if(title.length() > 15)
-							title = title.substring(0, 15);
+			URL4PictureOpusParser opusParser = new URL4PictureOpusParser(this.obj);
+			for (int i = min - 1; i < items.length() && i < max; i++) {
+				JSONObject item = items.getJSONObject(i);
+				if (item.optBoolean("is_expired"))
+					continue;
+				String opusIdNumber = item.getString("opus_id");
+				VideoInfo vArt = opusParser.getOpusDetail(opusIdNumber); // 这一步会发生网络请求，比较耗时
+				for (ClipInfo clip : vArt.getClips().values()) {
+					if (pageQueryResult.getVideoPreview() == null)
+						pageQueryResult.setVideoPreview(clip.getPicPreview());
+					// 如果是普通图文动态，那么设置ListName、ListOwnerName
+					if(clip.getListName() == null) {
+						clip.setListName("我的收藏图文");
+						clip.setListOwnerName("我");
 					}
-					clip.setAvTitle(title);
-					Logger.println(jAlbum.getString("title"));
-					clip.setAvId("h" + jAlbum.getLong("doc_id"));
-					clip.setcId(j);
-					clip.setPage(j);
-					clip.setTitle("第" + j + "张");
-					clip.setPicPreview(jPic.getString("img_src"));
-					clip.setRemark((page-1)*API_PMAX + i + 1);
-					clip.setUpName(upperName);
-					clip.setUpId(upperId);
-					
-					
-					LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
-					links.put(0, jPic.getString("img_src"));
-					clip.setLinks(links);
-					map.put((long) (clip.getRemark()*100 + j), clip);
+					clip.setRemark(i);
+					String uniqeNumber = opusIdNumber + clip.getPage();
+					uniqeNumber = uniqeNumber.substring(2); // 防止超出long的范围
+					map.put(Long.parseLong(uniqeNumber), clip);
 				}
-				
+				Thread.sleep(100); // 通过抠html得到的，太频繁容易风控，除了给cookie外，只能先sleep试试了
 			}
 			return true;
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		}
 	}

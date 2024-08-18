@@ -20,6 +20,7 @@ import nicelee.bilibili.downloaders.Downloader;
 import nicelee.bilibili.enums.StatusEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.custom.System;
 import nicelee.ui.Global;
 import nicelee.ui.TabDownload;
 

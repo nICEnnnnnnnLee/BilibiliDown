@@ -5,7 +5,13 @@ name: Build Release
 
 on:
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      enable_sync_third_party:
+        description: '同步上传代码、附件到第三方？'
+        required: false
+        type: boolean
+        default: true
+        # 不是人为触发时，为空字符串
   push:
     branches:
       - master
@@ -32,6 +38,9 @@ jobs:
      
     - name: Read tag_latest and Save build info
       id: tag_latest
+      env:
+        GITHUB_REPO: ${{ github.repository }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
       run: |
         python ./.github/scripts/read_version_and_save_build_info.py
     
@@ -67,14 +76,12 @@ jobs:
         files: |
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
           BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-          BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-          BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip.sha1
           
     - name: Upload release to supabase
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      if: ${{ env.SUPABASE_ANON_KEY != ''}}
+      if: ${{ env.SUPABASE_ANON_KEY != '' && github.event.inputs.enable_sync_third_party != 'false'}}
       run: |
         chmod +x .github/scripts/upload_supabase.sh
         ./.github/scripts/upload_supabase.sh     
@@ -85,7 +92,7 @@ jobs:
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         ZIP_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip
         SHA1_FILE_NAME: BilibiliDown.v${{steps.tag_latest.outputs.value}}.release.zip.sha1
-      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != ''}}
+      if: ${{ env.CLOUDINARY_API_KEY != '' && env.CLOUDINARY_API_SECRET != '' && github.event.inputs.enable_sync_third_party != 'false'}}
       run: |
         chmod +x .github/scripts/upload_cloudinary.sh
         ./.github/scripts/upload_cloudinary.sh              
@@ -94,7 +101,7 @@ jobs:
       env:
         VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
         BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ env.BITBUCKET_TOKEN != ''}}
+      if: ${{ env.BITBUCKET_TOKEN != '' && github.event.inputs.enable_sync_third_party != 'false'}}
       run: |
         chmod +x .github/scripts/upload_bitbucket.sh
         ./.github/scripts/upload_bitbucket.sh                    
@@ -102,7 +109,7 @@ jobs:
     - name: Sync Push to Gitee
       env:
         GITEE_AUTH: ${{ secrets.GITEE_AUTH }}
-      if: ${{ env.GITEE_AUTH != ''}}
+      if: ${{ env.GITEE_AUTH != '' && github.event.inputs.enable_sync_third_party != 'false'}}
       run: |
         chmod +x .github/scripts/sync_push_to_gitee.sh
         ./.github/scripts/sync_push_to_gitee.sh
@@ -112,7 +119,8 @@ jobs:
       with:
         name: release
         path: BilibiliDown.v${{steps.tag_latest.outputs.value}}.win_x64_jre11.release.zip
-          
+        retention-days: 1
+        
   # 生成win64 安装包
   build_win64_msi:
     needs: build
@@ -146,7 +154,7 @@ jobs:
         move target/BilibiliDown-1.${{needs.build.outputs.VERSION_NUMBER}}.0.msi        target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi
         move target/BilibiliDown-1.${{needs.build.outputs.VERSION_NUMBER}}.0.msi.sha1   target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi.sha1
         
-    - name: Upload MSI File to release asset
+    - name: Upload MSI,ZIP File to release asset
       uses: softprops/action-gh-release@v2.0.6
       with:
         tag_name: V${{needs.build.outputs.VERSION_NUMBER}}
@@ -154,3 +162,5 @@ jobs:
         files: |
           win_msi/target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi
           win_msi/target/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64.msi.sha1
+          win_msi/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64_jre11.release.zip
+          win_msi/BilibiliDown.v${{needs.build.outputs.VERSION_NUMBER}}.win_x64_jre11.release.zip.sha1

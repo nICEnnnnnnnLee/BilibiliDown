@@ -40,7 +40,7 @@ Bilibili 视频下载器，用于下载B站视频。
 
 + 本项目遵守开源协议`Apache 2.0`。  
 ```
-Copyright (C) 2019-2023 NiceLee. All Rights Reserved.
+Copyright (C) 2019-2024 NiceLee. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -71,7 +71,8 @@ public class FrameMain extends JFrame {
 				ConfigUtil.deleteLock();
 			}));
 		}
-
+		
+		nicelee.bilibili.util.custom.System.init(Global.syncServerTime);
 //		// 如果存在hosts文件，那么使之生效
 //		if (HostSetUtil.readHostsFromFile("config/hosts.config")) {
 //			HostSetUtil.injectHosts();

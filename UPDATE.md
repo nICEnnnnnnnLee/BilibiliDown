@@ -1,4 +1,18 @@
 ## UPDATE  
+* V6.33  `2024-08-18` 
+    * 新增: release中`win64_jre`压缩文件加入`exe`程序
+    * 新增: 添加专栏图片解析
+    * 新增: 添加专栏文集图片解析
+    * 新增: 添加图文动态解析
+    * 新增: 添加图文动态个人收藏解析
+    * 新增: 可以JVM传入参数`-Dbilibili.prop.dataDirPath={dataDirPath}`来指定数据文件夹位置(可以不是程序所在目录)
+    * 新增: 可以JVM传入参数`-Dbilibili.prop.log=true/false`来尽可能减少打印信息
+    * 新增: 可以在登录时获取服务器时间并以之为基准
+    * 新增(ui): 配置面板中，针对文件/文件夹类型的配置，可以通过文件选择器来选择路径
+    * 新增(ci): 现在可以手动触发release ci，此时可以选择是否同步上传代码、附件到第三方
+    * 新增(ci): 现在会将`commit hash`,`workflow id`信息写入作品信息页面，`buildTime`改为`GMT+8`时区
+    * 已知问题： jpackage 打包的exe程序无法自重启 [JDK-8325924](https://bugs.openjdk.org/browse/JDK-8325924)/[JDK-8325203](https://bugs.openjdk.org/browse/JDK-8325203)
+    
 * V6.32  `2024-07-05`  
     * 修复: 当编码不为`utf8`时，下载弹幕乱码的问题。[#197](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/197)
     * 修复: 卸载脚本在删除文件时考虑路径中包含有空格的情况

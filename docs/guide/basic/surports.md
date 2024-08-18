@@ -5,8 +5,10 @@
 |普通视频|`av498806761`<br/><br/>`BV1eK411H7Hq`<br/><br/>`https://b23.tv/U9SiGZ`<br/><br/>`https://www.bilibili.com/video/BV1eK411H7Hq` <br/><br/>`https://www.bilibili.com/video/av498806761`| 包括互动视频   |
 |课程视频|`https://www.bilibili.com/cheese/play/ep1808`<br/><br/>`https://www.bilibili.com/cheese/play/ss117`|-   |
 |音频|`https://www.bilibili.com/audio/au3688627`<br/><br/>`https://www.bilibili.com/audio/am33012874`<br/><br/>`https://www.bilibili.com/audio/mycollection/[0-9]+`|-   |
-|~~单个相簿~~|~~`https://h.bilibili.com/38894082`~~| **失效，等待施工**   |
-|~~相簿收藏夹~~|~~`https://space.bilibili.com/{spaceID}/favlist?fid=albumfav`~~| **失效，等待施工**  |
+|专栏图片|`https://www.bilibili.com/read/cv23435927/`<br/><br/>`https://www.bilibili.com/read/mobile?id=23435927`<br/><br/>`https://www.bilibili.com/opus/947531371067211815`| `V6.33`引入  |
+|图文动态|`https://t.bilibili.com/953619104940425225`<br/><br/>`https://m.bilibili.com/opus/953619104940425225`<br/><br/>`https://www.bilibili.com/opus/953619104940425225`| `V6.33`引入  |
+|专栏文集|`https://www.bilibili.com/read/readlist/rl716666`<br/><br/>`https://www.bilibili.com/read/mobile-readlist/rl716664`| `V6.33`引入。请求较多，频繁使用易触发风控  |
+|图文收藏夹|`https://space.bilibili.com/{spaceID}/favlist?fid=opus`<br/><br/>`https://space.bilibili.com/{spaceID}/favlist?fid=albumfav`| `V6.33`引入。请求较多，频繁使用易触发风控  |
 |~~番剧视频~~|~~`https://www.bilibili.com/bangumi/play/ss33378`~~<br/><br/>~~`https://www.bilibili.com/bangumi/media/md134912`~~<br/><br/>~~`https://www.bilibili.com/bangumi/play/ep250435`~~|**V5.9以后不再支持**  |
 |稍后再看|`https://www.bilibili.com/watchlater/#/list`|-   |
 |收藏夹|`mlxxxx`<br/><br/>`https://www.bilibili.com/medialist/detail/ml761171511`<br/><br/>`https://space.bilibili.com/492744983/favlist?fid=933034683`| V6.23开始，收藏夹解析也包含音频   |

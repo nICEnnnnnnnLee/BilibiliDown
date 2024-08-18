@@ -117,7 +117,8 @@ function sidebarGuide() {
                 { text: 'BilibiliDown是什么?', link: '/guide/quick-start/what-is-BilibiliDown' },
                 { text: '下载程序', link: '/guide/quick-start/download' },
                 { text: '设置ffmpeg', link: '/guide/quick-start/ffmpeg' },
-                { text: '运行程序', link: '/guide/quick-start/run' },
+                { text: '运行程序(exe)', link: '/guide/quick-start/run_win' },
+                { text: '运行程序(脚本)', link: '/guide/quick-start/run' },
                 { text: '更新程序', link: '/guide/quick-start/update' },
             ]
         },
@@ -179,6 +180,7 @@ function sidebarConfig() {
                 { text: 'fingerprint.config', link: '/config/fingerprint' },
                 { text: 'repo.config', link: '/config/repo' },
                 { text: 'tasks.config', link: '/config/tasks' },
+                { text: 'JVM参数', link: '/config/jvm_args' },
             ]
         }
     ]

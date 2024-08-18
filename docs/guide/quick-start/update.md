@@ -16,6 +16,9 @@
 可能影响使用的不兼容更新将会列在下方。  
 
 ## 不兼容更新 / Breaking Changes
++ V6.33
+    + `launch.jar`会在**当前目录**和JVM传参目录`bilibili.prop.dataDirPath`中寻找`INeedBiliAV.jar`，并使用
+    **最后修改时间较新**的版本。  
 + V6.24
     + 启动包现在改成了`launch.jar`，当然`INeedBiliAV.jar`仍然可以使用。  
     + `launch.jar`会将`INeedBiliAV.jar`加载至内存，在程序运行的时候不会对其进行占用，此时文件可以被删除。

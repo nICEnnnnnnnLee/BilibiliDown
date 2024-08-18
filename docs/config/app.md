@@ -717,3 +717,13 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     下载url的有效时长，单位分钟。  
     当下载任务开始时，如果距离查询该视频的链接已经超过了配置的时长，那么就重新查询。  
+
+
+## bilibili.time.syncServer
+- 引入版本: V6.33
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    当为`true`时，在启动的时候会对比B站的服务器时间，并以之为基准。  

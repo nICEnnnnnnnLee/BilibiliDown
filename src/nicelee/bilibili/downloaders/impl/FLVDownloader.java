@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.downloaders.IDownloader;
 import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.exceptions.BilibiliError;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
-import nicelee.bilibili.util.Logger;
 import nicelee.ui.Global;
 
 
@@ -131,12 +131,7 @@ public class FLVDownloader implements IDownloader {
 			// 下载完毕后,进行合并
 			convertingStatus = StatusEnum.PROCESSING;
 			boolean result = CmdUtil.convert(fName + suffix, links.length);
-			if (result) {
-				convertingStatus = StatusEnum.SUCCESS;
-			} else {
-				convertingStatus = StatusEnum.FAIL;
-			}
-			return result;
+			return throwErrorIfNotConvertOk(result);
 		} else {
 			url = tryBetterUrl(url);
 			String fileName = fName + suffix;
@@ -149,6 +144,15 @@ public class FLVDownloader implements IDownloader {
 		}
 	}
 
+	protected boolean throwErrorIfNotConvertOk(boolean ok) {
+		if (ok) {
+			convertingStatus = StatusEnum.SUCCESS;
+			return true;
+		} else {
+			convertingStatus = StatusEnum.FAIL;
+			throw new BilibiliError("转码失败，请检查ffmpeg配置");
+		}
+	}
 	/**
 	 * 返回当前状态
 	 * 

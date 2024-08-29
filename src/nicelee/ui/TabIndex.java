@@ -145,8 +145,12 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 		}
 	}
 	@Override
-	public void paintComponent(Graphics g) {
-//		// super.paintComponent(g);
+	public void paintComponent(Graphics og) {
+		if (ui == null || og == null) {
+			return;
+		}
+		// https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/swing002.html#JSTGD472
+		Graphics g = og.create();
 		Image img = backgroundIcon.getImage();
 		int width = img.getWidth(this.getParent());
 		int height = img.getHeight(this.getParent());
@@ -166,6 +170,11 @@ public class TabIndex extends JPanel implements ActionListener, MouseListener, I
 			g.drawImage(backgroundIcon.getImage(), 0, 0, this.getSize().width, this.getSize().height, this.getParent());
 		}
 		this.setOpaque(false);
+		try {
+            ui.update(g, this);
+        } finally {
+        	g.dispose();
+        }
 	}
 	
 	/**

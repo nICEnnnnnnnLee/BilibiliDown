@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -53,6 +54,14 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 		init();
 	}
 
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+//		frame.repaint();
+//		Logger.println("-------- notify other part of main frame to update ui ---------");
+		Global.tabs.repaint();
+	}
+	
 	private void init() {
 		// frame 去掉标题栏
 		frame.setUndecorated(true);

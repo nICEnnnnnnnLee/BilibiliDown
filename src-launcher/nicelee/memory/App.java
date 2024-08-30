@@ -41,6 +41,7 @@ public class App {
 		System.out.println(pd.getCodeSource().getLocation().getPath());
 		MemoryClassLoader mcl = new MemoryClassLoader(pd);
 		String mainClass = System.getProperty("bilibili.prop.mainClass", "nicelee.ui.FrameMain");
+		System.out.println("Current main class:" + mainClass);
 		try {
 			Class<?> clazz = mcl.loadClass(mainClass);
 			Method method = clazz.getMethod("main", new Class<?>[] { String[].class });

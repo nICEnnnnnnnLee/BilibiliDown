@@ -40,8 +40,9 @@ public class App {
 
 		System.out.println(pd.getCodeSource().getLocation().getPath());
 		MemoryClassLoader mcl = new MemoryClassLoader(pd);
+		String mainClass = System.getProperty("bilibili.prop.mainClass", "nicelee.ui.FrameMain");
 		try {
-			Class<?> clazz = mcl.loadClass("nicelee.ui.FrameMain");
+			Class<?> clazz = mcl.loadClass(mainClass);
 			Method method = clazz.getMethod("main", new Class<?>[] { String[].class });
 			method.invoke(null, (Object) args);
 		} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

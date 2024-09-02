@@ -16,6 +16,8 @@
 可能影响使用的不兼容更新将会列在下方。  
 
 ## 不兼容更新 / Breaking Changes
++ V6.34
+    + `launch.jar`会通过JVM传参`bilibili.prop.mainClass`来定义入口类，这是为了规避[issue#213](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/213)。你可以参考[JVM传参](/config/jvm_args#bilibili-prop-mainclass)进行配置。    
 + V6.33
     + `launch.jar`会在**当前目录**和JVM传参目录`bilibili.prop.dataDirPath`中寻找`INeedBiliAV.jar`，并使用
     **最后修改时间较新**的版本。  

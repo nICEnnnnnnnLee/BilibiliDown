@@ -67,3 +67,13 @@ java-options=-Dbilibili.prop.log=false
     ```
     -Dsun.java2d.uiScale=1.0 -Dswing.boldMetal=false -Dsun.java2d.dpiaware=false
     ```
+
+### `bilibili.prop.mainClass`
+- 引入版本: V6.34
+- 取值范围:   
+    Java入口类全名称
+- 释义:   
+    可以通过传入`bilibili.prop.mainClass`参数给`launch.jar`，来指定`INeedBiliAV.jar`的运行入口。  
+    一般取`nicelee.ui.FrameMain`或`nicelee.ui.FrameMain_v3_4`
+- 相关issue
+    + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/213

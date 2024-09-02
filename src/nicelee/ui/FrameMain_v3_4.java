@@ -11,14 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.INeedLogin;
 import nicelee.bilibili.PackageScanLoader;
-import nicelee.bilibili.model.VideoInfo;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.ConfigUtil;
 import nicelee.bilibili.util.HttpCookies;
-import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.SysUtil;
@@ -26,7 +23,6 @@ import nicelee.ui.item.JOptionPane;
 import nicelee.ui.item.MJMenuBar;
 import nicelee.ui.thread.BatchDownloadRbyRThread;
 import nicelee.ui.thread.CookieRefreshThread;
-import nicelee.ui.thread.DownloadRunnable;
 import nicelee.ui.thread.LoginThread;
 import nicelee.ui.thread.MonitoringThread;
 
@@ -51,6 +47,8 @@ public class FrameMain_v3_4 extends JFrame {
 			System.out.println(Global.version);
 			System.exit(0);
 		}
+		// 初始化 - 检查对数据文件夹是否有“写”的权限
+		InitCheck.checkFileAccess();
 		// 显示过渡动画
 		Global.frWaiting = new FrameWaiting();
 		Global.frWaiting.start();
@@ -70,7 +68,6 @@ public class FrameMain_v3_4 extends JFrame {
 		nicelee.bilibili.util.custom.System.init(Global.syncServerTime);
 		// 初始化主题
 		initUITheme();
-
 		// 初始化UI
 		FrameMain_v3_4 main = new FrameMain_v3_4();
 		main.InitUI();

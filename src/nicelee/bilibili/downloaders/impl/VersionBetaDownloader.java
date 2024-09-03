@@ -2,7 +2,10 @@ package nicelee.bilibili.downloaders.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +16,7 @@ import org.json.JSONObject;
 
 import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.VersionManagerUtil;
 import nicelee.ui.Global;
@@ -73,6 +77,7 @@ public class VersionBetaDownloader extends VersionDownloader {
 //		sumSuccessDownloaded = artifact.optLong("size_in_bytes", 0);
 		Logger.println(downName);
 		Logger.println(url);
+		String realUrl = getLocation(url, headers);
 		// 开始下载
 		if (file == null) {
 			file = new File(updateDir, downName);
@@ -81,7 +86,7 @@ public class VersionBetaDownloader extends VersionDownloader {
 			util.setSavePath(updateDir.getCanonicalPath());
 		} catch (IOException e1) {
 		}
-		boolean succ = util.download(url, downName, headers);
+		boolean succ = util.download(realUrl, downName, new HttpHeaders().getCommonHeaders());
 		if (succ) {
 			sumSuccessDownloaded += util.getTotalFileSize();
 			util.reset();
@@ -100,4 +105,27 @@ public class VersionBetaDownloader extends VersionDownloader {
 		return succ;
 	}
 
+	private String getLocation(String url, Map<String, String> headers) {
+		try {
+			URL url0 = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection) url0.openConnection();
+			conn.setInstanceFollowRedirects(false);
+			for (Map.Entry<String, String> entry : headers.entrySet()) {
+				conn.setRequestProperty(entry.getKey(), entry.getValue());
+			}
+			conn.connect();
+
+			int code = conn.getResponseCode();
+			if (code == 301 || code == 302) {
+				String location = conn.getHeaderField("Location");
+				Logger.println(location);
+				return getLocation(location, headers);
+			} else {
+				return url;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return url;
+		}
+	}
 }

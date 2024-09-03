@@ -1,6 +1,50 @@
 ## UPDATE  
+* V6.34
+    该版本主要用来解决某些使用上的问题，如果您已经可以正常使用，可以忽略该更新。  
+    * 精简jre支持的https加密套件有限，不支持ecc。这会导致默认的ffmpeg源bitbucket下载失败。随着网站加密套件的更新，未来或许还会有更多的`TLS handshake failure`。   
+    这个问题在旧版本可以通过更换ffmpeg源，或者自行获取ffmpeg并在程序设置好path的方式来解决。  
+    新版本为精简JRE添加了模块`jdk.crypto.ec`，用于解决部分HTTPS链接握手出错的问题。  
+    需要注意的是，这个模块在JDK 22被标为deprecated，相关实现会被挪到`java.base`模块。详见[JDK-8312267](https://bugs.openjdk.org/browse/JDK-8312267)   
+    另外，新版本为Windows x64用户打包的`zip`、`msi`添加了精简编译的`ffmpeg.exe`。  
+    
+    * 在转码/合并失败时，现在会提示检查ffmpeg配置。    
+    现在Web端基本上获取不到高清晰度的mp4、flv。随着时间推移，ffmpeg成了必选项，以前的逻辑、设计和提示语都有点过时。   
+    尝试让用户明白三件事情：  
+        + ffmpeg是必需的。
+        + 程序可以提供仅基础功能的精简版编译下载。
+        + 如果计算机里有现成的ffmpeg，可以通过配置进行指定。
+
+    * 修复程序自更新时下载Beta版本报错的问题。    
+        下载Github Action的artifact需要登录，虽然不甘心，但可以理解。  
+        下载链接301到新链接后，继承使用原来的header会报错，这个行为有点抽象。  
+        大部分工具都是follow redirect可以直接下载的，但这里的逻辑是那小部分。    
+     
+    * 现在程序会检查数据目录的`写`权限。#214  
+        不推荐将程序放在系统盘。如果你这么做了，你需要进行额外的操作（三选一）：  
+        + 以管理员身份运行程序(不推荐)
+        + 参考#214 将程序目录设置为可写可修改
+        + 设置另外的有权限的数据目录，通过传入JVM参数`-Dbilibili.prop.dataDirPath`进行指定。不会可以在参考文档中搜索关键词。    
+    
+    * 部分环境可能出现显示错误的情况。#213  
+    问题存在，但找不到原因。可以通过更换入口类规避。  
+    现在可以通过传入JVM参数`-Dbilibili.prop.mainClass`参数给`launch.jar`，来指定`INeedBiliAV.jar`的运行入口。 
+        
+        修改`BilibiliDown.cfg`
+        ```
+        [Application]
+        app.classpath=launch.jar
+        app.mainclass=nicelee.memory.App
+
+        [JavaOptions]
+        java-options=-Dfile.encoding=utf-8
+        java-options=-Dbilibili.prop.mainClass=nicelee.ui.FrameMain_v3_4
+        ```
+        
+        或者脚本
+        `java -Dbilibili.prop.mainClass=nicelee.ui.FrameMain_v3_4 -jar launch.jar`
+    
 * V6.33  `2024-08-18` 
-    * 新增: release中`win64_jre`压缩文件加入`exe`程序
+    * 新增: release 附件中`win64_jre`压缩文件加入`exe`程序
     * 新增: 添加专栏图片解析
     * 新增: 添加专栏文集图片解析
     * 新增: 添加图文动态解析

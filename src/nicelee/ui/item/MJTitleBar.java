@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import nicelee.ui.item.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import nicelee.bilibili.util.Logger;
 import nicelee.ui.FrameMain;
@@ -52,7 +53,7 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 		this.setMenuBar = setMenuBar;
 		init();
 	}
-
+	
 	private void init() {
 		// frame 去掉标题栏
 		frame.setUndecorated(true);
@@ -190,14 +191,15 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(e.getSource() == this) {
-			pressedPoint = e.getPoint();
-			//Logger.println(pressedPoint);
+			pressedPoint = SwingUtilities.convertPoint(this, e.getPoint(), frame);
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		pressedPoint = null;
+		if(e.getSource() == this) {
+			pressedPoint = null;
+		}
 	}
 
 	@Override
@@ -212,11 +214,11 @@ public class MJTitleBar extends JPanel  implements MouseListener, MouseMotionLis
 	public void mouseDragged(MouseEvent e) {
 		//实现拖拽
 		if(pressedPoint != null &&e.getSource() != btnClose && e.getSource() != btnMin) {
-			Point locationPoint = frame.getLocation();
-			Point point = e.getPoint();
-			int x = locationPoint.x + point.x - pressedPoint.x;
-			int y = locationPoint.y + point.y - pressedPoint.y;
-			frame.setLocation(x, y);
+			int newX = e.getXOnScreen() - pressedPoint.x;
+			int newY = e.getYOnScreen() - pressedPoint.y;
+			if( newX == frame.getX() && newY == frame.getY() )
+				return;
+			frame.setLocation(newX, newY);
 		}
 	}
 

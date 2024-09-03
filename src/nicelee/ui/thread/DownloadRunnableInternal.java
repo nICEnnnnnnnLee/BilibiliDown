@@ -4,6 +4,7 @@ import nicelee.bilibili.API;
 import nicelee.bilibili.INeedAV;
 import nicelee.bilibili.downloaders.Downloader;
 import nicelee.bilibili.enums.StatusEnum;
+import nicelee.bilibili.exceptions.BilibiliError;
 import nicelee.bilibili.parsers.InputParser;
 import nicelee.bilibili.util.CmdUtil;
 import nicelee.bilibili.util.Logger;
@@ -12,6 +13,7 @@ import nicelee.bilibili.util.ResourcesUtil;
 import nicelee.bilibili.util.custom.System;
 import nicelee.ui.Global;
 import nicelee.ui.item.DownloadInfoPanel;
+import nicelee.ui.item.JOptionPaneManager;
 
 public class DownloadRunnableInternal implements Runnable {
 
@@ -103,6 +105,8 @@ public class DownloadRunnableInternal implements Runnable {
 				}
 				CmdUtil.convertOrAppendCmdToRenameBat(avid_qn, formattedTitle, page);
 			}
+		} catch (BilibiliError e) {
+			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

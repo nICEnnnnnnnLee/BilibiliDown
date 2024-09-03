@@ -29,10 +29,14 @@ zip -m "BilibiliDown.v$VERSION_NUMBER.release.zip" ./update.bat
 zip -rm "BilibiliDown.v$VERSION_NUMBER.release.zip" ./config/
 zip -rm "BilibiliDown.v$VERSION_NUMBER.release.zip" ./LICENSE/
 
-wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11.0.23_9_win_x64.zip
-unzip minimal-bilibilidown-jre11.0.23_9_win_x64.zip
+wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/minimal-bilibilidown-jre11.0.23_9.crypto.ec_win_x64.zip
+unzip minimal-bilibilidown-jre11.0.23_9.crypto.ec_win_x64.zip
 cp "BilibiliDown.v$VERSION_NUMBER.release.zip" "BilibiliDown.v$VERSION_NUMBER.win_x64_jre11.release.zip"
 zip -rm "BilibiliDown.v$VERSION_NUMBER.win_x64_jre11.release.zip" ./minimal-bilibilidown-jre/
+
+wget https://github.com/nICEnnnnnnnLee/BilibiliDown/releases/download/V4.5/ffmpeg-20240123-win-amd64.exe
+mv ffmpeg-20240123-win-amd64.exe ffmpeg.exe
+zip -m "BilibiliDown.v$VERSION_NUMBER.win_x64_jre11.release.zip" ./ffmpeg.exe
 
 (sha1sum "BilibiliDown.v$VERSION_NUMBER.win_x64_jre11.release.zip"| cut -d' ' -f1) > "BilibiliDown.v$VERSION_NUMBER.win_x64_jre11.release.zip.sha1"
 (sha1sum "BilibiliDown.v$VERSION_NUMBER.release.zip"| cut -d' ' -f1) > "BilibiliDown.v$VERSION_NUMBER.release.zip.sha1"

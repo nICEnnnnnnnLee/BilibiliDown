@@ -257,6 +257,8 @@ public class TabSettings extends JPanel implements ActionListener {
 						jpContent.add(value);
 
 						int blankWidth = totalWidth - txtValueWidth;
+						JLabel blank = this.createTextLabel(null, blankWidth, LINE_HEIGHT);
+						blank.setVisible(visible);
 						if (withBtnChooser) {
 							boolean isFile = !config.pathType().startsWith("dir");
 							JButton btnFileChooser = new JButton("...");
@@ -274,12 +276,13 @@ public class TabSettings extends JPanel implements ActionListener {
 								}
 							});
 							btnFileChooser.setVisible(visible);
-							jpContent.add(btnFileChooser);
-							blankWidth = blankWidth - H_GAP;
+							JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+							p.add(btnFileChooser);
+							p.add(blank);
+							jpContent.add(p);
+						} else {
+							jpContent.add(blank);
 						}
-						JLabel blank = this.createTextLabel(null, blankWidth, LINE_HEIGHT);
-						blank.setVisible(visible);
-						jpContent.add(blank);
 					}
 					if (visible)
 						lineOunt++;

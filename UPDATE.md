@@ -1,4 +1,7 @@
-## UPDATE  
+## UPDATE
+* V6.35
+    * 修复：解决配置面板修改配置后无法保存的问题 #216
+    * 其它详见[V6.34...V6.35](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.34...V6.35)
 * V6.34
     该版本主要用来解决某些使用上的问题，如果您已经可以正常使用，可以忽略该更新。  
     * 精简jre支持的https加密套件有限，不支持ecc。这会导致默认的ffmpeg源bitbucket下载失败。随着网站加密套件的更新，未来或许还会有更多的`TLS handshake failure`。   

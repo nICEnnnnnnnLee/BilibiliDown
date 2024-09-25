@@ -727,3 +727,12 @@ bilibili.system.properties.jre11.override = false
     `false`  
 - 释义:   
     当为`true`时，在启动的时候会对比B站的服务器时间，并以之为基准。  
+
+## bilibili.alert.ffmpegFail
+- 引入版本: V6.35
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `true`  
+- 释义:   
+    当为`true`时，使用ffmpeg合并视频失败时会抛出异常并弹窗报错。  

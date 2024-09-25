@@ -53,7 +53,7 @@ public class M4SDownloader extends FLVDownloader{
 			if (util.download(links[1], audioName, header.getBiliWwwM4sHeaders(avId))) {
 				convertingStatus = StatusEnum.PROCESSING;
 				boolean result = CmdUtil.convert(null, audioName, dstName);
-				return throwErrorIfNotConvertOk(result);
+				return throwErrorIfNotConvertOk(result, audioName);
 			}
 			return false;
 		} 
@@ -70,7 +70,7 @@ public class M4SDownloader extends FLVDownloader{
 				totalTaskCnt = currentTask = 1;
 				convertingStatus = StatusEnum.PROCESSING;
 				boolean result = CmdUtil.convert(videoName, null, dstName);
-				return throwErrorIfNotConvertOk(result);
+				return throwErrorIfNotConvertOk(result, videoName);
 			}else if (util.download(links[1], audioName, header.getBiliWwwM4sHeaders(avId))) {
 				// 如下载成功，统计数据后重置
 				sumSuccessDownloaded += util.getTotalFileSize();
@@ -78,7 +78,7 @@ public class M4SDownloader extends FLVDownloader{
 				// 下载完毕后,进行合并
 				convertingStatus = StatusEnum.PROCESSING;
 				boolean result = CmdUtil.convert(videoName, audioName, dstName);
-				return throwErrorIfNotConvertOk(result);
+				return throwErrorIfNotConvertOk(result, dstName);
 			}
 			return false;
 		}

@@ -131,7 +131,7 @@ public class FLVDownloader implements IDownloader {
 			// 下载完毕后,进行合并
 			convertingStatus = StatusEnum.PROCESSING;
 			boolean result = CmdUtil.convert(fName + suffix, links.length);
-			return throwErrorIfNotConvertOk(result);
+			return throwErrorIfNotConvertOk(result, fName);
 		} else {
 			url = tryBetterUrl(url);
 			String fileName = fName + suffix;
@@ -144,13 +144,13 @@ public class FLVDownloader implements IDownloader {
 		}
 	}
 
-	protected boolean throwErrorIfNotConvertOk(boolean ok) {
+	protected boolean throwErrorIfNotConvertOk(boolean ok, String msg) {
 		if (ok) {
 			convertingStatus = StatusEnum.SUCCESS;
 			return true;
 		} else {
 			convertingStatus = StatusEnum.FAIL;
-			throw new BilibiliError("转码失败，请检查ffmpeg配置");
+			throw new BilibiliError("转码失败，请检查ffmpeg配置: " + msg);
 		}
 	}
 	/**

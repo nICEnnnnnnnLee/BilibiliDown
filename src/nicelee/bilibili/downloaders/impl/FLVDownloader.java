@@ -150,7 +150,10 @@ public class FLVDownloader implements IDownloader {
 			return true;
 		} else {
 			convertingStatus = StatusEnum.FAIL;
-			throw new BilibiliError("转码失败，请检查ffmpeg配置: " + msg);
+			if(Global.alertIfFFmpegFail)
+				throw new BilibiliError("如需关闭该警告，请在配置页搜索并修改配置 bilibili.alert.ffmpegFail\n\t转码失败，请检查ffmpeg配置: " + msg);
+			else
+				return false;
 		}
 	}
 	/**

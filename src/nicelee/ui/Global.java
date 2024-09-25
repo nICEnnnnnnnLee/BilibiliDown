@@ -189,6 +189,8 @@ public class Global {
 	public static String[] ffmpegCmd4Merge;
 	@Config(key = "bilibili.flv.ffmpeg", note = "FLV合并时是否调用ffmpeg", defaultValue = "false", valids = { "true", "false" })
 	public static boolean flvUseFFmpeg = false;
+	@Config(key = "bilibili.alert.ffmpegFail", note = "ffmpeg合并失败是否抛出异常", defaultValue = "true", valids = { "true", "false" })
+	public static boolean alertIfFFmpegFail = true;
 	@Config(key = "bilibili.cmd.debug", note = "调用外部命令时是否显示输出", defaultValue = "false", valids = { "true", "false" })
 	public static boolean debugCmd;
 	// 批量下载设置相关

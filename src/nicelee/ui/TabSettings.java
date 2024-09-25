@@ -279,6 +279,7 @@ public class TabSettings extends JPanel implements ActionListener {
 							JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 							p.add(btnFileChooser);
 							p.add(blank);
+							p.setVisible(visible);
 							jpContent.add(p);
 						} else {
 							jpContent.add(blank);

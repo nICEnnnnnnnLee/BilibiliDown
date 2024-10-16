@@ -42,7 +42,7 @@ public class M4SDownloader extends FLVDownloader{
 			links[i] = tryBetterUrl(links[i]);
 		}
 		String fName = avId + "-" + qn + "-p" + page;
-		String suffix = ".mp4"; // TODO audioOnly? ".aac": ".mp4";  // mp4 / aac / flac
+		String suffix = audioOnly? Global.suffix4AudioOnly : ".mp4";  // mp4 / aac / flac
 		String videoName = fName + "_video.m4s";
 		String audioName = fName + "_audio.m4s";
 		String dstName = fName + suffix;

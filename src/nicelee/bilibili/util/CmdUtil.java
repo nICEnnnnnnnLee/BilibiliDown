@@ -256,6 +256,14 @@ public class CmdUtil {
 		}
 	}
 
+	private static String replParams(String pattern, String videoName, String audioName, String dstName) {
+		if(audioName == null) audioName = "null";
+		if(videoName == null) videoName = "null";
+		return pattern.replace("{FFmpeg}", FFMPEG_PATH).replace("{SavePath}", Global.savePath)
+				.replace("{VideoName}", videoName).replace("{AudioName}", audioName)
+				.replace("{DstName}", dstName);
+	}
+	
 	/**
 	 * 视频片段合并转码命令
 	 * 
@@ -269,15 +277,17 @@ public class CmdUtil {
 		if (audioName == null) {
 			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + videoName, "-c", "copy", Global.savePath + dstName };
 		} else if (videoName == null) {
-			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
+			// cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + audioName, "-vn", "-c:a", "copy", Global.savePath + dstName };
+			cmd = Global.ffmpegCmd4AudioOnly.clone();
+			for(int i = 0; i < cmd.length; i++) {
+				cmd[i] = replParams(cmd[i], videoName, audioName, dstName);
+			}
 		} else {
 //			cmd = new String[]{ FFMPEG_PATH, "-i", Global.savePath + videoName, "-i", Global.savePath + audioName, "-c",
 //					"copy", Global.savePath + dstName };
 			cmd = Global.ffmpegCmd4Merge.clone();
 			for(int i = 0; i < cmd.length; i++) {
-				cmd[i] = cmd[i].replace("{FFmpeg}", FFMPEG_PATH).replace("{SavePath}", Global.savePath)
-						.replace("{VideoName}", videoName).replace("{AudioName}", audioName)
-						.replace("{DstName}", dstName);
+				cmd[i] = replParams(cmd[i], videoName, audioName, dstName);
 			}
 		}
 		String str = String.format("ffmpeg命令为: %s", Arrays.toString(cmd));
@@ -356,6 +366,9 @@ public class CmdUtil {
 			if (f.exists())
 				return f;
 		}
+		File f = new File(Global.savePath, name + Global.suffix4AudioOnly);
+		if (f.exists())
+			return f;
 		return null;
 	}
 

@@ -187,6 +187,11 @@ public class Global {
 	@Config(key = "bilibili.dash.ffmpeg.command.merge", note = "ffmpeg音视频合并命令", 
 			defaultValue = "{FFmpeg}, -i, {SavePath}{VideoName}, -i, {SavePath}{AudioName}, -c, copy, {SavePath}{DstName}")
 	public static String[] ffmpegCmd4Merge;
+	@Config(key = "bilibili.dash.ffmpeg.command.transAudioOnly", note = "ffmpeg音频转换命令", 
+			defaultValue = "{FFmpeg}, -y, -i, {SavePath}{AudioName}, -vn, -c:a, copy, {SavePath}{DstName}")
+	public static String[] ffmpegCmd4AudioOnly;
+	@Config(key = "bilibili.dash.suffix4AudioOnly", note = "仅下载音频时的后缀名称(带.)", defaultValue = ".mp4")
+	public static String suffix4AudioOnly;
 	@Config(key = "bilibili.flv.ffmpeg", note = "FLV合并时是否调用ffmpeg", defaultValue = "false", valids = { "true", "false" })
 	public static boolean flvUseFFmpeg = false;
 	@Config(key = "bilibili.alert.ffmpegFail", note = "ffmpeg合并失败是否抛出异常", defaultValue = "true", valids = { "true", "false" })

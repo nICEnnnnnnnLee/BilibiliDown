@@ -105,7 +105,10 @@ public class URL4ChannelCollectionParserEx extends AbstractPageQueryParser<Video
 			}
 
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
-			JSONArray sections = obj1.getJSONArray("sections");
+			JSONArray sections = obj1.optJSONArray("sections");
+			if(sections == null) {
+				sections = obj1.getJSONObject("sectionsInfo").getJSONArray("sections");
+			}
 			boolean stop = false;
 			for (int order = 0, sIndex = 0; sIndex < sections.length(); sIndex++) {
 				JSONArray episodes = sections.getJSONObject(sIndex).getJSONArray("episodes");

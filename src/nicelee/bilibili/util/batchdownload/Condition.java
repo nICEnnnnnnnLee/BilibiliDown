@@ -3,9 +3,11 @@ package nicelee.bilibili.util.batchdownload;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
+import nicelee.bilibili.util.Logger;
 import nicelee.bilibili.util.RepoUtil;
 import nicelee.ui.Global;
 
@@ -26,6 +28,7 @@ public class Condition {
 		validsOfLeft.add("favTime");
 		validsOfLeft.add("cTime");
 		validsOfLeft.add("avTitle");
+		validsOfLeft.add("clipTitle");
 		validsOfOperator = new HashSet<>();
 		validsOfOperator.add(":");
 		validsOfOperator.add("!");
@@ -111,6 +114,22 @@ public class Condition {
 				}
 			}
 			throw new RuntimeException("不合法的表达式   " + left + operator + right);
+		case "avTitle":
+			boolean eq = operator.equals(":");
+			if (!eq && !operator.equals("!")) {
+				throw new RuntimeException("avTitle操作符只能为 : 或者 !, 不能是: " + operator);
+			}
+			boolean m0 = Pattern.matches(right, clip.getAvTitle());
+			Logger.printf("标题正则匹配: %s\nPattern: %s\nContent: %s", m0, right, clip.getAvTitle());
+			return eq? m0 : !m0;
+		case "clipTitle":
+			boolean eq = operator.equals(":");
+			if (!eq && !operator.equals("!")) {
+				throw new RuntimeException("clipTitle操作符只能为 : 或者 !, 不能是: " + operator);
+			}
+			boolean m1 = Pattern.matches(right, clip.getTitle());
+			Logger.printf("小标题正则匹配: %s\nPattern: %s\nContent: %s", m1, right, clip.getTitle());
+			return eq? m1 : !m1;
 		}
 
 		return true;

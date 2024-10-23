@@ -127,7 +127,8 @@ public class BatchDownload implements Cloneable {
 		final static Pattern urlPattern = Pattern.compile("^\\[(url|favorite):(.*)\\]$");
 		final static Pattern stopPattern = Pattern.compile("^stop\\.condition *= *(.*)$");
 		final static Pattern downloadPattern = Pattern.compile("^download\\.condition *= *(.*)$");
-		final static Pattern expressionPattern = Pattern.compile("^([^:!<>]+)([:!<>])([^:!<>]+)$");
+//		final static Pattern expressionPattern = Pattern.compile("^([^:!<>]+)([:!<>])([^:!<>]+)$");
+		final static Pattern expressionPattern = Pattern.compile("^([^:!<>]+)([:!<>])(.+)$");
 		final static Pattern otherSettingsPattern = Pattern.compile("^([^=]+) *= *(.*)$");
 
 		public List<BatchDownload> Build() {

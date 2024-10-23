@@ -78,6 +78,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 		Logger.println(detailJson);
 		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data");
 
+		long aid = detailObj.getLong("aid");
 		long ctime = detailObj.optLong("ctime") * 1000;
 		viInfo.setVideoName(detailObj.getString("title"));
 		viInfo.setBrief(detailObj.getString("desc"));
@@ -88,28 +89,26 @@ public abstract class AbstractBaseParser implements IInputParser {
 		// 判断是否是互动视频
 		if (detailObj.optInt("videos") > 1 && array.length() == 1) {
 			// 查询graph_version版本
-			String url_graph_version = String.format("https://api.bilibili.com/x/player.so?id=cid:%d&bvid=%s", cid,
-					bvId);
-			String xml = util.getContent(url_graph_version, headers_json, HttpCookies.globalCookiesWithFingerprint());
-			Logger.println(xml);
-			Pattern p = Pattern.compile("<interaction>.*\"graph_version\" *: *([0-9]+).*</interaction>");
-			Matcher matcher = p.matcher(xml);
-			if (matcher.find()) {
-				String graph_version = matcher.group(1);
-				Logger.println(graph_version);
-				List<List<StoryClipInfo>> story_list = new ArrayList<>();
-				List<StoryClipInfo> originStory = new ArrayList<StoryClipInfo>();
-				StoryClipInfo storyClip = new StoryClipInfo(cid);
-				originStory.add(storyClip);
-				HashSet<StoryClipInfo> node_list = new HashSet<>();
-				// 从根节点，一直遍历到子节点，找到所有故事线，放到story_list
-				collectStoryList(bvId, "", graph_version, originStory, story_list, node_list);
-				LinkedHashMap<Long, ClipInfo> clipMap = storyList2Map(bvId, videoFormat, getVideoLink, viInfo,
-						story_list);
-				viInfo.setClips(clipMap);
-				viInfo.print();
-				return viInfo;
-			}
+			String url_graph_version = String.format("https://api.bilibili.com/x/player/wbi/v2?aid=%d&cid=%d&isGaiaAvoided=false", aid, cid);
+			url_graph_version += API.genDmImgParams();
+			url_graph_version = API.encWbi(url_graph_version);
+			String result = util.getContent(url_graph_version, headers_json, HttpCookies.globalCookiesWithFingerprint());
+			Logger.println(url_graph_version);
+			Logger.println(result);
+			String graph_version = new JSONObject(result).getJSONObject("data").getJSONObject("interaction").optString("graph_version");
+			Logger.println(graph_version);
+			List<List<StoryClipInfo>> story_list = new ArrayList<>();
+			List<StoryClipInfo> originStory = new ArrayList<StoryClipInfo>();
+			StoryClipInfo storyClip = new StoryClipInfo(cid);
+			originStory.add(storyClip);
+			HashSet<StoryClipInfo> node_list = new HashSet<>();
+			// 从根节点，一直遍历到子节点，找到所有故事线，放到story_list
+			collectStoryList(bvId, "", graph_version, originStory, story_list, node_list);
+			LinkedHashMap<Long, ClipInfo> clipMap = storyList2Map(bvId, videoFormat, getVideoLink, viInfo,
+					story_list);
+			viInfo.setClips(clipMap);
+			viInfo.print();
+			return viInfo;
 		} else {
 			LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 			int[] qnListDefault = null;

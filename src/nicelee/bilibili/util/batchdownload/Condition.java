@@ -115,21 +115,21 @@ public class Condition {
 			}
 			throw new RuntimeException("不合法的表达式   " + left + operator + right);
 		case "avTitle":
-			boolean eq = operator.equals(":");
-			if (!eq && !operator.equals("!")) {
+			boolean eq0 = operator.equals(":");
+			if (!eq0 && !operator.equals("!")) {
 				throw new RuntimeException("avTitle操作符只能为 : 或者 !, 不能是: " + operator);
 			}
 			boolean m0 = Pattern.matches(right, clip.getAvTitle());
 			Logger.printf("标题正则匹配: %s\nPattern: %s\nContent: %s", m0, right, clip.getAvTitle());
-			return eq? m0 : !m0;
+			return eq0? m0 : !m0;
 		case "clipTitle":
-			boolean eq = operator.equals(":");
-			if (!eq && !operator.equals("!")) {
+			boolean eq1 = operator.equals(":");
+			if (!eq1 && !operator.equals("!")) {
 				throw new RuntimeException("clipTitle操作符只能为 : 或者 !, 不能是: " + operator);
 			}
 			boolean m1 = Pattern.matches(right, clip.getTitle());
 			Logger.printf("小标题正则匹配: %s\nPattern: %s\nContent: %s", m1, right, clip.getTitle());
-			return eq? m1 : !m1;
+			return eq1? m1 : !m1;
 		}
 
 		return true;

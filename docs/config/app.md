@@ -736,3 +736,40 @@ bilibili.system.properties.jre11.override = false
     `true`  
 - 释义:   
     当为`true`时，使用ffmpeg合并视频失败时会抛出异常并弹窗报错。  
+
+## bilibili.dash.ffmpeg.command.transAudioOnly
+- 引入版本: V6.36
+- 取值范围:   
+    FFmpeg命令行调用, 中间`,`是将其分割成`String[]`
+- 默认值:   
+    ```
+    {FFmpeg}, -y, -i, {SavePath}{AudioName}, -vn, -c:a, copy, {SavePath}{DstName}
+    ```  
+- 相关issue
+    + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/227
+- 释义:   
+    仅仅下载音频时的ffmpeg调用命令行。  
+    如果自行改动的话，请注意ffmpeg是否支持相应的编解码工作。  
+    需要配合`bilibili.dash.suffix4AudioOnly`使用，它决定了`{DstName}`的后缀。  
+
+    默认采用后缀为`.mp4`，编码`-c:a copy`，速度最快  
+    可以尝试使用后缀`.aac`，编码`-c:a copy`，适用于大多数状况(无损除外，需改后缀为`.flac`)  
+    可以尝试后缀为`.mp3`，需要编码转换，速度较慢，且**需要ffmpeg支持**，参考命令如下
+    ```
+    {FFmpeg}, -y, -i, {SavePath}{AudioName}, -vn, -acodec, libmp3lame, -q:a, 2, {SavePath}{DstName}
+    ```
+    另外，调试ffmpeg配置时建议打开调用外部命令行的log输出。  
+    ```
+    bilibili.cmd.debug = true
+    ```
+
+
+## bilibili.dash.suffix4AudioOnly
+- 引入版本: V6.36
+- 取值范围:   
+    仅下载音频时的文件后缀(带符号.)
+- 默认值:   
+    `.mp4`
+- 释义:   
+    常见的取值有`.mp4`、`.aac`、`.flac`、`.mp3`。  
+    搭配`bilibili.dash.ffmpeg.command.transAudioOnly`使用

@@ -13,6 +13,7 @@ import nicelee.bilibili.annotations.Bilibili;
 import nicelee.bilibili.enums.VideoQualityEnum;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.VideoInfo;
+import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.Logger;
 
@@ -87,7 +88,7 @@ public class URL4ChannelCollectionParserEx extends AbstractPageQueryParser<Video
 
 			// 在第一部BV里面补全up的信息，并得到所有合集
 			String urlBV = "https://www.bilibili.com/video/" + firstBV;
-			String html = util.getContent(urlBV, new HttpHeaders().getCommonHeaders("www.bilibili.com"));
+			String html = util.getContent(urlBV, new HttpHeaders().getCommonHeaders("www.bilibili.com"), HttpCookies.globalCookiesWithFingerprint());
 			int begin = html.indexOf("window.__INITIAL_STATE__=");
 			int end = html.indexOf(";(function()", begin);
 			String result = html.substring(begin + 25, end);
@@ -104,7 +105,10 @@ public class URL4ChannelCollectionParserEx extends AbstractPageQueryParser<Video
 			}
 
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
-			JSONArray sections = obj1.getJSONArray("sections");
+			JSONArray sections = obj1.optJSONArray("sections");
+			if(sections == null) {
+				sections = obj1.getJSONObject("sectionsInfo").getJSONArray("sections");
+			}
 			boolean stop = false;
 			for (int order = 0, sIndex = 0; sIndex < sections.length(); sIndex++) {
 				JSONArray episodes = sections.getJSONObject(sIndex).getJSONArray("episodes");

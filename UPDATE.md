@@ -1,4 +1,10 @@
 ## UPDATE
+* V6.36
+    * 修复：更新合辑视频链接的解析 #225
+    * 修复：纠正互动视频`graph_version`的获取方式
+    * 新增：一键下载：支持以标题/小标题是否匹配正则表达式为条件 #229
+    * 新增：仅下载音频时，允许自定义ffmpeg音频转换命令、自定义音频后缀格式(可能需要ffmpeg支持) #226,#227
+    * 其它详见[V6.35...V6.36](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.35...V6.36)
 * V6.35
     * 修复：解决配置面板修改配置后无法保存的问题 #216
     * 其它详见[V6.34...V6.35](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.34...V6.35)

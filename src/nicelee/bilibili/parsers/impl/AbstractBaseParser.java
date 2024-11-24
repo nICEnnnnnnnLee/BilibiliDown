@@ -268,7 +268,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			
 			return "https:" + subList.getJSONObject(0).getString("subtitle_url");
 		} catch (Exception e) {
-			String tips = Global.isLogin? "未知错误" : "未能找到字幕，这可能是没有登录造成的";
+			String tips = Global.isLogin? "未能找到字幕 " + bvId : "未能找到字幕，这可能是没有登录造成的。" + bvId;
 			throw new NoSubtitleException(tips, e);
 		}
 	}

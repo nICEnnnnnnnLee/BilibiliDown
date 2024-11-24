@@ -53,7 +53,7 @@ public class Condition {
 		return left + operator + right;
 	}
 
-	final static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+	final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	public boolean match(ClipInfo clip, int page) {
 		switch (left) {

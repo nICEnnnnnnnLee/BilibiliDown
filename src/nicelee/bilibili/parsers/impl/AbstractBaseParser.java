@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +14,7 @@ import org.json.JSONObject;
 import nicelee.bilibili.API;
 import nicelee.bilibili.enums.DownloadModeEnum;
 import nicelee.bilibili.exceptions.ApiLinkQueryParseError;
+import nicelee.bilibili.exceptions.NoSubtitleException;
 import nicelee.bilibili.exceptions.QualityTooLowException;
 import nicelee.bilibili.model.ClipInfo;
 import nicelee.bilibili.model.StoryClipInfo;
@@ -249,15 +249,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 	}
 	
 	protected String getVideoSubtitleLink(String bvId, String cid, int qn) {
-		String url = String.format("https://api.bilibili.com/x/player.so?id=cid:%s&bvid=%s", cid, bvId);
+		String url = String.format("https://api.bilibili.com/x/player/wbi/v2?bvid=%s&cid=%s&isGaiaAvoided=false", bvId, cid);
+		url += API.genDmImgParams();
+		url = API.encWbi(url);
 		Logger.println(url);
 		HashMap<String, String> headers_json = new HttpHeaders().getBiliJsonAPIHeaders(bvId);
-		String xml = util.getContent(url, headers_json, HttpCookies.globalCookiesWithFingerprint());
-		Pattern p = Pattern.compile("<subtitle>(.*?)</subtitle>");
-		Matcher matcher = p.matcher(xml);
-		if (matcher.find()) {
-			paramSetter.setRealQN(qn);
-			JSONArray subList = new JSONObject(matcher.group(1)).getJSONArray("subtitles");
+		String result = util.getContent(url, headers_json, HttpCookies.globalCookiesWithFingerprint());
+		paramSetter.setRealQN(qn);
+		try {
+			JSONArray subList = new JSONObject(result).getJSONObject("data").getJSONObject("subtitle").getJSONArray("subtitles");
 			for (int i = 0; i < subList.length(); i++) {
 				JSONObject sub = subList.getJSONObject(i);
 				String subLang = sub.getString("lan");
@@ -265,11 +265,12 @@ public abstract class AbstractBaseParser implements IInputParser {
 					return "https:" + sub.getString("subtitle_url");
 				}
 			}
-
+			
 			return "https:" + subList.getJSONObject(0).getString("subtitle_url");
+		} catch (Exception e) {
+			String tips = Global.isLogin? "未能找到字幕 " + bvId : "未能找到字幕，这可能是没有登录造成的。" + bvId;
+			throw new NoSubtitleException(tips, e);
 		}
-
-		return null;
 	}
 
 	/**

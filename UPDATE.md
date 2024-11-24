@@ -1,14 +1,18 @@
 ## UPDATE
-* V6.36
+* V6.37 `2024-11-24`
+    * 修复：纠正一键下载时，以日期作为条件判断不准确的错误 #235
+    * 修复：更新字幕api的解析 #232
+    * 其它详见[V6.36...V6.37](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.36...V6.37)
+* V6.36 `2024-10-27`
     * 修复：更新合辑视频链接的解析 #225
     * 修复：纠正互动视频`graph_version`的获取方式
     * 新增：一键下载：支持以标题/小标题是否匹配正则表达式为条件 #229
     * 新增：仅下载音频时，允许自定义ffmpeg音频转换命令、自定义音频后缀格式(可能需要ffmpeg支持) #226,#227
     * 其它详见[V6.35...V6.36](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.35...V6.36)
-* V6.35
+* V6.35 `2024-09-25`
     * 修复：解决配置面板修改配置后无法保存的问题 #216
     * 其它详见[V6.34...V6.35](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.34...V6.35)
-* V6.34
+* V6.34 `2024-09-03`
     该版本主要用来解决某些使用上的问题，如果您已经可以正常使用，可以忽略该更新。  
     * 精简jre支持的https加密套件有限，不支持ecc。这会导致默认的ffmpeg源bitbucket下载失败。随着网站加密套件的更新，未来或许还会有更多的`TLS handshake failure`。   
     这个问题在旧版本可以通过更换ffmpeg源，或者自行获取ffmpeg并在程序设置好path的方式来解决。  

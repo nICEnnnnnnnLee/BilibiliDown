@@ -116,6 +116,8 @@ public class Global {
 	public static boolean saveToRepo; // 使用仓库保存下载成功的记录
 	@Config(key = "bilibili.name.format", note = "自定义下载文件名称", defaultValue = "(:listName listName-)avTitle-pDisplay-clipTitle-qn")
 	public static String formatStr;
+	@Config(key = "bilibili.name.format.clipTitle.allowNull", note = "自定义下载名称时，若avTitle等于clipTitle，将clipTitle置空", defaultValue = "false", eq_true = "true", valids = { "true", "false" })
+	public static boolean ctFormatAllowNull;
 	@Config(key = "bilibili.name.date.favTime.pattern", note = "收藏时间格式化", defaultValue = "yyMMdd")
 	public static String favTimeFormat;
 	@Config(key = "bilibili.name.date.cTime.pattern", note = "发布/更新时间格式化", defaultValue = "yyMMdd")

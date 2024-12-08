@@ -83,18 +83,35 @@ public abstract class AbstractBaseParser implements IInputParser {
 		String detailJson = util.getContent(detailUrl, headers_json, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(detailUrl);
 		Logger.println(detailJson);
-		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data").getJSONObject("View");
-		
-		long aid = detailObj.getLong("aid");
-		long ctime = detailObj.optLong("ctime") * 1000;
-		viInfo.setVideoName(detailObj.getString("title"));
-		viInfo.setBrief(detailObj.getString("desc"));
-		viInfo.setAuthor(detailObj.getJSONObject("owner").getString("name"));
-		viInfo.setAuthorId(String.valueOf(detailObj.getJSONObject("owner").getLong("mid")));
-		viInfo.setVideoPreview(detailObj.getString("pic"));
+		JSONObject detailRaw = new JSONObject(detailJson);
+		long aid = ConvertUtil.Bv2Av(bvId);
+		int videoCnt; long ctime;
+		if(detailRaw.optInt("code") == -403) {
+			detailUrl = "https://api.bilibili.com/x/v3/fav/resource/infos?resources=%d:2&platform=web&folder_mid=&folder_id=";
+			detailJson = util.getContent(String.format(detailUrl, aid), headers_json, HttpCookies.globalCookiesWithFingerprint());
+			Logger.println(detailUrl);
+			Logger.println(detailJson);
+			JSONObject detailObj = new JSONObject(detailJson).getJSONArray("data").getJSONObject(0);
+			ctime = detailObj.optLong("ctime") * 1000;
+			videoCnt = detailObj.optInt("page");
+			viInfo.setVideoName(detailObj.getString("title"));
+			viInfo.setBrief(detailObj.getString("intro"));
+			viInfo.setAuthor(detailObj.getJSONObject("upper").getString("name"));
+			viInfo.setAuthorId(String.valueOf(detailObj.getJSONObject("upper").getLong("mid")));
+			viInfo.setVideoPreview(detailObj.getString("cover"));
+		} else {
+			JSONObject detailObj = detailRaw.getJSONObject("data").getJSONObject("View");
+			ctime = detailObj.optLong("ctime") * 1000;
+			videoCnt = detailObj.optInt("videos");
+			viInfo.setVideoName(detailObj.getString("title"));
+			viInfo.setBrief(detailObj.getString("desc"));
+			viInfo.setAuthor(detailObj.getJSONObject("owner").getString("name"));
+			viInfo.setAuthorId(String.valueOf(detailObj.getJSONObject("owner").getLong("mid")));
+			viInfo.setVideoPreview(detailObj.getString("pic"));
+		}
 
 		// 判断是否是互动视频
-		if (detailObj.optInt("videos") > 1 && array.length() == 1) {
+		if (videoCnt > 1 && array.length() == 1) {
 			// 查询graph_version版本
 			String url_graph_version = String.format("https://api.bilibili.com/x/player/wbi/v2?aid=%d&cid=%d&isGaiaAvoided=false", aid, cid);
 			url_graph_version += API.genDmImgParams();

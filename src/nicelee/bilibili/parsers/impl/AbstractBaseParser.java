@@ -70,15 +70,17 @@ public abstract class AbstractBaseParser implements IInputParser {
 		JSONArray array = new JSONObject(json).getJSONArray("data");
 
 		// 根据第一个获取总体大致信息
-		JSONObject jObj = array.getJSONObject(0);
-		long cid = jObj.getLong("cid");
-		String detailUrl = String.format("https://api.bilibili.com/x/web-interface/view?cid=%d&bvid=%s", cid, bvId);
+		String detailUrl = "https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&page_no=1&p=1&bvid="
+				+ bvId;
+		detailUrl += API.genDmImgParams();
+		detailUrl = API.encWbi(detailUrl);
 		String detailJson = util.getContent(detailUrl, headers_json, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(detailUrl);
 		Logger.println(detailJson);
-		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data");
+		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data").getJSONObject("View");
 
 		long aid = detailObj.getLong("aid");
+		long cid = detailObj.getLong("cid");
 		long ctime = detailObj.optLong("ctime") * 1000;
 		viInfo.setVideoName(detailObj.getString("title"));
 		viInfo.setBrief(detailObj.getString("desc"));
@@ -116,7 +118,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 				qnListDefault = new int[] { 120, 116, 112, 80, 74, 64, 32, 16 };
 			}
 			for (int i = 0; i < array.length(); i++) {
-				jObj = array.getJSONObject(i);
+				JSONObject jObj = array.getJSONObject(i);
 				cid = jObj.getLong("cid");
 				ClipInfo clip = new ClipInfo();
 				clip.setAvTitle(viInfo.getVideoName());

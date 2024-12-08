@@ -87,8 +87,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 		long aid = ConvertUtil.Bv2Av(bvId);
 		int videoCnt; long ctime;
 		if(detailRaw.optInt("code") == -403) {
-			detailUrl = "https://api.bilibili.com/x/v3/fav/resource/infos?resources=%d:2&platform=web&folder_mid=&folder_id=";
-			detailJson = util.getContent(String.format(detailUrl, aid), headers_json, HttpCookies.globalCookiesWithFingerprint());
+			detailUrl = String.format("https://api.bilibili.com/x/v3/fav/resource/infos?resources=%d:2&platform=web&folder_mid=&folder_id=", aid);
+			detailJson = util.getContent(detailUrl, headers_json, HttpCookies.globalCookiesWithFingerprint());
 			Logger.println(detailUrl);
 			Logger.println(detailJson);
 			JSONObject detailObj = new JSONObject(detailJson).getJSONArray("data").getJSONObject(0);
@@ -352,17 +352,29 @@ public abstract class AbstractBaseParser implements IInputParser {
 		// 根据downloadFormat确定fnval
 		String fnval = (downloadFormat & 0x01) == Global.MP4? "4048" : "2";
 		// 先判断类型
+		Long aid; boolean isNormalType;
 		String url = "https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&bvid="
 				+ bvId;
 		url += API.genDmImgParams();
 		url = API.encWbi(url);
 		HashMap<String, String> header = headers.getBiliJsonAPIHeaders(bvId);
 		String callBack = util.getContent(url, header, HttpCookies.globalCookiesWithFingerprint());
-		JSONObject infoObj = new JSONObject(callBack).getJSONObject("data")
-				.getJSONObject("View");
-		Long aid = infoObj.optLong("aid");
-
-		if (infoObj.optString("redirect_url").isEmpty()) {
+		JSONObject detailRaw = new JSONObject(callBack);
+		if(detailRaw.optInt("code") == -403) {
+			aid = ConvertUtil.Bv2Av(bvId);
+			String detailUrl = String.format("https://api.bilibili.com/x/v3/fav/resource/infos?resources=%d:2&platform=web&folder_mid=&folder_id=", aid);
+			String detailJson = util.getContent(detailUrl, header, HttpCookies.globalCookiesWithFingerprint());
+			Logger.println(detailUrl);
+			Logger.println(detailJson);
+			JSONObject detailObj = new JSONObject(detailJson).getJSONArray("data").getJSONObject(0);
+			isNormalType = detailObj.getInt("attr") != 2; // 0 普通 16 互动视频
+		} else {
+			JSONObject infoObj = detailRaw.getJSONObject("data")
+					.getJSONObject("View");
+			aid = infoObj.optLong("aid");
+			isNormalType = infoObj.optString("redirect_url").isEmpty();
+		}
+		if (isNormalType) {
 			String trylookTail = Global.isLogin ? "" : "&try_look=1";
 			// 普通类型
 			url = downloadFormat == 2 ? 

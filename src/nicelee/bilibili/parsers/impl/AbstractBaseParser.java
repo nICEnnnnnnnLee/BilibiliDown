@@ -71,7 +71,12 @@ public abstract class AbstractBaseParser implements IInputParser {
 		JSONArray array = new JSONObject(json).getJSONArray("data");
 
 		// 根据第一个获取总体大致信息
-		String detailUrl = "https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&page_no=1&p=1&bvid="
+		JSONObject jObj = array.getJSONObject(0);
+		long cid = jObj.getLong("cid");
+//		String detailUrl = String.format("https://api.bilibili.com/x/web-interface/view?cid=%d&bvid=%s", cid, bvId);
+//		String detailJson = util.getContent(detailUrl, headers_json, HttpCookies.globalCookiesWithFingerprint());
+//		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data");
+		String detailUrl = "https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&page_no=1&p=1&need_operation_card=1&web_rm_repeat=1&need_elec=1&bvid="
 				+ bvId;
 		detailUrl += API.genDmImgParams();
 		detailUrl = API.encWbi(detailUrl);
@@ -79,9 +84,8 @@ public abstract class AbstractBaseParser implements IInputParser {
 		Logger.println(detailUrl);
 		Logger.println(detailJson);
 		JSONObject detailObj = new JSONObject(detailJson).getJSONObject("data").getJSONObject("View");
-
+		
 		long aid = detailObj.getLong("aid");
-		long cid = detailObj.getLong("cid");
 		long ctime = detailObj.optLong("ctime") * 1000;
 		viInfo.setVideoName(detailObj.getString("title"));
 		viInfo.setBrief(detailObj.getString("desc"));
@@ -119,7 +123,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 				qnListDefault = new int[] { 120, 116, 112, 80, 74, 64, 32, 16 };
 			}
 			for (int i = 0; i < array.length(); i++) {
-				JSONObject jObj = array.getJSONObject(i);
+				jObj = array.getJSONObject(i);
 				cid = jObj.getLong("cid");
 				ClipInfo clip = new ClipInfo();
 				clip.setAvTitle(viInfo.getVideoName());
@@ -190,7 +194,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = String.format(url, cid, bvId, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.globalCookiesWithFingerprint());
-			System.out.println(json);
+			Logger.println(json);
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} else {
 			// 非普通类型
@@ -199,7 +203,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
 					HttpCookies.globalCookiesWithFingerprint());
-			System.out.println(json);
+			Logger.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
 		}
 		int qnList[] = new int[jArr.length()];
@@ -219,7 +223,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			url = String.format(url, cid, bvId, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.globalCookiesWithFingerprint());
-			System.out.println(json);
+			Logger.println(json);
 			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
 		} catch (Exception e) {
 			// 非普通类型
@@ -229,7 +233,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
 					HttpCookies.globalCookiesWithFingerprint());
-			System.out.println(json);
+			Logger.println(json);
 			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
 		}
 		int qnList[] = new int[jArr.length()];
@@ -356,7 +360,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 //			List cookie = downloadFormat == 2 ? null : HttpCookies.globalCookiesWithFingerprint();
 			List<HttpCookie> cookie = HttpCookies.globalCookiesWithFingerprint();
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), cookie);
-			System.out.println(json);
+			Logger.println(json);
 			jObj = new JSONObject(json).getJSONObject("data");
 		} else {
 			// 非普通类型

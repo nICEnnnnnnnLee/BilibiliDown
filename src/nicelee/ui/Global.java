@@ -170,7 +170,7 @@ public class Global {
 	public static int pageSize = 5; // 当有分页时，每页显示个数
 	@Config(key = "bilibili.pageDisplay", defaultValue = "listAll")
 	public static String pageDisplay = "listAll"; // 分页查询时，结果展示方式 listAll/promptAll(promptAll 逐渐弃用)
-	@Config(key = "bilibili.info.query.strategy", note = "查询可用清晰度时，使用的策略", defaultValue = "tryNormalTypeFirst", valids = { "tryNormalTypeFirst", "judgeTypeFirst", "returnFixedValue" })
+	@Config(key = "bilibili.info.query.strategy", note = "查询可用清晰度时，使用的策略", defaultValue = "returnFixedValue", valids = { "tryNormalTypeFirst", "judgeTypeFirst", "returnFixedValue" })
 	public static String infoQueryStrategy;
 	// 临时文件相关
 	@Config(key = "bilibili.restrictTempMode", defaultValue = "true", eq_true = "on", valids = { "on", "off" })

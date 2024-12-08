@@ -219,12 +219,12 @@ public class MJMenuBar extends JMenuBar {
 		
 		String[] straOptions = { "tryNormalTypeFirst", "judgeTypeFirst", "returnFixedValue" };
 		String[] straOptionTips = { "先尝试普通类型，报错再尝试其它", "先判断类型再查询", "返回固定值" };
-		JMenu dQNQueryStrategyMenuItem = new MJMenuWithRadioGroupBuilder("清晰度查询策略", straOptionTips) {
+		JMenu dQNQueryStrategyMenuItem = new MJMenuWithRadioGroupBuilder("可用清晰度查询策略", straOptionTips) {
 			
 			@Override
 			public void onItemSelected(int itemIndex, JRadioButtonMenuItem item) {
 				Global.infoQueryStrategy = straOptions[itemIndex];
-				Logger.println("清晰度查询策略为: " + straOptionTips[itemIndex]);
+				Logger.println("可用清晰度查询策略为: " + straOptionTips[itemIndex]);
 			}
 			
 			@Override

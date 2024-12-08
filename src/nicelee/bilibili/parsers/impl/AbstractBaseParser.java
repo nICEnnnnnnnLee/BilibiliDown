@@ -25,6 +25,7 @@ import nicelee.bilibili.util.HttpCookies;
 import nicelee.bilibili.util.HttpHeaders;
 import nicelee.bilibili.util.HttpRequestUtil;
 import nicelee.bilibili.util.Logger;
+import nicelee.bilibili.util.convert.ConvertUtil;
 import nicelee.ui.Global;
 
 public abstract class AbstractBaseParser implements IInputParser {
@@ -156,15 +157,18 @@ public abstract class AbstractBaseParser implements IInputParser {
 		return viInfo;
 	}
 
-	/**
-	 * 使用https://api.bilibili.com/pgc/player/web/playurl
-	 * 
-	 * @external input HttpRequestUtil util
-	 * @param bvId
-	 * @param cid
-	 * @return
-	 */
 	public int[] getVideoQNList(String bvId, String cid) {
+		switch (Global.infoQueryStrategy) {
+		case "tryNormalTypeFirst":
+			return getVideoQNList_TryNormalTypeFirst(bvId, cid);
+		case "judgeTypeFirst":
+			return getVideoQNList_JudgeTypeFirst(bvId, cid);
+		default:
+			return new int[] { 120, 116, 112, 80, 74, 64, 32, 16 };
+		}
+	}
+	
+	private int[] getVideoQNList_JudgeTypeFirst(String bvId, String cid) {
 		HttpHeaders headers = new HttpHeaders();
 		JSONArray jArr = null;
 		// 先判断类型
@@ -191,6 +195,36 @@ public abstract class AbstractBaseParser implements IInputParser {
 		} else {
 			// 非普通类型
 			url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=4048&fnver=0&fourk=1&otype=json&avid=%s&cid=%s&qn=%s";
+			url = String.format(url, aid, cid, 32);
+			Logger.println(url);
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),
+					HttpCookies.globalCookiesWithFingerprint());
+			System.out.println(json);
+			jArr = new JSONObject(json).getJSONObject("result").getJSONArray("accept_quality");
+		}
+		int qnList[] = new int[jArr.length()];
+		for (int i = 0; i < qnList.length; i++) {
+			qnList[i] = jArr.getInt(i);
+			// Logger.println(qnList[i]);
+		}
+		return qnList;
+	}
+	
+	private int[] getVideoQNList_TryNormalTypeFirst(String bvId, String cid) {
+		HttpHeaders headers = new HttpHeaders();
+		JSONArray jArr = null;
+		try {
+			// 普通类型
+			String url = "https://api.bilibili.com/x/player/playurl?cid=%s&bvid=%s&qn=%d&type=&otype=json&fnver=0&fnval=4048&fourk=1";
+			url = String.format(url, cid, bvId, 32);
+			Logger.println(url);
+			String json = util.getContent(url, headers.getBiliJsonAPIHeaders(bvId), HttpCookies.globalCookiesWithFingerprint());
+			System.out.println(json);
+			jArr = new JSONObject(json).getJSONObject("data").getJSONArray("accept_quality");
+		} catch (Exception e) {
+			// 非普通类型
+			long aid = ConvertUtil.Bv2Av(bvId);
+			String url = "https://api.bilibili.com/pgc/player/web/playurl?fnval=4048&fnver=0&fourk=1&otype=json&avid=%d&cid=%s&qn=%s";
 			url = String.format(url, aid, cid, 32);
 			Logger.println(url);
 			String json = util.getContent(url, headers.getBiliJsonAPIHeaders("av" + aid),

@@ -142,6 +142,7 @@ public abstract class AbstractBaseParser implements IInputParser {
 					}
 					clip.setLinks(links);
 				} catch (Exception e) {
+					e.printStackTrace();
 					clip.setLinks(links);
 				}
 
@@ -165,11 +166,15 @@ public abstract class AbstractBaseParser implements IInputParser {
 		HttpHeaders headers = new HttpHeaders();
 		JSONArray jArr = null;
 		// 先判断类型
-		String url = "https://api.bilibili.com/x/web-interface/view/detail?aid=&jsonp=jsonp&callback=__jp0&bvid="
+		// https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&bvid=%s&&need_operation_card=1&web_rm_repeat=1&need_elec=1
+		String url = "https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&bvid="
 				+ bvId;
+		url += API.genDmImgParams();
+		url = API.encWbi(url);
 		HashMap<String, String> header = headers.getBiliJsonAPIHeaders(bvId);
-		String callBack = util.getContent(url, header);
-		JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 1)).getJSONObject("data")
+		String callBack = util.getContent(url, header, HttpCookies.globalCookiesWithFingerprint());
+		Logger.println(callBack);
+		JSONObject infoObj = new JSONObject(callBack).getJSONObject("data")
 				.getJSONObject("View");
 		Long aid = infoObj.optLong("aid");
 
@@ -290,11 +295,13 @@ public abstract class AbstractBaseParser implements IInputParser {
 		// 根据downloadFormat确定fnval
 		String fnval = (downloadFormat & 0x01) == Global.MP4? "4048" : "2";
 		// 先判断类型
-		String url = "https://api.bilibili.com/x/web-interface/view/detail?aid=&jsonp=jsonp&callback=__jp0&bvid="
+		String url = "https://api.bilibili.com/x/web-interface/wbi/view/detail?platform=web&bvid="
 				+ bvId;
+		url += API.genDmImgParams();
+		url = API.encWbi(url);
 		HashMap<String, String> header = headers.getBiliJsonAPIHeaders(bvId);
-		String callBack = util.getContent(url, header);
-		JSONObject infoObj = new JSONObject(callBack.substring(6, callBack.length() - 1)).getJSONObject("data")
+		String callBack = util.getContent(url, header, HttpCookies.globalCookiesWithFingerprint());
+		JSONObject infoObj = new JSONObject(callBack).getJSONObject("data")
 				.getJSONObject("View");
 		Long aid = infoObj.optLong("aid");
 

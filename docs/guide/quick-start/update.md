@@ -16,6 +16,8 @@
 可能影响使用的不兼容更新将会列在下方。  
 
 ## 不兼容更新 / Breaking Changes
++ V6.38
+    + 现在默认清晰度返回固定值。详见配置[bilibili.info.query.strategy](/config/app#bilibili-info-query-strategy)
 + V6.37
     + 现在不登录的话，没法获取字幕。
 + V6.34

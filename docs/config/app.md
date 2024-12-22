@@ -773,3 +773,31 @@ bilibili.system.properties.jre11.override = false
 - 释义:   
     常见的取值有`.mp4`、`.aac`、`.flac`、`.mp3`。  
     搭配`bilibili.dash.ffmpeg.command.transAudioOnly`使用
+    
+    
+## bilibili.info.query.strategy
+- 引入版本: V6.38
+- 取值范围:   
+    `tryNormalTypeFirst | judgeTypeFirst | returnFixedValue`
+- 默认值:   
+    `returnFixedValue`  
+- 释义:   
+    + `tryNormalTypeFirst` 先尝试普通视频，报错后尝试其它类型; 绝大多数情况1次网络请求，少数2次。  
+    + `judgeTypeFirst` 先判断视频类型，再进行查询; 2次网络请求。**这是旧版本的查询策略**。  
+    + `returnFixedValue` 不查询，直接返回固定值; 无网络请求。**这是新版本的默认查询策略**。  
+    + 无论是何策略，若单个BV下子视频数量多于5，总会返回固定列表。  
+    + 不建议在配置文件中修改该值。若实在有需要，可以在菜单栏临时变更策略，程序关闭后失效。  
+- 相关issue  
+    `BV1g5pqeBEXP`，这个互动视频有上百个片段，查询清晰度会“卡死”在那，但实际上后台一直在获取每个视频的清晰度。这是不必要的。 
+
+## bilibili.name.format.clipTitle.allowNull
+- 引入版本: V6.38
+- 取值范围:   
+    `true | false`
+- 默认值:   
+    `false`  
+- 释义:   
+    当为`true`时，若`clipTitle`和视频标题`avTitle`一致，会将`clipTitle`置空。  
+    此时可以配合条件判断进行使用，避免文件名出现冗余的重复信息。 
+- 相关issue
+    + https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/237

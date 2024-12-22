@@ -25,7 +25,7 @@ import nicelee.ui.thread.DownloadExecutors;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.37", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.38", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.time.syncServer", note = "同步服务器的时间", defaultValue = "false", valids = { "true", "false" })
 	public static boolean syncServerTime;
@@ -116,6 +116,8 @@ public class Global {
 	public static boolean saveToRepo; // 使用仓库保存下载成功的记录
 	@Config(key = "bilibili.name.format", note = "自定义下载文件名称", defaultValue = "(:listName listName-)avTitle-pDisplay-clipTitle-qn")
 	public static String formatStr;
+	@Config(key = "bilibili.name.format.clipTitle.allowNull", note = "自定义下载名称时，若avTitle等于clipTitle，将clipTitle置空", defaultValue = "false", eq_true = "true", valids = { "true", "false" })
+	public static boolean ctFormatAllowNull;
 	@Config(key = "bilibili.name.date.favTime.pattern", note = "收藏时间格式化", defaultValue = "yyMMdd")
 	public static String favTimeFormat;
 	@Config(key = "bilibili.name.date.cTime.pattern", note = "发布/更新时间格式化", defaultValue = "yyMMdd")
@@ -168,6 +170,8 @@ public class Global {
 	public static int pageSize = 5; // 当有分页时，每页显示个数
 	@Config(key = "bilibili.pageDisplay", defaultValue = "listAll")
 	public static String pageDisplay = "listAll"; // 分页查询时，结果展示方式 listAll/promptAll(promptAll 逐渐弃用)
+	@Config(key = "bilibili.info.query.strategy", note = "查询可用清晰度时，使用的策略", defaultValue = "returnFixedValue", valids = { "tryNormalTypeFirst", "judgeTypeFirst", "returnFixedValue" })
+	public static String infoQueryStrategy;
 	// 临时文件相关
 	@Config(key = "bilibili.restrictTempMode", defaultValue = "true", eq_true = "on", valids = { "on", "off" })
 	public static boolean restrictTempMode;

@@ -1,6 +1,15 @@
-* 修复：纠正一键下载时，以日期作为条件判断不准确的错误 #235
-* 修复：更新字幕api的解析 #232
-* 其它详见[V6.36...V6.37](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.36...V6.37)
+* 修复：在查询清晰度时带上cookie，这是因为某些视频必须登录才能查看，比如`BV1fx411x7QS` #240
+* 优化：对查询清晰度的API进行了升级，并增强了鲁棒性(虽然旧的也还能用)
+* 新增：提供多种清晰度查询策略，目的是减少不必要的网络请求次数
+    + `tryNormalTypeFirst` 先尝试普通视频，报错后尝试其它类型; 绝大多数情况1次网络请求，少数2次。  
+    + `judgeTypeFirst` 先判断视频类型，再进行查询; 2次网络请求。**这是旧版本的查询策略**。  
+    + `returnFixedValue` 不查询，直接返回固定值; 无网络请求。**这是新版本的默认查询策略**。  
+    + 无论是何策略，若单个BV下子视频数量多于5，总会返回固定列表。  
+    + 引入该功能的主要原因是`BV1g5pqeBEXP`，这个互动视频有上百个片段，查询清晰度会“卡死”在那，实际上后台一直在获取每个视频的清晰度。但这是不必要的。  
+    + 不建议在配置文件中修改该值。若实在有需要，可以在菜单栏临时变更策略，程序关闭后失效。  
+* 新增：当`clipTitle`和视频标题`avTitle`一致时，允许将`clipTitle`置空 #237
+    + `bilibili.name.format.clipTitle.allowNull`为`true`时功能启用(默认关闭)，此时可以配合条件判断进行使用，避免文件名出现冗余的重复信息。  
+* 其它详见[V6.37...V6.38](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.37...V6.38)
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`或 `*.win_x64.msi`

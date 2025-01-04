@@ -17,8 +17,8 @@ permissions:
   #contents: read
   #pages: write
   #id-token: write
-  read-all
-  write-all
+  - read-all
+  - write-all
 
 jobs:
   # 构建工作

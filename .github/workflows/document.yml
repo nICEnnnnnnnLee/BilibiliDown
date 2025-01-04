@@ -14,10 +14,12 @@ on:
         
 # 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-  
+  #contents: read
+  #pages: write
+  #id-token: write
+  read-all
+  write-all
+
 jobs:
   # 构建工作
   build:
@@ -37,6 +39,18 @@ jobs:
       - name: Build
         run: npm run docs:build
         
+      - name: zip and upload to Github assets
+        env:
+            REPO: "nICEnnnnnnnLee/BilibiliDown"
+            TAG: "V4.5"
+            TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            ASSET_NAME: "BilibiliDownDocs.zip"
+            FILE_PATH: "BilibiliDownDocs.zip"
+        run: 
+            zip -r BilibiliDownDocs.zip docs/.vitepress/dist/
+            chmod +x gh_up.sh
+            ./gh_up.sh
+            
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

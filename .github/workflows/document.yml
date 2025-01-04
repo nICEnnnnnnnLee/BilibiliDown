@@ -13,12 +13,10 @@ on:
         default: true
         
 # 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages
-permissions:
+permissions: write-all
   #contents: read
   #pages: write
   #id-token: write
-  - read-all
-  - write-all
 
 jobs:
   # 构建工作

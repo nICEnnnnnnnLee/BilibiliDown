@@ -44,7 +44,7 @@ jobs:
             TOKEN: ${{ secrets.GITHUB_TOKEN }}
             ASSET_NAME: "BilibiliDownDocs.zip"
             FILE_PATH: "BilibiliDownDocs.zip"
-        run: 
+        run: |
             zip -r BilibiliDownDocs.zip docs/.vitepress/dist/
             chmod +x gh_up.sh
             ./gh_up.sh

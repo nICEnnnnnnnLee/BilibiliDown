@@ -5,7 +5,7 @@ name: CloseStaleIssue
 
 on:
    schedule: 
-       - cron: '1 15 1/8 * *'
+       - cron: '1 15 1 * *'
        
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
                 var time_now = new Date();
                 var deta = time_now.getTime() - updated_at.getTime();
                 console.log('deta: ' + deta);
-                if(deta < 1000*60*60*24*30){
+                if(deta < 1000*60*60*24*30*2){
                     is2Deal = false;
                 }   
             }

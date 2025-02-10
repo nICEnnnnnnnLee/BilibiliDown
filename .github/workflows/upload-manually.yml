@@ -81,16 +81,6 @@ jobs:
       run: |
         chmod +x .github/scripts/upload_cloudinary.sh
         ./.github/scripts/upload_cloudinary.sh        
-        
-    - name: Upload release to bitbucket
-      env:
-        VERSION_NUMBER: ${{ steps.tag_latest.outputs.value }}
-        BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
-      if: ${{ always() && env.BITBUCKET_TOKEN != '' && github.event.inputs.bitbucket == 'true'}}
-      run: |
-        chmod +x .github/scripts/upload_bitbucket.sh
-        ./.github/scripts/upload_bitbucket.sh                    
-            
             
     - name: Sync Push to Gitee
       env:

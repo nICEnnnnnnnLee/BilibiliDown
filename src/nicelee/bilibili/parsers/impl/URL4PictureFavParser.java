@@ -1,5 +1,6 @@
 package nicelee.bilibili.parsers.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
@@ -63,6 +64,7 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 		pageQueryResult.setClips(new LinkedHashMap<>());
 	}
 
+	private static SimpleDateFormat sdf = null;
 	@Override
 	protected boolean query(int page, int min, int max, Object... obj) {
 		try {
@@ -84,7 +86,9 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 			}
 			if (items.length() == 0)
 				return false;
-
+			if(sdf == null) {
+				sdf = new SimpleDateFormat("收藏于yyyy年MM月dd日");
+			}
 			LinkedHashMap<Long, ClipInfo> map = pageQueryResult.getClips();
 			URL4PictureOpusParser opusParser = new URL4PictureOpusParser(this.obj);
 			for (int i = min - 1; i < items.length() && i < max; i++) {
@@ -92,6 +96,9 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 				if (item.optBoolean("is_expired"))
 					continue;
 				String opusIdNumber = item.getString("opus_id");
+				// "time_text":"收藏于2019年12月17日"
+				String timeText = item.getString("time_text");
+				long favTime = sdf.parse(timeText).getTime();
 				VideoInfo vArt = opusParser.getOpusDetail(opusIdNumber); // 这一步会发生网络请求，比较耗时
 				for (ClipInfo clip : vArt.getClips().values()) {
 					if (pageQueryResult.getVideoPreview() == null)
@@ -101,6 +108,7 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 						clip.setListName("我的收藏图文");
 						clip.setListOwnerName("我");
 					}
+					clip.setFavTime(favTime);
 					clip.setRemark(i);
 					String uniqeNumber = opusIdNumber + clip.getPage();
 					uniqeNumber = uniqeNumber.substring(2); // 防止超出long的范围

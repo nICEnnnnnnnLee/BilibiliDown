@@ -2,7 +2,6 @@ package nicelee.bilibili.parsers.impl;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -25,7 +24,7 @@ import nicelee.bilibili.util.Logger;
 public class URL4PictureCVParser extends AbstractBaseParser {
 
 	private final static Pattern pattern = Pattern.compile("\\.bilibili\\.com/read/(mobile\\?id=|cv)([0-9]+)");
-	private final static Pattern picSrcPattern = Pattern.compile("img (data-)?src=\"([^\"]+)\"");
+//	private final static Pattern picSrcPattern = Pattern.compile("img (data-)?src=\"([^\"]+)\"");
 	private String cvIdNumber;
 
 	public URL4PictureCVParser(Object... obj) {
@@ -66,68 +65,90 @@ public class URL4PictureCVParser extends AbstractBaseParser {
 		int end = html.indexOf(";(function()", begin);
 		String json = html.substring(begin + 25, end);
 		Logger.println(json);
+		JSONObject jObj = new JSONObject(json);
+		jObj = jObj.getJSONObject("detail");
 
-		JSONObject jObj = new JSONObject(json).getJSONObject("readInfo");
-		JSONObject jUp = jObj.getJSONObject("author");
-
+		// 判断动态的类型， 11 图文 12 专栏 1 UP主投稿了 17 直播开播了
+//		JSONObject jBasic = jObj.getJSONObject("basic");
+//		int type = jBasic.optInt("comment_type");
+		JSONArray jParagraphs = null, jTopPics = null, jModules = jObj.getJSONArray("modules");
+		JSONObject jUp = null;
+		for (int i = 0; i < jModules.length(); i++) {
+			JSONObject module = jModules.getJSONObject(i);
+			String mType = module.getString("module_type");
+			if (mType.equals("MODULE_TYPE_AUTHOR"))
+				jUp = module.getJSONObject("module_author");
+			else if (mType.equals("MODULE_TYPE_CONTENT"))
+				jParagraphs = module.getJSONObject("module_content").getJSONArray("paragraphs");
+			else if (mType.equals("MODULE_TYPE_TOP"))
+				jTopPics = module.getJSONObject("module_top").getJSONObject("display").getJSONObject("album")
+						.getJSONArray("pics");
+			else if (mType.equals("MODULE_TYPE_TITLE"))
+				viInfo.setVideoName(module.getJSONObject("module_title").getString("text"));
+			if (jUp != null && jParagraphs != null && jTopPics != null && viInfo.getVideoName() != null)
+				break;
+		}
 		// 总体大致信息
-		String videoName = jObj.getString("title");
-		String brief = jObj.getString("summary");
 		String author = jUp.getString("name");
 		String authorId = jUp.optString("mid");
-		String videoPreview = jObj.getJSONArray("image_urls").getString(0);
-		String bannerUrl = jObj.optString("banner_url"); // 可能为空
-		viInfo.setVideoName(videoName);
-		viInfo.setBrief(brief);
+		long cTime = jUp.optLong("pub_ts") * 1000;
+//		viInfo.setVideoId(opusIdStr);
 		viInfo.setAuthor(author);
 		viInfo.setAuthorId(authorId);
-		viInfo.setVideoPreview(videoPreview);
-
-		long cTime = jObj.optLong("ctime") * 1000;
-		String listName = null, listOwnerName = null;
-		JSONObject jList = jObj.optJSONObject("list");
-		if (jList != null) {
-			listName = jList.getString("name").replaceAll("[/\\\\]", "_");
-			listOwnerName = author.replaceAll("[/\\\\]", "_");
+		// 设置 brief videoName
+		for (int i = 0; i < jParagraphs.length(); i++) {
+			JSONObject jPara = jParagraphs.getJSONObject(i);
+			int paraType = jPara.optInt("para_type");
+			if (paraType == 1) {
+				JSONArray nodes = jPara.getJSONObject("text").getJSONArray("nodes");
+				for (int nIdx = 0; nIdx < nodes.length(); nIdx++) {
+					JSONObject node = nodes.getJSONObject(nIdx);
+					if ("TEXT_NODE_TYPE_WORD".equals(node.getString("type"))) {
+						String text = node.getJSONObject("word").getString("words");
+						viInfo.setBrief(text);
+						if (viInfo.getVideoName() == null) {
+							String videoName = text;
+							if (videoName.length() > 15)
+								videoName = videoName.substring(0, 15);
+							viInfo.setVideoName(videoName);
+						}
+						break;
+					}
+				}
+			}
 		}
+		if (viInfo.getVideoName() == null)
+			viInfo.setVideoName("空");
 
 		LinkedHashMap<Long, ClipInfo> clipMap = new LinkedHashMap<Long, ClipInfo>();
 		int picIndex = 0;
-		if (bannerUrl != null && !bannerUrl.isEmpty()) {
-			ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, listName, listOwnerName);
-			setPicOfClip(clip, clipMap, picIndex, bannerUrl);
-			picIndex++;
-		}
-		JSONObject opus = jObj.optJSONObject("opus");
-		if (opus != null) {
-			JSONArray jParas = jObj.getJSONObject("opus").getJSONObject("content").getJSONArray("paragraphs");
-			for (int i = 0; i < jParas.length(); i++) {
-				JSONObject para = jParas.getJSONObject(i);
-				if (para.getInt("para_type") != 2) {
-					continue;
-				}
-				JSONArray pics = para.getJSONObject("pic").getJSONArray("pics");
-				for (int j = 0; j < pics.length(); j++) {
-					String picUrl = pics.getJSONObject(j).getString("url");
-					ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, listName, listOwnerName);
-					setPicOfClip(clip, clipMap, picIndex, picUrl);
-					picIndex++;
-				}
-			}
-		} else {
-			String content = jObj.getString("content");
-//			Logger.println(content);
-			Matcher m = picSrcPattern.matcher(content);
-			while (m.find()) {
-				String picUrl = m.group(2);
-				if (picUrl.startsWith("//"))
-					picUrl = "http:" + picUrl;
-				ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, listName, listOwnerName);
+		// 先遍历 jTopPics
+		if (jTopPics != null) {
+			for (int i = 0; i < jTopPics.length(); i++) {
+				String picUrl = jTopPics.getJSONObject(i).getString("url");
+				ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, null, null);
 				setPicOfClip(clip, clipMap, picIndex, picUrl);
+				if (viInfo.getVideoPreview() == null)
+					viInfo.setVideoPreview(picUrl);
 				picIndex++;
 			}
 		}
-
+		// 再遍历 jParagraphs
+		for (int i = 0; i < jParagraphs.length(); i++) {
+			JSONObject jPara = jParagraphs.getJSONObject(i);
+			int paraType = jPara.optInt("para_type");
+			if (paraType == 2) {
+				JSONArray pics = jPara.getJSONObject("pic").getJSONArray("pics");
+				for (int nIdx = 0; nIdx < pics.length(); nIdx++) {
+					String picUrl = pics.getJSONObject(nIdx).getString("url");
+					ClipInfo clip = newCommonClip(cvIdStr, viInfo, author, authorId, cTime, null, null);
+					setPicOfClip(clip, clipMap, picIndex, picUrl);
+					if (viInfo.getVideoPreview() == null)
+						viInfo.setVideoPreview(picUrl);
+					picIndex++;
+				}
+			}
+		}
 		viInfo.setClips(clipMap);
 //		viInfo.print();
 		return viInfo;

@@ -16,8 +16,11 @@ import nicelee.bilibili.util.Logger;
 
 /**
  * 针对以下类型的url解析
- * https://www.bilibili.com/medialist/play/378034?from=space&business=space_series&business_id=918669&desc=1
- *
+ * 过时，网页不再出现 https://space.bilibili.com/378034/channel/seriesdetail?sid=918669
+ * 过时，网页不再出现 https://www.bilibili.com/medialist/play/378034?from=space&business=space_series&business_id=918669&desc=1
+ * https://space.bilibili.com/378034/lists/918669?type=series
+ * https://www.bilibili.com/list/378034/?sid=918669&oid=721303768&bvid=BV1hQ4y1q7X8
+ * 
  * 这种方法比URL4ChannelSeriesParser要好一点，因为不需要为每一个BV再进行一次查询
  * 
  * 查信息
@@ -31,33 +34,32 @@ import nicelee.bilibili.util.Logger;
 @Bilibili(name = "URL4ChannelSeriesMedialistParser", weight = 78,ifLoad = "listAll", note = "UP 某视频列表的视频解析")
 public class URL4ChannelSeriesMedialistParser extends AbstractPageQueryParser<VideoInfo> {
 
-	private final static Pattern pattern = Pattern
-			.compile("www\\.bilibili\\.com/medialist/play/([0-9]+)\\?.*&business_id=([0-9]+)");
-	private final static Pattern pattern2 = Pattern
-			.compile("space\\.bilibili\\.com/([0-9]+)/channel/seriesdetail\\?sid=([0-9]+)");
+	private final static Pattern patterns[] = {
+			Pattern.compile("www\\.bilibili\\.com/medialist/play/([0-9]+)\\?.*&business_id=([0-9]+)"),
+			Pattern.compile("space\\.bilibili\\.com/([0-9]+)/channel/seriesdetail\\?sid=([0-9]+)"),
+			Pattern.compile("space\\.bilibili\\.com/([0-9]+)/lists/([0-9]+)\\?type=series"),
+			Pattern.compile("www\\.bilibili\\.com/list/([0-9]+)/\\?sid=([0-9]+)"),
+	};
+	
 	private String spaceID;
 	private String sid;
 	private String seriesName;
-
 	public URL4ChannelSeriesMedialistParser(Object... obj) {
 		super(obj);
 	}
 
-	private boolean maches(String input, Pattern pattern) {
-		matcher = pattern.matcher(input);
-		if (matcher.find()) {
-			System.out.println("匹配UP主合集和视频列表 ...");
-			spaceID = matcher.group(1);
-			sid = matcher.group(2);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	@Override
 	public boolean matches(String input) {
-		return maches(input, pattern) || maches(input, pattern2);
+		for(Pattern pattern: patterns) {
+			matcher = pattern.matcher(input);
+			if (matcher.find()) {
+				System.out.println("匹配UP主合集和视频列表 ...");
+				spaceID = matcher.group(1);
+				sid = matcher.group(2);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

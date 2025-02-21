@@ -107,6 +107,7 @@ public class URL4PictureFavParser extends AbstractPageQueryParser<VideoInfo> {
 					if(clip.getListName() == null) {
 						clip.setListName("我的收藏图文");
 						clip.setListOwnerName("我");
+						clip.setListOwnerId(pageQueryResult.getAuthorId());
 					}
 					clip.setFavTime(favTime);
 					clip.setRemark(i);

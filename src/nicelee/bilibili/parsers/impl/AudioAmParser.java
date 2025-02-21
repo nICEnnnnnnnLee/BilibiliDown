@@ -105,6 +105,7 @@ public class AudioAmParser extends AbstractPageQueryParser<VideoInfo> {
 //				clip.setTitle(avTitle + "-" +jClip.getString("title"));
 				clip.setListName(pageQueryResult.getVideoName().replaceAll("[/\\\\]", "_"));
 				clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
+				clip.setListOwnerId(pageQueryResult.getAuthorId());
 				clip.setcTime(ctime);
 				LinkedHashMap<Integer, String> links = new LinkedHashMap<Integer, String>();
 				int[] qnList = { 3, 2, 1, 0 };

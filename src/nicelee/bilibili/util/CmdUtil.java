@@ -384,30 +384,12 @@ public class CmdUtil {
 	// 用法举例 (:listName 我在前面-listName-我在后面) ===> 我在前面-某收藏夹的名称-我在后面
 	// ### listName - 集合名称 e.g. 某收藏夹的名称
 	// ### listOwnerName - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
+	// ### listOwnerId - 集合的拥有者 e.g. 某某某 （假设搜索的是某人的收藏夹）
 	// public static String formatStr = "avTitle-pDisplay-clipTitle-qn";
 	static Pattern splitUnit = Pattern.compile(
-			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|favTime|cTime|" + 
+			"avId|numAvId|pAv\\d?|pDisplay\\d?|qn|avTitle|clipTitle|UpName|UpId|listName|listOwnerName|listOwnerId|favTime|cTime|" + 
 			"\\((?<ifOrUnless0>[\\:!])(?<condition0>[^ ]+) (?<format0>[^\\)]*)\\)|" + 
 			"\\[(?<ifOrUnless1>[\\:!])(?<condition1>[^ ]+) (?<format1>[^\\]]*)\\]");
-
-	public static String genFormatedName(String avId, String pAv, String pDisplay, int qn, String avTitle,
-			String clipTitle, String listName, String listOwnerName) {
-		// 生成KV表
-		HashMap<String, String> paramMap = new HashMap<String, String>();
-		paramMap.put("avId", avId);
-		paramMap.put("pAv", pAv);
-		paramMap.put("pDisplay", pDisplay);
-		paramMap.put("qn", "" + qn);
-		paramMap.put("avTitle", avTitle.replaceAll("[/\\\\]", "_"));
-		paramMap.put("clipTitle", clipTitle.replaceAll("[/\\\\]", "_"));
-		paramMap.put("listName", listName);
-		paramMap.put("listOwnerName", listOwnerName);
-		// paramMap.put("clipTitle", clipTitle);
-
-		// 匹配格式字符串
-		// avTitle-pDisplay-clipTitle-qn
-		return genFormatedName(paramMap, Global.formatStr);
-	}
 
 	public static String genFormatedName(VideoInfo avInfo, ClipInfo clip, int realQN) {
 		// 生成KV表
@@ -424,6 +406,7 @@ public class CmdUtil {
 		}
 		paramMap.put("listName", clip.getListName()); // 已确保没有路径分隔符
 		paramMap.put("listOwnerName", clip.getListOwnerName()); // 已确保没有路径分隔符
+		paramMap.put("listOwnerId", clip.getListOwnerId());
 		paramMap.put("UpName", clip.getUpName().replaceAll("[/\\\\]", "_"));
 		paramMap.put("UpId", clip.getUpId());
 		long favTime = clip.getFavTime();

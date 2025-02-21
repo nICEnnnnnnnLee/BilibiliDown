@@ -11,6 +11,7 @@ public class ClipInfo {
 	String picPreview;
 	String listName; // 收藏夹名称 或其它集合名称（不一定存在）
 	String listOwnerName; // 收藏夹主人 或其它集合的拥有者（不一定存在）
+	String listOwnerId; // 收藏夹主人 或其它集合的拥有者的ID（不一定存在）
 	// 解析器太多，不想一个一个再去改，只有收藏夹有下面俩
 	long favTime;	// 收藏时间
 	long cTime;		// 发布、更新时间
@@ -34,7 +35,8 @@ public class ClipInfo {
 			sb.append("--listName为 :").append(listName).append(" \r\n");
 		if (listOwnerName != null)
 			sb.append("--listOwnerName为 :").append(listOwnerName).append(" \r\n");
-		
+		if (listOwnerId != null)
+			sb.append("--listOwnerId为 :").append(listOwnerId).append(" \r\n");
 //		if (links != null) {
 //			for (String link : links.values()) {
 //				sb.append("----下载链接 :").append(link).append(" \r\n");
@@ -171,6 +173,14 @@ public class ClipInfo {
 
 	public void setcTime(long cTime) {
 		this.cTime = cTime;
+	}
+
+	public String getListOwnerId() {
+		return listOwnerId;
+	}
+
+	public void setListOwnerId(String listOwnerId) {
+		this.listOwnerId = listOwnerId;
 	}
 
 }

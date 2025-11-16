@@ -21,6 +21,7 @@ import nicelee.bilibili.util.Logger;
  * 
  * https://www.bilibili.com/medialist/play/378034?from=space&business=space&sort_field=play&tid=3
  * https://space.bilibili.com/378034/
+ * https://space.bilibili.com/378034/upload/video
  * https://space.bilibili.com/378034/video
  * https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
  * https://space.bilibili.com/378034/search/video?tid=3&keyword=&order=pubdate	keyword必须为空
@@ -41,7 +42,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 	// 针对 https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
 	// (keyword必须为空)
 	private final static Pattern pattern2 = Pattern
-			.compile("space\\.bilibili\\.com/([0-9]+)(/video|/search/video\\?|/? *$|/?\\?)");
+			.compile("space\\.bilibili\\.com/([0-9]+)(/upload/video|/video|/search/video\\?|/? *$|/?\\?)");
 	public final static Pattern patternKeyNotEmpty = Pattern.compile("keyword=[^=&]+");
 	private final static Pattern patternParams2 = Pattern.compile("(tid|order)=([^=&]+)");
 

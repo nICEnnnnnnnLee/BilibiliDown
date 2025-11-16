@@ -251,7 +251,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 				}
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		return pageQueryResult;
 	}
@@ -267,20 +267,25 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 	private String position2Oid(int pageNumber, HashMap<String, String> headers, String sortFieldParam) {
 		if(pageNumber == 1)
 			return "";
+		// 每页40个(个人主页里面就是这个数量)
+		int pn = pageNumber / 40 + 1;
+		int number = pageNumber - pn * 40 + 40;
+		Logger.printf("ps: 40, pn: %d, number: %s", pn, number);
 		// String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
 		String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&special_type=&pn=%d&keyword=&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
-		String url = String.format(urlFormat, spaceID, 1, params.get("tid"), pageNumber, sortFieldParam);
+		String url = String.format(urlFormat, spaceID, 40, params.get("tid"), pn, sortFieldParam);
 		url += API.genDmImgParams();
 		url = API.encWbi(url);
+		Logger.println(url);
 		String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(url);
 		Logger.println(json);
 		JSONArray vlist = new JSONObject(json).getJSONObject("data").getJSONObject("list").getJSONArray("vlist");
-		if(vlist.length() == 0) {
+		if(vlist.length() < number) {
 			Logger.printf("position: %d, oid: search till end", pageNumber);
 			return "end";
 		} else {
-			String oid = vlist.getJSONObject(0).optString("aid");
+			String oid = vlist.getJSONObject(number - 1).optString("aid");
 			Logger.printf("position: %d, oid: %s", pageNumber, oid);
 			return oid;
 		}

@@ -104,12 +104,12 @@ public class URL4ChannelSeriesMedialistParser extends AbstractPageQueryParser<Vi
 			if (page > 1) {
 				int lastPageNumber = (page - 1) * API_PMAX + 1;
 				String urlFormat = "https://api.bilibili.com/x/series/archives?mid=%s&series_id=%s&only_normal=true&sort=desc&pn=%d&ps=%d";
-				String url = String.format(urlFormat, spaceID, sid, lastPageNumber, 1);
+				String url = String.format(urlFormat, spaceID, sid, page, API_PMAX);
 				Logger.println(url);
 				String json = util.getContent(url, headers);
 				oid = new JSONObject(json).getJSONObject("data").getJSONArray("archives").getJSONObject(0)
 						.optString("aid");
-				System.out.printf("page: %d, lastPageNumber: %d, oid: %s\n", page, lastPageNumber, oid);
+				Logger.printf("page: %d, lastPageNumber: %d, oid: %s\n", page, lastPageNumber, oid);
 			}
 
 			// 查询详细信息

@@ -100,5 +100,8 @@ https://www.bilibili.com/bangumi/play/ep116157/
 bilibili.cc.lang = en-US
 ```  
 + 关于语言的配置，详见[此处](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release/wiki/langs.txt)  
++ **补充**：AI翻译的英文/中文字幕对应为`ai-en`、`ai-zh`。  
+因为这种场景一般找不到UP主上传的字幕`zh-CN`（默认配置），程序会自动选取返回结果的第一个`ai-en`。  
+从表现上来看，即配置了中文却下载了英语字幕。[issue#281](https://github.com/nICEnnnnnnnLee/BilibiliDown/issues/281)    
 ::: 
 

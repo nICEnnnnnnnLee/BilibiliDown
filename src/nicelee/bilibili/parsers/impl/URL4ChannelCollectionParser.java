@@ -96,6 +96,7 @@ public class URL4ChannelCollectionParser extends AbstractPageQueryParser<VideoIn
 					for (ClipInfo clip : avClips.values()) {
 						clip.setListName(jData.getString("name").replaceAll("[/\\\\]", "_"));
 						clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
+						clip.setListOwnerId(pageQueryResult.getAuthorId());
 					}
 					map.putAll(avClips);
 				} catch (Exception e) {

@@ -62,6 +62,7 @@ public class DownloadRunnable implements Runnable {
 			JOptionPaneManager.alertErrMsgWithNewThread("发生了预料之外的错误", ResourcesUtil.detailsOfException(e));
 			BatchDownloadRbyRThread.taskFail(clip, ResourcesUtil.detailsOfException(e));
 		} catch (Exception e) {
+			e.printStackTrace();
 			BatchDownloadRbyRThread.taskFail(clip, ResourcesUtil.detailsOfException(e));
 		}
 	}

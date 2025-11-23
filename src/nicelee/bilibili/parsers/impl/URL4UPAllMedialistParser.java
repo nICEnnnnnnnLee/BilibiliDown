@@ -21,6 +21,7 @@ import nicelee.bilibili.util.Logger;
  * 
  * https://www.bilibili.com/medialist/play/378034?from=space&business=space&sort_field=play&tid=3
  * https://space.bilibili.com/378034/
+ * https://space.bilibili.com/378034/upload/video
  * https://space.bilibili.com/378034/video
  * https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
  * https://space.bilibili.com/378034/search/video?tid=3&keyword=&order=pubdate	keyword必须为空
@@ -41,7 +42,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 	// 针对 https://space.bilibili.com/378034/video?tid=3&keyword=&order=stow
 	// (keyword必须为空)
 	private final static Pattern pattern2 = Pattern
-			.compile("space\\.bilibili\\.com/([0-9]+)(/video|/search/video\\?|/? *$|/?\\?)");
+			.compile("space\\.bilibili\\.com/([0-9]+)(/upload/video|/video|/search/video\\?|/? *$|/?\\?)");
 	public final static Pattern patternKeyNotEmpty = Pattern.compile("keyword=[^=&]+");
 	private final static Pattern patternParams2 = Pattern.compile("(tid|order)=([^=&]+)");
 
@@ -224,6 +225,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 						// >= V3.6, ClipInfo 增加可选ListXXX字段，将收藏夹信息移入其中
 						clip.setListName(listName.replaceAll("[/\\\\]", "_"));
 						clip.setListOwnerName(pageQueryResult.getAuthor().replaceAll("[/\\\\]", "_"));
+						clip.setListOwnerId(pageQueryResult.getAuthorId());
 						clip.setUpName(upName);
 						clip.setUpId(upId);
 						clip.setAvTitle(avTitle);
@@ -250,7 +252,7 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 				}
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		return pageQueryResult;
 	}
@@ -266,20 +268,25 @@ public class URL4UPAllMedialistParser extends AbstractPageQueryParser<VideoInfo>
 	private String position2Oid(int pageNumber, HashMap<String, String> headers, String sortFieldParam) {
 		if(pageNumber == 1)
 			return "";
+		// 每页40个(个人主页里面就是这个数量)
+		int pn = pageNumber / 40 + 1;
+		int number = pageNumber - pn * 40 + 40;
+		Logger.printf("ps: 40, pn: %d, number: %s", pn, number);
 		// String urlFormat = "https://api.bilibili.com/x/space/arc/search?mid=%s&ps=%d&tid=%s&pn=%d&keyword=&order=%s&jsonp=jsonp";
 		String urlFormat = "https://api.bilibili.com/x/space/wbi/arc/search?mid=%s&ps=%d&tid=%s&special_type=&pn=%d&keyword=&order=%s&platform=web"; // &web_location=1550101&order_avoided=true
-		String url = String.format(urlFormat, spaceID, 1, params.get("tid"), pageNumber, sortFieldParam);
+		String url = String.format(urlFormat, spaceID, 40, params.get("tid"), pn, sortFieldParam);
 		url += API.genDmImgParams();
 		url = API.encWbi(url);
+		Logger.println(url);
 		String json = util.getContent(url, headers, HttpCookies.globalCookiesWithFingerprint());
 		Logger.println(url);
 		Logger.println(json);
 		JSONArray vlist = new JSONObject(json).getJSONObject("data").getJSONObject("list").getJSONArray("vlist");
-		if(vlist.length() == 0) {
+		if(vlist.length() < number) {
 			Logger.printf("position: %d, oid: search till end", pageNumber);
 			return "end";
 		} else {
-			String oid = vlist.getJSONObject(0).optString("aid");
+			String oid = vlist.getJSONObject(number - 1).optString("aid");
 			Logger.printf("position: %d, oid: %s", pageNumber, oid);
 			return oid;
 		}

@@ -25,7 +25,7 @@ import nicelee.ui.thread.DownloadExecutors;
 
 public class Global {
 	// 界面显示相关
-	@Config(key = "bilibili.version", defaultValue = "v6.39", warning = false)
+	@Config(key = "bilibili.version", defaultValue = "v6.40", warning = false)
 	public static String version; // 一般情况下，我们不会设置这个标签，这个用于测试
 	@Config(key = "bilibili.time.syncServer", note = "同步服务器的时间", defaultValue = "false", valids = { "true", "false" })
 	public static boolean syncServerTime;

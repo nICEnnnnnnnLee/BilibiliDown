@@ -1,9 +1,7 @@
-* 优化：收藏图文增加`收藏时间`信息 #247
-* 优化：UP主频道列表支持更多链接类型
-* 修复：修复up主合集api变更导致的问题 #254
-* 修复：修复CV图片解析 #247
-* 移除：因Bitbucket政策更新，附件服务即将无法使用，故去除下载源 `Bitbucket`
-* 其它详见[V6.38...V6.39](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.38...V6.39)
+* 优化：自定义文件名功能增加集合的拥有者id`listOwnerId` #248
+* 修复：修复页数太大时UP主所有视频的解析问题 #282
+* 修复：修复页数太大时UP主Channel的解析问题
+* 其它详见[V6.39...V6.40](https://github.com/nICEnnnnnnnLee/BilibiliDown/compare/V6.39...V6.40)
 <hr/>
 
 如果你是Win64用户,且没有java环境，请下载附件`*.win_x64_jre11.release.zip`或 `*.win_x64.msi`

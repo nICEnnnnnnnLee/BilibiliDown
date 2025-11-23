@@ -135,6 +135,16 @@
     收藏夹`https://space.bilibili.com/492744983/favlist?fid=933034683` 对应的 `艾伦和艾薇`  
     UP所有视频`https://space.bilibili.com/267776898/video` 对应的 `我才是熊猫大G`  
 
+## listOwnerId
+- 引入版本: V6.40
+- 释义:   
+    集合的拥有者的id 
+- 注意事项:  
+    因为不是所有链接解析结果都存在该值，所以需要配合**条件语句**，以免产生未知错误
+- 对应内容举例:  
+    收藏夹`https://space.bilibili.com/492744983/favlist?fid=933034683` 对应的 `492744983`  
+    UP所有视频`https://space.bilibili.com/267776898/video` 对应的 `267776898`  
+    
 ## favTime
 - 释义:   
     收藏时间，需要与格式化日期配合，仅在收藏夹有效 

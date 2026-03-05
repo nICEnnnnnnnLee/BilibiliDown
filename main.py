@@ -118,24 +118,24 @@ async def async_main():
     print(f"\n{'=' * 60}")
     print("📊 下载摘要")
     print(f"{'=' * 60}")
-    print(f"✅ 成功: {len(b.downloaded_videos)} 个视频")
+    print(f"✅ 成功: {len(b.downloaded_videos)} 个音视频")
     if b.failed_videos:
-        print(f"❌ 失败: {len(b.failed_videos)} 个视频")
+        print(f"❌ 失败: {len(b.failed_videos)} 个音视频")
     print(f"⏱️  总计用时：{minutes}分钟{seconds}秒")
 
     if b.downloaded_videos:
-        print(f"\n已下载的视频：")
+        print(f"\n已下载的音视频：")
         for i, video in enumerate(b.downloaded_videos, 1):
             quality_name = video.quality.get(video.quality_id, f"未知 (ID={video.quality_id})")
             print(f"  {i}. {video.title} ({quality_name})")
 
-    # 显示失败的视频及其 URL，便于用户重试
+    # 显示失败的音视频及其 URL，便于用户重试
     if b.failed_videos:
         print(f"\n{'─' * 60}")
-        print("❌ 下载失败的视频：")
+        print("❌ 下载失败的音视频：")
         print("─" * 60)
         for i, video in enumerate(b.failed_videos, 1):
-            # 显示视频标题
+            # 显示音视频标题
             if hasattr(video, 'part_number') and video.part_number >= 1:
                 print(f"  {i}. {video.title}_P{video.part_number}")
             else:
@@ -147,13 +147,13 @@ async def async_main():
         # 导出失败的 URL 到文件
         failed_urls_file = os.path.join(config.BASE_PATH, "failed_urls.txt")
         with open(failed_urls_file, "w", encoding="utf-8") as f:
-            f.write("# 下载失败的视频 URL，可复制到 config.py 中的 URL 列表重试\n")
+            f.write("# 下载失败的音视频 URL，可复制到 config.py 中的 URL 列表重试\n")
             for video in b.failed_videos:
                 if hasattr(video, 'source_url'):
                     f.write(f"'{video.source_url}',\n")
         print(f"\n💡 失败的 URL 已保存到: {failed_urls_file}")
 
-    print(f"\n💾 视频保存位置：{config.OUTPUT_PATH}")
+    print(f"\n💾 音视频保存位置：{config.OUTPUT_PATH}")
     print(f"{'=' * 60}\n")
 
 

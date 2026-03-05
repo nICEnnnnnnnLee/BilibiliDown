@@ -1,58 +1,118 @@
-# INeedBiliAV - BilibiliDown
-![语言java](https://img.shields.io/badge/Require-java-green.svg)
-![支持系统 Win/Linux/Mac](https://img.shields.io/badge/Platform-%20win%20|%20linux%20|%20mac-lightgrey.svg)
-![测试版本64位Win10系统, jre 1.8.0_101](https://img.shields.io/badge/TestPass-Win10%20x64__java__1.8.0__101-green.svg)
-![开源协议Apache2.0](https://img.shields.io/badge/license-apache--2.0-green.svg)  
-![当前版本](https://img.shields.io/github/release/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square)
-[![CI](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/release.yml/badge.svg)](https://github.com/nICEnnnnnnnLee/BilibiliDown/actions/workflows/release.yml)
-![最近更新](https://img.shields.io/github/last-commit/nICEnnnnnnnLee/BilibiliDown.svg?style=flat-square&color=FF9900)
+# Bilibili视频下载
 
-Bilibili 视频下载器，用于下载B站视频。  
-===============================
-登录后的凭证明文保存在`config`文件夹下的`cookies.config`。    
-如有需要请直接删除，或`操作->登录相关->退出登录`  
-更多详情请参考[帮助文档](https://nICEnnnnnnnLee.github.io/BilibiliDown) (如果访问不太顺畅的话，可以试试[备用帮助文档](https://bili.nicelee.top/BilibiliDown))  
+<div align="center">
+    <img src="docs/bilibili-logo.png">
+</div>
 
-## :smile:第三方库使用声明  
-* AV和BV转换参考了[Colerar/abv](https://github.com/Colerar/abv)[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Colerar/abv/blob/master/LICENSE-MIT)  
-* 使用[JSON.org](https://github.com/stleary/JSON-java)库做简单的Json解析[![](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/stleary/JSON-java/blob/master/LICENSE)
-* 使用[zxing](https://github.com/zxing/zxing)库生成链接二维码图片[![](https://img.shields.io/badge/license-Apache%202-green.svg)](https://raw.githubusercontent.com/zxing/zxing/master/LICENSE)  
-* 以外部库的方式调用[ffmpeg](http://www.ffmpeg.org)进行转码(短片段flv未使用ffmpeg，仅多flv合并及m4s转换mp4格式需要用到)[![](https://img.shields.io/badge/license-depends-orange.svg)](http://www.ffmpeg.org/legal.html)  
-* geetest验证码实现参考了[geetest-validator](https://github.com/kuresaru/geetest-validator)[![](https://img.shields.io/badge/license-unknown-gray.svg)](https://github.com/kuresaru/geetest-validator)
-* cookie刷新代码的wasm逆向实现参考了[SocialSisterYi/bilibili-API-collect#524](https://github.com/SocialSisterYi/bilibili-API-collect/issues/524#issuecomment-1537519232)[![](https://img.shields.io/badge/license-CC%20BY%20NC%204.0-green.svg)](https://github.com/SocialSisterYi/bilibili-API-collect/issues/524#issuecomment-1537519232)
+<div align=center>
+    <img src="https://img.shields.io/badge/python-3.8%2B-blue"/>
+    <img src="https://img.shields.io/badge/httpx-0.23.1-green"/>
+    <img src="https://img.shields.io/badge/beautifulsoup4-4.9.3-green"/>
+    <img src="https://img.shields.io/badge/moviepy-1.0.3-green"/>
+    <img src="https://img.shields.io/badge/tqdm-4.66.5-green"/>
+</div>
 
-## :smile:其它  
-* **下载地址**: <https://nICEnnnnnnnLee.github.io/BilibiliDown/guide/quick-start/download>   
-* **GitHub**: [https://github.com/nICEnnnnnnnLee/BilibiliDown](https://github.com/nICEnnnnnnnLee/BilibiliDown)  
-* **Github Release**: <https://github.com/nICEnnnnnnnLee/BilibiliDown/releases>  
-* **Bitbucket**: [https://bitbucket.org/NiceLeeee/BilibiliDown](https://bitbucket.org/NiceLeeee/BilibiliDown)  
-* **Gitee码云**: [https://gitee.com/NiceLeee/BilibiliDown](https://gitee.com/NiceLeee/BilibiliDown)  
-* [**更新日志**](https://github.com/nICEnnnnnnnLee/BilibiliDown/blob/master/UPDATE.md)
+## :pushpin: 功能说明
 
+- [x] B站视频下载
+- [x] 支持使用账号 cookie 下载大会员视频
+- [x] 异步并发下载
+- [x] 批量下载
+- [x] 支持分P视频
+- [x] 支持充电专属视频下载
+- [x] 下载进度条
+- [x] 下载摘要统计
+- [x] 自动清理临时文件
+- [ ] 支持番剧、纪录片下载【待测试】
+- [ ] 添加代理【待更新】
 
-## :smile:LICENSE  
-+ [第三方LICENSE](https://github.com/nICEnnnnnnnLee/BilibiliDown/tree/master/release/LICENSE/third-party)  
-+ 本项目提供的`ffmpeg.exe`基于[nICEnnnnnnnLee/FFmpeg-Builds](https://github.com/nICEnnnnnnnLee/FFmpeg-Builds/blob/master/SPECIFIC_CHANGES.md)进行编译。  
-    设置Github secret `FF_SPECIFIC_CONFIGURE`如下：  
-```
---disable-debug --disable-doc --disable-ffplay --disable-ffprobe --enable-static --disable-shared --disable-network --disable-autodetect --disable-decoders --disable-gpl --disable-version3 --enable-decoder='h264,aac*,mp3*,mp4,eac3,flac' --disable-encoders --disable-demuxers --enable-demuxer='concat,mov,m4v,flv,mp3,aac,m4a' --disable-muxers --enable-muxer='flv,mp4,mp3,adts' --enable-encoder='libmp3lame,mp3,aac' --disable-parsers --enable-parser=h264 --disable-protocols --enable-protocol='concat,file' --disable-bsfs --enable-bsf='h264_metadata,h264_mp4toannexb' --disable-filters --enable-filter='concat,aresample' --disable-iconv --enable-small
+## :white_check_mark: 安装依赖库
+
+```bash
+pip3 install -r requirements.txt
 ```
 
-+ 本项目遵守开源协议`Apache 2.0`。  
+## :pencil2: COOKIE设置说明
+
+打开`config.py`，**需要定期(30天)替换** cookie
+
+替换方法：
+
+1. 浏览器登录 B 站，打开要下载的视频页
+2. `Ctrl + Shift + I` 或者鼠标右键选择检查，然后选择`网络`
+3. `Ctrl + R` 刷新网页，选择第一个，请求表头中找到 `cookie`
+
+![](docs/set-cookie.png)
+
+## :pencil2: 下载链接添加说明
+
+打开`config.py`，在 `URL` 列表种添加视频 URL
+
+```py
+# 下载视频的 URL
+URL = [
+    # # 普通视频
+    # 'https://www.bilibili.com/video/BV1M4411c7P4/?vd_source=9c3224b88b8a3c4cc210fc6ff9b28f63',
+    # 'https://www.bilibili.com/video/BV1hB4y147j8/?spm_id_from=333.337.search-card.all.click&vd_source=9c3224b88b8a3c4cc210fc6ff9b28f63',
+
+    # # 分P视频（第1个分P）
+    # 'https://www.bilibili.com/video/BV1TnsZzHEcz/?vd_source=9c3224b88b8a3c4cc210fc6ff9b28f63&spm_id_from=333.788.videopod.episodes',
+
+    # # 分P视频（第2个分P）
+    # 'https://www.bilibili.com/video/BV1TnsZzHEcz/?p=2&vd_source=9c3224b88b8a3c4cc210fc6ff9b28f63',
+
+    # 充电专属视频
+    'https://www.bilibili.com/video/BV1W1wKeWEVe/?spm_id_from=333.1387.upload.video_card.click&vd_source=9c3224b88b8a3c4cc210fc6ff9b28f63',
+]
 ```
-Copyright (C) 2019-2024 NiceLee. All Rights Reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+## :pencil2: 保存模式说明
 
-    http://www.apache.org/licenses/LICENSE-2.0
+打开 `config.py`，修改 `SAVE_MODE`：
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+- `"merge"`：合并音视频后保存为 `.mp4`（默认）
+- `"separate"`：音视频分开保存（`.mp4` + `.mp3`）
+- `"audio_only"`：仅保存音频（`.mp3`）
+- `"video_only"`：仅保存视频（`.mp4`）
+
+## :rocket: 运行方法
+
+`python main.py`
+
+```bash
+# python main.py
+python main.py
+
+============================================================
+📹 【13小时完结】国民女神带着可爱女儿找上门求我负责？！可我明明却是个万能单身狗。
+📺 清晰度：高清 1080P
+============================================================
+
+📥 开始下载视频和音频：【13小时完结】国民女神带着可爱女儿找上门求我负责？！可我明明却是个万能单身狗。_P1.mp4
+
+  音频: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 726M/726M [04:49<00:00, 2.51MB/s]
+  视频: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1.43G/1.43G [33:48<00:00, 707kB/s]
+
+✅ 视频和音频下载完成
+
+🎬 合并视频和音频...
+✅ 视频合成完成
+
+🧹 已清理临时文件
+
+============================================================
+📊 下载摘要
+============================================================
+✅ 成功下载 1 个视频
+⏱️  总计用时：34分钟17秒
+
+已下载的视频：
+  1. 【13小时完结】国民女神带着可爱女儿找上门求我负责？！可我明明却是个万能单身狗。 (高清 1080P)
+
+💾 视频保存位置：/home/user/work/repos/bilibili-downloader/output
+============================================================
 ```
 
+## :tv: 运行效果
 
+![](docs/screen.gif)

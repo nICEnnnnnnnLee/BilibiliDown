@@ -1,0 +1,4 @@
+beautifulsoup4==4.9.3
+httpx==0.23.1
+moviepy==1.0.3
+tqdm==4.66.5
